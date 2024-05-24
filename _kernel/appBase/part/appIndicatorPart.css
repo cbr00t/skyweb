@@ -1,0 +1,48 @@
+
+.part.appIndicator {
+	position: fixed;
+	bottom: 8px;
+	right: 60px;
+	opacity: .7;
+	z-index: 800 !important;
+	background: transparent !important;
+	pointer-events: none;
+}
+
+.part.appIndicator .ledParent {
+	float: left;
+	padding: 0 13px;
+}
+.part.appIndicator .ledParent .label {
+	font-size: 7pt;
+	color: #775;
+	padding-left: 0;
+	margin-bottom: 0;
+}
+.part.appIndicator .ledParent .led {
+	width: 18px;
+	height: 18px;
+}
+.part.appIndicator .ledParent .label img {
+	width: 12px;
+	height: 12px;
+	margin-left: 0;
+}
+
+@media (max-width: 400px) {
+	.part.appIndicator {
+		right: 50px;
+		bottom: 6px;
+		opacity: .5;
+	}
+	.part.appIndicator .ledParent {
+		padding: 0 10px;
+	}
+	.part.appIndicator .ledParent .label {
+		display: none;
+	}
+	.part.appIndicator .ledParent .led {
+		width: 16px;
+		height: 16px;
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"min": "2020-02-10T07:00:00",
+	"max": "2020-02-10T10:10:00",
+	"taskColumns": [
+		{ "label": "Operasyon", "value": "name", "size": 400 },
+		{ "label": "Başlangıç", "value": "dateStartText", "min": 0 },
+		{ "label": "Bitiş", "value": "dateEndText", "min": 0 }
+	]
+}

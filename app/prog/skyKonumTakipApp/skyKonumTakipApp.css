@@ -1,0 +1,244 @@
+
+body.skyKonumTakipApp {
+	overflow-y: hidden;
+}
+
+body.skyKonumTakipApp input[type=checkbox],
+body.skyKonumTakipApp checkbox {
+	width: 20px;
+	height: 20px;
+	position: relative;
+	top: 3px;
+	right: 5px;
+}
+
+.part.skyKonumTakipApp .jqx-dropdownlist,
+.part.skyKonumTakipApp .jqx-dropdownlist .jqx-dropdownlist-content {
+	font-weight: bold;
+}
+.part.skyKonumTakipApp .jqx-dropdownlist:not(.jqx-fill-state-pressed) {
+	color: #3f5166;
+}
+body.skyKonumTakipApp .jqx-listbox-container span:not(.jqx-fill-state-pressed) {
+	color: #888;
+}
+
+.part.skyKonumTakipApp .asil.islemTuslari {
+	position: fixed;
+	top: 0;
+	z-index: 10003;
+}
+.part.skyKonumTakipApp .asil.islemTuslari > button {
+	background-position: center;
+	background-size: auto;
+	background-repeat: no-repeat;
+	width: 40px;
+	height: 40px;
+}
+.part.skyKonumTakipApp .asil.islemTuslari > button:not(:last-child) {
+	margin-right: 10px;
+}
+
+.part.skyKonumTakipApp #tamam {
+	background-image: url(../../../_kernel/images/tamam.png);
+}
+.part.skyKonumTakipApp #sec {
+	background-image: url(../../../_kernel/images/tamam.png);
+}
+.part.skyKonumTakipApp #kaydet {
+	margin-left: 8px;
+	background-image: url(../../../_kernel/images/tamam.png);
+}
+.part.skyKonumTakipApp #ayarlar {
+	background-image: url(../../../_kernel/images/ayarlar.png);
+}
+.part.skyKonumTakipApp #btnTazele {
+	background-image: url(../../../_kernel/images/tazele.png);
+}
+.part.skyKonumTakipApp #btnToggleFullScreen {
+	background-image: url(../../../_kernel/images/tamEkranAcBeyaz.png);
+}
+.part.skyKonumTakipApp #btnLogout {
+	background-image: url(../../../_kernel/images/logout.png);	
+}
+
+#contentParent.skyKonumTakipApp > #header > * {
+	margin-left: 15px;
+}
+
+.part.skyKonumTakipApp .header-button {
+	position: fixed;
+	width: 40px;
+	height: 40px;
+	top: 4px;
+	background-color: #0049b8;
+	background-position: center;
+	background-size: auto;
+	background-repeat: no-repeat;
+	z-index: 10003;
+}
+.part.skyKonumTakipApp .header-button:hover {
+	background-color: #1469ea;
+}
+.part.skyKonumTakipApp .header-button:active {
+	background-color: #043886;
+}
+.part.skyKonumTakipApp #ayarlar {
+	left: 8px;
+}
+.part.skyKonumTakipApp #btnTazele {
+	right: 215px;
+	background-size: 24px;
+	background-color: #2c6d7b;
+}
+.part.skyKonumTakipApp #btnTazele:hover {
+	background-color: #25a12f;
+}
+.part.skyKonumTakipApp #btnTazele:active {
+	background-color: #01642d;
+}
+.part.skyKonumTakipApp #btnToggleFullScreen {
+	right: 170px;
+}
+.part.skyKonumTakipApp #userInfo {
+	width: 150px;
+	height: 43px;
+	right: 10px;
+	top: 2px;
+	color: whitesmoke;
+	background-color: #1582e5;
+}
+body.skyKonumTakipApp #userInfo_popup ul {
+	padding: 5px;
+}
+body.skyKonumTakipApp #userInfo_popup ul > li {
+	padding: 20px 8px !important;
+	height: 25px;
+}
+
+.part.skyKonumTakipApp #header {
+}
+.part.skyKonumTakipApp #header > .parent:not(:first-child) {
+	margin-left: 40px;
+}
+.part.skyKonumTakipApp #header #zoomRange {
+	width: 200px;
+	margin: 5px 0 0 13px;
+	padding: 8px;
+}
+.part.skyKonumTakipApp #header #plasUser_parent {
+}
+.part.skyKonumTakipApp #header #plasUser_parent > * {
+	height: 50px;
+}
+.part.skyKonumTakipApp #header #plasUser_parent > button {
+	font-weight: bold;
+	width: 120px;
+}
+.part.skyKonumTakipApp #header #plasUser_parent > input {
+	font-size: 120%;
+	width: 400px;
+	background-color: #f2f5f9;
+	border-color: #ccc;
+}
+.part.skyKonumTakipApp #header #plasUser_parent > input:focus,
+.part.skyKonumTakipApp #header #plasUser_parent > input:active {
+	color: #333;
+}
+
+.part.skyKonumTakipApp #map {
+	margin: 3px 0 0 5px;
+	width: 99.8%;
+}
+
+
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari {
+	position: absolute;
+	right: 8px;
+	top: 45px;
+	z-index: 500;
+	min-height: 60px;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari > * {
+	font-weight: bold;
+	vertical-align: top !important;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	/* background-color: white; */
+	border: 1px solid #ccc;
+	padding: 0 8px;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari-bottom > *:not(:hover):not(:focus):not(:active) {
+	opacity: .7;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari > *:hover,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari-bottom > *:hover {
+	opacity: .9;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari > *:not(#btnTamam):hover,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari-bottom > *:hover {
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari > *:focus,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari-bottom > *:focus {
+	border: 3px solid #fcfcfc !important;
+	opacity: .9;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari > *:active,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari-bottom > *:active {
+	opacity: 1;
+}
+
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTamam,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTazele {
+	border-radius: 8px;
+	width: 70px;
+	height: 65px;
+	background-color: #094fc9;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTamam {
+	background-size: 60px 55px;
+	background-image: url(../../../_kernel/images/maviTamam.png);
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTazele {
+	position: absolute;
+	left: 15px;
+	background-size: 24px 24px;
+	background-image: url(../../../_kernel/images/tazele.png);
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTamam:hover,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTazele:hover,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTamam:focus,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTazele:focus {
+	background-color: #517dca !important;
+}
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTamam:active,
+.part.skyKonumTakipApp .jqx-window-content .islemTuslari #btnTazele:active {
+	background-color: #00c474 !important;
+}
+
+
+.part.skyKonumTakipApp.birKismiListe .jqx-window-content #hepsimi_parent {
+	font-size: 120%;
+	font-weight: bold;
+	color: royalblue;
+	padding: 13px 8px;
+}
+.part.skyKonumTakipApp.birKismiListe .jqx-window-content #hepsimi_parent #hepsimi {
+}
+.part.skyKonumTakipApp.birKismiListe .jqx-window-content .liste_parent #liste #filterliste {
+	font-size: 75%;
+}
+.part.skyKonumTakipApp.birKismiListe .jqx-window-content .liste_parent #liste #filterliste .jqx-input-group input {
+	margin-top: -2px;
+	font-size: 140%;
+}
+.part.skyKonumTakipApp.birKismiListe .jqx-window-content .liste_parent #liste .jqx-grid-cell {
+	font-size: 145%;
+	font-weight: bold;
+	color: #999;
+	height: 50px;
+}
+

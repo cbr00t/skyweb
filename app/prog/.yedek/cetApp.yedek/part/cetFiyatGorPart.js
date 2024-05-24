@@ -1,0 +1,515 @@
+(function() {
+	window.CETFiyatGorPart = class extends window.CETListeOrtakPart {
+		constructor(e) {
+			e = e || {};
+			super(e);
+
+			$.extend(this, {
+				mustKod: e.mustKod,
+				stokKod: e.stokKod,
+				events: $.extend({}, e.events || {}),
+				secButonuKontrolEdilirmi: false,
+				secinceGeriYapilmazFlag: true
+			});
+			if (!(this.layout || this.template))
+				this.template = this.app.templates.fiyatGor;
+		}
+
+		static get canDestroy() { return false }
+		static get partName() { return 'cetFiyatGor' }
+		get adimText() { return 'Fiyat Gör Ekranı' }
+
+
+		async postInitLayout(e) {
+			e = e || {};
+			const layout = e.layout || this.layout;
+			this.templates = this.templates || {};
+			/*this.templates = $.extend(this.templates || {}, {
+				hizliStokItem: layout.find('#hizliStokItem')
+			});*/
+			
+			this.isReady = false;
+			let hizliCariPart = this.hizliCariPart = new CETMstComboBoxPart({
+				parentPart: this,
+				content: layout.find('.hizliCari'),
+				// layout: layout.find('.hizliStok'),
+				placeHolder: 'Müşteri Ünvan veya Kodu',
+				listeSinif: CETCariListePart, table: 'mst_Cari',
+				idSaha: 'kod', adiSaha: 'unvan',
+				selectedId: this.mustKod,
+				// text: this.mustKod,
+				events: {
+					comboBox_itemSelected: e => {
+						this.hizliCari_itemSelected(e);
+						this.focusToDefault()
+					}
+				}
+			});
+			await hizliCariPart.run();
+			delete this.mustKod;
+
+			let hizliStokPart = this.hizliStokPart = new CETMstComboBoxPart({
+				parentPart: this,
+				content: layout.find('.hizliStok'),
+				// layout: layout.find('.hizliStok'),
+				placeHolder: 'Ürün Adı veya Barkod',
+				listeSinif: CETStokListePart, table: 'mst_Stok',
+				idSaha: 'kod', adiSaha: 'aciklama',
+				selectedId: this.stokKod,
+				// text: this.stokKod,
+				events: {
+					comboBox_itemSelected: e => {
+						this.hizliStok_itemSelected(e);
+						this.focusToDefault()
+					},
+					comboBox_stmDuzenleyici: e => {
+						return true;
+					},
+					liste_stmDuzenleyici: e => {
+						return true;
+					},
+					listedenSec_ekArgs: {
+						fis: null,
+						sonStokKontrolEdilirmi: false,
+						sonStokFilterDisabled: false,
+						liste_stmDuzenleyici: e => true
+					}
+				}
+			});
+			this.isReady = true;
+			await hizliStokPart.run();
+			delete this.stokKod;
+			
+			await super.postInitLayout(e);
+			
+			let part = this.islemTuslariPart = new CETExpandableIslemTuslariPart({
+				/* position: ``, */
+				templateItems: layout.find(`.toolbar-external.islemTuslari`),
+				onItemClicked: e => this.liste_islemTusuTiklandi(e)
+			});
+			part.basicRun();
+
+			this.focusToDefault();
+		}
+
+		async initActivatePartOrtak(e) {
+			e = e || {};
+			await super.initActivatePartOrtak(e);
+
+			this.isReady = false;
+			let id = this.mustKod;
+			let degistimi = false;
+			if (id)
+				await this.hizliCariPart.comboBox_itemSelectedDevam({ value: id });
+			delete this.mustKod;
+
+			degistimi = degistimi || id;
+			id = this.stokKod;
+			if (id)
+				await this.hizliStokPart.comboBox_itemSelectedDevam({ value: id });
+			delete this.stokKod;
+
+			this.isReady = true;
+			if (degistimi)
+				await this.tazele();
+			
+			setTimeout(() => this.focusToDefault(), 500);
+		}
+
+		async destroyDeactivatePartOrtak(e) {
+			e = e || {};
+			
+			this.isReady = false;
+			if (this.barcodeReader) {
+				this.barcodeReader.destroy();
+				delete this.barcodeReader;
+			}
+
+			await super.destroyDeactivatePartOrtak(e);
+		}
+
+
+		async listeArgsDuzenle(e) {
+			await super.listeArgsDuzenle(e);
+			
+			$.extend(e.listeArgs, {
+				showToolbar: false, columnsHeight: 24, pagerHeight: 30,
+				columnsResize: true, serverProcessing: false, filterMode: 'default',
+				pageSize: this.userSettings_liste.pageSize || 12
+			});
+		}
+
+		/*liste_renderToolbar(e) {
+			const layout = e.layout || this.layout;
+			const toolbar = e.listeToolbar;
+			let divIslemTuslari = this.toolbarIslemTuslari;
+			if (!divIslemTuslari) {
+				divIslemTuslari = this.toolbarIslemTuslari = this.newListeSubPart('.toolbar.islemTuslari');
+				divIslemTuslari.appendTo(toolbar);
+
+				const liItems = divIslemTuslari.find('ul > li');
+				divIslemTuslari.jqxMenu({
+					theme: theme, mode: 'horizontal',
+					width: '100%', height: false,
+					animationShowDuration: 0, animationHideDuration: 0
+				});
+				liItems.on('click', evt =>
+					this.liste_islemTusuTiklandi($.extend({}, e, { event: evt })));
+			}
+		}*/
+
+		async liste_columnsDuzenle(e) {
+			await super.liste_columnsDuzenle(e);
+
+			$.merge(e.listeColumns, [
+				{	datafield: 'etiket', text: 'Etiket', align: 'left', width: 230,
+					cellsRenderer: (rowIndex, columnIndex, value, rec) =>
+						this.liste_columnsDuzenle_generateCell({
+							selector: 'etiket', rowIndex: rowIndex, rec: rec, value: rec.etiket
+						})
+				},
+				{	datafield: 'veri', text: 'Veri', align: 'left', cellsFormat: 'd2', cellsAlign: 'right',
+					cellsRenderer: (rowIndex, columnIndex, value, rec) =>
+						this.liste_columnsDuzenle_generateCell({
+							selector: 'veri', rowIndex: rowIndex, rec: rec, value: rec.veri,
+							getter: e => {
+								const value = e.value;
+								return e.rec.bedelmi
+											? `${bedelStr(value)} TL`
+											: (value
+												? value.toLocaleString(culture, { minimumIntegerDigits: 1, useGrouping: true })
+												: '')
+							}
+						})
+				}
+			]);
+		}
+
+		async loadServerData(e) {
+			const {app} = sky;
+			const {fiyatFra} = app;
+			const {satisFiyatGorurmu, alimFiyatGorurmu, alimNetFiyatGosterilirmi} = app;
+				// oncesinde promise olarak veri cekme islemi baslatilmis idi
+			const stokRec = this.stokRec = await this.stokRec;
+			const sonStokRecs = this.sonStokRecs = await this.sonStokRecs;
+			
+			const recs = [];
+			if (stokRec) {
+				const {brm} = stokRec;
+				const satisKosulYapilari = this.satisKosulYapilari || {};
+				let kosulTip = 'FY';
+				let kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip);
+				let kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
+				let _e = { kosulKodListe: kosulKodListe, stokKod: stokRec.kod, grupKod: stokRec.grupKod };
+				const fiyatKosulDetay = await kosulSinif.kosullarIcinStokGrupBilgi(_e) || {};
+				let value;
+
+				kosulTip = 'SB';
+				kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip);
+				kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
+				_e = { kosulKodListe: kosulKodListe, stokKod: stokRec.kod, grupKod: stokRec.grupKod };
+				const iskKosulDetay = await kosulSinif.kosullarIcinStokGrupBilgi(_e) || {};
+				
+				recs.push({
+					etiket: 'ÜRÜN ADI',
+					veri: stokRec.aciklama || '',
+					bedelmi: false
+				});
+				if (app.satisFiyatGorurmu) {
+					recs.push({
+						etiket: 'FİYAT',
+						veri: toStringWithFra((fiyatKosulDetay.ozelFiyat || stokRec.fiyatGorFiyati || stokRec.brmFiyat || 0), fiyatFra),
+						bedelmi: true
+					});
+				}
+				if (iskKosulDetay && asFloat(iskKosulDetay.iskOran1)) {
+					const Prefix = `iskOran`;
+					const iskOranStrListe = [];
+					for (let key in iskKosulDetay) {
+						let value = iskKosulDetay[key];
+						if (key.startsWith(Prefix) && asFloat(value))
+							iskOranStrListe.push(toStringWithFra(roundToFra(value, 2)));
+					}
+					recs.push({
+						etiket: 'ISK. ORAN',
+						veri: ('%' + iskOranStrListe.join('+')),
+						bedelmi: false
+					})
+				}
+				if (satisFiyatGorurmu) {
+					const Prefix = 'satFiyat';
+					for (let key in stokRec) {
+						let value = stokRec[key];
+						if (value && key.startsWith(Prefix)) {
+							let keySizeFark = key.length - Prefix.length;
+							if (keySizeFark == 1 || keySizeFark == 2) {
+								let ind = parseInt(key.slice(Prefix.length));
+								recs.push({ etiket: `SAT. FİYAT ${ind}`, veri: toStringWithFra(value || 0, fiyatFra), bedelmi: true });
+							}
+						}
+					}
+				}
+				if (alimFiyatGorurmu && alimNetFiyatGosterilirmi) {
+					value = stokRec.almNetFiyat;
+					if (value)
+						recs.push({ etiket: 'ALIM NET FIYAT', veri: toStringWithFra(stokRec.almNetFiyat || 0, fiyatFra), bedelmi: true });
+				}
+				
+				if (!$.isEmptyObject(sonStokRecs)) {
+					for (let i in sonStokRecs) {
+						const _rec = sonStokRecs[i];
+						const {yerKod, sonStok} = _rec;
+						if (sonStok) {
+							let etiket = `DEPO: (<span class="yerKod">${yerKod}</span>)`;
+							const ekOzellikIDSahalar = CETEkOzellikler.idSahalar;
+							if (!$.isEmptyObject(ekOzellikIDSahalar)) {
+								const sahaDegerleri = [];
+								for (const i in ekOzellikIDSahalar) {
+									const idSaha = ekOzellikIDSahalar[i];
+									const value = _rec[idSaha];
+									if (value)
+										sahaDegerleri.push(value);
+								}
+								if (!$.isEmptyObject(sahaDegerleri))
+									etiket += `<br/><span class="ekOzelliklerParent">[ <span class="ekOzellikler">${sahaDegerleri.join('; ')}</span> ]</span>`;
+							}
+							recs.push({
+								etiket: etiket,
+								// veri: `<span class="yerKod">${yerKod ? yerKod + ': ' : ''}</span><span class="sonStok">${sonStok.toLocaleString() || 0} ${brm || 'AD'}</span>`,
+								veri: `<span class="sonStok">${sonStok.toLocaleString() || 0} ${brm || 'AD'}</span>`,
+								bedelmi: false
+							});
+						}
+					}
+				}
+
+				/*value = stokRec.sonStok;
+				if (value) {
+					recs.push({
+						etiket: 'DEPO ve SON STOK',
+						veri: `<span class="yerKod">${stokRec.yerKod ? stokRec.yerKod + ': ' : ''}</span><span class="sonStok">${stokRec.sonStok.toLocaleString() || 0} ${brm || 'AD'}</span>`,
+						bedelmi: false
+					});
+				}*/
+			}
+			e.callback({ totalrecords: recs.length, records: recs });
+		}
+
+		async stokBilgiStm(e) {
+			e = e || {};
+			let stokKod = this.hizliStokPart.selectedId;
+			if (!stokKod)
+				return null;
+
+			const fis = e.fis || this.fis || ((e.parentPart || this.parentPart) || {}).fis;
+			let stkFytInd = (e.cariRow || {}).stkFytInd || (fis || {}).cariStkFytInd;
+			if (!stkFytInd) {
+				const mustKod = e.mustKod || (e.cariRow || {}).kod || this.mustKod || (fis || {}).mustKod;
+				if (mustKod)
+					stkFytInd = await MQCogul.getCariStkFytInd({ mustKod: mustKod });
+			}
+			const brmFiyatSaha = stkFytInd ? `satFiyat${stkFytInd}` : `brmFiyat`;
+			
+			let sent = new MQSent({
+				from: `mst_Stok stk`,
+				where: [
+					{ degerAta: stokKod, saha: `stk.kod` }
+				],
+				sahalar: [
+					`stk.kod`, `stk.aciklama`, `stk.grupKod`, `stk.fiyatGorFiyati`, `stk.satFiyat1`, `stk.satFiyat2`,
+					`stk.satFiyat3`, `stk.satFiyat4`, `stk.satFiyat5`, `stk.satFiyat6`, `stk.satFiyat7`,
+					`stk.almFiyat`, `stk.almNetFiyat`, `stk.brm`,
+					`stk.${brmFiyatSaha} brmFiyat`
+				]
+			});
+
+			let stm = new MQStm({ sent: sent });
+			return stm;
+		}
+
+		async sonStokBilgiStm(e) {
+			e = e || {};
+			let stokKod = this.hizliStokPart.selectedId;
+			if (!stokKod)
+				return null;
+			
+			const {app} = this;
+			const {appSicakVeyaSogukmu} = app.class;
+			const {defaultYerKod} = app;
+			const ekOzellikIDSahalar = CETEkOzellikler.idSahalar;
+			
+			let sent = new MQSent({
+				from: `mst_SonStok son`,
+				where: [ { degerAta: stokKod, saha: `son.stokKod` } ],
+				sahalar: [ `son.yerKod` ],
+				groupBy: [ `son.yerKod` ]
+			});
+			if (!$.isEmptyObject(ekOzellikIDSahalar)) {
+				for (const i in ekOzellikIDSahalar) {
+					const idSaha = ekOzellikIDSahalar[i];
+					const aliasVeSaha = `son.${idSaha}`;
+					sent.sahalar.add(aliasVeSaha);
+					sent.groupBy.add(aliasVeSaha);
+				}
+			}
+			sent.sahalar.add(`SUM(son.miktar) sonStok`);
+			if (appSicakVeyaSogukmu && defaultYerKod)
+				sent.where.degerAta(defaultYerKod, `son.yerKod`);
+			
+			let stm = new MQStm({ sent: sent });
+			return stm;
+		}
+
+		focusToDefault() {
+			const {hizliStokPart} = this;
+			const target = hizliStokPart.comboBox;
+			if (target && target.length) {
+				this.setUniqueTimeout({
+					key: 'focusToDefault', delayMS: 200, isInterval: false,
+					block: e => {
+						e.target.find('input').focus();
+						hizliStokPart.comboBox_preventPopupFlag = true;
+						setTimeout(() => hizliStokPart.comboBoxWidget.close(), 100);
+						setTimeout(() => hizliStokPart.comboBoxWidget.close(), 250);
+						setTimeout(() => hizliStokPart.comboBoxWidget.close(), 350);
+						setTimeout(() => {
+							hizliStokPart.comboBoxWidget.close();
+							delete hizliStokPart.comboBox_preventPopupFlag;
+						}, 450);
+					},
+					args: [{ target: target }]
+				})
+			}
+		}
+
+
+		async hizliCari_itemSelected(e) {
+			let _e = { kosulTip: ['FY', 'SB'], kapsam: { tarih: today(), cari: e.id } };
+			this.satisKosulYapilari = await CETSatisKosul.tip2KosulYapilari(_e);
+
+			if (this.isReady) {
+				await this.tazele();
+				this.focusToDefault();
+			}
+
+			return true;
+		}
+
+		async hizliStok_itemSelected(e) {
+			const {app, hizliStokPart} = this;
+			const dbMgr = app.dbMgrs.rom_data;
+			let barkodBilgi;
+			let barkod = (e.value || '').trim();
+			if (barkod) {
+				let ind = -1;
+				$.each(['x', 'X', '*'], (_, matchStr) => {
+					ind = barkod.indexOf(matchStr);
+					if (ind > -1)
+						return false;			// break loop
+				});
+				
+				let carpan;
+				if (ind > -1) {
+					let miktarStr = barkod.substring(0, ind);		// substring from->to .. (to dahil degil)
+					e.barkod = barkod = barkod.substring(ind + 1);
+					e.carpan = carpan = asFloat(miktarStr) || null;
+				}
+				
+					// barkod veya stok kod için ürün bul ve sonucu 'rec' gibi kullan
+				barkodBilgi = await this.app.barkodBilgiBelirle({ barkod: barkod, carpan: carpan });
+				/*if (!barkodBilgi) {
+					displayMessage(`(${barkod}) barkodu hatalıdır!`, this.app.appText);
+					return;
+				}*/
+			}
+
+			if (barkodBilgi)
+				hizliStokPart.selectedId = barkodBilgi.shKod;
+			
+			let stm = await this.stokBilgiStm(e);
+			if (!stm)
+				return;
+			
+			let rec = this.stokRec = await dbMgr.tekilExecuteSelect({ query: stm });
+			if (rec) {
+				stm = await this.sonStokBilgiStm(e);
+				if (stm) {
+					let _recs = await dbMgr.executeSqlReturnRows({ query: stm });
+					if (_recs)
+						this.sonStokRecs = _recs;
+				}
+				if (barkodBilgi)
+					$.extend(rec, barkodBilgi);
+			}
+			
+			await this.tazele();
+			this.focusToDefault();
+
+			return true;
+		}
+
+		async liste_islemTusuTiklandi(e) {
+			const elm = e.event.currentTarget;
+			const id = e.id || (elm || {}).id;
+			// let rec = this.selectedRec;
+			// displayMessage(`<ul style="padding: 8px;"><li>clicked: [${elm.innerHTML}]</li><li>activeRec: [(${(rec || {}).kod}) - ${(rec || {}).unvan}]</li>`);
+			// displayMessage(`<ul style="padding: 8px;"><li>clicked: [<b>${elm.id}</b> - ${elm.innerHTML}]</li><li>activeRec: [(${(rec || {}).shKod}) - ${(rec || {}).shAdi}]</li>`);
+			switch (elm.id) {
+				case 'barkod':
+					this.barkodIstendi(e);
+					break;
+			}
+		}
+
+		sec(e) {
+		}
+
+		async barkodIstendi(e) {
+			e = e || {};
+			const layout = this.layout;
+			
+			const barkodContainer = layout.find(`#barkodContainer`);
+			let barcodeReader = this.barcodeReader;
+			if (!barcodeReader) {
+				const deviceClass = CETBarkodDevice.defaultDeviceClass;
+				if (!deviceClass)
+					return;
+				
+				barcodeReader = this.barcodeReader = new deviceClass({
+					content: barkodContainer,
+					debug: this.app.class.isDebug,
+					onKamerami: this.app.onKamerami,
+					readCallback: e => {
+						const barkod = e.result;
+						this.hizliStokPart.text = barkod;
+						this.hizliStok_itemSelected({ value: barkod });
+						this.focusToDefault();
+					}
+				});
+			}
+			if (barcodeReader.isReady) {
+				let handler = this.events.barcodeReaderBeforeActivated;
+				if (handler)
+					handler.call(this, { sender: this, barcodeReader: barcodeReader });
+				
+				await barcodeReader.start();
+			}
+			else {
+				await barcodeReader.destroy();
+				
+				let handler = this.events.barcodeReaderDeactivated;
+				if (handler)
+					handler.call(this, { sender: this, barcodeReader: barcodeReader });
+			}
+			
+			let elm = (e.event || {}).currentTarget;
+			if (elm) {
+				elm = $(elm);
+				elm.removeClass(`ready paused running`);
+				elm.addClass(barcodeReader.state);
+			}
+
+			this.focusToDefault();
+		}
+	}
+})()

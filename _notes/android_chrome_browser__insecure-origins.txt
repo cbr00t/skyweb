@@ -1,0 +1,5 @@
+
+chrome://flags/#block-insecure-private-network-requests
+
+chrome://flags/#unsafely-treat-insecure-origin-as-secure
+	http://185.85.188.88,http://185.85.188.88:81,https://185.85.188.88:90,http://185.85.188.88:8081,https://185.85.188.88:8101,http://cloud.vioyazilim.com.tr,http://cloud.vioyazilim.com.tr:81,https://cloud.vioyazilim.com.tr:90,http://cloud.vioyazilim.com.tr:8081,https://cloud.vioyazilim.com.tr:8101,http://cobramsi,http://cobramsi:81,https://cobramsi:90,http://cobramsi:8081,https://cobramsi:8101

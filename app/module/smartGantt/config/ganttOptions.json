@@ -1,0 +1,17 @@
+{
+	"debugMode": false,
+	"locale": "tr",
+	"autoSchedule": false,
+	"sortable": true,
+	"sortMode": "many",
+	"view": "month",
+	"durationUnit": "second",
+	"nonworkingDays": [6],
+	"showProgressLabel": false,
+	"resourceTimelineView": "custom",
+	"resourceTimelineMode": "diagram",
+	"weekFormat": "numeric",
+	"yearFormat": "2-digit",
+	"verticalScrollBarVisibility": "auto",
+	"horizontalScrollBarVisibility": "auto"
+}

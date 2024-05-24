@@ -1,0 +1,38 @@
+(async function() {
+	await sky.app.dbMgr_mf.executeSql({ query: `
+		UPDATE data_PIFFis SET gonderildi = '' WHERE gonderildi <> ''
+	`});
+	await sky.app.dbMgr_mf.executeSql({ query: `
+		UPDATE data_TahsilatFis SET gonderildi = '' WHERE gonderildi <> ''
+	`});
+	await sky.app.dbMgr_mf.executeSql({ query: `
+		UPDATE data_UgramaFis SET gonderildi = '' WHERE gonderildi <> ''
+	`});
+
+	const gonderilmeyen = {
+	    fis: await sky.app.dbMgr_mf.tekilDegerExecuteSelect({ query: `SELECT COUNT(*) sayi FROM data_PIFFis WHERE gonderildi <> ''` }),
+	    tahsilat: await sky.app.dbMgr_mf.tekilDegerExecuteSelect({ query: `SELECT COUNT(*) sayi FROM data_TahsilatFis WHERE gonderildi <> ''` }),
+	    ugrama: await sky.app.dbMgr_mf.tekilDegerExecuteSelect({ query: `SELECT COUNT(*) sayi FROM data_UgramaFis WHERE gonderildi <> ''` })
+	};
+	alert(
+        `gönderilmeyen belge sayýsý: [${gonderilmeyen.fis}]\r\n` +
+        `gönderilmeyen tahsilat sayýsý: [${gonderilmeyen.tahsilat}]\r\n` +
+        `gönderilmeyen uðrama sayýsý: [${gonderilmeyen.ugrama}]\r\n`
+    );
+})()
+
+
+(async function() {
+	$.post({
+			url: `${sky.app.wsURLBase}ping`,
+			dataType: 'json',
+			timeout: 5000
+	})
+		.then(() => alert(`[${sky.app.wsURLBase}ping]\r\n   adrese eriþti`))
+		.fail(() => alert(`[${sky.app.wsURLBase}ping]\r\n   adrese ERÝÞMEDÝ`))
+})()
+
+
+
+chrome://flags
+	http://cloud.vioyazilim.com.tr:81,http://cloud.vioyazilim.com.tr:8200

@@ -1,0 +1,46 @@
+<div id="skyKonumTakip" class="part">
+	<div class="islemTuslari-asil">
+		<button id="btnTazele" class="header-button"></button>
+		<button id="btnToggleFullScreen" class="header-button"></button>
+		<button id="userInfo" class="header-button"></button>
+	</div>
+	
+	<div id="header" class="flex-row">
+		<div id="zoomRange_parent" class="parent">
+			<input id="zoomRange" type="range" min="9" max="22" value="17"></input>
+		</div>
+
+		<div id="plasUser_parent" class="parent">
+			<button id="plasUserSec">SEÇ...</button>
+			<input id="plasUserText" name="plasUserText" type="textbox" readonly></input>
+		</div>
+	</div>
+	
+	<div id="map"></div>
+
+	<div id="userInfo_popup_parent" class="jqx-hidden">
+		<div id="userInfo_popup">
+			<ul>
+				<li id="logout" class="item">OTURUM KAPAT</li>
+			</ul>
+		</div>
+	</div>
+
+
+	<template id="birKismiListe" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+			
+			<div id="hepsimi_parent" class="parent">
+				<input id="hepsimi" name="hepsimi" type="checkbox"></input>
+				<label for="hepsimi">Hepsi</label>
+			</div>
+
+			<div class="liste_parent parent">
+				<div id="liste"></div>
+			</div>
+		</div>
+	</template>
+</div>

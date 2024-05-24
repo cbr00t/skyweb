@@ -1,0 +1,300 @@
+
+#contentParent .sosyalDurumApp .part {
+	/* padding: 1px 0 0 1px; */
+}
+#contentParent .sosyalDurumApp .part {
+	font-size: 16pt;
+}
+@media (max-width: 600px) {
+	#contentParent .sosyalDurumApp .part {
+		font-size: 15pt;
+	}
+}
+@media (max-width: 400px) {
+	#contentParent .sosyalDurumApp .part {
+		font-size: 14pt;
+	}
+}
+
+#contentParent .sosyalDurumApp .jqx-dropdownlist *,
+#contentParent .sosyalDurumApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group,
+#contentParent .sosyalDurumApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group > * {
+	font-size: 12.5pt;
+}
+#contentParent .sosyalDurumApp .jqx-dropdownlist {
+	height: 24px !important;
+}
+#contentParent .sosyalDurumApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group,
+#contentParent .sosyalDurumApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group > * {
+	height: 26px !important;
+}
+#contentParent .sosyalDurumApp .part .jqx-grid .jqx-grid-toolbar {
+	margin-top: -1px;
+}
+
+.sosyalDurumApp .islemTuslari {
+	position: fixed;
+	top: 2px;
+	right: 0;
+	z-index: 10;
+}
+.sosyalDurumApp .islemTuslari.asil > *,
+.sosyalDurumApp .islemTuslari-ek > * {
+	min-height: 50px;
+}
+.sosyalDurumApp.islemTuslari *,
+.sosyalDurumApp .islemTuslari.asil * {
+	color: white;
+}
+.sosyalDurumApp .islemTuslari.asil  {
+	height: 100px;
+}
+
+.sosyalDurumApp .jqx-grid-column-header {
+	font-weight: bold;
+}
+.sosyalDurumApp .jqx-grid-column-header * {
+	font-size: 115%;
+}
+.sosyalDurumApp .jqx-grid-statusbar * {
+	font-size: 100%;
+	font-weight: normal;
+}
+.sosyalDurumApp tr[role=row] {
+}
+.sosyalDurumApp td.jqx-grid-cell {
+	font-size: 130% !important;
+	line-height: 20px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+.sosyalDurumApp td.jqx-grid-cell-selected {
+	font-weight: bolder;
+}
+.sosyalDurumApp tr[data-role=row-group] {
+}
+.sosyalDurumApp tr[data-role=row-group] td.jqx-grid-cell-pinned {
+	font-size: 135%;
+	color: #555;
+	background-color: #d7d5df;
+	line-height: 26px;
+	padding-left: 30px;
+}
+.sosyalDurumApp .jqx-widget-header p {
+	display: none;
+}
+.sosyalDurumApp .jqx-grid-statusbar {
+	padding-top: 0;
+	padding-bottom: 0;
+	/*top: 0 !important;*/
+	opacity: .9;
+}
+.sosyalDurumApp .jqx-grid-statusbar.hasGroups {
+	margin-top: 26px !important;
+}
+.sosyalDurumApp .jqx-grid-statusbar .jqx-grid-cell-pinned {
+	font-size: 135%;
+}
+
+#contentParent.sosyalDurumApp > #header > * {
+	padding-left: 13px;
+}
+
+
+.sosyalDurumApp #mainPart {
+	padding: 0 !important;
+}
+.sosyalDurumApp #mainPart #disForm > div {
+	/*margin-top: 5px;
+	margin-left: 5px;*/
+}
+.sosyalDurumApp #mainPart #disForm > div > div {
+	/* padding: 2px 2px; */
+}
+
+.sosyalDurumApp #mainPart #btnToggleResponsivePanelParent {
+	position: fixed;
+	top: 6px;
+	left: 8px;
+	z-index: 700;
+}
+.sosyalDurumApp #mainPart #btnToggleResponsivePanelParent #btnToggleResponsivePanel {
+	width: 36px !important;
+	height: 35px !important;
+}
+.sosyalDurumApp #mainPart #disForm #nav {
+	min-width: 280px;
+	max-width: 280px;
+}
+/*@media (max-width: 600px) {
+	.sosyalDurumApp #mainPart #disForm #nav {
+		min-width: 195px;
+		max-width: 195px;
+	}
+}*/
+.sosyalDurumApp #mainPart #disForm #nav #menu {
+	/* height: 80px; */
+	background-color: #fafafa;
+}
+.sosyalDurumApp #mainPart #disForm #nav #menu ul {
+	padding: 0;
+}
+.sosyalDurumApp #mainPart #disForm #nav #menu ul > li {
+	font-weight: normal;
+	width: 95%;
+	padding: 16px 0 15px 10px;
+}
+.sosyalDurumApp #mainPart #disForm #nav #menu ul > li.selected {
+	font-weight: bold;
+	color: #333;
+	background-color: #c9ffcb;
+}
+.sosyalDurumApp #mainPart #disForm #nav #menu ul > li[data-sub-item] {
+	font-size: 90%;
+	width: 84%;
+	padding-left: 40px !important;
+	padding-right: 0 !important;
+	background-position: left 45%;
+	background-repeat: no-repeat;
+	background-size: 40px 40px;
+	background-image: url(../../../_kernel/images/sag.png);
+}
+
+.sosyalDurumApp #mainPart #disForm #nav #islemTuslari-ek {
+	margin-right: 2px;
+	padding: 8px 0 8px 0;
+	text-align: center;
+}
+.sosyalDurumApp #mainPart #disForm #nav #islemTuslari-ek #btnBaslat {
+	width: 80%;
+	color: white;
+	background-color: #6734A1;
+}
+
+
+.sosyalDurumApp #mainPart #disForm #header {
+	width: 100%;
+}
+.sosyalDurumApp #mainPart #disForm #header #kisiBilgiParent {
+	width: 100%;
+	font-size: 130%;
+	text-align: center;
+	border: 1px solid #888;
+	background-color: #e5f2ff;
+	border-radius: 8px;
+}
+.sosyalDurumApp #mainPart #disForm #header #kisiBilgiParent > * {
+	padding: 10px 2px 10px 0;
+}
+.sosyalDurumApp #mainPart #disForm #header #kisiBilgiParent #tcKimlikNo {
+	padding-right: 10px;
+	color: #555;
+}
+
+.sosyalDurumApp #mainPart #disForm #innerContentParent {
+	width: 100%;
+	overflow-y: hidden !important;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent {
+	width: 100%;
+	overflow-y: hidden !important;
+	padding: 3px 0 3px 0;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent > * {
+	font-size: 100%;
+}
+.sosyalDurumApp #mainPart .box {
+	border: 1px solid gray;
+}
+
+.sosyalDurumApp #mainPart #disForm #innerContent #gridParent {
+	/*margin-top: 3px;*/
+	overflow-y: auto !important;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent #gridParent > * {
+	margin-bottom: 4px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent #gridParent .baslik {
+	font-weight: bold;
+	font-size: 125%;
+	color: #888;
+	line-height: 38px;
+	padding-left: 15px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek {
+	margin-bottom: 5px;
+	padding-bottom: 15px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek ._row {
+	/*text-align: center;*/
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek button {
+	border: 1px solid #aaa;
+	border-radius: 3px;
+	width: 200px;
+	height: 60px;
+	margin: 10px 10px 0 10px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek #baslat {
+	width: 250px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek
+		#baslat:not(:hover):not(:focus):not(:active) {
+	background-color: #c9ffc9;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek button:focus:active {
+	color: #eee;
+	background-color: #3d70bb;
+}
+/*.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek ._row #baslat:hover {
+	background-color: #ddf9f0;
+	color: #333;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek ._row #baslat:focus {
+	background-color: #b7daff;
+	color: #333;
+}*/
+.sosyalDurumApp #mainPart #disForm #innerContent .part #islemTuslari-ek #geri {
+	width: 150px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #title {
+	font-size: 180%;
+	padding: 15px 5px 20px 5px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent .part #header {
+	font-size: 110%;
+	padding: 10px 5px 10px 10px;
+	max-height: 80px;
+	overflow-y: auto !important;
+}
+
+
+.sosyalDurumApp #mainPart #disForm #innerContent #giris.part #header {
+	padding: 0 5px 10px 10px;
+	margin-bottom: 20px;
+	max-height: unset;
+	overflow-y: auto !important;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent #giris.part #islemTuslari-ek button {
+	width: 98%;
+	max-width: 600px;
+	height: 80px;
+	margin: 5px 0 0 5px;
+}
+
+
+.sosyalDurumApp #mainPart #disForm #innerContent #hizmetDokumundenYukle.part #dosyaForm {
+	border: 1px solid #aaa;
+	border-radius: 3px;
+	padding: 0 5px 10px 5px;
+	margin-bottom: 10px;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent #hizmetDokumundenYukle.part #dosyaForm #dosyaEtiket {
+	font-weight: bold;
+	font-size: 140%;
+	padding: 10px 0;
+}
+.sosyalDurumApp #mainPart #disForm #innerContent #hizmetDokumundenYukle.part #dosyaForm #dosya {
+	font-size: 110%;
+	padding-left: 10px;
+}

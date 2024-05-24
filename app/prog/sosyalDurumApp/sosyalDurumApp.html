@@ -1,0 +1,141 @@
+<div>
+	<div class="debug">App Layout</div>
+
+	<div id="mainPart" class="part">
+		<div class="islemTuslari">
+			<button id="btnLogout"></button>
+		</div>
+
+		<div id="disForm" class="flex-row">
+			<div id="btnToggleResponsivePanelParent">
+				<button id="btnToggleResponsivePanel"/>
+			</div>
+
+			<div id="nav">
+				<!--<div class="etiket">Menü</div>-->
+
+				<div id="menu">
+					<ul>
+						<li id="giris" class="item" data-partclass="SosyalDurumGirisPart">Giris</li>
+						<li id="hizmetDokumundenYukle" class="item" data-sub-item data-partclass="SosyalDurumHizmetDokumundenYuklePart">Hizmet Dökümünden Yükle</li>
+						<li id="eDevlettenYukle" class="item" data-sub-item data-partclass="SosyalDurumEDevlettenYuklePart">e-Devletten Yükle</li>
+						<li id="degerlendirme" class="item" data-partclass="SosyalDurumDegerlendirmePart">Değerlendirme Ekranı</li>
+					</ul>
+				</div>
+
+				<!--<div id="islemTuslari-ek" class="islemTuslari-ek box">
+					<button id="btnBaslat">BAŞLAT</button>
+				</div>-->
+			</div>
+
+			<div id="innerContentParent">
+				<div id="header">
+					<div id="kisiBilgiParent" class="parent flex-row jqx-hidden">
+						<!--<div class="etiket">Kişi Adı</div>-->
+						<div id="tcKimlikNo" class="veri"/>
+						<div id="adiSoyadi" class="veri"/>
+					</div>
+				</div>
+
+				<div id="innerContent" class="box">
+					<div id="giris" class="part jqx-hidden">
+						<div id="title">
+							Sosyal Durum Sorgusu
+						</div>
+
+						<div id="header">
+							<!--...<br/>
+							bilgilendirme yazısı<br/>
+							...<br/>-->
+						</div>
+
+						<div id="islemTuslari-ek">
+							<div class="_row"><button id="hizmetDokumundenYukle">Hizmet Dökümü Yükleyerek Devam Et...</button></div>
+							<div class="_row"><button id="eDevlettenYukle">e-Devletten Bilgi Yükleyerek Devam Et...</button></div>
+						</div>
+					</div>
+
+					<div id="hizmetDokumundenYukle" class="part jqx-hidden">
+						<div id="title">
+							Hizmet Dökümünden Yükle
+						</div>
+
+						<div id="dosyaForm">
+							<div id="dosyaEtiket">Hizmet Dosyası</div>
+							<input id="dosya" name="dosya" type="file" required></input>
+						</div>
+
+						<div id="islemTuslari-ek" class="flex-row">
+							<div class="_row"><button id="geri">&lt; GERİ</button></div>
+							<div class="_row"><button id="baslat" class="jqx-hidden">BAŞLAT</button></div>
+						</div>
+					</div>
+
+					<div id="eDevlettenYukle" class="part jqx-hidden">
+						<div id="title">
+							e-Devletten Yükle
+						</div>
+
+						<div id="islemTuslari-ek" class="flex-row">
+							<div class="_row"><button id="geri">&lt; GERİ</button></div>
+							<div class="_row"><button id="baslat">BAŞLAT</button></div>
+						</div>
+					</div>
+
+					<div id="degerlendirme" class="part jqx-hidden">
+						<div id="title">
+							Değerlendirme Ekranı
+						</div>
+
+						<div id="islemTuslari-ek" class="flex-row">
+							<div class="_row"><button id="geri">&lt; GERİ</button></div>
+							<div class="_row"><button id="baslat">TAZELE</button></div>
+						</div>
+
+						<div id="gridParent">
+							<div id="grid"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+		<!--<template id="grid" class="part">
+			<div class="gridParent box">
+				<div class="baslik">başlık</div>
+				<div class="grid"/>
+			</div>
+		</template>-->
+	</div>
+
+
+	<!--<template id="test" class="part">
+		<div>
+			<div class="islemTuslari asil">
+				<button id="btnTest2">TEST 2</button>
+			</div>
+
+			<p>bla bla bla</p>
+			<p>bla bla bla</p>
+			<p class="islemTuslari-ek">
+				<button id="btnTest3">TEST 3</button>
+			</div>
+		</div>
+	</template>-->
+
+	<!--<template id="merkezeBilgiGonderMesaji" class="template">
+		<div class="merkezeBilgiGonderMesaji">
+			<p><b>Aktarılmamış Belgeler merkeze gönderilecek...</b></p>
+			<p>Devam edilsin mi?</p>
+		</div>
+	</template>
+
+	<template id="cetOrtakIslemTuslari" class="part">
+		<div>
+			<div class="islemTuslari">
+				<button id="btnGeri" />
+			</div>
+		</div>
+	</template>-->
+</div>

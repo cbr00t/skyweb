@@ -1,0 +1,417 @@
+<div>
+	<div class="debug">App Layout</div>
+	<div id="mainPart" class="part">
+		<div class="islemTuslari header flex-row">
+			<button id="btnToggleFullScreen"></button>
+			<button id="btnTazele"></button>
+			<button id="btnCacheReset"></button>
+			<button id="btnLogout"></button>
+		</div>
+		
+		<div id="disForm">
+			<div id="toolbar">
+				<button id="baslat">BAŞLAT</button>
+				<button id="miktar" class="jqx-hidden">MİKTAR</button>
+				<button id="personel">PERSONEL</button>
+				<button id="gorev">İŞ ATA</button>
+				<button id="isBitti">İŞ BİTTİ</button>
+			</div>
+
+			<table id="subContent">
+				<tr>
+					<td class="etiket">Makine:</td>
+					<td id="tezgahText" class="veri"></td>
+					
+					<td id="tarihSaatText" class="veri sag-kucuk"></td>
+				</tr>
+				<tr>
+					<td class="etiket">Personel:</td>
+					<td id="perText" class="veri" colspan="2"></td>
+				</tr>
+				<tr>
+					<td class="veri" colspan="3">
+						<div id="isListeParent" class="parent"></div>
+					</td>
+				</tr>
+				<tr>
+					<td class="miktarVeSaymaParent" class="veri" colspan="3">
+						<div id="miktarParent">
+							<div class="parent">
+								<span class="etiket">Emir:</span>
+								<span id="emirMiktarText" class="veri">0</span>
+							</div>
+							<div class="parent">
+								<span class="etiket">Üret:</span>
+								<span id="onceUretMiktarText" class="veri">0</span>
+								<span class="aktifUretMiktarParent">
+									<span class="etiket-basit">+</span>
+									<span id="aktifUretMiktarText">0</span>
+								</span>
+							</div>
+							<div class="parent">
+								<span class="etiket">Isk:</span>
+								<span id="iskMiktarText" class="veri">0</span>
+							</div>
+							<div class="parent">
+								<span class="etiket">Net:</span>
+								<span id="netMiktarText" class="veri">0</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="miktarVeSaymaParent veri" colspan="3">
+						<div id="cevrimParent">
+							<div class="parent">
+								<span class="etiket">Çevrim:</span>
+								<span id="onceCevrimSayisi">0</span>
+								<span class="etiket-basit">+</span>
+								<span id="aktifCevrimSayisi">0</span>
+							</div>
+						</div>
+						<div id="saymaParent">
+							<div class="parent">
+								<span class="etiket">Sayma:</span>
+								<span id="saymaInd">0</span>
+								<span class="etiket-basit">/</span>
+								<span id="saymaSayisi">0</span>
+							</div>
+						</div>
+						<div id="durumParent">
+							<div id="imgDurum"></div>
+							<div id="durumTextParent">
+								<span id="durumKod">?</span>
+								<span>-</span>
+								<span id="durumText">Belirsiz</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<!--<tr>
+					<td id="durumParent" class="veri" colspan="3">
+						<div id="imgDurum"></div>
+						<div id="durumTextParent">
+							<span id="durumKod">?</span>
+							<span>-</span>
+							<span id="durumText">Belirsiz</span>
+						</div>
+					</td>
+				</tr>-->
+			</table>
+
+			<div id="simulatorToggleParent" class="parent">
+				<button id="btnSimulatorToggle"></button>
+			</div>
+			<div id="simulator">
+				<div class="buttons primary">
+					<div class="gercekleme parent">
+						<button id="btnGercekleme">+ 1</button>
+					</div>
+					<div class="kesme parent">
+						<button id="btnKesme">SİNYAL</button>
+						<button id="btnTersKesme">TERS SİNYAL</button>
+					</div>
+					<div class="kartNo parent">
+						<input id="txtKartNo" type="text" maxlength="32" placeholder="Kart No"></input>
+					</div>
+				</div>
+				<div class="buttons fn">
+					<div class="parent">
+						<button id="1">
+							<div class="text">1</div>
+							<div class="bilgi">MOLA</div>
+						</button>
+						<button id="2">
+							<div class="text">2</div>
+							<div class="bilgi">İŞ İSTEĞİ</div>
+						</button>
+						<button id="3">
+							<div class="text">3</div>
+							<div class="bilgi">SRD.İŞ.BŞL.</div>
+						</button>
+					</div>
+					<div class="parent">
+						<button id="4">
+							<div class="text">4</div>
+							<div class="bilgi">İŞ BEK.</div>
+						</button>
+						<button id="5">
+							<div class="text">5</div>
+							<div class="bilgi">MLZME İST.</div>
+						</button>
+						<button id="6">
+							<div class="text">6</div>
+							<div class="bilgi">İŞ SORUNU</div>
+						</button>
+					</div>
+					<div class="parent">
+						<button id="7">
+							<div class="text">7</div>
+							<div class="bilgi">İŞ BİTTİ</div>
+						</button>
+						<button id="8">
+							<div class="text">8</div>
+							<div class="bilgi">MAK. ARIZA</div>
+						</button>
+						<button id="9">
+							<div class="text">9</div>
+							<div class="bilgi">VAR. DEĞ.</div>
+						</button>
+					</div>
+					<div class="parent">
+						<button id="*">
+							<div class="text">*</div>
+							<div class="bilgi">*</div>
+						</button>
+						<button id="0">
+							<div class="text">0</div>
+							<div class="bilgi">İHTYÇ. MOLA</div>
+						</button>
+						<button id="#">
+							<div class="text">#</div>
+							<div class="bilgi">#</div>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<template id="templatesOrtak">
+			<div class="isListe" class="parent" direction="up" behavior="alternate" scrollamount="0" scrolldelay="10000"></div>
+			
+			<div class="oemParent parent flex-row">
+				<!--<div id="seqParent" class="parent">
+					<div id="seq" class="veri"></div>
+				</div>-->
+				<div id="emirParent" class="parent">
+					<div id="emirText" class="veri"></div>
+				</div>
+				<div id="operParent" class="parent">
+					<diV id="operText" class="veri"></div>
+				</div>
+				<div id="urunParent" class="parent">
+					<div id="urunText" class="veri"></div>
+				</div>
+				<div id="sureParent" class="sureParent parent">
+					<span class="etiket-basit">(</span>
+					<span id="saymaSayisi" class="veri">0</span>
+					<span class="etiket">:</span>
+					<span id="saymaArasiSure" class="veri">0</span>
+					<span class="etiket">,</span>
+					<span id="saymaSonSure" class="veri"></span>
+					<!--<span class="etiket">,</span>
+					<span id="netSure" class="veri"></span>-->
+					<span class="etiket-basit">)</span>
+				</div>
+				<div id="sure2Parent" class="sureParent parent">
+					<div id="basTS" class="veri"></div>
+					<div id="gecenSure" class="veri"></div>
+					<div id="gecenNetSure" class="veri"></div>
+				</div>
+			</div>
+			
+			<div id="duraksamaNedeniSec" class="part">
+				<div id="islemTuslari" class="islemTuslari">
+					<button id="btnTamam"></button>
+				</div>
+
+				<table id="subContent">
+					<tr>
+						<th id="header"></th>
+					</tr>
+					<tr>
+						<td class="parent">
+							<div class="gridParent">
+								<div id="grid"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div id="personel" class="part">
+				<div id="islemTuslari" class="islemTuslari">
+					<button id="btnTamam"></button>
+				</div>
+				<div id="textInputParent">
+					<input id="textInput" type="text" maxlength="16"></input>
+				</div>
+			</div>
+
+			<div id="miktarGiris" class="part">
+				<div id="islemTuslari" class="islemTuslari">
+					<button id="btnTamam"></button>
+				</div>
+
+				<table id="subContent">
+					<tr>
+						<th id="header" colspan="2"></th>
+					</tr>
+					<tr>
+						<td id="emirMiktarParent" class="parent">
+							<div class="etiket float-left">Emir Mkt:</div>
+							<div id="emirMiktarText" class="veri float-left">0</div>
+						</td>
+						<td id="textInputParent" class="parent">
+							<div class="etiket float-left">Üretilen:</div>
+							<input id="textInput" class="veri" type="text" maxlength="8"></input>
+							<div id="toggleParent" class="parent">
+								<button id="btnToggle"></button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="parent">
+						</td>
+						<td class="parent">
+							<div class="gridParent jqx-hidden">
+								<div id="iskartaGrid"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div id="gorevSec" class="part">
+				<div id="islemTuslari" class="islemTuslari">
+					<button id="btnTamam"></button>
+				</div>
+
+				<table id="subContent">
+					<tr>
+						<th id="header"></th>
+					</tr>
+					<tr>
+						<td class="parent">
+							<div class="gridParent">
+								<div id="grid"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="isBitti" class="part">
+				<div id="isBitti" class="part">
+					<table id="subContent">
+						<tr>
+							<td id="header">
+								Mevcut iş kapanacak, devam edilsin mi?
+							</td>
+						</tr>
+						<!--<tr>
+							<td id="operKapatParent" class="parent">
+								<input id="chkOperKapat" type="checkbox"></input>
+								<label id="chkOperKapat_label" for="chkOperKapat">Oper. Kapat</label>
+							</td>
+						</tr>-->
+					</table>
+				</div>
+			</div>
+			
+			<div class="klavye part" readonly>
+				<div id="tusForm" class="itemForm jqx-hidden" readonly keyboard="disable">
+					<div id="tuslar" class="itemParent" readonly keyboard="disable"></div>
+				</div>
+				
+				<template id="numerik" class="items-template">
+					<div class="item-parent">
+						<button class="item" data-id="7">7</button>
+						<button class="item" data-id="8">8</button>
+						<button class="item" data-id="9">9</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="4">4</button>
+						<button class="item" data-id="5">5</button>
+						<button class="item" data-id="6">6</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="1">1</button>
+						<button class="item" data-id="2">2</button>
+						<button class="item" data-id="3">3</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="0">0</button>
+						<!--<button class="item action" data-id="backspace">&lt;--</button>-->
+						<button class="item action" data-id=".">.</button>
+						<button class="item action" data-id="clear">SİL</button>
+					</div>
+				</template>
+
+				<template id="text" class="items-template">
+					<div class="item-parent">
+						<button class="item" data-id="1">1</button>
+						<button class="item" data-id="2">2</button>
+						<button class="item" data-id="3">3</button>
+						<button class="item" data-id="4">4</button>
+						<button class="item" data-id="5">5</button>
+						<button class="item" data-id="6">6</button>
+						<button class="item" data-id="7">7</button>
+						<button class="item" data-id="8">8</button>
+						<button class="item" data-id="9">9</button>
+						<button class="item" data-id="0">0</button>
+						<button class="item action" data-id="backspace">&lt;--</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="Q">Q</button>
+						<button class="item" data-id="W">W</button>
+						<button class="item" data-id="E">E</button>
+						<button class="item" data-id="R">R</button>
+						<button class="item" data-id="T">T</button>
+						<button class="item" data-id="Y">Y</button>
+						<button class="item" data-id="U">U</button>
+						<button class="item" data-id="I">I</button>
+						<button class="item" data-id="O">O</button>
+						<button class="item" data-id="P">P</button>
+						<button class="item action" data-id="enter">ENTER</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="A">A</button>
+						<button class="item" data-id="S">S</button>
+						<button class="item" data-id="D">D</button>
+						<button class="item" data-id="F">F</button>
+						<button class="item" data-id="G">G</button>
+						<button class="item" data-id="H">H</button>
+						<button class="item" data-id="J">J</button>
+						<button class="item" data-id="K">K</button>
+						<button class="item" data-id="L">L</button>
+						<button class="item" data-id="Ş">Ş</button>
+						<button class="item" data-id="İ">İ</button>
+						<button class="item" data-id=",">,</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="Z">Z</button>
+						<button class="item" data-id="X">X</button>
+						<button class="item" data-id="C">C</button>
+						<button class="item" data-id="V">V</button>
+						<button class="item" data-id="B">B</button>
+						<button class="item" data-id="N">N</button>
+						<button class="item" data-id="M">M</button>
+						<button class="item" data-id="Ö">Ö</button>
+						<button class="item" data-id="Ç">Ç</button>
+						<button class="item" data-id="Ü">Ü</button>
+						<button class="item" data-id="Ğ">Ğ</button>
+						<button class="item" data-id=".">.</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item action" data-id="space">SPACE</button>
+					</div>
+				</template>
+			</div>
+
+			<div id="textInput" class="textInput part">
+				<div id="islemTuslari" class="islemTuslari">
+					<button id="btnTamam"></button>
+				</div>
+				<div id="baslikTextParent" class="jqx-hidden">
+					<div id="baslikText"></div>
+				</div>
+				<div id="textInputParent">
+					<input id="textInput" name="textInput" type="textbox"></input>
+				</div>
+			</div>
+		</template>
+
+		<div id="background"></div>
+	</div>
+</div>

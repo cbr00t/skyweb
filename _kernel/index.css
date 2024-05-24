@@ -1,0 +1,319 @@
+
+.card {
+	border: none;
+}
+.card .btn-group .btn {
+	background-color: #4a74b1;
+}
+.card .card-title .btn {
+	background-color: #e9ecf1;
+}
+
+
+input[type=text][readonly],
+input[type=textbox][readonly],
+input[type=number][readonly],
+input[type=date][readonly],
+input[type=time][readonly],
+input[type=datetime][readonly],
+textarea[readonly] {
+	background-color: whitesmoke;
+}
+.ui-datepicker {
+	z-index: 99999 !important;
+}
+.ui-window-title {
+	/*background-color: #E5EDF5;*/
+	color: #1C1C1C;
+	font-weight: bold;
+	/*font-size: 11pt;*/
+}
+.jqx-window-header,
+.ui-window-header {
+	/* background-color: #E5EDF5; */
+	background-color: #E5EDF0;
+	color: #1C1C1C;
+	font-weight: bold;
+}
+div.ui-dialog-button {
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
+	width: 100%;
+	height: 37px;
+	text-align: right;
+	z-index: 1
+}
+input.ui-dialog-button,
+button.ui-dialog-button {
+	/*right: 25px;*/
+	width: 110px;
+	height: 32px;
+	margin-right: 5px;
+}
+.ui-autocomplete {
+	font-size: 13pt;
+	height: 32px;
+}
+.ui-autocomplete * {
+	background-color: white;
+}
+.jqx-menu {
+	background-color: #E5EDF5;
+	/*font-size: 10pt;*/
+}
+.jqx-menu-dropdown {
+	width: 310px;
+	background-color: #FCFCFC;
+}
+.jqx-item {
+	text-align: left;
+	/* width: 100px; */
+}
+.ui-window-content {
+	margin: 10px 0 0 10px;
+}
+.jqx-grid-cell-selected {
+	background-color: #C5DDE5;
+	color: black !important;
+}
+.jqx-grid-cell-hover {
+	background-color: #E5EDF5;
+	color: black !important;
+}
+/*.jqx-grid-cell-alt :hover {
+	background-color: #FAFCFE;
+	color: black;
+}*/
+.jqx-fill-state-normal {
+	color: #333;
+}
+.jqx-grid-cell-add-new-row {
+    background: #FCF7D8 !important;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row !important;
+	flex-wrap: nowrap;
+}
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.flex-col {
+	display: inline-block;
+	flex-direction: column;
+}
+.float-left {
+	float: left;
+}
+.word-wrap {
+    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    white-space: pre-wrap;       /* css-3 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
+    word-break: break-all;
+    white-space: normal;
+}
+.jqx-hidden {
+	display: none !important;
+}
+.basic-hidden {
+	visibility: hidden !important;
+}
+.cell-disabled {
+	background-color: #EFEFEF;
+}
+.full-width {
+	width: 100%;
+}
+.full-height {
+	height: 100%;
+}
+.full-wh {
+	width: 100%;
+	height: 100%;
+}
+
+.progressBar-label {
+	font-weight: bold;
+	margin-top: 5px;
+	height: 20px;
+}
+.progressBar-icon {
+	text-align: center;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 40px;
+	background-size: 40px 40px;
+	background-image: url(images/loading.gif);
+}
+
+
+.devConsole.jqx-window .ui-dialog-button {
+	opacity: .85;
+	font-size: 120%;
+	bottom: -5px;
+	right: -5px;
+}
+.devConsole.part {
+	opacity: .8;
+}
+.devConsole.part > * {
+	font-weight: bold;
+	width: 100%;
+	border-radius: 5px;
+	overflow-y: auto;
+}
+.devConsole.part #cmd,
+.devConsole.part #cmd-preview {
+	height: 60%;
+}
+.devConsole.part #cmd {
+	font-size: 115%;
+	font-family: monospace;
+	line-height: 32px;
+	color: #95fc95;
+	background: linear-gradient(45deg, #444 5%, #333 95%);
+	padding: 8px;
+}
+.devConsole.part #cmd-preview {
+	font-size: 105%;
+}
+.devConsole.part #cmd-preview:not(.ace_editor) {
+	background: #eeece3;
+	border: 1px solid #ccc;
+}
+
+.devConsole.part #result {
+	font-size: 105%;
+	color: #111;
+	background: #e7e6df;
+	height: 40%;
+	border: 1px solid #aaa;
+	user-select: text;
+	cursor: text;
+}
+.devConsole.part #result.success {
+	color: #333;
+	/* background: #e9eae5; */
+	background: linear-gradient(45deg, #eaeae5 5%, #e8eae5 95%);
+}
+.devConsole.part #result.error {
+	color: red;
+	background: #100;
+}
+
+
+/*@font-face {
+  font-family: "HelveticaNeue-Bold";
+  src: url("fonts/HelveticaNeueBold.eot?#iefix") format("embedded-opentype"),
+		url("fonts/HelveticaNeueBold.otf") format("opentype"),
+		url("fonts/HelveticaNeueBold.svg") format("svg"),
+		url("fonts/HelveticaNeueBold.ttf") format("truetype"),
+		url("fonts/HelveticaNeueBold.woff") format("woff"),
+		url("fonts/HelveticaNeueBold.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}*/
+
+@font-face {
+	font-family: 'Conv_Roboto-Thin';
+	src: url('fonts/Roboto-Thin.eot');
+	src: local('☺'), url('fonts/Roboto-Thin.woff') format('woff'),
+		 url('fonts/Roboto-Thin.ttf') format('truetype'),
+		 url('fonts/Roboto-Thin.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-Regular';
+	src: url('fonts/Roboto-Regular.eot');
+	src: local('☺'), url('fonts/Roboto-Regular.woff') format('woff'),
+		 url('fonts/Roboto-Regular.ttf') format('truetype'),
+		 url('fonts/Roboto-Regular.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-Medium';
+	src: url('fonts/Roboto-Medium.eot');
+	src: local('☺'), url('fonts/Roboto-Medium.woff') format('woff'),
+		 url('fonts/Roboto-Medium.ttf') format('truetype'),
+		 url('fonts/Roboto-Medium.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-Light';
+	src: url('fonts/Roboto-Light.eot');
+	src: local('☺'), url('fonts/Roboto-Light.woff') format('woff'),
+		 url('fonts/Roboto-Light.ttf') format('truetype'),
+		 url('fonts/Roboto-Light.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-Bold';
+	src: url('fonts/Roboto-Bold.eot');
+	src: local('☺'), url('fonts/Roboto-Bold.woff') format('woff'),
+		 url('fonts/Roboto-Bold.ttf') format('truetype'),
+		 url('fonts/Roboto-Bold.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-Black';
+	src: url('fonts/Roboto-Black.eot');
+	src: local('☺'), url('fonts/Roboto-Black.woff') format('woff'),
+		 url('fonts/Roboto-Black.ttf') format('truetype'),
+		 url('fonts/Roboto-Black.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-BoldItalic';
+	src: url('fonts/Roboto-BoldItalic.eot');
+	src: local('☺'), url('fonts/Roboto-BoldItalic.woff') format('woff'),
+		 url('fonts/Roboto-BoldItalic.ttf') format('truetype'),
+		 url('fonts/Roboto-BoldItalic.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Conv_Roboto-MediumItalic';
+	src: url('fonts/Roboto-MediumItalic.eot');
+	src: local('☺'), url('fonts/Roboto-MediumItalic.woff') format('woff'),
+		 url('fonts/Roboto-MediumItalic.ttf') format('truetype'),
+		 url('fonts/Roboto-MediumItalic.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SegoeUI-Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Segoe UI Regular'), url('fonts/SegoeUI.woff') format('woff');
+}
+@font-face {
+	font-family: 'SegoeUI-Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Segoe UI Italic'), url('fonts/SegoeUI-Italic.woff') format('woff');
+}
+
+@font-face {
+	font-family: 'SegoeUI-Bold';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Segoe UI Bold'), url('fonts/SegoeUI-Bold.woff') format('woff');
+}
+@font-face {
+	font-family: 'SegoeUI-Bold-Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Segoe UI Bold Italic'), url('fonts/SegoeUI-Bold-Italic.woff') format('woff');
+}

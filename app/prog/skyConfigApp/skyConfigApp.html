@@ -1,0 +1,1544 @@
+<div id="skyConfig" class="part">
+
+	<div id="outer" class="flex-row">
+		<button id="ayarlar" class="header-button"></button>
+		<button id="btnTazele" class="header-button"></button>
+		<button id="btnToggleFullScreen" class="header-button"></button>
+		<div id="chkGelismis_parent">
+			<input id="chkGelismis" name="chkGelismis" type="checkbox"></input>
+			<label for="chkGelismis">Gelişmiş</label>
+		</div>
+
+		<button id="userInfo" class="header-button"></button>
+		<div id="userInfo_popup_parent" class="jqx-hidden">
+			<div id="userInfo_popup">
+				<ul>
+					<li id="sifreDegistir" class="item">ŞİFRE DEĞİŞTİR</li>
+					<li id="logout" class="item">OTURUM KAPAT</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div id="navBar">
+			<div id="nav">
+				<ul>
+					<li id="durum" data-partclass="SkyConfigDurumPart">Durum</li>
+					<li id="conf" data-partclass="SkyConfigConfPart">Konfigurasyon</li>
+					<li id="users" data-partclass="SkyConfigUsersPart">Kullanıcılar</li>
+					<li id="tools" data-partclass="SkyConfigToolsPart">Araçlar</li>
+					<li id="gelismis" data-gelismis data-partclass="SkyConfigGelismisPart">Gelişmiş</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div id="subContent">
+			
+			<div id="durum" class="part jqx-hidden">
+				<div class="panel">
+					<ul class="tabs">
+						<li id="servisler">Servisler</li>
+					</ul>
+					
+					<div id="servisler">
+						<table id="servisler">
+							<!--<tr>
+								<th>&nbsp;</th>
+								<th>&nbsp;</th>
+							</tr>-->
+						</table>
+
+						<template id="servisGrupSatir">
+							<tr class="item-group">
+								<td colspan="2">
+									<div id="aciklama"></div>
+									<div class="islemTuslari">
+										<button id="baslat">|&gt;</button>
+										<button id="durdur">||</button>
+										<button id="restart">RST</button>
+									</div>
+									<div id="detaylar">
+										<table class="item-group-detay"></table>
+									</div>
+								</td>
+							</tr>
+						</template>
+
+						<template id="servisSatir">
+							<tr>
+								<td id="aciklama"></td>
+								<td>
+									<div id="durum"></div>
+									<div class="islemTuslari">
+										<button id="baslat">|&gt;</button>
+										<button id="durdur">||</button>
+										<button id="restart">RST</button>
+									</div>
+								</td>
+							</tr>
+						</template>
+					</div>
+				
+				</div>
+			</div>
+
+			<div id="conf" class="part jqx-hidden">
+				<div class="panel">
+					<ul class="tabs">
+						<li id="ws">WebServis Ayarları</li>
+						<li id="vio">VIO Menü</li>
+						<li id="genel">Genel İşlemler</li>
+						<li id="cariEFatSorgu">Cari e-Fat Sorgu</li>
+						<li id="skyMES">Sky MES</li>
+						<li id="skyCafe">Sky Cafe</li>
+						<li id="pdks">PDKS</li>
+						<li id="skyBulutYedekleme">Sky Bulut Yedekleme</li>
+						<li id="elterm">Sky Tablet</li>
+						<li id="eMail">e-Mail</li>
+						<li id="eMailQueue">e-Mail Kuyruğu</li>
+						<li id="eIslemGonder">e-İşlem Gönder</li>
+						<li id="eIslemAkibetSorgula">e-İşlem Akıbet Sorgula</li>
+						<li id="gelenEIslemSorgula">Gelen e-İşlem Sorgula</li>
+						<li id="eIslemArsivle">e-İşlem Arşivle</li>
+						<li id="eMutabakat">e-Mutabakat</li>
+						<li id="skyERP">Sky ERP</li>
+						<li id="skyTablet">Sky Tablet</li>
+						<li id="sgk">SGK: Emeklilik Sorgu</li>
+					</ul>
+
+					<div id="ws">
+						<div>
+							<div id="sql_parent" class="gelismis">
+								<div class="flex-row">
+									<div class="jqx-hidden">
+										<label id="sql_label" for="sql">WebServis Geneli - Veritabanı Erişimi:</label>
+										<button id="sql_vtSec">VT Seç</button>
+									</div>
+									<div id="chkSingleConn_parent" class="gelismis">
+										<input id="ws_chkSingleConn" name="ws_chkSingleConn" type="checkbox"></input>
+										<label for="ws_chkSingleConn">Tekil SQL Bağlantısı</label>
+									</div>
+								</div>
+								<div class="jqx-hidden">
+									<textarea id="sql" name="sql" readonly rows="2"></textarea>
+								</div>
+							</div>
+							<div class="flex-row">
+								<div id="serverIP_parent">
+									<div>
+										<label for="serverIP">Sunucu IP Adresleri:</label>
+									</div>
+									<div>
+										<textarea id="serverIP" name="serverIP" rows="11"></textarea>
+									</div>
+								</div>
+								<div id="serviceControlCheckDelayVeFlags_parent">
+									<div id="serviceControlCheckDelay_parent">
+										<div><label for="serviceControlCheckDelay">Periyodik Servis Kontrol Zamanlaması</label></div>
+										<div><input id="serviceControlCheckDelay" name="serviceControlCheckDelay" type="textbox"></input></div>
+									</div>
+									<div id="remoteCommandServer_parent">
+										<div><label for="remoteCommandServer">Uzak Komut Sunucusu:</label></div>
+										<div><input id="remoteCommandServer" name="remoteCommandServer" type="textbox"></textarea></div>
+										<div class="info">
+											<ul>
+												<li>Belirtilmez ise <b>VioMenü Güncelleme Sunucusu</b> kabul edilir</li>
+												<li>Tamamen devre dışı bırakmak için <b>.</b> (<i>nokta</i>) yazınız</li>
+											</ul>
+										</div>
+									</div>
+									<div>
+										<div id="cvmPanicFlag_parent" class="parent">
+											<input id="cvmPanicFlag" name="cvmPanicFlag" type="checkbox"></input>
+											<label for="cvmPanicFlag">CVM Kilitlenme Kontrolü</label>
+										</div>
+										<div id="cvmPanicVIOFlag_parent" class="parent">
+											<input id="cvmPanicVIOFlag" name="cvmPanicVIOFlag" type="checkbox"></input>
+											<label for="cvmPanicVIOFlag">CVM Kilitlenmede Açık VIOları da kapat</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div id="vio">
+						<div id="tanitim_parent" class="parent">
+							<div>
+								<label for="tanitim">Tanıtım:</label>
+							</div>
+							<div>
+								<input id="tanitim" name="tanitim" type="textbox" readonly></input>
+							</div>
+							
+						</div>
+
+						<div class="flex-row">
+							<div id="chkTerminal_parent" class="parent">
+								<input id="chkTerminal" name="chkTerminal" type="checkbox"></input>
+								<label for="chkTerminal" class="checkbox-label">Kuruluş: Terminal</label>
+							</div>
+	
+							<div id="chkCokluYedekleme_parent" class="parent">
+								<input id="chkCokluYedekleme" name="chkCokluYedekleme" type="checkbox"></input>
+								<label for="chkCokluYedekleme" class="checkbox-label">Çoklu Yedekleme</label>
+							</div>
+
+							<div id="chkEIslemLog_parent" class="parent">
+								<input id="chkEIslemLog" name="chkEIslemLog" type="checkbox"></input>
+								<label for="chkEIslemLog" class="checkbox-label">e-İşlem Log</label>
+							</div>
+						</div>
+
+						<div id="sqlAnaSistem_parent" class="parent">
+							<label for="sqlAnaSistem">SQL Ana Sistem</label>
+							<input id="sqlAnaSistem" name="sqlAnaSistem" type="textbox"></input>
+						</div>
+
+						<div id="sqlLogin_parent" class="parent flex-row">
+							<div>
+								<label for="sqlUser">Kullanıcı:</label>
+								<input id="sqlUser" name="sqlUser" type="textbox" autocomplete="off"></input>
+							</div>
+							<div>
+								<label for="sqlPass">Şifre:</label>
+								<input id="sqlPass" name="sqlPass" type="password" autocomplete="off"></input>
+							</div>
+						</div>
+
+						<div id="guncellemeSunucusu_parent" class="parent">
+							<label for="guncellemeSunucusu">Güncelleme Sunucusu</label>
+							<input id="guncellemeSunucusu" name="guncellemeSunucusu" type="textbox"></input>
+						</div>	
+					</div>
+
+					<div id="genel">
+						<div id="sql_parent" class="gelismis">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="genel_chkSingleConn" name="genel_chkSingleConn" type="checkbox"></input>
+									<label for="genel_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+
+						<div id="resimAnaBolum_parent" class="parent">
+							<label for="resimAnaBolum">Resim Ana Bölüm</label>
+							<input id="resimAnaBolum" name="resimAnaBolum" type="textbox"></input>
+						</div>
+					</div>
+					
+					<div id="cariEFatSorgu">
+						<div id="ekSql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="ekSql_label" for="sql">Cari e-Fat Sorgu - Veritabanı Erişimleri:</label>
+									<button id="ekSql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="cariEFatSorgu_chkSingleConn" name="cariEFatSorgu_chkSingleConn" type="checkbox"></input>
+									<label for="cariEFatSorgu_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="ekSql" name="ekSql" readonly rows="5"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div id="skyMES">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">Sky MES - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="skyMES_chkSingleConn" name="skyMES_chkSingleConn" type="checkbox"></input>
+									<label for="skyMES_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div id="skyCafe">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">Sky Cafe - Veritabanı Erişimleri:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="skyCafe_chkSingleConn" name="skyCafe_chkSingleConn" type="checkbox"></input>
+									<label for="skyCafe_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div id="pdks">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">PDKS - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="pdks_chkSingleConn" name="pdks_chkSingleConn" type="checkbox"></input>
+									<label for="pdks_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+
+						<div id="pdksSubConfig_parent" class="parent">
+							<div id="pdksCihazKod_parent" class="parent">
+								<label for="pdksCihazKod">Cihaz Kodu:</label>
+								<input id="pdksCihazKod" name="pdksCihazKod" type="textbox" maxlength="10"></input>
+							</div>
+							<div id="pdksODBCName_parent" class="parent">
+								<label for="pdksODBCName">ODBC Adı:</label>
+								<input id="pdksODBCName" name="pdksODBCName" type="textbox" maxlength="50"></input>
+							</div>
+							<div id="pdksWSIP_parent" class="parent">
+								<label for="pdksWSIP">Cihaz IP:</label>
+								<input id="pdksWSIP" name="pdksWSIP" type="textbox" maxlength="80"></input>
+							</div>
+							<div id="pdksUser_parent" class="parent">
+								<label for="pdksUser">Ana Kullanıcı:</label>
+								<input id="pdksUser" name="pdksUser" type="textbox" maxlength="10"></input>
+							</div>
+							<div id="pdksPass_parent" class="parent">
+								<label for="pdksPass">Şifre:</label>
+								<input id="pdksPass" name="pdksPass" type="password" maxlength="10"></input>
+							</div>
+							<div id="pdksMaxWait_parent" class="parent">
+								<label for="pdksMaxWait">Bağlantı Zaman Aşımı (sn):</label>
+								<input id="pdksMaxWait" name="pdksMaxWait" type="textbox" maxlength="80"></input>
+							</div>
+						</div>
+					</div>
+
+					<div id="skyBulutYedekleme">
+						<div id="sql_parent" class="gelismis">
+							<div class="flex-row">
+								<div class="jqx-hidden">
+									<label id="sql_label" for="sql">Sky Bulut Yedekleme - Veritabanı Erişimleri:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="skyBulutYedekleme_chkSingleConn" name="skyBulutYedekleme_chkSingleConn" type="checkbox"></input>
+									<label for="skyBulutYedekleme_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div class="jqx-hidden">
+								<textarea id="sql" name="sql" readonly rows="5"></textarea>
+							</div>
+						</div>
+
+						<div id="skyBulutYedekleme_subConfig_parent" class="parent">
+							<div class="navWidget">
+								<div class="header">
+									Yedekleme Ayarları
+								</div>
+								<div class="content">
+									<div>
+										<button id="skyBulutYedekleme_btnVeriYonetimi">Veri Yönetimi</button>
+									</div>
+									<div id="skyBulutYedekleme_userID_parent" class="parent jqx-hidden">
+										<label for="skyBulutYedekleme_userID">Kullanıcı ID:</label>
+										<input id="skyBulutYedekleme_userID" name="skyBulutYedekleme_userID" type="textbox" maxlength="30"></input>
+									</div>
+									<div id="skyBulutYedekleme_userPass_parent" class="parent jqx-hidden">
+										<label for="skyBulutYedekleme_userPass">Kullanıcı Şifresi:</label>
+										<input id="skyBulutYedekleme_userPass" name="skyBulutYedekleme_userPass" type="password" maxlength="50"></input>
+									</div>
+									<div id="skyBulutYedekleme_backupPass_parent" class="parent">
+										<label for="skyBulutYedekleme_backupPass">Yedekleme Şifresi:</label>
+										<input id="skyBulutYedekleme_backupPass" name="skyBulutYedekleme_backupPass" type="password" autocomplete="off" maxlength="50"></input>
+									</div>
+									<div id="skyBulutYedekleme_sqlBackupDir_parent" class="parent">
+										<label for="skyBulutYedekleme_sqlBackupDir">SQL Yedek Dizini:</label>
+										<input id="skyBulutYedekleme_sqlBackupDir" name="skyBulutYedekleme_sqlBackupDir" type="textbox" maxlength="100"></input>
+										<div class="ek-bilgi">Varsayılanı kullanmak için boş bırakınız</div>
+									</div>
+									<div id="skyBulutYedekleme_backupServer_parent" class="parent">
+										<label for="skyBulutYedekleme_backupServer">Yedekleme Sunucu IP:</label>
+										<input id="skyBulutYedekleme_backupServer" name="skyBulutYedekleme_backupServer" type="textbox" maxlength="50"></input>
+										<div class="ek-bilgi">Varsayılanı kullanmak için boş bırakınız</div>
+									</div>
+									<div id="skyBulutYedekleme_filePatterns_parent" class="parent jqx-hidden">
+										<div>
+											<label for="skyBulutYedekleme_filePatterns">Dosya Desenleri:</label>
+										</div>
+										<div class="ek-bilgi">
+											<ul>
+												<li>Dosya deseni <code>C:/VioData/EFatura/IMZALI/*.zip</code> gibi belirtilir.</li>
+												<li>Her bir dosya desenini ayrı satırda belirtiniz.</li>
+											</ul>
+										</div>
+										<div>
+											<textarea id="skyBulutYedekleme_filePatterns" name="skyBulutYedekleme_filePatterns" rows="8"></textarea>
+										</div>
+									</div>
+								</div>
+								<div class="header gelismis">
+									Sunucu Ayarları
+								</div>
+								<div class="content gelismis">
+									<div id="skyBulutYedekleme_serverStorageDir_parent" class="parent">
+										<div>
+											<button id="skyBulutYedekleme_btnUsers">Tanımlı Kullanıcılar</button>
+										</div>
+										<div>
+											<label for="skyBulutYedekleme_serverStorageDir">Yedekleme Sunucusu Ana Bölüm:</label>
+											<input id="skyBulutYedekleme_serverStorageDir" name="skyBulutYedekleme_serverStorageDir" type="textbox" maxlength="30"></input>
+											<div class="ek-bilgi">Sadece <u>Yedekleme Sunucusu</u> için - Varsayılanı kullanmak için boş bırakınız</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div id="elterm">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">SkyTablet - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="elterm_chkSingleConn" name="elterm_chkSingleConn" type="checkbox"></input>
+									<label for="elterm_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+
+						<div id="elterm_subConfig_parent" class="parent">
+						</div>
+					</div>
+
+					<div id="eMail">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">e-Mail - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="eMail_chkSingleConn" name="eMail_chkSingleConn" type="checkbox"></input>
+									<label for="eMail_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+
+						<div id="eMailSubConfig_parent" class="parent">
+							<div id="eMailServerURL_parent" class="parent">
+								<label for="eMailServerURL">Uzak WS Sunucu:</label>
+								<input id="eMailServerURL" name="eMailServerURL" type="textbox" maxlength="100"></input>
+							</div>
+						</div>
+					</div>
+
+					<div id="eMailQueue">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">e-Mail - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="eMailQueue_chkSingleConn" name="eMailQueue_chkSingleConn" type="checkbox"></input>
+									<label for="eMailQueue_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+
+						<div id="eMailQueueSubConfig_parent" class="parent">
+							<div id="eMailQueueServerURL_parent" class="parent">
+								<label for="eMailQueueServerURL">Uzak WS Sunucu:</label>
+								<input id="eMailQueueServerURL" name="eMailQueueServerURL" type="textbox" maxlength="100"></input>
+							</div>
+						</div>
+					</div>
+
+					<div id="eIslemGonder" class="eIslemGonderAlSorgula">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">e-İşlem Gönder - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="eIslemGonder_chkSingleConn" name="eIslemGonder_chkSingleConn" type="checkbox"></input>
+									<label for="eIslemGonder_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div id="eIslemAkibetSorgula" class="eIslemGonderAlSorgula">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">e-İşlem Akıbet Sorgula - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="eIslemAkibetSorgula_chkSingleConn" name="eIslemAkibetSorgula_chkSingleConn" type="checkbox"></input>
+									<label for="eIslemAkibetSorgula_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div id="gelenEIslemSorgula" class="eIslemGonderAlSorgula">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">Gelen e-İşlem Sorgula - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="gelenEIslemSorgula_chkSingleConn" name="gelenEIslemSorgula_chkSingleConn" type="checkbox"></input>
+									<label for="gelenEIslemSorgula_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div id="eIslemArsivle">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">e-İşlem Arşivle - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="eIslemArsivle_chkSingleConn" name="eIslemArsivle_chkSingleConn" type="checkbox"></input>
+									<label for="eIslemArsivle_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<div id="srcDestDirParent" class="parent">
+							<div id="srcDirParent" class="parent">
+								<label for="srcDir">Kaynak Dizin:</label>
+								<input id="srcDir" name="srcDir" type="textbox" maxlength="255">
+							</div>
+							<div id="destDirParent" class="parent">
+								<label for="destDir">Hedef Dizin:</label>
+								<input id="destDir" name="destDir" type="textbox" maxlength="255">
+							</div>
+						</div>
+					</div>
+
+					<div id="eMutabakat">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">e-Mutabakat - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="eMutabakat_chkSingleConn" name="eMutabakat_chkSingleConn" type="checkbox"></input>
+									<label for="eMutabakat_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<div id="anaBolumParent" class="parent">
+							<label for="anaBolum">Ana Bölüm:</label>
+							<input id="anaBolum" name="anaBolum" type="textbox" maxlength="255">
+						</div>
+					</div>
+
+					<div id="skyERP">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">Sky ERP - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="skyERP_chkSingleConn" name="skyERP_chkSingleConn" type="checkbox"></input>
+									<label for="skyERP_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<!--<div id="anaBolumParent" class="parent">
+							<label for="anaBolum">Ana Bölüm:</label>
+							<input id="anaBolum" name="anaBolum" type="textbox" maxlength="255">
+						</div>-->
+					</div>
+
+					<div id="skyTablet">
+						<div id="sql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="sql_label" for="sql">Sky Tablet - Veritabanı Erişimi:</label>
+									<button id="sql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="skyTablet_chkSingleConn" name="skyTablet_chkSingleConn" type="checkbox"></input>
+									<label for="skyTablet_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="sql" name="sql" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<!--<div id="anaBolumParent" class="parent">
+							<label for="anaBolum">Ana Bölüm:</label>
+							<input id="anaBolum" name="anaBolum" type="textbox" maxlength="255">
+						</div>-->
+					</div>
+
+					<div id="sgk">
+						<div id="ekSql_parent">
+							<div class="flex-row">
+								<div>
+									<label id="ekSql_label" for="sql">SGK: Emeklilik Sorgu - Veritabanı Erişimleri:</label>
+									<button id="ekSql_vtSec">VT Seç</button>
+								</div>
+								<div id="chkSingleConn_parent" class="gelismis">
+									<input id="sgk_chkSingleConn" name="sgk_chkSingleConn" type="checkbox"></input>
+									<label for="sgk_chkSingleConn">Tekil SQL Bağlantısı</label>
+								</div>
+							</div>
+							<div>
+								<textarea id="ekSql" name="ekSql" readonly rows="5"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+
+			<div id="users" class="part jqx-hidden">
+				<div class="panel">
+					<ul class="tabs">
+						<li id="users">Kullanıcılar</li>
+					</ul>
+					
+					<div id="users">
+						<div class="islemTuslari">
+							<button id="ekle">EKLE</button>
+							<button id="degistir">DEĞİŞTİR</button>
+							<button id="sil">SİL</button>
+						</div>
+						
+						<div id="liste_parent" class="parent">
+							<div id="liste"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="tools" class="part jqx-hidden">
+				<div class="panel">
+					<ul class="tabs">
+						<li id="vioGuncelle">VIO Güncelle</li>
+						<li id="eIslemGonder">e-İşlem Gönder</li>
+						<li id="eIslemAkibetSorgula">e-İşlem Akıbet Sorgula</li>
+						<li id="gelenEIslemSorgula">Gelen e-İşlem Sorgula</li>
+					</ul>
+
+					<div id="vioGuncelle">
+						<div class="flex-row">
+							<div>
+								<label id="paketler_label" for="paketler">Güncellenecek Programlar:</label>
+								<div id="paketler_parent">
+									<div id="paketler"></div>
+								</div>
+							</div>
+							<div>
+								<div class="islemTuslari-ek">
+									<button id="calistir">GÜNCELLE</button>
+								</div>
+								<div>
+									<div id="chkDownloadOnly_parent">
+										<input id="chkDownloadOnly" name="chkDownloadOnly" type="checkbox"></input>
+										<label for="chkDownloadOnly">Sadece İndir</label>
+									</div>
+								</div>
+								<div>
+									<div id="chkWebOtomasyonlari_parent">
+										<input id="chkWebOtomasyonlari" name="chkWebOtomasyonlari" type="checkbox"></input>
+										<label for="chkWebOtomasyonlari">Web Otomasyonları da yüklensin</label>
+									</div>
+								</div>
+								<div>
+									<div id="chkUzakDestek_parent">
+										<input id="chkUzakDestek" name="chkUzakDestek" type="checkbox"></input>
+										<label for="chkUzakDestek">Uzak Destek (AnyDesk) yüklensin</label>
+									</div>
+								</div>
+								<div id="output_parent" class="output-parent parent">
+									<div id="output" class="output"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div id="eIslemGonder" class="eIslem">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+						<div class="parent">
+							<label>VIO Kullanıcı:</label>
+							<input id="user" name="user" type="textbox"></input>
+						</div>
+						<div id="sql_parent" class="parent">
+							<div>
+								<label id="serverVeTekilVT_label">Server ve VT:</label>
+								<button id="serverVeTekilVTSec">VT Seç</button>
+							</div>
+							<div>
+								<textarea id="serverVeTekilVT" name="serverVeTekilVT" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<div id="eIslemTipi_parent" class="parent">
+							<label class="bs-etiket">e-İşlem Tipi:</label>
+							<button id="eIslemTipi_sec" class="birKismiListe">L</button>
+							<input id="eIslemTipi" name="eIslemTipi" type="textbox" readonly placeholder="- Hepsi -">
+						</div>
+						<div id="tarihBS_parent" class="basiSonu-parent parent">
+							<label class="bs-etiket">Tarih:</label>
+							<input id="tarih_basi" name="tarih_basi" class="basiSonu" type="textbox" maxlength="10">
+							<button class="bs-ayirac"> -&gt; </button>
+							<input id="tarih_sonu" name="tarih_sonu" class="basiSonu" type="textbox" maxlength="10">
+						</div>
+						<div id="seriNoBS_parent" class="basiSonu-parent parent">
+							<div id="seriBS_parent" class="basiSonu-parent parent">
+								<label class="bs-etiket">Seri:</label>
+								<input id="seri_basi" name="seri_basi" class="basiSonu" type="textbox" maxlength="3">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="seri_sonu" name="seri_sonu" class="basiSonu" type="textbox" maxlength="3">
+							</div>
+							<div id="noBS_parent" class="basiSonu-parent parent">
+								<label class="bs-etiket">No:</label>
+								<input id="no_basi" name="no_basi" class="basiSonu" type="textbox" maxlength="11">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="no_sonu" name="no_sonu" class="basiSonu" type="textbox" maxlength="11">
+							</div>
+						</div>
+						<div id="output_parent" class="output-parent parent">
+							<div id="output" class="output"></div>
+						</div>
+					</div>
+
+					<div id="eIslemAkibetSorgula" class="eIslem">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+						<div class="parent">
+							<label>VIO Kullanıcı:</label>
+							<input id="user" name="user" type="textbox"></input>
+						</div>
+						<div id="sql_parent" class="parent">
+							<div>
+								<label id="serverVeTekilVT_label">Server ve VT:</label>
+								<button id="serverVeTekilVTSec">VT Seç</button>
+							</div>
+							<div>
+								<textarea id="serverVeTekilVT" name="serverVeTekilVT" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<div id="eIslemTipi_parent" class="parent">
+							<label class="bs-etiket">e-İşlem Tipi:</label>
+							<button id="eIslemTipi_sec" class="birKismiListe">L</button>
+							<input id="eIslemTipi" name="eIslemTipi" type="textbox" readonly placeholder="- Hepsi -">
+						</div>
+						<div id="tarihBS_parent" class="basiSonu-parent parent">
+							<label class="bs-etiket">Tarih:</label>
+							<input id="tarih_basi" name="tarih_basi" class="basiSonu" type="textbox" maxlength="10">
+							<button class="bs-ayirac"> -&gt; </button>
+							<input id="tarih_sonu" name="tarih_sonu" class="basiSonu" type="textbox" maxlength="10">
+						</div>
+						<div id="seriNoBS_parent" class="basiSonu-parent parent">
+							<div id="seriBS_parent" class="basiSonu-parent parent">
+								<label class="bs-etiket">Seri:</label>
+								<input id="seri_basi" name="seri_basi" class="basiSonu" type="textbox" maxlength="3">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="seri_sonu" name="seri_sonu" class="basiSonu" type="textbox" maxlength="3">
+							</div>
+							<div id="noBS_parent" class="basiSonu-parent parent">
+								<label class="bs-etiket">No:</label>
+								<input id="no_basi" name="no_basi" class="basiSonu" type="textbox" maxlength="11">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="no_sonu" name="no_sonu" class="basiSonu" type="textbox" maxlength="11">
+							</div>
+						</div>
+						<div id="output_parent" class="output-parent parent">
+							<div id="output" class="output"></div>
+						</div>
+					</div>
+
+					<div id="gelenEIslemSorgula" class="eIslem">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+						<div class="parent">
+							<label>VIO Kullanıcı:</label>
+							<input id="user" name="user" type="textbox"></input>
+						</div>
+						<div id="sql_parent" class="parent">
+							<div>
+								<label id="serverVeTekilVT_label">Server ve VT:</label>
+								<button id="serverVeTekilVTSec">VT Seç</button>
+							</div>
+							<div>
+								<textarea id="serverVeTekilVT" name="serverVeTekilVT" readonly rows="2"></textarea>
+							</div>
+						</div>
+						<div id="tarihBS_parent" class="basiSonu-parent parent">
+							<label class="bs-etiket">Tarih:</label>
+							<input id="tarih_basi" name="tarih_basi" class="basiSonu" type="textbox" maxlength="10">
+							<button class="bs-ayirac"> -&gt; </button>
+							<input id="tarih_sonu" name="tarih_sonu" class="basiSonu" type="textbox" maxlength="10">
+						</div>
+						<div id="output_parent" class="output-parent parent">
+							<div id="output" class="output"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="gelismis" class="part jqx-hidden">
+				<div class="panel">
+					<ul class="tabs">
+						<li id="log">Log Kayıtları</li>
+						<li id="vioGlobalIni">VioGlo.ini</li>
+						<li id="teknikAyarlar_json">Teknik Ayarlar [JSON]</li>
+						<li id="teknikAyarlar_editor">Teknik Ayarlar [Editör]</li>
+						<li id="sqlExec" class="gelismis">SQL</li>
+						<li id="shell" class="gelismis">Shell</li>
+						<li id="cvmCall" class="gelismis">CVM</li>
+						<li id="webRequest" class="gelismis">Web Request</li>
+						<li id="download">Download</li>
+						<li id="upload">Upload</li>
+					</ul>
+
+					<div id="log">
+						<div id="filtre_parent">
+							<div id="tarihBS_parent" class="basiSonu-parent parent">
+								<label class="bs-etiket">Tarih:</label>
+								<input id="tarih_basi" name="tarih_basi" class="basiSonu" type="textbox" maxlength="10">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="tarih_sonu" name="tarih_sonu" class="basiSonu" type="textbox" maxlength="10">
+							</div>
+						</div>
+						
+						<div class="islemTuslari-ek">
+							<button id="temizle" class="jqx-hidden">TEMİZLE</button>
+						</div>
+						
+						<div id="liste_parent" class="parent">
+							<div id="liste"></div>
+						</div>
+					</div>
+
+					<div id="vioGlobalIni">
+						<div class="islemTuslari">
+							<button id="ekle">EKLE</button>
+							<button id="degistir">DEĞİŞTİR</button>
+							<button id="sil">SİL</button>
+						</div>
+						
+						<div id="liste_parent" class="parent">
+							<div id="liste"></div>
+						</div>
+					</div>
+
+					<div id="teknikAyarlar_json" class="teknikAyarlar">
+						<div class="islemTuslari">
+							<button id="kaydet"></button>
+						</div>
+						
+						<div id="teknikAyarlar_json_config_parent" class="config_parent parent">
+							<div id="teknikAyarlar_json_config" class="config"></div>
+						</div>
+					</div>
+
+					<div id="teknikAyarlar_editor" class="teknikAyarlar">
+						<div class="islemTuslari">
+							<button id="kaydet"></button>
+						</div>
+						
+						<div id="teknikAyarlar_editor_config_parent" class="config_parent parent">
+							<div id="teknikAyarlar_editor_config" class="config"></div>
+						</div>
+					</div>
+					
+					<div id="sqlExec">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+
+						<div>
+							<label id="sqlExec_serverVeTekilVT_label" for="sqlExec_serverVeTekilVT">Server ve VT:</label>
+							<button id="sqlExec_serverVeTekilVTSec">VT Seç</button>
+						</div>
+						<div>
+							<textarea id="sqlExec_serverVeTekilVT" name="sqlExec_serverVeTekilVT" readonly rows="2"></textarea>
+						</div>
+						
+						<div class="parent">
+							<div><label id="sqlExec_query_label" for="sqlExec_query">Sorgu:</label></div>
+							<div><div id="sqlExec_query" name="sqlExec_query" class="editor"></div></div>
+						</div>
+
+						<div class="sqlExec_execResult_parent" class="parent sub-output-parent">
+							<div id="sqlExec_execResult" class="sub-output"></div>
+						</div>
+
+						<div class="sqlExec_result_parent" class="parent output-parent">
+							<div id="sqlExec_result" class="liste-output"></div>
+						</div>
+					</div>
+
+					<div id="shell">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+						
+						<div class="parent">
+							<div><label id="shell_cmd_label" for="shell_cmd_label">Komut:</label></div>
+							<div><div id="shell_cmd" name="shell_cmd" class="editor"></div></div>
+						</div>
+
+						<div id="shell_result" class="output" readonly></div>
+					</div>
+
+					<div id="cvmCall">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+						
+						<div class="parent">
+							<label id="cvmCall_cmd_label" for="cvmCall_cmd">Komut:</label>
+							<input id="cvmCall_cmd" name="cvmCall_cmd_label"></input>
+						</div>
+						<div class="parent">
+							<div><label id="cvmCall_args_label" for="cvmCall_args">Parametreler:</label></div>
+							<div><div id="cvmCall_args" name="cvmCall_args" class="editor"></div></div>
+						</div>
+
+						<div id="cvmCall_result" class="output" readonly></div>
+					</div>
+
+					<div id="webRequest">
+						<div class="islemTuslari-ek">
+							<button id="calistir">ÇALIŞTIR</button>
+						</div>
+						
+						<div class="parent">
+							<div><label id="webRequest_url_label" for="webRequest_url_label">URL:</label></div>
+							<div><textarea id="webRequest_url" name="webRequest_url" class="editor" rows="3"></textarea></div>
+						</div>
+
+						<div id="webRequest_result" class="output" readonly></div>
+					</div>
+
+					<div id="download" class="download-upload">
+						<div class="islemTuslari-ek">
+							<button id="calistir">DOWNLOAD</button>
+						</div>
+						
+						<div id="localRemoteFileParent" class="parent">
+							<div id="remoteFileParent" class="parent">
+								<label for="remoteFile">Uzak Dosya:</label>
+								<input id="remoteFile" name="remoteFile" type="textbox" maxlength="255">
+							</div>
+						</div>
+
+						<div id="output_parent" class="output-parent parent">
+							<div id="output" class="output"></div>
+						</div>
+					</div>
+
+					<div id="upload" class="download-upload">
+						<div class="islemTuslari-ek">
+							<button id="calistir">UPLOAD</button>
+						</div>
+						
+						<div id="localRemoteFileParent" class="parent">
+							<div id="localFileParent" class="parent">
+								<label for="localFile">Yerel Dosya:</label>
+								<input id="localFile" name="localFile" type="file" maxlength="255">
+							</div>
+							<div id="remoteFileParent" class="parent">
+								<label for="remoteFile">Uzak Dosya:</label>
+								<input id="remoteFile" name="remoteFile" type="textbox" maxlength="255">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<template id="textInput" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+			
+			<div id="textInputParent" class="parent">
+				<input id="textInput"></input>
+			</div>
+		</div>
+	</template>
+
+	<template id="birKismiListe" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+			
+			<div id="hepsimi_parent" class="parent">
+				<input id="hepsimi" name="hepsimi" type="checkbox"></input>
+				<label for="hepsimi">Hepsi</label>
+			</div>
+
+			<div class="liste_parent parent">
+				<div id="liste"></div>
+			</div>
+		</div>
+	</template>
+
+	<template id="vtSec" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+			
+			<div id="serverParent" class="parent">
+				<div id="chkConnStrParent" class="parent gelismis">
+					<input id="chkConnStr" type="checkbox"></input>
+					<label for="chkConnStr">Connection String</label>
+				</div>
+				<textarea id="connStr" name="connStr" class="jqx-hidden" placeholder="SQL Connection String"></textarea>
+				<input id="server" type="textbox"></input>
+			</div>
+
+			<div class="vtListeParent parent">
+				<div id="vtListe"></div>
+			</div>
+		</div>
+	</template>
+
+	<template id="servisDuzenle" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+
+			<div class="flex-row">
+				<div id="tipParent" class="parent flex-row">
+					<label id="tip_label" for="tip">Tip:</label>
+					<div id="tip"></div>
+				</div>
+				<div id="chkTemp_parent">
+					<input id="chkTemp" name="chkTemp" type="checkbox"></input>
+					<label for="chkTemp">Tek Seferlik</label>
+				</div>
+				<div id="chkFork_parent">
+					<input id="chkFork" name="chkFork" type="checkbox"></input>
+					<label for="chkFork">Fork</label>
+				</div>
+				<div id="chkRemote_parent">
+					<input id="chkRemote" name="chkRemote" type="checkbox"></input>
+					<label for="chkRemote">Uzak Komut</label>
+				</div>
+			</div>
+
+			<div class="panel">
+				<ul class="tabs">
+					<li id="servis">Servis</li>
+					<li id="gorev">Görev</li>
+				</ul>
+				
+				<div id="servis">
+					<div class="ek-ayarlar parent">
+						<div class="ek-ayar parent jqx-hidden vioWS vioMenuGorev maliyetDuzenle pdaIPC pdaAktarici zamanlanmisGorev vioProg eIslemGonder eIslemAkibetSorgula gelenEIslemSorgula">
+							<label id="user_label" for="user">VIO Kullanıcı:</label>
+							<input id="user" name="user" type="textbox"></input>
+						</div>
+
+						<div class="ek-ayar parent jqx-hidden vioWS skyTurmob">
+							<label id="port_label" for="port">Port:</label>
+							<input id="port" name="port" type="textbox"></input>
+						</div>
+		
+						<div class="ek-ayar parent flex-row jqx-hidden vioMenuGorev">
+							<label id="islem_label" for="islem">İşlem:</label>
+							<div id="islem"></div>
+						</div>
+		
+						<div class="ek-ayar parent jqx-hidden shell vioProg">
+							<div><label id="shellCmd_label" for="shellCmd_label">Komut:</label></div>
+							<div><textarea id="shellCmd" name="shellCmd" rows="8"></textarea></div>
+						</div>
+						<div class="ek-ayar parent jqx-hidden cvmCall">
+							<label id="cmd_label" for="cmd">Komut:</label>
+							<input id="cmd" name="cmd_label" rows="8"></input>
+						</div>
+						<div class="ek-ayar parent jqx-hidden appStart">
+							<label id="dosya_label" for="dosya">Uygulama:</label>
+							<input id="dosya" name="dosya_label" rows="8"></input>
+						</div>
+						<div class="ek-ayar parent jqx-hidden cvmCall appStart">
+							<div><label id="args_label" for="args">Parametreler:</label></div>
+							<div><textarea id="args" name="args" rows="8"></textarea></div>
+						</div>
+		
+						<div class="ek-ayar parent jqx-hidden gelismis sqlExec">
+							<div>
+								<div><label id="query_label" for="query">Sorgu:</label></div>
+								<div><textarea id="query" name="args" rows="8"></textarea></div>
+							</div>
+						</div>
+		
+						<div class="ek-ayar parent jqx-hidden webRequest">
+							<div>
+								<label id="url_label" for="url">URL:</label>
+								<input id="url" name="url" type="textbox"></input>
+							</div>
+							<div><label id="postData_label" for="postData">POST Verisi:</label></div>
+							<div><textarea id="postData" name="postData" rows="8"></textarea></div>
+						</div>
+
+						<div class="ek-ayar parent jqx-hidden vioWS vioMenuGorev maliyetDuzenle pdaIPC pdaAktarici zamanlanmisGorev pdks pdks-mukerrerSil pdks-db-zktime pdks-db-timeroll eMail eMailQueue vioProg eIslemGonder eIslemAkibetSorgula gelenEIslemSorgula eIslemArsivle">
+							<div>
+								<label id="serverVeTekilVT_label" for="serverVeTekilVT">Server ve VT:</label>
+								<button id="serverVeTekilVTSec">VT Seç</button>
+							</div>
+							<div>
+								<textarea id="serverVeTekilVT" name="serverVeTekilVT" readonly rows="2"></textarea>
+							</div>
+						</div>
+
+						<div id="pdksSubConfig_parent" class="ek-ayar parent jqx-hidden pdks pdks-db-zktime pdks-db-timeroll">
+							<div id="pdksCihazKod_parent" class="parent">
+								<label for="pdksCihazKod">Cihaz Kodu:</label>
+								<input id="pdksCihazKod" name="pdksCihazKod" type="textbox" maxlength="10"></input>
+							</div>
+							<div id="pdksODBCName_parent" class="parent">
+								<label for="pdksODBCName">ODBC Adı:</label>
+								<input id="pdksODBCName" name="pdksODBCName" type="textbox" maxlength="50"></input>
+							</div>
+							<div id="pdksWSIP_parent" class="parent">
+								<label for="pdksWSIP">Cihaz IP:</label>
+								<input id="pdksWSIP" name="pdksWSIP" type="textbox" maxlength="80">
+							</div>
+							<div id="pdksUser_parent" class="parent">
+								<label for="pdksUser">Ana Kullanıcı:</label>
+								<input id="pdksUser" name="pdksUser" type="textbox" maxlength="10">
+							</div>
+							<div id="pdksPass_parent" class="parent">
+								<label for="pdksPass">Şifre:</label>
+								<input id="pdksPass" name="pdksPass" type="password" maxlength="10">
+							</div>
+							<div id="pdksMaxWait_parent" class="parent">
+								<label for="pdksMaxWait">Bağlantı Zaman Aşımı (sn):</label>
+								<input id="pdksMaxWait" name="pdksMaxWait" type="textbox" maxlength="80">
+							</div>
+							<div id="pdks_tarihBS_parent" class="parent">
+								<label for="pdksBasTS">Zaman Aralık:</label>
+								<input id="pdksBasTS" name="pdksBasTS" type="datetime-local"" maxlength="18">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="pdksBitTS" name="pdksBitTS" type="datetime-local"" maxlength="18">
+							</div>
+						</div>
+
+						<div id="eMailSubConfig_parent" class="ek-ayar jqx-hidden parent eMail eMailQueue">
+							<div id="eMailServerURL_parent" class="parent">
+								<label for="eMailServerURL">Uzak WS Sunucu:</label>
+								<input id="eMailServerURL" name="eMailServerURL" type="textbox" maxlength="100"></input>
+							</div>
+						</div>
+
+						<div id="skyBulutYedekleme_subConfig_parent" class="ek-ayar parent jqx-hidden skyBulutYedekleme">
+							<div id="skyBulutYedekleme_userID_parent" class="parent jqx-hidden">
+								<label for="skyBulutYedekleme_userID">Kullanıcı ID:</label>
+								<input id="skyBulutYedekleme_userID" name="skyBulutYedekleme_userID" type="textbox" maxlength="30"></input>
+							</div>
+							<div id="skyBulutYedekleme_userPass_parent" class="parent jqx-hidden">
+								<label for="skyBulutYedekleme_userPass">Kullanıcı Şifresi:</label>
+								<input id="skyBulutYedekleme_userPass" name="skyBulutYedekleme_userPass" type="textbox" maxlength="50"></input>
+							</div>
+							<div id="skyBulutYedekleme_backupPass_parent" class="parent">
+								<label for="skyBulutYedekleme_backupPass">Yedekleme Şifresi:</label>
+								<input id="skyBulutYedekleme_backupPass" name="skyBulutYedekleme_backupPass" type="password" autocomplete="off" maxlength="50"></input>
+							</div>
+							<div id="skyBulutYedekleme_sqlBackupDir_parent" class="parent">
+								<label for="skyBulutYedekleme_sqlBackupDir">SQL Yedek Dizini:</label>
+								<input id="skyBulutYedekleme_sqlBackupDir" name="skyBulutYedekleme_sqlBackupDir" type="textbox" maxlength="100"></input>
+								<div class="ek-bilgi">Varsayılanı kullanmak için boş bırakınız</div>
+							</div>
+							<div id="skyBulutYedekleme_backupServer_parent" class="parent">
+								<label for="skyBulutYedekleme_backupServer">Yedekleme Sunucu IP:</label>
+								<input id="skyBulutYedekleme_backupServer" name="skyBulutYedekleme_backupServer" type="textbox" maxlength="50"></input>
+								<div class="ek-bilgi">Varsayılanı kullanmak için boş bırakınız</div>
+							</div>
+							<div id="skyBulutYedekleme_filePatterns_parent" class="parent jqx-hidden">
+								<div>
+									<label for="skyBulutYedekleme_filePatterns">Dosya Desenleri:</label>
+								</div>
+								<div class="ek-bilgi">
+									<ul>
+										<li>Dosya deseni <code>C:/VioData/EFatura/IMZALI/*.zip</code> gibi belirtilir.</li>
+										<li>Her bir dosya desenini ayrı satırda belirtiniz.</li>
+									</ul>
+								</div>
+								<div>
+									<textarea id="skyBulutYedekleme_filePatterns" name="skyBulutYedekleme_filePatterns" rows="8"></textarea>
+								</div>
+							</div>
+						</div>
+
+						<div id="eIslemTipi_parent" class="ek-ayar parent jqx-hidden eIslemGonder eIslemAkibetSorgula">
+							<label for="eIslemTipi" class="bs-etiket">e-İşlem Tipi:</label>
+							<button id="eIslemTipi_sec" class="birKismiListe">L</button>
+							<input id="eIslemTipi" name="eIslemTipi" type="textbox" readonly placeholder="- Hepsi -">
+						</div>
+
+						<div id="tarihBS_parent" class="ek-ayar basiSonu-parent parent jqx-hidden eIslemGonder eIslemAkibetSorgula gelenEIslemSorgula">
+							<label for="tarih_basi" class="bs-etiket">Tarih:</label>
+							<input id="tarih_basi" name="tarih_basi" class="basiSonu" type="textbox" maxlength="10">
+							<button class="bs-ayirac"> -&gt; </button>
+							<input id="tarih_sonu" name="tarih_sonu" class="basiSonu" type="textbox" maxlength="10">
+						</div>
+
+						<div id="seriNoBS_parent" class="ek-ayar basiSonu-parent parent jqx-hidden eIslemGonder eIslemAkibetSorgula">
+							<div id="seriBS_parent" class="basiSonu-parent parent">
+								<label for="seri_basi" class="bs-etiket">Seri:</label>
+								<input id="seri_basi" name="seri_basi" class="basiSonu" type="textbox" maxlength="3">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="seri_sonu" name="seri_sonu" class="basiSonu" type="textbox" maxlength="3">
+							</div>
+							<div id="noBS_parent" class="basiSonu-parent parent">
+								<label for="no_basi" class="bs-etiket">No:</label>
+								<input id="no_basi" name="no_basi" class="basiSonu" type="textbox" maxlength="11">
+								<button class="bs-ayirac"> -&gt; </button>
+								<input id="no_sonu" name="no_sonu" class="basiSonu" type="textbox" maxlength="11">
+							</div>
+						</div>
+
+						<div id="srcDestDirParent" class="ek-ayar parent jqx-hidden eIslemArsivle">
+							<div id="srcDirParent" class="parent">
+								<label for="srcDir">Kaynak Dizin:</label>
+								<input id="srcDir" name="srcDir" type="textbox" maxlength="255">
+							</div>
+							<div id="destDirParent" class="parent">
+								<label for="destDir">Hedef Dizin:</label>
+								<input id="destDir" name="destDir" type="textbox" maxlength="255">
+							</div>
+						</div>
+
+						<div class="ek-ayar parent jqx-hidden cariEFatListeSorgula cariEFatListeSorgulaVeGuncelle cariEFatListeGuncelle">
+							<div>
+								<div class="uyari">Bu servis adımına ait ayar <b>Konfigurasyon &gt; Cari e-Fat Sorgu</b> adımından yapılmalıdır</div>
+							</div>
+						</div>
+
+						<div class="ek-ayar parent jqx-hidden vioGuncelle">
+							<div class="flex-row">
+								<div>
+									<label id="paketler_label" for="paketler">Güncellenecek Programlar:</label>
+									<div id="paketler_parent">
+										<div id="paketler"></div>
+									</div>
+								</div>
+								<div>
+									<div>
+										<div id="chkDownloadOnly_parent">
+											<input id="chkDownloadOnly" name="chkDownloadOnly" type="checkbox"></input>
+											<label for="chkDownloadOnly">Sadece İndir</label>
+										</div>
+									</div>
+									<div>
+										<div id="chkWebOtomasyonlari_parent">
+											<input id="chkWebOtomasyonlari" name="chkWebOtomasyonlari" type="checkbox"></input>
+											<label for="chkWebOtomasyonlari">Web Otomasyonları da yüklensin</label>
+										</div>
+									</div>
+									<div>
+										<div id="chkUzakDestek_parent">
+											<input id="chkUzakDestek" name="chkUzakDestek" type="checkbox"></input>
+											<label for="chkUzakDestek">Uzak Destek (AnyDesk) yüklensin</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+		
+						<!--<div class="ek-ayar parent jqx-hidden cariEFatListeSorgula cariEFatListeSorgulaVeGuncelle cariEFatListeGuncelle">
+							<div>
+								<label id="serverVeVT_label" for="serverVeVT">Server ve VT:</label>
+								<button id="serverVeVTSec">VT Seç</button>
+							</div>
+							<div>
+								<textarea id="serverVeVT" name="serverVeVT" readonly rows="8"></textarea>
+							</div>
+						</div>-->
+					</div>
+				</div>
+				
+				<div id="gorev">
+					<div class="gorev-item parent">
+						<label for="zamanlama">Zamanlama</label>
+						<div id="zamanlama"></div>
+					</div>
+					<div class="gorev-detaylar parent">
+						<div class="gorev-item parent jqx-hidden">
+							<label for="gorevAdi">Görev Adı</label>
+							<input id="gorevAdi" name="gorevAdi" type="textbox"></input>
+						</div>
+						<div class="gorev-item zamanlama-detaylar parent flex-row">
+							<div class="basTS zamanlama-detay flex-row jqx-hidden">
+								<label for="basTS">Başlangıç</label>
+								<input id="basTS" name="basTS" type="textbox"></input>
+							</div>
+							<div class="tekrar zamanlama-detay flex-row jqx-hidden">
+								<label for="tekrar">Tekrar</label>
+								<input id="tekrar" name="tekrar" type="textbox"></input>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</template>
+
+	<template id="userDuzenle" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+
+			<div id="disParent">
+				<div class="flex-row">
+					<div id="sol">
+						<div id="user_parent" class="parent">
+							<div><label for="user">Kullanıcı:</label></div>
+							<div><input id="user" name="user" type="textbox" autocomplete="off"></input></div>
+						</div>
+		
+						<div id="userDesc_parent" class="parent">
+							<div><label for="userDesc">Açıklama:</label></div>
+							<div><input id="userDesc" name="userDesc" type="textbox" autocomplete="off"></input></div>
+						</div>
+		
+						<div id="pass_parent" class="parent">
+							<div><label for="pass">Şifre:</label></div>
+							<div><input id="pass" name="pass" type="password" autocomplete="off"></input></div>
+						</div>
+					</div>
+		
+					<div id="sag">
+						<div id="eMails_parent" class="parent">
+							<div><label for="eMails">e-Mail Listesi:</label></div>
+							<div><textarea id="eMails" name="eMails" rows="6" cols="50" placeholder="Her öğeyi yeni satır olarak giriniz"></textarea></div>
+						</div>
+						<div id="apiAccess_parent" class="parent">
+							<div><label for="apiAccess">API Erişimi:</label></div>
+							<div><textarea id="apiAccess" name="apiAccess" rows="5" cols="25" placeholder="Her öğeyi yeni satır olarak giriniz"></textarea></div>
+						</div>
+						<div id="kota_parent" class="parent jqx-hidden">
+							<div><label for="kota">Kota </label></div>
+							<div>
+								<input id="kota" name="kota" type="textbox"></input>
+								<label for="kota">MB</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div id="alt">
+					<div id="yetki_parent" class="parent">
+						<div><label for="yetki">Yetki:</label></div>
+						<div id="yetki"></div>
+					</div>
+					
+					<div id="yetkiBilgi" class="parent"></div>
+				</div>
+			</div>
+		</div>
+	</template>
+
+	<template id="vioGlobalIniDuzenle" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+
+			<div id="disParent" class="flex-row">
+				<div id="key_parent" class="parent">
+					<div><label for="key">Belirteç</label></div>
+					<div><input id="key" name="key" type="textbox"></input></div>
+				</div>
+
+				<div class="separator">
+					<span>=</span>
+				</div>
+					
+
+				<div id="value_parent" class="parent">
+					<div><label for="value">Değer</label></div>
+					<div><input id="value" name="value" type="textbox"></input></div>
+				</div>
+			</div>
+		</div>
+	</template>
+
+	<template id="skyConfigSkyBulutYedeklemeUserListPart" class="part">
+		<div id="users" class="part">
+			<div class="islemTuslari">
+				<button id="ekle">EKLE</button>
+				<button id="degistir">DEĞİŞTİR</button>
+				<button id="sil">SİL</button>
+			</div>
+			
+			<div id="liste_parent" class="parent">
+				<div id="liste"></div>
+			</div>
+		</div>
+	</template>
+
+	<template id="skyConfigSkyBulutYedeklemeVeriYonetimiPart" class="part">
+		<div id="users" class="part">
+			<div class="islemTuslari">
+				<button id="downloadToLocal">Bu Bilgisayara İndir</button>
+				<button id="downloadToServer">Sunucuya İndir</button>
+				<button id="tazele">TAZELE</button>
+			</div>
+			
+			<div id="liste_parent" class="parent">
+				<div id="liste"></div>
+			</div>
+		</div>
+	</template>
+
+	<template id="sifreDegistir" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="btnTamam"></button>
+			</div>
+
+			<div id="pass_parent" class="parent">
+				<div><label for="pass">Şifre:</label></div>
+				<div><input id="pass" name="pass" type="password" autocomplete="off"></input></div>
+			</div>
+		</div>
+	</template>
+
+	<template id="skyConfigParam" class="part">
+		<div>
+			<div class="asil islemTuslari flex-row">
+				<button id="barkodYukle">Barkod Yükle</button>
+				<button id="barkodSakla">Barkod Sakla</button>
+				<button id="tamam"></button>
+			</div>
+
+			<div class="subContent flex-row">
+				<div class="_col left">
+					<div class="etiket">Merkez IP ve Port</div>
+					<div>
+						<div class="ic-row flex-row">
+							<div class="veri"><input id="wsHostName" type="textbox"></div>
+							<span class="ic-etiket">:</span>
+							<div class="veri"><input id="wsPort" type="textbox" align="center"></div>
+						</div>
+					</div>
+
+					<div><p></p></div>
+				</div>
+
+				<template id="windows">
+					<div class="barkodYukle ekran">
+						<div id="header" class="flex-row">
+							<div class="info">
+								Lütfen alttaki kutuya Paremetre ekranından alınan Barkod değerini okutunuz
+							</div>
+
+							<button id="btnBarkod"/>
+						</div>
+						
+						<div id="content">
+							<div id="barkodParent">
+								<textarea id="txtBarkod"></textarea>
+								<div id="barkodContainer"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="barkodSakla ekran">
+						<div id="header" class="flex-row">
+							<div class="info">
+								Lütfen aşağıdaki barkod'u Paremetre Yüklemesi yapılacak cihaz ile okutunuz
+							</div>
+							<button id="btnKopyala"/>
+						</div>
+						
+						<div id="content">
+							<div id="barkodParent">
+								<div id="imgBarkod"></div>
+							</div>
+							<textarea id="txtBarkod" readonly></textarea>
+
+							<div id="browserFlagsParent">
+								<button id="btnKopyalaFlags"/>
+								<textarea id="txtBrowserFlags"></textarea>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+	</template>
+
+</div>

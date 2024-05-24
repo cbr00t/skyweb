@@ -1,0 +1,224 @@
+.skyMakineDurumApp #mainPart.part #toolbar { width: 100%; padding: 0 0 0 2px; border-radius: 5px; border: 1px solid #acf; background-color: #eff3f8 }
+.skyMakineDurumApp #mainPart.part #toolbar > button { font-size: 85%; font-weight: bold; width: 165px; height: 55px; border-radius: 5px; margin-right: -5px }
+@media (max-width: 840px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 150px } }
+@media (max-width: 760px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 140px } }
+@media (max-width: 710px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 125px } }
+@media (max-width: 635px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 115px } }
+@media (max-width: 590px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 113px; font-size: 85% } }
+@media (max-width: 570px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 100px; font-size: 80% } }
+@media (max-width: 510px) { .skyMakineDurumApp #mainPart.part #toolbar > button { width: 85px; font-size: 75% } }
+.skyMakineDurumApp #mainPart.part #subContent { width: 100%; background: #fcfcfc; border: 1px solid #aaccddaa }
+.skyMakineDurumApp #mainPart.part #subContent tr > td { border: .8px solid #aaccdd77; padding: 3px 0 2px 5px }
+@media (max-height: 850px) { .skyMakineDurumApp #mainPart.part #subContent tr > td { padding: 2px 2px 0 1px } }
+@media (max-height: 800px) { .skyMakineDurumApp #mainPart.part #subContent tr > td { padding: 1px 2px } }
+@media (max-height: 650px) { .skyMakineDurumApp #mainPart.part #subContent tr > td { padding: 2px 3px } }
+@media (max-height: 600px) { .skyMakineDurumApp #mainPart.part #subContent tr > td { padding: 1px 3px } }
+.skyMakineDurumApp #mainPart.part #subContent tr > td.etiket { width: 120px; color: #a4aabd }
+.skyMakineDurumApp #mainPart.part #subContent tr > td.veri { font-size: 102% }
+.skyMakineDurumApp #mainPart.part #subContent tr > td.sag-kucuk { font-size: 90%; text-align: center; vertical-align: middle; color: #aaa; width: 125px }
+.skyMakineDurumApp #mainPart.part #subContent tr > td .etiket { margin-right: 15px }
+.skyMakineDurumApp #mainPart.part #subContent tr > td .etiket,
+.skyMakineDurumApp #mainPart.part #subContent tr > td .etiket-basit { color: #999 }
+.skyMakineDurumApp #mainPart.part #subContent tr > td .veri { color: green; margin-right: 15px }
+.skyMakineDurumApp #mainPart.part #subContent .isListe { overflow-y: auto !important; font-size: 90%; height: 100px; padding: 2px 0 1px 2px; margin-left: 5px; border: .8px solid #888 }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent { font-size: 85%; padding: 1px 2px }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent > .parent { line-height: 20px }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .parent .etiket,
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .parent .veri { margin: initial }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .parent .etiket {
+}
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .parent .veri { }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .parent:not(:first-child) { margin-left: 5px }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #seq { color: #aaaabb }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #emirText { color: #004ab9 }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #operText { max-height: 60px; vertical-align: top; color: #b9512a }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .sureParent { font-weight: normal; font-size: 80%; margin-left: 8px !important }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sureParent { min-width: 70px }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sure2Parent { min-width: 105px }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .sureParent .etiket,
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent .sureParent .veri { margin: -5px 0 }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sureParent #saymaSayisi { font-weight: bolder; color: royalblue }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sureParent #netSure { font-weight: bolder; color: #0f6e18 }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sure2Parent { }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sure2Parent #basTS { color: #a14c09 }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sure2Parent #gecenSure { color: steelblue }
+.skyMakineDurumApp #mainPart.part #subContent .isListe .oemParent #sure2Parent #gecenNetSure {color: #7f16d9;}
+
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent,
+.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent,
+.skyMakineDurumApp #mainPart.part #subContent tr #cevrimParent,
+.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent
+/*.skyMakineDurumApp #mainPart.part #subContent tr #sureParent,*/ { line-height: 33px; margin-left: 15px }
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent > *,
+.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent > *,
+.skyMakineDurumApp #mainPart.part #subContent tr #cevrimParent > *,
+.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent > * { float: left; margin-right: 13px }
+@media (max-width: 650px) {
+	.skyMakineDurumApp #mainPart.part #subContent tr #durumParent,
+	.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent,
+	.skyMakineDurumApp #mainPart.part #subContent tr #cevrimParent,
+	.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent { line-height: 30px; margin-left: 10px }
+}
+@media (max-width: 600px) {
+	.skyMakineDurumApp #mainPart.part #subContent tr #durumParent,
+	.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent,
+	.skyMakineDurumApp #mainPart.part #subContent tr #cevrimParent,
+	.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent { line-height: 28px; margin-left: 8px }
+	.skyMakineDurumApp #mainPart.part #subContent tr #durumParent > *,
+	.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent > *,
+	.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent > * { }
+}
+.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent > * { margin-right: 33px }
+.skyMakineDurumApp #mainPart.part #subContent tr #cevrimParent > * > *:not(.etiket),
+.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent > * > *:not(.etiket) { margin-right: 5px }
+@media (max-width: 650px) {
+	.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent > * { margin-right: 40px }
+	.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent > * > *:not(.etiket) { margin-right: 8px }
+}
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent { font-size: 120% }
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent #imgDurum {
+	width: 28px; height: 32px; background-image: url('../../../_kernel/images/graydot.png');
+	background-size: contain; background-position: center bottom; background-repeat: no-repeat
+}
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent #durumText { font-weight: bold; color: #888 }
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent #imgDurum { }
+.skyMakineDurumApp #mainPart.part #subContent tr #durumParent #durumText { }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum=''] tr #durumParent #durumText { color: #888 }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='?'] tr #durumParent #imgDurum { background-image: url('../../../_kernel/images/soru.png') }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DV'] tr #durumParent #imgDurum { background-image: url('../../../_kernel/images/greendot.png') }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DV'] tr #durumParent #durumText { color: darkgreen }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DR'] tr #durumParent #imgDurum { background-image: url('../../../_kernel/images/reddot.png') }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DR'] tr #durumParent #durumText { color: #8a3b07 }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DR'] tr:first-child,
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DR'] tr:nth-child(2),
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DR'] tr #durumParent #durumTextParent { animation: skyMESApp-durum-DR 4s infinite }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='DR'] tr > td.etiket { color: #999 }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='AT'] tr #durumParent #durumText { color: #c5b65c }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='AT'] tr #durumParent #imgDurum { background-image: url('../../../_kernel/images/yellowdot.png') }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='BK'] tr #durumParent #durumText { color: #919191 }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='KP'] tr #durumParent #durumText,
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='BT'] tr #durumParent #durumText { color: #ccc }
+.skyMakineDurumApp #mainPart.part #subContent[data-durum='PR'] tr #durumParent #durumText { color: darkslateblue }
+.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent #onceUretMiktarText { color: green }
+.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent .aktifUretMiktarParent { color: #346c9b margin-left: -18px; }
+.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent #iskMiktarText { color: #9e0000 }
+.skyMakineDurumApp #mainPart.part #subContent tr #miktarParent #netMiktarText { font-size: 125%; font-weight: bolder; color: royalblue }
+.skyMakineDurumApp #mainPart.part #subContent tr #cevrimParent #onceCevrimSayisi,
+.skyMakineDurumApp #mainPart.part #subContent tr #saymaParent #saymaInd { font-weight: bolder; color: royalblue }
+.skyMakineDurumApp #mainPart.part #btnSimulatorToggle {
+	width: 150px; height: 45px; margin: 3px 0 0 0; background-image: url(../../../_kernel/images/asagi.png);
+	background-size: contain; background-position: center; background-repeat: no-repeat; border: 1px solid #004bb9c2
+}
+.skyMakineDurumApp #mainPart.part #btnSimulatorToggle.jqx-fill-state-pressed { background-image: url(../../../_kernel/images/yukari.png); background-color: #eeeeef; border: 2px solid #94c3f2 }
+.skyMakineDurumApp #mainPart.part #simulator { width: 97%; height: 320px; border: .5px solid #ccc; border-radius: 5px; margin: 5px 0 0 3px; padding: 5px 0 0 5px }
+@media (max-width: 600px), (max-height: 620px) { .skyMakineDurumApp #mainPart.part #simulator { height: 260px; padding: 3px 0 0 3px } }
+@media (max-width: 560px), (max-height: 590px) { .skyMakineDurumApp #mainPart.part #simulator { padding: 0; padding-top: 1px } }
+@media (max-width: 510px), (max-height: 530px) { .skyMakineDurumApp #mainPart.part #simulator { padding: 0; width: 100% } }
+.skyMakineDurumApp #mainPart.part #simulator > * { float: left }
+.skyMakineDurumApp #mainPart.part #simulator > * button { border-radius: 8px; border: .5px solid #ddd }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary { margin-right: 10px }
+@media (max-width: 600px), (max-height: 620px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary { margin-right: 5px } }
+@media (max-width: 530px), (max-height: 580px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary { margin-right: 2px } }
+
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .parent:not(:last-child) { margin-bottom: 8px }
+@media (max-width: 650px), (max-height: 620px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .parent:not(:last-child) { margin-bottom: 5px } }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .parent button { width: 230px; height: 70px }
+@media (max-width: 725px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .parent button { height: 65px } }
+@media (max-width: 665px), (max-height: 620px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .parent button { height: 60px } }
+@media (max-width: 570px), (max-height: 500px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .parent button { width: 190px; height: 50px } }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .gercekleme.parent button { border: 1px solid chocolate; border-radius: 500px }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .gercekleme.parent button:hover,
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .gercekleme.parent button:focus { /*border: 3px solid darkorange;*/ border: 2px solid slategray; font-weight: bold }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .gercekleme.parent button:active { background-color: #dfa57b88; color: #333 }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent button { border-radius: 20px; float: left; width: 45% }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent button:not(:last-child) { margin-right: 15px }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent #btnKesme { border: 2px solid green }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent #btnTersKesme { border: 2px solid orange }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent button:hover,
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent button:focus { /*border: 3px solid darkgreen;*/ border: 2px solid slategray; font-weight: bold }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent button:active { color: #333 }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent #btnKesme:active { background-color: #b5f2b588 }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kesme.parent #btnTersKesme:active { background-color: #f2eab588; cursor: progress }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kartNo.parent > input {
+	margin-top: 8px; font-family: Courier New; font-size: 180%; font-weight: bold; 	text-align: center;
+	/* text-transform: uppercase; */width: 380px; height: 60px
+}
+@media (max-width: 725px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kartNo.parent > input { font-size: 150%; width: 320px; } }
+@media (max-width: 665px), (max-height: 620px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kartNo.parent > input { font-size: 130%; width: 263px; height: 50px } }
+@media (max-width: 570px), (max-height: 500px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.primary > .kartNo.parent > input { width: 170px } }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn { border: .8px solid #aaa; padding: 3px }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button { font-size: 90%; float: left; width: 85px; height: 70px }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button#f9:active { cursor: progress }
+@media (max-width: 630px) {
+	.skyMakineDurumApp #mainPart.part #simulator .buttons.fn { padding: 2px }
+	.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button { width: 80px; height: 65px }
+}
+@media (max-width: 600px), (max-height: 620px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button { width: 75px; height: 60px } }
+@media (max-width: 570px), (max-height: 500px) { .skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button { width: 67px; height: 61px } }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button:hover { border: 2px solid slategray; font-weight: bold }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button:focus { border: 3px solid royalblue; background-color: #4169e155; color: #333 }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button:active { background-color: #395bc3; color: whitesmoke }
+.skyMakineDurumApp #mainPart.part #simulator .buttons.fn > .parent > button .bilgi { font-size: 65%; color: #bbb }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell .etiket { color: #333 }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell .etiket:not(:first-child) { margin-left: 10px }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell .veri { font-weight: bold; color: #5c698e; margin-left: 8px }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell .oper.veri { color: #b19235 }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell .statuText { font-weight: bold; font-size: 110%; color: red; margin-right: 10px; float: right }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell.statu-AT { border: 2px solid #e5a472; background: #eaeaff }
+.skyMakineDurumApp.part .jqx-window-content .jqx-grid .jqx-grid-cell.statu-AT.jqx-grid-cell-selected { background: #c5cfee }
+
+.skyMakineDurumApp #duraksamaNedeniSec.part { font-size: 140% }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent { width: 100%; /*border: 1px solid #aaccddaa;*/ background: #fcfcfc }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td { /*border: .8px solid #aaccdd77;*/ padding: 0 2px 2px 3px }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td > * { height: 50px }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td .etiket,
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td .veri:not(input) { padding-top: 10px; }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td .etiket { width: 130px; color: #aaa }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td .gridParent { }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td .gridParent #grid .jqx-grid-column-header { font-size: 90%; padding-top: 3px }
+.skyMakineDurumApp #duraksamaNedeniSec.part #subContent > * > tr > td .gridParent #grid .jqx-grid-cell { font-size: 130%; height: 44px }
+
+.skyMakineDurumApp #personel.part #textInputParent #textInput {
+	font-family: Courier New; font-size: 200%; font-weight: bold; text-align: center;
+	/* text-transform: uppercase; */ width: 80%; height: 60px
+}
+.skyMakineDurumApp #personel.part #textInputParent #textInput::placeholder { font-size: 70% }
+
+.skyMakineDurumApp #miktarGiris.part { font-size: 140% }
+.skyMakineDurumApp #miktarGiris.part #subContent { width: 88%; /*border: 1px solid #aaccddaa;*/ background: #fcfcfc }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td { /*border: .8px solid #aaccdd77;*/ padding: 0 3px 3px 5px }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td > * { height: 50px }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .etiket,
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .veri:not(input) { padding-top: 10px }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .etiket { width: 130px; color: #aaa; }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td:not(:first-child) .etiket { margin-left: 8px }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .veri:not(input) { width: 50px; color: #004ab9 }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td #miktarText { text-align: right }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr #textInputParent #textInput { font-size: 120%; font-weight: bold; text-align: center; width: 120px; color: #75a1e5; border: 1px solid lightseagreen }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr #textInputParent #textInput:focus { color: #dae6f9 }
+.skyMakineDurumApp #miktarGiris.part #textInputParent #textInput::placeholder { font-size: 70% }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr #toggleParent {
+} .skyMakineDurumApp #miktarGiris.part #subContent > * > tr #toggleParent > #btnToggle {
+	width: 80px; height: 30px; margin: 3px 0 0 0; background-image: url(../../../_kernel/images/asagi.png);
+	background-size: contain; background-position: center; background-repeat: no-repeat; border: 1px solid #004bb9c2
+}
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr #toggleParent > #btnToggle.jqx-fill-state-pressed { background-image: url(../../../_kernel/images/yukari.png); background-color: #eeeeef; border: 2px solid #94c3f2 }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .gridParent { margin-top: -20px }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .gridParent #iskartaGrid .jqx-grid-column-header { font-size: 90%; padding-top: 3px }
+.skyMakineDurumApp #miktarGiris.part #subContent > * > tr > td .gridParent #iskartaGrid .jqx-grid-cell { font-size: 115%; height: 33px }
+
+.skyMakineDurumApp #gorevSec.part { font-size: 140% }
+.skyMakineDurumApp #gorevSec.part #subContent { width: 100%; /*border: 1px solid #aaccddaa;*/ background: #fcfcfc }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td { /*border: .8px solid #aaccdd77;*/ padding: 0 2px 2px 3px }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td > * { height: 50px }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td .etiket,
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td .veri:not(input) { padding-top: 10px }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td .etiket { width: 130px; color: #aaa }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td .gridParent { }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td .gridParent #grid .jqx-grid-column-header { font-size: 90%; padding-top: 3px }
+.skyMakineDurumApp #gorevSec.part #subContent > * > tr > td .gridParent #grid .jqx-grid-cell { font-size: 130%; height: 44px }
+
+.skyMakineDurumApp #isBitti.part { font-size: 150% }
+.skyMakineDurumApp #isBitti.part #subContent > * > tr > td { padding: 10px 8px }
+.skyMakineDurumApp #isBitti.part #subContent > * > tr #header { font-size: 110% }
+.skyMakineDurumApp #isBitti.part #subContent > * > tr #operKapatParent { font-weight: bold; color: firebrick; padding-left: 80px }

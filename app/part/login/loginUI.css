@@ -1,0 +1,81 @@
+
+#loginForm.loginUI {
+	padding: 3px;
+}
+#loginForm.loginUI,
+#loginForm.loginUI .jqx-widget {
+	font-size: 14pt;
+}
+#loginForm.loginUI #content > div {
+	height: 40px;
+	margin-bottom: 5px;
+}
+#loginForm.loginUI #content > div .etiket {
+	width: 150px;
+}
+#loginForm.loginUI #content > div .veri {
+	width: 300px;
+	height: 35px;
+}
+
+#loginForm.loginUI #header {
+	height: 125px;
+	margin: 0 0 28px 0;
+}
+#loginForm.loginUI #header #logo {
+	width: 100%;
+	height: 100%;
+	padding: 5px 8px;
+	background-image: url(../../../_kernel/images/sky_logo.svg);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}
+#loginForm.loginUI #content {
+	width: 97%;
+	height: 100%;
+	margin-left: 15px;
+}
+#loginForm.loginUI #userTextParent {
+	margin: -5px 0 10px 25px !important;
+}
+#loginForm.loginUI #userTextParent #userText {
+	font-weight: bold;
+	font-size: 78%;
+	/*color: #aaa;*/
+	color: royalblue;
+}
+#loginForm.loginUI #chkSaveLoginParent {
+	position: relative;
+	width: 150px;
+	color: royalblue;
+	font-size: 90%;
+	margin-top: 10px;
+}
+#loginForm.loginUI #chkSaveLogin {
+}
+
+#loginForm.loginUI #ssoLogin {
+	width: 50px !important;
+	height: 35px !important;
+	margin-left: 8px;
+	margin-right: 3px;
+}
+
+
+@media (max-width: 550px) {
+	#loginForm.loginUI #header {
+	}
+	#loginForm.loginUI #header #logo {
+		width: 70% !important;
+		height: 90px !important;
+		margin-left: 13% !important;
+	}
+	#loginForm.loginUI #content {
+		margin-left: 2px !important;
+		margin-top: -35px !important;
+	}
+	#loginForm.loginUI #userTextParent {
+		margin: -5px 0 -5px 25px !important;
+	}
+}

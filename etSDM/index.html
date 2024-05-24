@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+	<link rel="manifest" href="manifest.json" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1 minimum-scale=1 maximum-scale=1 user-scalable=no" />
+	<script src="/vio/vioweb/lib/classes/CObject.js"></script>
+	<script src="../_kernel/lib/utils.js"></script>
+	<script>
+		const appName = 'CETSDMApp';
+		const waitTimeSecs = Utils.redirectWaitTimeSecs;
+		document.onreadystatechange = () => {
+    		if (document.readyState === "complete") {
+    			setTimeout(() => {
+					document.getElementById(`waitTimeSecs`).innerHTML = waitTimeSecs;
+					setTimeout(() =>
+						redirect(),
+						waitTimeSecs * 1000)
+    			}, 500);
+			}
+		}
+
+		function redirect() {
+			Utils.bootRedirect({ appName: appName })
+		}
+	</script>
+</head>
+<body style="font-size: 120%;">
+	<h2>Sayfaya yönlendiriliyor...</h2>
+	<pre><span id="waitTimeSecs"></span> saniye içinde programa yönlendirileceksiniz.
+
+Lütfen bekleyiniz veya <a href="#" onclick="redirect()" style="font-weight: bold;">buraya tıklayınız</a>.</pre>
+</body>
+</html>

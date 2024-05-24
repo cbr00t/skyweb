@@ -1,0 +1,258 @@
+
+body.skyTicMenuApp {
+	overflow-y: hidden;
+}
+
+body.skyTicMenuApp input[type=checkbox],
+body.skyTicMenuApp checkbox {
+	width: 20px;
+	height: 20px;
+	position: relative;
+	top: 3px;
+	right: 5px;
+}
+
+.part.skyTicMenuApp .jqx-dropdownlist,
+.part.skyTicMenuApp .jqx-dropdownlist .jqx-dropdownlist-content {
+	font-weight: bold;
+}
+.part.skyTicMenuApp .jqx-dropdownlist:not(.jqx-fill-state-pressed) {
+	color: #3f5166;
+}
+body.skyTicMenuApp .jqx-listbox-container span:not(.jqx-fill-state-pressed) {
+	color: #888;
+}
+
+.part.skyTicMenuApp .asil.islemTuslari {
+	position: fixed;
+	top: 0;
+	z-index: 10003;
+}
+.part.skyTicMenuApp .asil.islemTuslari > button {
+	background-position: center;
+	background-size: auto;
+	background-repeat: no-repeat;
+	width: 40px;
+	height: 40px;
+}
+.part.skyTicMenuApp .asil.islemTuslari > button:not(:last-child) {
+	margin-right: 10px;
+}
+
+.part.skyTicMenuApp #tamam {
+	background-image: url(../../../_kernel/images/tamam.png);
+}
+.part.skyTicMenuApp #sec {
+	background-image: url(../../../_kernel/images/tamam.png);
+}
+.part.skyTicMenuApp #kaydet {
+	margin-left: 8px;
+	background-image: url(../../../_kernel/images/tamam.png);
+}
+.part.skyTicMenuApp #ayarlar {
+	background-image: url(../../../_kernel/images/ayarlar.png);
+}
+.part.skyTicMenuApp #btnTazele {
+	background-image: url(../../../_kernel/images/tazele.png);
+}
+.part.skyTicMenuApp #btnToggleFullScreen {
+	background-image: url(../../../_kernel/images/tamEkranAcBeyaz.png);
+}
+.part.skyTicMenuApp #btnLogout {
+	background-image: url(../../../_kernel/images/logout.png);	
+}
+
+#contentParent.skyTicMenuApp > #header > * {
+	margin-left: 15px;
+}
+
+.part.skyTicMenuApp .header-button {
+	position: fixed;
+	width: 40px;
+	height: 40px;
+	top: 4px;
+	background-color: #0049b8;
+	background-position: center;
+	background-size: auto;
+	background-repeat: no-repeat;
+	z-index: 10003;
+}
+.part.skyTicMenuApp .header-button:hover {
+	background-color: #1469ea;
+}
+.part.skyTicMenuApp .header-button:active {
+	background-color: #043886;
+}
+.part.skyTicMenuApp #ayarlar {
+	left: 8px;
+}
+.part.skyTicMenuApp #btnTazele {
+	right: 215px;
+	background-size: 24px;
+	background-color: #2c6d7b;
+}
+.part.skyTicMenuApp #btnTazele:hover {
+	background-color: #25a12f;
+}
+.part.skyTicMenuApp #btnTazele:active {
+	background-color: #01642d;
+}
+.part.skyTicMenuApp #btnToggleFullScreen {
+	right: 170px;
+}
+.part.skyTicMenuApp #userInfo {
+	width: 150px;
+	height: 43px;
+	right: 10px;
+	top: 2px;
+	color: whitesmoke;
+	background-color: #1582e5;
+}
+body.skyTicMenuApp #userInfo_popup ul {
+	padding: 5px;
+}
+body.skyTicMenuApp #userInfo_popup ul > li {
+	padding: 20px 8px !important;
+	height: 25px;
+}
+
+.part.skyTicMenuApp #header {
+}
+.part.skyTicMenuApp #header > .parent:not(:first-child) {
+	margin-left: 40px;
+}
+.part.skyTicMenuApp #header #plasUser_parent {
+}
+.part.skyTicMenuApp #header #plasUser_parent > * {
+	height: 50px;
+}
+.part.skyTicMenuApp #header #plasUser_parent > button {
+	font-weight: bold;
+	width: 120px;
+}
+.part.skyTicMenuApp #header #plasUser_parent > input {
+	font-size: 120%;
+	width: 400px;
+	background-color: #f2f5f9;
+	border-color: #ccc;
+}
+.part.skyTicMenuApp #header #plasUser_parent > input:focus,
+.part.skyTicMenuApp #header #plasUser_parent > input:active {
+	color: #333;
+}
+
+.part.skyTicMenuApp #menu_content {
+	width: 99.3%;
+	margin: 10px;
+	padding: 30px;
+	background-color: whitesmoke;
+	overflow-y: auto !important;
+}
+.part.skyTicMenuApp #menu_content .group {
+	padding: 15px 13px;
+	margin: 0 0 40px 0;
+	border: 1px solid #ccc;
+}
+.part.skyTicMenuApp #menu_content .group .label {
+	font-size: 200%;
+	font-weight: bold;
+	padding: 0 0 10px 0;
+	color: #777;
+	background-color: #e7e8ef;
+}
+.part.skyTicMenuApp #menu_content .group .items {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin-top: 5px;
+	padding: 10px 10px;
+}
+.part.skyTicMenuApp #menu_content .group .items .item {
+	padding: 0 0 20px 20px;
+}
+.part.skyTicMenuApp #menu_content .group .items .item > * {
+	font-size: 170%;
+	padding: 60px 170px;
+}
+
+.part.skyTicMenuApp #menu_content .group .items .item button:hover {
+	border: 1px solid #aaf !important;
+}
+.part.skyTicMenuApp #menu_content .group .items .item button:focus,
+.part.skyTicMenuApp #menu_content .group .items .item button:active {
+	border: 1.5px solid royalblue !important;
+}
+.part.skyTicMenuApp #menu_content .group .items .item button:focus {
+	border-size: 3px;
+}
+.part.skyTicMenuApp #menu_content .group .items .item button:active {
+	border-size: 5px !important;
+}
+
+
+.part.skyTicMenuApp .jqx-window-content .islemTuslari {
+	position: absolute;
+	right: 8px;
+	top: 45px;
+	z-index: 500;
+	min-height: 60px;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari > * {
+	font-weight: bold;
+	vertical-align: top !important;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	/* background-color: white; */
+	border: 1px solid #ccc;
+	padding: 0 8px;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari-bottom > *:not(:hover):not(:focus):not(:active) {
+	opacity: .7;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari > *:hover,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari-bottom > *:hover {
+	opacity: .9;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari > *:not(#btnTamam):hover,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari-bottom > *:hover {
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari > *:focus,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari-bottom > *:focus {
+	border: 3px solid #fcfcfc !important;
+	opacity: .9;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari > *:active,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari-bottom > *:active {
+	opacity: 1;
+}
+
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTamam,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTazele {
+	border-radius: 8px;
+	width: 70px;
+	height: 65px;
+	background-color: #094fc9;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTamam {
+	background-size: 60px 55px;
+	background-image: url(../../../_kernel/images/maviTamam.png);
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTazele {
+	position: absolute;
+	left: 15px;
+	background-size: 24px 24px;
+	background-image: url(../../../_kernel/images/tazele.png);
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTamam:hover,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTazele:hover,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTamam:focus,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTazele:focus {
+	background-color: #517dca !important;
+}
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTamam:active,
+.part.skyTicMenuApp .jqx-window-content .islemTuslari #btnTazele:active {
+	background-color: #00c474 !important;
+}

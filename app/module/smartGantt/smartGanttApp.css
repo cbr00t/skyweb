@@ -1,0 +1,109 @@
+
+#smartGantt .smart-gantt-chart {
+	width: 100%;
+	/*height: 100%;*/
+	margin: 0;
+	--smart-gantt-chart-task-default-height: 40px;
+	--smart-gantt-chart-task-bar-fill-padding: 5px;
+	--smart-gantt-chart-timeline-task-min-width: 15px;
+	--smart-gantt-chart-timeline-cell-min-size: 4px;
+	--smart-gantt-chart-timeline-nonworking-color: #a8a8a888;
+	--smart-gantt-chart-timeline-task-connection-arrow-width: 6px;
+	--smart-gantt-chart-timeline-task-resize-indicator-width: 8px;
+	/*width: calc(100% - 3px);
+	height: 450px;*/
+}
+#smartGantt .smart-gantt-chart .smart-resource-tree-header,
+#smartGantt .smart-gantt-chart .smart-task-tree-header,
+#smartGantt .smart-gantt-chart .smart-timeline-view-details {
+	font-size: 10pt;
+}
+#smartGantt .smart-gantt-chart .smart-timeline-task-label {
+	font-size: 9pt;
+}
+#smartGantt .smart-gantt-chart .smart-task-label-container,
+#smartGantt .smart-gantt-chart .smart-tree-item-label-element > span {
+	font-size: 9pt;
+	white-space: pre-wrap;
+	padding: 0;
+}
+#smartGantt .smart-gantt-chart .smart-timeline-view-cells,
+#smartGantt .smart-gantt-chart .smart-timeline-view-cells .smart-timeline-view-cell,
+#smartGantt .smart-gantt-chart .smart-resource-timeline-view-cell {
+	font-size: 10pt;
+	color: #333;
+}
+#smartGantt .smart-gantt-chart .smart-resource-timeline-view-cell {
+	font-weight: bold;
+	font-size: 8pt;
+}
+#smartGantt .smart-gantt-chart,
+#smartGantt .smart-gantt-chart .smart-timeline-view-details {
+	font-size: 13pt;
+}
+#smartGantt .smart-gantt-chart .smart-timeline-scroll-bar {
+	/*margin-top: 10px;
+	height: 25px;*/
+}
+#smartGantt .smart-gantt-chart .gantt-chart-task-assignee {
+	color: #2f7f12;
+}
+#smartGantt .smart-gantt-chart .gantt-chart-task-assignee.unassigned {
+	color: #555;
+}
+/*#smartGantt .smart-gantt-chart:not([animation=none]) .smart-resource-timeline-view-cell[load]::after {
+	background: royalblue;
+}*/
+
+#smartGantt .smart-gantt-chart .smart-resource-tree-content .smart-tree-item-label-container,
+#smartGantt .smart-gantt-chart .smart-resource-tree-content .smart-tree-item-label-element {
+	color: #224d13;
+}
+#smartGantt .smart-gantt-chart .capacity-overflow {
+	border: solid 1px slategray;
+	background-color: #bd000070;
+	color: ghostwhite;
+	width: 100%;
+	height: 100%;
+}
+#smartGantt .smart-gantt-chart .capacity-overflow > * {
+	position: relative;
+	top: 20%;
+}
+#smartGantt .add-task-button {
+	font-size: 1.35rem;
+	color: rgba(109, 113, 232, 0.5);
+	font-weight: 900;
+}
+smart-gantt-chart .add-task-button:hover,
+smart-gantt-chart .add-task-button:active {
+	color: rgba(109, 113, 232, 1);
+}
+
+#smartGantt .etiket {
+	font-weight: bold;
+}
+
+#smartGantt #islemTuslari {
+	position: absolute;
+	top:1px;
+	right: 10px;
+	z-index: 10;
+	opacity: .8;
+}
+#smartGantt #islemTuslari > * {
+	width: 150px;
+	height: 40px;
+	margin-right: 10px;
+}
+#smartGantt #islemTuslari #gorunumParent {
+	width: 230px;
+	margin-top: 3px;
+	margin-right: 20px;
+}
+#smartGantt #islemTuslari #gorunumParent .etiket {
+	margin-top: 2px;
+}
+#smartGantt #islemTuslari #gorunumParent > * {
+	padding-right: 8px;
+}

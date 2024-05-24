@@ -1,0 +1,149 @@
+{
+	"sortable": true,
+	"sortMode": "many",
+	"resourceColumns": [{
+		"value": "label",
+		"root": true,
+		"min": 0.01,
+		"label": "Kişi"
+	}, {
+		"value": "progress",
+		"size": 80,
+		"min": 0.01,
+		"label": "İlerleme"
+	}],
+	"disableTaskRemove": true,
+	"nonworkingDays": [6, 0],
+	"dataSource": [{
+		"disableResources": true,
+		"vioID": "132",
+		"expanded": true,
+		"label": "DENEME - ROL MİLİ - 11.Oca,23",
+		"dragProject": true,
+		"synchronized": true,
+		"tasks": [{
+			"shortLabel": "T001",
+			"duration": 30000,
+			"vioID": "231",
+			"expanded": true,
+			"connections": [{
+				"lag": 6000000,
+				"type": 0,
+				"targetVioID": "232"
+			}],
+			"resources": [{
+				"vioID": "T001",
+				"label": "Kesim Testeresi",
+				"id": "T001"
+			}],
+			"label": "10-Kesme",
+			"dragProject": true,
+			"dateStart": "2021-01-12T08:00:00",
+			"type": "task"
+		}, {
+			"shortLabel": "T002",
+			"duration": 45000,
+			"vioID": "232",
+			"expanded": true,
+			"connections": [{
+				"lag": 9300000,
+				"type": 0,
+				"targetVioID": "233"
+			}],
+			"resources": [{
+				"vioID": "T002",
+				"label": "Sıcak Dövme Presi-1",
+				"id": "T002"
+			}],
+			"label": "20-Dövme",
+			"dragProject": true,
+			"dateStart": "2021-01-12T08:00:00",
+			"type": "task"
+		}, {
+			"shortLabel": "T005",
+			"duration": 60000,
+			"vioID": "233",
+			"expanded": true,
+			"connections": [{
+				"lag": 12450000,
+				"type": 0,
+				"targetVioID": "234"
+			}],
+			"resources": [{
+				"vioID": "T005",
+				"label": "CNC Dik İşlem-2",
+				"id": "T005"
+			}],
+			"label": "40-OPR-1",
+			"dragProject": true,
+			"dateStart": "2021-01-12T08:00:00",
+			"type": "task"
+		}, {
+			"shortLabel": "T006",
+			"duration": 75000,
+			"vioID": "234",
+			"expanded": true,
+			"connections": [{
+				"lag": 15600000,
+				"type": 0,
+				"targetVioID": "235"
+			}],
+			"resources": [{
+				"vioID": "T006",
+				"label": "CNC Yatay İşlem-1",
+				"id": "T006"
+			}],
+			"label": "41-OPR-2",
+			"dragProject": true,
+			"dateStart": "2021-01-12T08:00:00",
+			"type": "task"
+		}, {
+			"shortLabel": "T007",
+			"duration": 90000,
+			"vioID": "235",
+			"expanded": true,
+			"resources": [{
+				"vioID": "T007",
+				"label": "CNC Yatay İşlem-2",
+				"id": "T007"
+			}],
+			"label": "42-OPR-3",
+			"dragProject": true,
+			"dateStart": "2021-01-12T08:00:00",
+			"type": "task"
+		}],
+		"dateStart": "2021-01-12T08:00:00",
+		"dateEnd": "2021-01-12T16:20:00",
+		"type": "project"
+	}],
+	"view": "month",
+	"autoSchedule": true,
+	"resourceTimelineView": "hours",
+	"resourceTimelineMode": "custom",
+	"taskColumns": [{
+		"max": 90,
+		"value": "dateStart",
+		"size": 90,
+		"min": 0.01,
+		"label": "Baş."
+	}, {
+		"max": 90,
+		"value": "dateEnd",
+		"size": 90,
+		"min": 0.01,
+		"label": "Bit."
+	}, {
+		"value": "resources",
+		"size": 180,
+		"min": 0.01,
+		"label": "Atanan"
+	}, {
+		"value": "label",
+		"root": true,
+		"min": 0.01,
+		"label": "Operasyon"
+	}],
+	"nonworkingHours": [0, 1, 2, 3, 4, 5, 6, 7, 12, 19, 20, 21, 22, 23],
+	"treeSize": 590.01,
+	"showProgressLabel": true
+}

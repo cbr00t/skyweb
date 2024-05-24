@@ -1,0 +1,407 @@
+
+.skyMESApp .jqx-grid-column-header {
+	font-weight: bold;
+}
+.skyMESApp .jqx-grid-column-header * {
+	font-size: 115%;
+}
+.skyMESApp .jqx-grid-statusbar * {
+	font-size: 100%;
+	font-weight: normal;
+}
+.skyMESApp .jqx-widget-header p {
+	display: none;
+}
+.skyMESApp .jqx-grid-statusbar {
+	padding-top: 0;
+	padding-bottom: 0;
+	/*top: 0 !important;*/
+	opacity: .9;
+}
+.skyMESApp .jqx-grid-statusbar.hasGroups {
+	margin-top: 26px !important;
+}
+.skyMESApp .jqx-grid-statusbar .jqx-grid-cell-pinned {
+	font-size: 125%;
+}
+.skyMESApp .jqx-grid-table .jqx-grid-cell {
+	font-size: 107%;
+	/* height: 35px; */
+}
+.skyMESApp .jqx-grid-table .jqx-grid-cell.selected {
+	border: 1.5px outset #7893dd !important;
+	background: #c3d9ff;
+}
+.skyMESApp.part .jqx-window-content .jqx-numberinput .jqx-action-button > * {
+	background-size: 36px 38px;
+}
+.skyMESApp .part #listeParent {
+	overflow-y: auto !important;
+}
+.skyMESApp.jqx-listbox {
+	background: ghostwhite !important;
+	opacity: .97 !important;
+}
+.skyMESApp.jqx-listbox .jqx-listitem-element .jqx-item {
+	padding: 20px 3px !important;
+}
+.skyMESApp .part .jqx-grid .jqx-grid-toolbar > .jqx-input-group {
+	margin: 5px 0 0 3px  !important;
+}
+.skyMESApp .part .jqx-grid .jqx-grid-toolbar > .jqx-input-group > input {
+	max-width: 120px;
+}
+.skyMESApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group,
+.skyMESApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group > * {
+	height: 35px !important;
+}
+
+
+.skyMESApp .itemParent::-webkit-scrollbar {
+	width: 8px !important;
+}
+.skyMESApp .itemParent::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey !important;
+  border-radius: 8px !important;
+}
+.skyMESApp .itemParent::-webkit-scrollbar-thumb {
+  background: #969696 !important;
+  border-radius: 8px !important;
+}
+
+
+body.skyMESApp {
+}
+
+#contentParent.skyMESApp > #header > * {
+	padding-left: 25px;
+}
+.skyMESApp #header #appTitle .title-ekBilgi {
+	font-size: 180%;
+	/* height: 30px !important; */
+	color: #89e6d5;
+	margin: 9px 0 0 30px;
+}
+
+.skyMESApp.islemTuslari *,
+.skyMESApp .islemTuslari.asil * {
+	color: white;
+}
+.skyMESApp .islemTuslari.asil > *,
+.skyMESApp .islemTuslari-ek > * {
+	min-height: 50px;
+}
+.skyMESApp .islemTuslari.asil {
+	height: 100px;
+}
+
+.skyMESApp .islemTuslari.header {
+	position: fixed;
+	top: 2px;
+	right: 2px;
+	/* width: 48px; */
+	/* height: 48px; */
+	z-index: 1000;
+}
+.skyMESApp .islemTuslari.header button {
+	width: 38px !important;
+	margin-right: 8px;
+}
+.skyMESApp .islemTuslari.header #btnToggleFullScreen {
+	background-image: url(../../../_kernel/images/tamEkranAcBeyaz.png);
+	background-size: 32px 32px;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari,
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom {
+	opacity: .95;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari {
+	position: absolute;
+	right: 8px;
+	top: 54px;
+	z-index: 500;
+	min-height: 80px;
+	}
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom {
+	position: absolute;
+	right: 13px;
+	bottom: 12px;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari > *,
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom > * {
+	font-weight: bold;
+	vertical-align: top !important;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	border: 1px solid #ccc;
+	padding: 0 8px;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom > *:not(:hover):not(:focus):not(:active) {
+	opacity: .7;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari > *:hover,
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom > *:hover {
+	opacity: .9;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari > *:not(#btnTamam):hover,
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom > *:hover {
+}
+.skyMESApp.part .jqx-window-content #islemTuslari > *:focus,
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom > *:focus {
+	border: 3px solid #fcfcfc !important;
+	opacity: .9;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari > *:active,
+.skyMESApp.part .jqx-window-content #islemTuslari-bottom > *:active {
+	opacity: 1;
+}
+
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTamam,
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTazele {
+	border-radius: 8px;
+	width: 70px;
+	height: 65px;
+	background-color: #094fc9;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTamam {
+	background-size: 70px 65px;
+	background-image: url(../../../_kernel/images/maviTamam.png);
+}
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTazele {
+	position: absolute;
+	left: 15px;
+	background-size: 24px 24px;
+	background-image: url(../../../_kernel/images/tazele.png);
+}
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTamam:hover,
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTazele:hover,
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTamam:focus,
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTazele:focus {
+	background-color: #517dca !important;
+}
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTamam:active,
+.skyMESApp.part .jqx-window-content #islemTuslari #btnTazele:active {
+	background-color: #00c474 !important;
+}
+
+
+.skyMESApp .part #hizliBulForm {
+	width: 270px;
+	height: 50px;
+	margin-top: 2px;
+}
+.skyMESApp .part #hizliBulForm #txtHizliBul {
+	min-width: 100px;
+	max-width: 500px;
+	height: 100%;
+	border-radius: 10px;
+	background-image: url(../../../_kernel/images/search.png);
+	background-position: 10px center;
+	background-size: 23px;
+	background-repeat: no-repeat;
+	padding-left: 43px;
+}
+.skyMESApp .part #hizliBulForm #txtHizliBul:hover {
+	background-color: #dde6f1;
+}
+.skyMESApp .part #hizliBulForm #txtHizliBul:focus,
+.skyMESApp .part #hizliBulForm #txtHizliBul:active {
+	color: #333;
+	background-color: whitesmoke;
+}
+
+
+.skyMESApp #mainPart.part #background {
+	position: absolute;
+	left: 0;
+	top: 0;
+	background-repeat: no-repeat;
+	pointer-events: none;
+}
+
+.skyMESApp #mainPart.part #loginTextParent {
+	font-size: 90%;
+	margin: 1px 15px 0 0;
+	padding: 7px 20px;
+	opacity: .95;
+	z-index: 500 !important;
+}
+.skyMESApp #mainPart.part #loginTextParent {
+	color: whitesmoke;
+	background-color: #216cde !important;
+	border-radius: 13px;
+	/*color: #555;
+	padding: 5px 15px !important;
+	position: fixed;
+	top: 8px;
+	right: 120px;*/
+}
+.skyMESApp #mainPart.part #loginTextParent:hover {
+	background-color: #2574ec !important;
+	opacity: .9;
+}
+.skyMESApp #mainPart.part #loginTextParent:active {
+	background-color: #3275d7 !important;
+	opacity: 1;
+}
+@media (max-width: 450px) {
+	.skyMESApp #mainPart.part #loginTextParent {
+		font-size: 83%;
+		padding: 5px 13px !important;
+		top: 50px;
+		right: 3px;
+	}
+}
+
+
+.skyMESApp.klavye.part {
+	/*opacity: .95 !important;*/
+	padding: 0 !important;
+}
+/*.skyMESApp.klavye.part.collapsed {
+	opacity: .4 !important;
+	z-index: 500 !important;
+}*/
+.skyMESApp.klavye.part .jqx-window-header {
+	height: 23px;
+	font-size: 75%;
+	/*cursor: pointer !important;*/
+}
+.skyMESApp.klavye.part.collapsed .jqx-window-header #title div:first-child {
+	display: none;
+}
+/*.skyMESApp.klavye.part .jqx-window-header:hover,
+.skyMESApp.klavye.part .jqx-window-header:focus {
+	background-color: #387add !important;
+}
+.skyMESApp.klavye.part .jqx-window-header:active {
+	background-color: #0049b7 !important;
+}*/
+.skyMESApp.klavye.part .jqx-window-header > * {
+	margin-top: -4px;
+}
+.skyMESApp.klavye.part.numerik .jqx-window-header > .jqx-window-collapse-button-background {
+	margin-right: 28px !important;
+}
+.skyMESApp.klavye.part .ui-window-content {
+	width: 100%;
+	height: 100%;
+	margin: 0 0 0 3px !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+}
+.skyMESApp.klavye.part .ui-window-content,
+.skyMESApp.klavye.part #tusForm,
+.skyMESApp.klavye.part #tusForm #tuslar {
+	width: 100%;
+	height: 100%;
+}
+.skyMESApp.klavye.part #tuslar .item-parent {
+	width: 100%;
+}
+.skyMESApp.klavye.part #tuslar .item {
+	float: left;
+	height: 100%;
+	font-weight: bold !important;
+	font-size: 120% !important;
+	border-radius: 3px !important;
+	margin: .8px 0 0 0;
+}
+.skyMESApp.klavye.part {
+	z-index: 50000 !important;
+}
+
+.skyMESApp.klavye.part.numerik .jqx-window-header #aktifMiktarParent {
+	font-size: 185%;
+	font-weight: bold;
+	text-align: right;
+	width: 140px !important;
+	color: #6ac98a;
+	background: #222;
+	margin: -10px 3px 0 8px;
+	padding: 2px 5px;
+	border-radius: 5px;
+}
+.skyMESApp.klavye.part.numerik .jqx-window-header #aktifMiktarParent #aktifMiktar {
+}
+
+.skyMESApp.klavye.part.numerik #tuslar .item-parent {
+	height: 24.2%;
+}
+.skyMESApp.klavye.part.numerik #tuslar .item {
+	width: 33%;
+}
+.skyMESApp.klavye.part.numerik #tuslar .item[data-id=backspace] {
+	width: 33%;
+}
+/*.skyMESApp.klavye.part.numerik #tuslar .item[data-id=clear] {
+	width: 65.8%;
+}*/
+
+.skyMESApp.klavye.part.text #tuslar .item-parent {
+	height: 19.2%;
+}
+.skyMESApp.klavye.part.text #tuslar .item {
+	width: 8.3%;
+}
+.skyMESApp.klavye.part.text #tuslar .item[data-id=backspace] {
+	width: 16.6%;
+}
+.skyMESApp.klavye.part.text #tuslar .item[data-id=enter] {
+	width: 16.6%;
+}
+.skyMESApp.klavye.part.text #tuslar .item[data-id=space] {
+	width: 99.6%;
+}
+.skyMESApp.klavye.part.text #tuslar .item[data-id=clear] {
+	width: 65.5%;
+}
+
+.skyMESApp.klavye.part #tuslar .item:hover,
+.skyMESApp.klavye.part #tuslar .item:focus {
+	background: aliceblue;
+}
+.skyMESApp.klavye.part #tuslar .item:active {
+	background: #b6caff;
+}
+
+
+.skyMESApp.part .textInput.part {
+	font-size: 110%;
+}
+.skyMESApp.part .ui-window-content .textInput.part {
+	margin: 3px 13px !important;
+	padding: 0 !important;
+}
+.skyMESApp.part .textInput.part #baslikTextParent {
+	font-size: 160%;
+	padding: 5px 0;
+	padding-bottom: 10px;
+	min-height: 80px;
+	color: #555;
+	background: #ebebea;
+}
+.skyMESApp.part .textInput.part #textInputParent {
+	width: 89.5%;
+	height: 53px;
+	border: none;
+	margin-top: 3px !important;
+}
+.skyMESApp.part .textInput.part #textInputParent #textInput {
+	font-size: 110%;
+	width: 99% !important;
+	height: 100% !important;
+	overflow-y: auto !important;
+}
+
+
+.skyMESApp.klavye.part,
+.skyMESApp.klavye.part *,
+.skyMESApp .itemForm {
+	/*pointer-events: none !important;*/
+}

@@ -1,0 +1,134 @@
+
+body.skyMESApp {
+	overflow: hidden;
+	/* overflow-x: scroll; */
+}
+
+#contentParent.skyMESApp .part * {
+	font-family: "HelveticaNeue-Bold", "Conv_Roboto-Medium";
+}
+#contentParent.skyMESApp .part {
+	font-size: 15pt;
+	/* padding: 2px 2px 0 3px; */
+	background-color: #f8f8f8;
+	/*overflow: hidden;*/
+}
+@media (max-width: 1000px) {
+	#contentParent.skyMESApp .part {
+		font-size: 15pt;
+	}
+}
+@media (max-width: 700px) {
+	#contentParent.skyMESApp .part {
+		font-size: 14pt;
+	}
+}
+@media (max-width: 550px), (max-height: 500px) {
+	#contentParent.skyMESApp .part {
+		font-size: 13pt;
+	}
+}
+@media (max-width: 530px), (max-height: 470px) {
+	#contentParent.skyMESApp .part {
+		font-size: 12pt;
+	}
+}
+@media (max-width: 500px), (max-height: 430px) {
+	#contentParent.skyMESApp .part {
+		font-size: 10pt;
+	}
+}
+
+.skyMESApp .islemTuslari.header #btnTazele {
+	background-image: url(../../../_kernel/images/tazele.png);
+	background-size: 24px 24px;
+	background-position: center;
+	background-repeat: no-repeat;
+
+
+.skyMESApp .part #islemTuslari #btnTamam {
+}
+
+.skyMESApp .part #textInputParent #textInput {
+	width: 87%;
+	height: 50px;
+	/* margin-top: 5px; */
+}
+
+.skyMESApp #filtreForm {
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+
+
+.skyMESApp #mainPart.part {
+}
+.skyMESApp #mainPart.part #background {
+	position: fixed;
+	background-size: 50% 50%;
+	background-position: center 80%;
+	background-image: url(../../../_kernel/images/skyMES_background.svg);
+	background-image: url(../../../_kernel/images/sky_logo.svg);
+	opacity: .1;
+	z-index: 0;
+}
+
+.skyMESApp #mainPart.part #subContent #ledDurumParent {
+	width: 40px;
+	height: 38px;
+	z-index: 10;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 100%;
+	border: .5px solid #ccc;
+	border-radius: 50%;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='KAPALI'] {
+	background-color: #888;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='YESIL'] {
+	background-color: #78c678;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='KIRMIZI'] {
+	background-color: red;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='MAVI'] {
+	background-color: lightcyan;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='SARI'] {
+	background-color: #c69c3b;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='BEYAZ'] {
+	background-color: white;
+}
+.skyMESApp #mainPart.part #subContent #ledDurumParent #ledDurum[data-durum='error'] {
+	background-image: url('../../../_kernel/images/uyari.png');
+	background-color: #ff9c9c;
+	animation: skyMESApp-durum-DR 4s infinite;
+}
+
+
+.skyMESApp .ekIsSayi {
+	color: #3b526c;
+	font-size: 80%;
+}
+
+@keyframes skyMESApp-durum-DR {
+	  0%	{ background-color: #e8ccd5; }
+	 25%	{ background-color: #f5c79c; }
+	 50%	{ background-color: #d15940; }
+	 75%	{ background-color: #f5c79c; }
+	100%	{ background-color: #e8ccd5; }
+}
+
+@keyframes skyMESApp-ledDurum-hata {
+	  0%	{ background-color: #e8ccd5; }
+	 50%	{ background-color: #f5c79c; }
+	100%	{ background-color: #e8ccd5; }
+}
+

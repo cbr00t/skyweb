@@ -1,0 +1,28 @@
+{
+	"tr": {
+		"": "",
+		"unassigned": "",
+		"taskColumnLabel": "Görev Adı",
+		"resourceColumnLabel": "Kaynak Adı",
+		"incorrectArgument": "{{elementType}}: {{methodName}} methodunda Hatalı parametre: {{argumentName}}.",
+		"outOfBounds": "{{elementType}}: {{methodName}} methodunda dizi sınırları aşıldı: {{argumentName}}.",
+		"noId": "Durum bilgisini kaydetmek/yüklemek/temizlemek için smartGanttChart bileşeni için bir (id) belirtilmelidir.",
+		"ok": "Tamam",
+		"cancel": "Vazgeç",
+		"delete": "SİL",
+		"deleteLink": "Bağlantıyı SİL",
+		"confirm": "{{componentName}} silinecek, <b>emin misiniz? </b>",
+		"name": "Adı",
+		"label": "İsim",
+		"dateTabLabel": "Tarih",
+		"timeTabLabel": "Saat",
+		"now": "Bugün",
+		"tasks": "Görevler",
+		"task": "Görev",
+		"resources": "Kaynaklar",
+		"resource": "Kaynak",
+		"duration": "Süre (saat)",
+		"dateStart": "Başlangıç",
+		"dateEnd": "Bitiş"
+	}
+}

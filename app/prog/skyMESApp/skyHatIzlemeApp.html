@@ -1,0 +1,506 @@
+<div>
+	<div class="debug">App Layout</div>
+	<div id="mainPart" class="part">
+		<div class="islemTuslari header flex-row">
+			<button id="btnToggleFullScreen"></button>
+			<button id="btnTazele"></button>
+			<button id="btnCacheReset"></button>
+			<button id="btnLogout"></button>
+		</div>
+
+		<div id="ekParts" class="part">
+			<div id="islemTuslari">
+				<button id="btnGeri" class="jqx-hidden"></button>
+				<button id="btnFiltre"></button>
+				<!--<button id="btnBekleyenIsEmirleri">EMR</button>-->
+				<button id="btnTopluIslem"></button>
+			</div>
+
+			<div id="filtreForm" class="part jqx-hidden">
+				<input id="txtFiltre" type="text" maxlength="50"></input>
+			</div>
+
+			<div id="menuParent" class="menuParent jqx-hidden">
+				<div id="menu" class="menu">
+					<ul>
+						<li id="siradakiIsler">SIRADAKİ İŞLER</li>
+						<li id="bekleyenIsler">GENEL BEKLEYEN İŞLER</li>
+						<li id="ekBilgi">EK BİLGİ</li>
+					</ul>
+				</div>
+			</div>
+
+			<div id="topluIslemMenuParent" class="menuParent jqx-hidden">
+				<div id="topluIslemMenu" class="menu">
+					<ul>
+						<li id="mola">TOPLU MOLA</li>
+						<li id="vardiyaDegisimi">TOPLU MESAİ BİTİMİ</li>
+						<li id="isBitti">TOPLU İŞ BİTİR</li>
+						<li id="gercekleme">TOPLU GERÇEKLEME</li>
+					</ul>
+				</div>
+			</div>
+
+			<div id="tezgahSecUyari" class="jqx-hidden">
+				<div>Bir tezgaha dokunarak seçim yapınız.</div>
+				<button id="btnVazgec">VAZGEÇ</button>
+			</div>
+		</div>
+		
+		
+		<div id="disForm">
+			<div id="hatListeParent"></div>
+		</div>
+
+		<template id="templatesOrtak">
+			<div class="hat item">
+				<div id="header">
+					<span id="text"></span>
+					<button id="btnZamanEtuduBaslat">ZMN BŞLT</button>
+					<button id="btnZamanEtuduKapat">ZMN KPT</button>
+					<button id="btnIsBitir">İŞ BTR</button>
+					<button id="btnBekleyenIsEmirleri">EMR</button>
+					<button id="btnBekleyenIsler">BEK</button>
+				</div>
+				<div id="tezgahListeParent"></div>
+			</div>
+
+			<div class="tezgah item">
+				<div id="subContent">
+					<div id="tezgahVeIsBilgiParent" class="parent">
+						<div id="tezgahParent" class="parent">
+							<div id="tezgahText" class="veri"></div>
+							<div id="btnPersonelAtaParent" class="parent">
+								<button id="btnPersonelAta"></button>
+							</div>
+							<div id="ledDurumParent" class="parent jqx-hidden">
+								<div id="ledDurum"></div>
+							</div>
+							<div id="isBilgiParent" class="parent">
+								<span class="etiket-basit">(+</span>
+								<span id="siradakiIsSayiText" class="veri">0</span>
+								<span class="etiket">iş)</span>
+							</div>
+						</div>
+					</div>
+					<div id="perParent" class="parent">
+						<div id="perText" class="veri"></div>
+					</div>
+					<div id="isListeParent" class="parent"></div>
+					<div id="miktarVeSaymaParent" class="parent">
+						<div id="miktarParent" class="parent flex-row">
+							<div id="emirMiktarParent" class="parent">
+								<div class="etiket">Emir:</div>
+								<div id="emirMiktarText" class="veri">0</div>
+							</div>
+							<div id="uretMiktarParent" class="parent">
+								<div class="etiket">Üret:</div>
+								<div class="parent flex-row">
+								<div id="onceUretMiktarText" class="veri">0</div>
+									<div class="aktifUretMiktarParent" class="veri basic-hidden">
+										<span class="etiket-basit">+</span>
+										<span id="aktifUretMiktarText">0</span>
+									</div>
+								</div>
+							</div>
+							<div id="iskMiktarParent" class="parent">
+								<div class="etiket">Isk:</div>
+								<div id="iskMiktarText" class="veri">0</div>
+							</div>
+							<div id="netMiktarParent" class="parent">
+								<div class="etiket">Net:</div>
+								<div id="netMiktarText" class="veri">0</div>
+							</div>
+						</div>
+						<div id="cevrimVeSaymaParent" class="parent flex-row">
+							<div id="cevrimParent" class="parent">
+								<div class="parent">
+									<span class="etiket">Çev:</span>
+									<span id="onceCevrimSayisi">0</span>
+									<span class="etiket-basit">+</span>
+									<span id="aktifCevrimSayisi">0</span>
+								</div>
+							</div>
+							<div id="saymaParent" class="parent">
+								<div class="parent">
+									<span class="etiket">Say:</span>
+									<span id="saymaInd" class="veri"></span>
+									<span class="etiket">/</span>
+									<span id="saymaSayisi" class="veri"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="grafikParent" class="parent flex-row">
+						<div id="oee" class="grafik gauge">
+						    <div class="percentage"></div>
+						    <div class="mask"></div>
+						    <span class="value">0%</span>
+						</div>
+						<div id="grafikDegerHatali">
+							?
+						</div>
+						<div id="kalanIsGrafikParent" class="parent flex-row basic-hidden"></div>
+					</div>
+					<div id="ekBilgiParent" class="basic-hidden">
+						<div id="ekBilgiText"></div>
+						<div id="sonDurParent">
+							<span>Son Dur:</span>
+							<span id="sonDurText"></span>
+						</div>
+					</div>
+					<div id="durumParent">
+						<div class="flex-row">
+							<div id="imgDurum"></div>
+							<div id="durumText">?-Belirsiz</div>
+						</div>
+						<div id="islemTuslari">
+							<button id="btnMenu"></button>
+							<button id="btnIzle"></button>
+							<button id="btnToggle"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<marquee class="isListe" class="parent" direction="up" behavior="alternate" scrollamount="0" scrolldelay="10000"></marquee>
+
+			<div class="oemParent parent">
+				<span id="seqParent" class="parent">
+					<span id="seq" class="veri"></span>
+				</span>
+				<span id="emirParent" class="parent">
+					<span id="emirText" class="veri"></span>
+				</span>
+				<span id="operParent" class="parent">
+					<span id="operText" class="veri"></span>
+				</span>
+				<span id="urunParent" class="parent">
+					<span id="urunText" class="veri"></span>
+				</span>
+				<span id="sureParent" class="parent">
+					<span class="etiket-basit">(</span>
+					<span id="saymaSayisi" class="veri">0</span>
+					<span class="etiket">:</span>
+					<span id="saymaArasiSure" class="veri">0</span>
+					<span class="etiket">,</span>
+					<span id="saymaSonSure" class="veri"></span>
+					<!--<span class="etiket">,</span>
+					<span id="netSure" class="veri"></span>-->
+					<span class="etiket-basit">)</span>
+				</span>
+			</div>
+
+			<div id="siradakiIsler" class="part">
+				<div id="header">
+					<div id="islemTuslari" class="islemTuslari-ek">
+						<button id="btnBekleyenIsler" class="jqx-hidden">B</button>
+						<button id="btnZamanEtudu">Z</button>
+						<button id="btnSureDuzenle">D</button>
+						<button id="btnTazele"></button>
+						<button id="btnSiradanKaldir">SIRADAN KALDIR</button>
+						<button id="btnIsAta">İŞ ATA</button>
+						<button id="btnTamam" class="jqx-hidden"></button>
+						<button id="btnYukari"></button>
+						<button id="btnAsagi"></button>
+					</div>
+				</div>
+				<div class="gridParent">
+					<div id="grid"></div>
+				</div>
+				<div id="footer">
+					<div id="islemTuslari-bottom" class="islemTuslari-ek">
+						<button id="btnBaskaTezgahaTasi">BAŞKA TEZGAHA TAŞI...</button>
+						<button id="btnIsParcala">İŞİ PARÇALA...</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="bekleyenIsler" class="part">
+				<div id="header">
+					<div id="siralamaParent">
+						<div class="etiket">Sıra:</div>
+						<div id="ddSiralama" class="veri"></div>
+					</div>
+					<div id="chkUygunAsama_parent">
+						<input id="chkUygunAsama" type="checkbox"></input>
+						<label for="chkUygunAsama">Uygun Aşamalar</label>
+					</div>
+					<div id="islemTuslari">
+						<div id="islemTuslari" class="islemTuslari-ek">
+							<button id="btnSiradakiIsler" class="jqx-hidden">S</button>
+							<button id="btnSureDuzenle">D</button>
+							<button id="btnTazele"></button>
+							<button id="btnToggleDevreDisi">DVR DIŞI</button>
+							<button id="btnIsEkleFromOper">YENI OPR</button>
+							<button id="btnSirayaAl">SIRAYA AL</button>
+							<button id="btnTamam" class="jqx-hidden"></button>
+						</div>
+					</div>
+				</div>
+				<div class="gridParent">
+					<div id="grid"></div>
+				</div>
+				<div id="footer">
+					<div id="islemTuslari-bottom" class="islemTuslari-ek"></div>
+				</div>
+			</div>
+
+			<div id="bekleyenIsEmirleri" class="part">
+				<div id="header">
+					<div id="islemTuslari" class="islemTuslari-ek">
+						<button id="btnTazele"></button>
+					</div>
+				</div>
+				<div class="gridParent">
+					<div id="grid"></div>
+				</div>
+				<div id="footer">
+				</div>
+			</div>
+
+			<div id="personelSec" class="part">
+				<div id="header">
+					<div id="islemTuslari">
+						<button id="btnTazele"></button>
+						<button id="btnTamam"></button>
+					</div>
+				</div>
+				<div class="gridParent">
+					<div id="grid"></div>
+				</div>
+				<div id="footer">
+					<div id="islemTuslari-bottom" class="islemTuslari-ek"></div>
+				</div>
+			</div>
+
+			<div id="operSec" class="part">
+				<div id="header">
+					<div id="islemTuslari">
+						<button id="btnTazele"></button>
+						<span id="chkUrunAgacinaEkle_parent">
+							<input id="chkUrunAgacinaEkle" type="checkbox"></input>
+							<label for="chkUrunAgacinaEkle">Ürün Ağacına da Ekle</label>
+						</span>
+						<button id="btnTamam"></button>
+					</div>
+				</div>
+				<div class="gridParent">
+					<div id="grid"></div>
+				</div>
+				<div id="footer">
+					<div id="islemTuslari-bottom" class="islemTuslari-ek"></div>
+				</div>
+			</div>
+
+			<div id="sureSayiDuzenle" class="part">
+				<div id="header">
+					<div id="islemTuslari">
+						<button id="btnTamam"></button>
+					</div>
+					<div id="bilgiParent">
+						<div id="bilgiText" class="flex-row"></div>
+					</div>
+				</div>
+				<div class="form-parent">
+					<div class="form-item">
+						<label for="sinyalSayisi">Sinyal Sayısı:</label>
+						<input id="sinyalSayisi" name="sinyalSayisi" type="number" maxlength="4" min="0"></input>
+					</div>
+					<div class="form-item">
+						<label for="sinyalTekilSure">Sinyal Tekil Süre:</label>
+						<input id="sinyalTekilSure" name="sinyalTekilSure" type="number" maxlength="5" min="0"></input>
+					</div>
+					<div class="form-item">
+						<label for="sinyalToplamSure">Sinyal Toplam Süre:</label>
+						<input id="sinyalToplamSure" name="sinyalToplamSure" type="number" maxlength="5" min="0"></input>
+					</div>
+				</div>
+			</div>
+
+			<div id="zamanEtudu" class="part">
+				<div id="header">
+					<div id="islemTuslari">
+						<!--<button id="btnTamam"></button>-->
+					</div>
+					<div id="bilgiParent">
+						<div id="bilgiText" class="flex-row"></div>
+					</div>
+					<div id="durumParent">
+						<span>Etüd:</span>
+						<span id="durum"></span>
+					</div>
+				</div>
+				<div class="form-parent">
+					<div class="container form-item flex-row">
+						<div class="sub-parent">
+							<div class="form-item">
+								<label for="sinyalSayisi">Sinyal Sayısı:</label>
+								<input id="sinyalSayisi" name="sinyalSayisi" type="number" maxlength="4" min="0"></input>
+							</div>
+							<div class="form-item">
+								<label for="cevrimMinSn">Çevrim Min. Süre:</label>
+								<input id="cevrimMinSn" name="cevrimMinSn" type="number" maxlength="4" min="0"></input>
+							</div>
+							<div class="form-item">
+								<label for="cevrimMaxSn">Çevrim Max. Süre:</label>
+								<input id="cevrimMaxSn" name="cevrimMaxSn" type="number" maxlength="4" min="0"></input>
+							</div>
+						</div>
+						<div class="sub-parent">
+							<div class="baslikText">İki Sinyal Arası</div>
+							<div class="form-item">
+								<label for="sinyalArasiMinSn">Min sn:</label>
+								<input id="sinyalArasiMinSn" name="sinyalArasiMinSn" type="number" maxlength="4" min="0"></input>
+							</div>
+							<div class="form-item">
+								<label for="sinyalArasiMaxSn">Max sn:</label>
+								<input id="sinyalArasiMaxSn" name="sinyalArasiMaxSn" type="number" maxlength="4" min="0"></input>
+							</div>
+						</div>
+					</div>
+					<div class="container form-item ek-islemTuslari">
+						<button id="baslat">Başlat</button>
+					</div>
+					<div class="container form-item ornekleme jqx-hidden">
+						<div class="sub-parent flex-row ornekleme-header">
+							<div class="baslikText ust-baslikText">Örnekleme</div>
+							<div class="form-item">
+								<label for="ornekSayisi">Örnek Sayısı:</label>
+								<input id="ornekSayisi" name="ornekSayisi" type="number" maxlength="4" min="0" readonly></input>
+							</div>
+						</div>
+						<div class="sub-parent ornekleme-content">
+							<div class="baslikText">Çevrim Ortalama</div>
+							<div class="ara-parent flex-row">
+								<div class="sub-parent">
+									<div class="form-item">
+										<label for="cevrimEnKisa">En Kısa:</label>
+										<input id="cevrimEnKisa" name="cevrimEnKisa" type="number" maxlength="5" min="0" readonly></input>
+									</div>
+									<div class="form-item">
+										<label for="cevrimEnUzun">En Uzun:</label>
+										<input id="cevrimEnUzun" name="cevrimEnUzun" type="number" maxlength="5" min="0" readonly></input>
+									</div>
+									<div class="form-item">
+										<label for="ortalama">Ortalama:</label>
+										<input id="cevrimOrtalama" name="cevrimOrtalama" type="number" maxlength="5" min="0" readonly></input>
+									</div>
+								</div>
+								<div class="sub-parent ek-islemTuslari">
+									<div class="form-item"><button id="etudReset">Etüd Reset</button></div>
+									<div class="form-item"><button id="etudKapat">Etüd Kapat</button></div>
+									<div class="form-item"><button id="sureGuncelleVeEtudKapat">Süre Güncelle ve Etüd Kapat</button></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="klavye part" readonly>
+				<div id="tusForm" class="itemForm jqx-hidden" readonly keyboard="disable">
+					<div id="tuslar" class="itemParent" readonly keyboard="disable"></div>
+				</div>
+				
+				<template id="numerik" class="items-template">
+					<div class="item-parent">
+						<button class="item" data-id="7">7</button>
+						<button class="item" data-id="8">8</button>
+						<button class="item" data-id="9">9</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="4">4</button>
+						<button class="item" data-id="5">5</button>
+						<button class="item" data-id="6">6</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="1">1</button>
+						<button class="item" data-id="2">2</button>
+						<button class="item" data-id="3">3</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="0">0</button>
+						<!--<button class="item action" data-id="backspace">&lt;--</button>-->
+						<button class="item action" data-id=".">.</button>
+						<button class="item action" data-id="clear">SİL</button>
+					</div>
+				</template>
+
+				<template id="text" class="items-template">
+					<div class="item-parent">
+						<button class="item" data-id="1">1</button>
+						<button class="item" data-id="2">2</button>
+						<button class="item" data-id="3">3</button>
+						<button class="item" data-id="4">4</button>
+						<button class="item" data-id="5">5</button>
+						<button class="item" data-id="6">6</button>
+						<button class="item" data-id="7">7</button>
+						<button class="item" data-id="8">8</button>
+						<button class="item" data-id="9">9</button>
+						<button class="item" data-id="0">0</button>
+						<button class="item action" data-id="backspace">&lt;--</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="Q">Q</button>
+						<button class="item" data-id="W">W</button>
+						<button class="item" data-id="E">E</button>
+						<button class="item" data-id="R">R</button>
+						<button class="item" data-id="T">T</button>
+						<button class="item" data-id="Y">Y</button>
+						<button class="item" data-id="U">U</button>
+						<button class="item" data-id="I">I</button>
+						<button class="item" data-id="O">O</button>
+						<button class="item" data-id="P">P</button>
+						<button class="item action" data-id="enter">ENTER</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="A">A</button>
+						<button class="item" data-id="S">S</button>
+						<button class="item" data-id="D">D</button>
+						<button class="item" data-id="F">F</button>
+						<button class="item" data-id="G">G</button>
+						<button class="item" data-id="H">H</button>
+						<button class="item" data-id="J">J</button>
+						<button class="item" data-id="K">K</button>
+						<button class="item" data-id="L">L</button>
+						<button class="item" data-id="Ş">Ş</button>
+						<button class="item" data-id="İ">İ</button>
+						<button class="item" data-id=",">,</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item" data-id="Z">Z</button>
+						<button class="item" data-id="X">X</button>
+						<button class="item" data-id="C">C</button>
+						<button class="item" data-id="V">V</button>
+						<button class="item" data-id="B">B</button>
+						<button class="item" data-id="N">N</button>
+						<button class="item" data-id="M">M</button>
+						<button class="item" data-id="Ö">Ö</button>
+						<button class="item" data-id="Ç">Ç</button>
+						<button class="item" data-id="Ü">Ü</button>
+						<button class="item" data-id="Ğ">Ğ</button>
+						<button class="item" data-id=".">.</button>
+					</div>
+					<div class="item-parent flex-row">
+						<button class="item action" data-id="space">SPACE</button>
+					</div>
+				</template>
+			</div>
+
+			<div id="textInput" class="textInput part">
+				<div id="islemTuslari" class="islemTuslari">
+					<button id="btnTamam"></button>
+				</div>
+				<div id="baslikTextParent" class="jqx-hidden">
+					<div id="baslikText"></div>
+				</div>
+				<div id="textInputParent">
+					<input id="textInput" name="textInput" type="textbox"></input>
+				</div>
+			</div>
+		</template>
+
+		<div id="background"></div>
+	</div>
+</div>

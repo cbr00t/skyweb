@@ -1,0 +1,31 @@
+0: "SY - Sayým"
+1: "TR - Depo Transfer"
+2: "FORKLIFT - Forklift Taþýma"
+3: "TRS - Þube Transfer"
+4: "AF - Mal Kabul: Alým Fatura"
+5: "AI - Mal Kabul: Alým Ýrsaliye"
+6: "AS - Mal Kabul: Alým Sipariþ"
+7: "AFI - Mal Kabul: Alým ÝADE Fatura"
+8: "AII - Mal Kabul: Alým ÝADE Ýrsaliye"
+9: "TF - Sevkiyat: Satýþ Fatura"
+10: "TI - Sevkiyat: Satýþ Ýrsaliye"
+11: "TS - Sevkiyat: Satýþ Sipariþ"
+12: "TFI - Sevkiyat: Satýþ ÝADE Fatura"
+13: "TII - Sevkiyat: Satýþ ÝADE Ýrsaliye"
+14: "TRSA - Þubeler Arasý Transfer"
+
+
+
+
+
+0: "TF - Satýþ Fatura"
+1: "TI - Satýþ Ýrsaliye"
+2: "TFI - Satýþ ÝADE Fatura"
+3: "TII - Satýþ ÝADE Ýrsaliye"
+4: "AFI - Alým ÝADE Fatura"
+5: "AII - Alým ÝADE Ýrsaliye"
+6: "U - Uðrama"
+7: "BT - Tahsilat"
+8: "PS - Ertesi Gün Sipariþ"
+9: "PI - Pls. Depoya ÝADE"
+

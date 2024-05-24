@@ -1,0 +1,53 @@
+[{
+	"label": "Project 1",
+	"dateStart": "2020-03-10T12:30:00",
+	"dateEnd": "2021-06-10T3:59:00",
+	"type": "project",
+	"expanded": true,
+	"connections": [{
+		"target": 1,
+		"type": 0,
+		"lag": 172800000
+	}],
+	"tasks": [{
+		"label": "Task 1.1",
+		"dateStart": "2020-02-10",
+		"dateEnd": "2021-01-10",
+		"type": "task",
+		"connections": [{
+			"target": 2,
+			"type": 0,
+			"lag": 1728000000
+		}]
+	}, {
+		"label": "Task 1.2",
+		"dateStart": "2020-10-10",
+		"dateEnd": "2021-2-31",
+		"type": "task",
+		"connections": [{
+			"target": 3,
+			"type": 1,
+			"lag": 1296000000
+		}]
+	}]
+}, {
+	"label": "Task 2",
+	"dateStart": "2020-03-10T15:30:00",
+	"dateEnd": "2021-08-10",
+	"type": "task"
+}, {
+	"label": "Milestone 1",
+	"dateEnd": "2021-05-24",
+	"type": "milestone",
+	"connections": [{
+		"target": 5,
+		"type": 1,
+		"lag": 432000000
+	}]
+}, {
+	"label": "Task 3",
+	"dateStart": "2021-02-05",
+	"dateEnd": "2021-07-08",
+	"progress": 50,
+	"type": "task"
+}]

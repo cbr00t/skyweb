@@ -1,0 +1,27 @@
+{
+  "short_name": "Sky Ticari Menü",
+  "name": "Sky Ticari Menü",
+  "offline_enabled": true,
+  "start_url": ".",
+  "scope": "/skyweb/skyTicMenu",
+  "background_color": "#3367D6",
+  "display": "standalone",
+  "theme_color": "#3367D6",
+  "icons": [
+	  {
+		"src": "/skyweb/images/firmalogo.png",
+		"type": "image/png",
+		"sizes": "144x144"
+	  },
+	  {
+		"src": "/skyweb/images/firmalogo.png",
+		"type": "image/png",
+		"sizes": "192x192"
+	  },
+	  {
+		"src": "/skyweb/images/firmalogo.png",
+		"type": "image/png",
+		"sizes": "512x512"
+	  }
+  ]
+}

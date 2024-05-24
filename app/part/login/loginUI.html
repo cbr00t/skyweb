@@ -1,0 +1,36 @@
+<div id="loginUI">
+	<template id="windows">
+		<div id="loginForm" class="loginUI">
+			<div id="header">
+				<div id="logo"/>
+			</div>
+			
+			<div id="content">
+				<div class="flex-row">
+					<label class="etiket">Tip:</label>
+					<div class="veri" id="loginTipi" name="loginTipi"></div>
+				</div>
+
+				<div class="flex-row">
+					<label class="etiket">Kullanıcı:</label>
+					<input class="veri" type="textbox" id="user" name="user"></input>
+				</div>
+
+				<div id="userTextParent" class="jqx-hidden">
+					<span id="userText" />
+				</div>
+
+				<div class="flex-row">
+					<label class="etiket">Şifre:</label>
+					<input class="veri" type="password" id="pass" name="pass"></input>
+					<button class="veri jqx-hidden" id="ssoLogin"></button>
+				</div>
+
+				<div id="chkSaveLoginParent">
+					<input id="chkSaveLogin" type="checkbox"></input>
+					<label for="chkSaveLogin">Beni Hatırla</label>
+				</div>
+			</div>
+		</div>
+	</template>
+</div>

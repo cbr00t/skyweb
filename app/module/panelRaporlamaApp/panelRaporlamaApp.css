@@ -1,0 +1,324 @@
+
+#contentParent .panelRaporlamaApp .part {
+	/* padding: 1px 0 0 1px; */
+}
+#contentParent .panelRaporlamaApp .part,
+.panelRaporlamaApp .jqx-widget * {
+	font-size: 102%;
+}
+@media (max-width: 600px) {
+	#contentParent .panelRaporlamaApp .part,
+	.panelRaporlamaApp .jqx-widget * {
+		font-size: 101.5%;
+	}
+}
+@media (max-width: 400px) {
+	#contentParent .panelRaporlamaApp .part,
+	.panelRaporlamaApp .jqx-widget {
+		font-size: 101%;
+	}
+}
+
+#contentParent .panelRaporlamaApp .jqx-dropdownlist *,
+#contentParent .panelRaporlamaApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group,
+#contentParent .panelRaporlamaApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group > * {
+	font-size: 105%;
+}
+#contentParent .panelRaporlamaApp .jqx-dropdownlist {
+	height: 25px !important;
+}
+#contentParent .panelRaporlamaApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group,
+#contentParent .panelRaporlamaApp .part .jqx-grid .jqx-grid-toolbar .jqx-input-group > * {
+	height: 26px !important;
+}
+#contentParent .panelRaporlamaApp .part .jqx-grid .jqx-grid-toolbar {
+}
+
+
+#contentParent .panelRaporlamaApp .part button {
+}
+
+.panelRaporlamaApp .islemTuslari {
+	position: fixed;
+	top: 2px;
+	right: 0;
+	z-index: 10;
+}
+.panelRaporlamaApp .islemTuslari.asil > *,
+.panelRaporlamaApp .islemTuslari-ek > * {
+	min-height: 50px;
+}
+.panelRaporlamaApp.islemTuslari *,
+.panelRaporlamaApp .islemTuslari.asil * {
+	color: white;
+}
+.panelRaporlamaApp .islemTuslari.asil  {
+	height: 100px;
+}
+
+.panelRaporlamaApp .jqx-grid-column-header {
+	font-weight: bold;
+}
+.panelRaporlamaApp .jqx-grid-column-header * {
+	font-size: 95%;
+}
+.panelRaporlamaApp .jqx-grid-statusbar * {
+	font-size: 95%;
+	font-weight: normal;
+}
+.panelRaporlamaApp tr[role=row] {
+}
+.panelRaporlamaApp td.jqx-grid-cell {
+	font-size: 83% !important;
+	line-height: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.panelRaporlamaApp tr[data-role=row-group] {
+}
+.panelRaporlamaApp tr[data-role=row-group] td.jqx-grid-cell-pinned {
+	font-size: 90%;
+	color: #555;
+	background-color: #d7d5df;
+	line-height: 26px;
+	padding-left: 30px;
+}
+.panelRaporlamaApp .jqx-widget-header p {
+	display: none;
+}
+.panelRaporlamaApp .jqx-grid-statusbar {
+	padding-top: 0;
+	padding-bottom: 0;
+	/*top: 0 !important;*/
+	opacity: .9;
+}
+.panelRaporlamaApp .jqx-grid-statusbar.hasGroups {
+	margin-top: 26px !important;
+}
+.panelRaporlamaApp .jqx-grid-statusbar .jqx-grid-cell-pinned {
+	font-size: 100%;
+}
+.panelRaporlamaApp .jqx-grid #toppager .jqx-button:first-child,
+.panelRaporlamaApp .jqx-grid #bottompager .jqx-button:first-child {
+	margin-left: 3px;
+}
+
+.panelRaporlamaApp #mainPart {
+	padding: 0 !important;
+}
+.panelRaporlamaApp #mainPart #disForm > div {
+	/*margin-top: 5px;
+	margin-left: 5px;*/
+}
+.panelRaporlamaApp #mainPart #disForm > div > div {
+	/* padding: 2px 2px; */
+}
+
+.panelRaporlamaApp #mainPart #btnToggleResponsivePanelParent {
+	position: fixed;
+	top: 54px;
+	left: 10px;
+	z-index: 700;
+}
+
+.panelRaporlamaApp #mainPart #btnToggleResponsivePanelParent #btnToggleResponsivePanel {
+}
+
+.panelRaporlamaApp #mainPart #disForm #nav {
+	min-width: 250px;
+	max-width: 250px;
+}
+/*@media (max-width: 600px) {
+	.panelRaporlamaApp #mainPart #disForm #nav {
+		min-width: 195px;
+		max-width: 195px;
+	}
+}*/
+.panelRaporlamaApp #mainPart #disForm #innerContent {
+	width: 100%;
+	overflow-y: hidden !important;
+}
+.panelRaporlamaApp #mainPart .box {
+	border: 1px solid gray;
+}
+
+
+.panelRaporlamaApp #mainPart #disForm .raporAdi,
+.panelRaporlamaApp #mainPart #disForm #nav .raporlarEtiket {
+	font-weight: bold;
+	text-align: center;
+	line-height: 55px;
+	/* padding: 5px 0; */
+	padding-left: 10px;
+}
+.panelRaporlamaApp #mainPart #disForm .raporAdi {
+	background-color: #d8efd8;
+}
+.panelRaporlamaApp #mainPart #disForm #nav .raporlarEtiket {
+	padding-left: 25px;
+}
+.panelRaporlamaApp #mainPart #disForm #nav .raporlarEtiket:hover,
+.panelRaporlamaApp #mainPart #disForm #nav .raporlarEtiket:focus {
+	color: royalblue;
+	text-decoration: underline;
+}
+
+.panelRaporlamaApp #mainPart #disForm #nav #raporMenu {
+	/* height: 80px; */
+	background-color: #fafafa;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #raporMenu ul {
+	padding: 0;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #raporMenu ul > li {
+	font-weight: normal;
+	width: 93%;
+	padding: 8px 0 8px 10px;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #raporMenu ul > li.selected {
+	font-weight: bold;
+	background-color: #c9ffcb;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #raporIslemTuslari {
+	margin-right: 2px;
+	padding: 8px 0 8px 0;
+	text-align: center;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #raporIslemTuslari #btnBaslat {
+	width: 80%;
+	color: white;
+	background-color: #6734A1;
+}
+.panelRaporlamaApp #mainPart #disForm #nav .filtreParent {
+	padding: 0;
+}
+.panelRaporlamaApp #mainPart #disForm #nav .filtreParent {
+	padding: 8px 0 8px 3px;
+}
+.panelRaporlamaApp #mainPart #disForm #nav .filtreParent > .jqx-radiobutton {
+	width: 92%;
+	height: 28px;
+	margin: 0;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	/*background-color: inherit;*/
+}
+.panelRaporlamaApp #mainPart #disForm #nav #aktifSatisBilgi {
+}
+.panelRaporlamaApp #mainPart #disForm #nav #zListeParent,
+.panelRaporlamaApp #mainPart #disForm #nav #subeListeParent {
+	padding: 0;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #zListe .jqx-grid-cell {
+	font-size: 73% !important;
+	padding-left: 3px;
+	padding-right: 2px;
+	line-height: 25px;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #zListe .jqx-grid-cell.zNo {
+	font-weight: bold;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #subeListe .jqx-grid-cell {
+	font-size: 73% !important;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #tarihBilgiParent {
+}
+.panelRaporlamaApp #mainPart #disForm #nav #tarihBilgiParent ._etiket {
+}
+.panelRaporlamaApp #mainPart #disForm #nav #tarihBilgiParent ._veri {
+	font-weight: bold;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #tarihBilgiParent ._veri * {
+	font-size: 95%;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #degiskenTarihParent {
+}
+.panelRaporlamaApp #mainPart #disForm #nav #degiskenTarihParent ._etiket {
+	font-weight: bold;
+}
+.panelRaporlamaApp #mainPart #disForm #nav #degiskenTarihParent ._veriParent {
+}
+.panelRaporlamaApp #mainPart #disForm #nav #degiskenTarihParent ._veriParent .tarih {
+	font-size: 72%;
+	width: 85px;
+	line-height: 30px;
+	border-radius: 6px;
+	padding: 1px;
+}
+@media (max-width: 450px) {
+	.panelRaporlamaApp #mainPart #disForm #nav #degiskenTarihParent ._veriParent .tarih {
+		width: 75px;
+	}
+}
+
+.panelRaporlamaApp #mainPart #disForm #innerContent #raporAdi2 {
+	font-size: 150%;
+	text-align: left;
+	/* padding-top: 15px; */
+	line-height: 57px;
+	padding-left: 60px;
+	margin-right: 2px;
+	cursor: pointer;
+	width: 100%;
+	height: 64px;
+	z-index: 100;
+}
+.panelRaporlamaApp #mainPart #disForm #innerContent #raporAdi2:hover,
+.panelRaporlamaApp #mainPart #disForm #innerContent #raporAdi2:focus {
+	background-color: #d7f5d8;
+	box-shadow: darkgray 12px 0 15px 4px;
+}
+
+.panelRaporlamaApp #mainPart #disForm #innerContent .raporAdi .ekBilgi {
+	text-align: right;
+	position: fixed;
+	right: 0;
+	margin-top: -45px;
+	z-index: 50000;
+}
+.panelRaporlamaApp #mainPart #disForm #innerContent .raporAdi .ekBilgi ._etiket {
+	font-size: 95%;
+	color: #aaa;
+	padding-right: 8px;
+}
+.panelRaporlamaApp #mainPart #disForm #innerContent .raporAdi .ekBilgi ._veri {
+	font-size: 100%;
+	font-weight: bold;
+	color: #166a25;
+	padding-right: 30px;
+}
+@media (max-width: 700px) {
+	.panelRaporlamaApp #mainPart #disForm #innerContent .raporAdi .ekBilgi {
+		margin-top: -2px;
+		padding-right: 20px !important;
+	}
+	.panelRaporlamaApp #mainPart #disForm #innerContent .raporAdi .ekBilgi ._etiket {
+		font-size: 70%;
+	}
+	.panelRaporlamaApp #mainPart #disForm #innerContent .raporAdi .ekBilgi ._veri {
+		font-size: 73%;
+		padding-right: 5px;
+	}
+}
+
+.panelRaporlamaApp #mainPart #disForm #innerContent #raporIcerikParent {
+	/*margin-top: 3px;*/
+	padding-right: 2px;
+	height: 87% !important;
+	overflow-y: auto !important;
+}
+.panelRaporlamaApp #mainPart #disForm #innerContent #raporIcerikParent > * {
+	margin-bottom: 4px;
+}
+.panelRaporlamaApp #mainPart #disForm #innerContent #raporIcerikParent .baslik {
+	font-weight: bold;
+	font-size: 125%;
+	color: #888;
+	line-height: 38px;
+	padding-left: 15px;
+}
+
+
+
+/*.part.panelRaporlamaApp.test .islemTuslari > * {
+}*/

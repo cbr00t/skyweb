@@ -1,0 +1,327 @@
+(function() {
+	window.SkyCafeSatisGridPart = class extends window.SkyCafePartBase {
+		constructor(e) {
+			e = e || {};
+			super(e);
+		}
+
+		static get noResizeEventOnInputs() { return false }
+		static get partName() { return 'satisGrid' }
+		static get isComponent() { return true }
+
+		preInitLayout(e) {
+			e = e || {};
+			super.preInitLayout(e);
+
+			const layout = e.layout || this.layout;
+			$.extend(this, {
+				toplamParent: layout.find(`#toplamParent`),
+				divToplam: layout.find(`#toplamParent #toplam`),
+				listeParent: layout.find(`#listeParent`),
+				divListe: layout.find(`#listeParent #liste`)
+			});
+
+			this.initListe(e);
+		}
+
+		postInitLayout(e) {
+			e = e || {};
+			super.postInitLayout(e);
+		}
+
+		async destroyPart(e) {
+			const {listePart} = this;
+			if (listePart)
+				listePart.destroyPart();
+			delete this.listePart;
+			delete this.listeWidget;
+
+			return await super.destroyPart(e);
+		}
+
+		async activatePart(e) {
+			e = e || {};
+			const {app, layout} = this;
+			layout.css(`opacity`, .2);
+
+			await super.activatePart(e);
+
+			this.tazele(e);
+		}
+
+		async deactivatePart(e) {
+			await super.deactivatePart(e);
+		}
+
+		initListe(e) {
+			const {divListe, listeParent} = this;
+			const groups = null;
+			const listePart = this.listePart = new DataTablePart({
+				layout: divListe,
+				widgetBeforeInit: _e => {
+					$.extend(_e.widgetArgs, {
+						width: false, height: '95%', serverProcessing: false, columnsHeight: 10,
+						sortable: true, pageable: false, pageSize: 15, pagerHeight: 25,
+						filterable: true, filterHeight: 38 , filterMode: 'simple',
+						// selectionMode: 'multipleRows',
+						selectionMode: 'custom',
+						/*groupsRenderer: (value, rec, level) =>
+							"Supplier Name: " + value*/
+						rendered: () => {
+							const {divListe, listeWidget} = this;
+							const trRows = listeWidget.table.find(`table > tbody > tr`);
+							const btnSil = trRows.find(`td > #sil`);
+							if (btnSil.length) {
+								btnSil.jqxButton({ theme: theme })
+									.on('click', evt => {
+										let index = evt.currentTarget.dataset.rowindex;
+										if (index != null) {
+											index = asInteger(index);
+											this.sil({ index: index });
+										}
+									});
+								btnSil.parent().on('mouseup', evt => {
+									const btnSil = evt.currentTarget.querySelector(`#sil`);
+									if (btnSil)
+										btnSil.click();
+								});
+							}
+						}
+					})
+				},
+				widgetAfterInit: _e => {
+					const {widgetPart, widget} = _e;
+					const hasGroups = !$.isEmptyObject(groups);
+					if (hasGroups || widget.pageable) {
+						if (hasGroups) {
+							const flag = widget.showAggregates;
+							try { widgetPart.jqxDataTable('groups', groups) }
+							catch (ex) {}
+						}
+
+						const {aggregates} = widget;
+						if (aggregates && aggregates.length)
+							aggregates.addClass('hasGroups');
+					}
+
+					widgetPart.on('rowClick', evt =>
+						this.liste_onItemClick($.extend({}, e, { event: evt })));
+					widgetPart.on('rowDoubleClick', evt =>
+						this.liste_onItemDblClick($.extend({}, e, { event: evt })));
+				},
+				columns: [
+					{
+						dataField: '', width: 50, columnType: 'none',
+						editable: false, sortable: false,
+						cellClassName: `detay action`,
+						cellsRenderer: (rowIndex, columnIndex, value, rec) => {
+							return `<button id="sil" data-rowindex="${rowIndex}" />`
+						}
+					},
+					{
+						dataField: 'stokAdi', text: ' ', width: 'auto',
+						cellClassName: `detay`,
+						cellsRenderer: (rowIndex, columnIndex, value, rec) => {
+							rec = rec.originalRecord || rec;
+							return rec.gridCellHTML
+						}
+						/*aggregates: [
+							{
+								'TOPLAM': (toplam, value, colData, rec) => {
+									toplam = toplam + asFloat(rec.netBedel) || 0;
+									return toplam
+								}
+							}
+						],
+						aggregatesRenderer: toplamYapilar => {
+							const result = '';
+							$.each(toplamYapilar, (tip, toplam) => {
+								if (tip == 'TOPLAM') {
+									const {toplamParent, divToplam} = this;
+									if (toplam) {
+										divToplam.html(`${bedelStr(toplam)} TL`);
+										toplamParent.removeClass(`jqx-hidden`);
+									}
+									else {
+										toplamParent.addClass(`jqx-hidden`);
+									}
+								}
+							});
+							return result;
+						}*/
+					}
+				],
+				loadServerData: e => {
+					const {aktifFis} = this.app;
+					return (aktifFis ? aktifFis.detaylar : null) || [];
+
+					/*const detaylar = (aktifFis ? aktifFis.detaylar : null) || [];
+					const recs = [];
+					for (const i in detaylar) {
+						const det = detaylar[i];
+						const gridRecs = det.asGridRecs() || [];
+						if (!$.isEmptyObject(gridRecs))
+							recs.push(...gridRecs);
+					}*/
+				}		
+			});
+			listePart.basicRun();
+			this.listeWidget = listePart.widget;
+			// Utils.makeScrollable($(listePart.widget.table).find(`table:eq(0)`));
+		}
+
+		async tazele(e) {
+			const {listePart} = this;
+			if (listePart)
+				await listePart.tazele(e);
+			this.toplamTazele(e);
+		}
+
+		toplamTazele(e) {
+			const {app, toplamParent, divToplam} = this;
+			const {detaylar} = app.aktifFis || {};
+			
+			let toplam = 0;
+			if (detaylar) {
+				for (const i in detaylar)
+					toplam += bedel(detaylar[i].netBedel);
+			}
+			divToplam.html(`${bedelStr(toplam || 0)} TL`);
+			
+			/*if (toplam) {
+				divToplam.html(`${bedelStr(toplam)} TL`);
+				 toplamParent.removeClass(`jqx-hidden`);
+			}
+			else {
+				toplamParent.addClass(`jqx-hidden`);
+			}*/
+		}
+
+		async ekle(e) {
+			const {app, listeWidget, listeParent} = this;
+			const {barkod, urun} = e;
+			const masa = app.id2Masa[app.aktifMasaID];
+			const anaTip = app.pratikSatismi ? SkyCafeMasaTip.PratikSatis : ((masa || {}).anaTip || SkyCafeMasaTip.Adisyon);
+			
+			const fis = app.aktifFis;
+			let det = e.detay;
+			if (!det) {
+				det = new fis.class.detaySinif({ tip: anaTip, barkod: barkod, urun: urun, miktar: e.miktar || 1, fiyat: e.fiyat });
+				await det.detayEkIslemler({ tip: anaTip });
+			}
+			
+			// fis.detaylar.push(det);
+			const gridRecs = det.asGridRecs() || [];
+			for (const i in gridRecs)
+				listeWidget.addRow(null, gridRecs[i], 'last');
+			
+			listeWidget.clearSelection();
+			listeWidget.selectRow(listeWidget.getRows().length - 1);
+			listeParent[0].scrollTo(0, 10000000);
+			this.toplamTazele(e);
+
+			console.info({ masa: masa, barkod: e.barkod, urun: urun, detay: det, fis: fis });
+		}
+
+		degistir(e) {
+			const {app, listeWidget, listeParent} = this;
+			const {index} = e;
+			let {uid, rec} = e;
+			const masa = app.id2Masa[app.aktifMasaID];
+			const fis = app.aktifFis;
+			
+			if (!rec)
+				return;
+			
+			if (uid == null && index != null)
+				uid = (listeWidget.getRows()[index] || {}).uid;
+			
+			if (uid != null)
+				listeWidget.updaterowbykey(uid, rec);
+			else if (index != null)
+				listeWidget.updateRow(index, rec);
+			
+			listeWidget.clearSelection();
+			this.toplamTazele(e);
+
+			console.info({ masa: masa, rec: rec, index: index, uid: uid, fis: fis });
+		}
+
+		sil(e) {
+			const {app, listeWidget, listeParent} = this;
+			const {index} = e;
+			let {rec} = e;
+			const masa = app.id2Masa[app.aktifMasaID];
+			const fis = app.aktifFis;
+
+			if (!rec && index != null)
+				rec = listeWidget.getRows()[index];
+			
+			if (rec)
+				listeWidget.deleterowbykey(rec.uid, rec);
+			else if (index != null)
+				listeWidget.deleteRow(index);
+			
+			listeWidget.clearSelection();
+			this.toplamTazele(e);
+
+			console.info({ masa: masa, rec: rec, index: index, fis: fis });
+		}
+
+		liste_onItemClick(e) {
+			const {listeWidget} = this;
+			const args = (e.event || {}).args || {};
+			const {originalEvent} = args;
+			const uid = args.key;
+			if (!originalEvent || !uid)
+				return;
+			
+			if (originalEvent.button == 2)
+				return this.liste_onItemRightClick(e);
+			
+			if (originalEvent.button != 0)
+				return;
+			
+			const rowInfo = listeWidget.rowinfo[uid];
+			if (!rowInfo)
+				return;
+
+			if (rowInfo.selected)
+				listeWidget.unselectrowbykey(uid);
+			else
+				listeWidget.selectrowbykey(uid);
+		}
+
+		liste_onItemDblClick(e) {
+			const {listeWidget} = this;
+			const args = (e.event || {}).args || {};
+			const {originalEvent} = args;
+			const uid = args.key;
+			if (!originalEvent || !uid)
+				return;
+			
+			return this.liste_onItemRightClick(e);
+		}
+
+		liste_onItemRightClick(e) {
+		}
+
+		async onResize(e) {
+			await super.onResize(e);
+
+			const {layout, listePart, listeParent, listeWidget, toplamParent} = this;
+			const divListe = listePart ? listePart.layout : null;
+			if (listePart && divListe && divListe.length) {
+				listeParent.height($(window).height() - listeParent.offset().top - 40);
+				if (listeWidget) {
+					listeWidget.beginUpdate();
+					// divListe.jqxDataTable('width', listePart.widgetArgs.width);
+					// divListe.jqxDataTable('width', false);
+					listeWidget.endUpdate();
+				}
+				toplamParent.width(listeParent.width() - 3);
+				// divListe.jqxDataTable('height', $(window).height() - divListe.offset().top);
+			}
+		}
+	}
+})()

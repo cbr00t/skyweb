@@ -1,0 +1,16 @@
+<svg id="stokBeklemeRaporu-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_141" data-name="Rectangle 141" width="30" height="30" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_139" data-name="Group 139" clip-path="url(#clip-path)">
+    <path id="Path_187" data-name="Path 187" d="M27,30H3a3,3,0,0,1-3-3V3A3,3,0,0,1,3,0H27a3,3,0,0,1,3,3V27a3,3,0,0,1-3,3M3,2A1,1,0,0,0,2,3V27a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1V3a1,1,0,0,0-1-1Z" fill="#004295"/>
+    <rect id="Rectangle_139" data-name="Rectangle 139" width="1.477" height="4.749" transform="translate(17.901 18.456)" fill="#004295"/>
+    <rect id="Rectangle_140" data-name="Rectangle 140" width="1.477" height="4.749" transform="translate(20.515 18.456)" fill="#004295"/>
+    <path id="Path_188" data-name="Path 188" d="M11.933,15.607v-.841l1.637.823v.842Zm3.114-.018,1.637-.823v.841l-1.637.824Zm-3.11-2.474,2.371-1.191,2.372,1.191-2.371,1.191Zm-1.481-.909v4.313l3.853,1.937,3.853-1.937V12.206l-3.853-1.937Z" fill="#004295"/>
+    <path id="Path_189" data-name="Path 189" d="M11.543,5.018,8.81,4.113l1.641,3.263A12.171,12.171,0,0,0,3.965,8.421l.7,1.9A10.2,10.2,0,0,1,9.175,9.3l-2.5,1.254,2.732.905L13.7,9.3Z" fill="#004295"/>
+    <path id="Path_190" data-name="Path 190" d="M24.008,16.582l2.027-2.045-3.653.018a12.159,12.159,0,0,0,1.951-6.274l-2.01-.213a10.207,10.207,0,0,1-1.093,4.489l-.012-2.793-2.027,2.045.022,4.8Z" fill="#004295"/>
+    <path id="Path_191" data-name="Path 191" d="M7.78,21.693l.85,2.751,1.7-3.231a12.163,12.163,0,0,0,4.617,4.674l1.134-1.674a10.174,10.174,0,0,1-3.446-3.077l2.47,1.3-.85-2.75-4.241-2.238Z" fill="#004295"/>
+  </g>
+</svg>
