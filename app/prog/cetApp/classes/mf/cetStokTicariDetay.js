@@ -50,9 +50,7 @@
 			else if ($.isArray(okunanTumBarkodlar))
 				okunanTumBarkodlar = this.okunanTumBarkodlar = asSet(okunanTumBarkodlar);
 
-			const {barkod} = this;
-			if (barkod)
-				okunanTumBarkodlar[barkod] = true;
+			const {barkod} = this; if (barkod) { okunanTumBarkodlar[barkod] = true }
 		}
 
 		static get fisSinif() { return CETStokTicariFis }
@@ -551,14 +549,15 @@
 		
 
 		hostVars(e) {
-			e = e || {};
-			const {fis} = e;
-			let hv = super.hostVars(e);
+			e = e || {}; let okunanTumBarkodlar = this.okunanTumBarkodlar = (this.okunanTumBarkodlar || {});
+			if ($.isArray(okunanTumBarkodlar)) { okunanTumBarkodlar = this.okunanTumBarkodlar = asSet(okunanTumBarkodlar) }
+			for (const key in Object.keys(okunanTumBarkodlar)) { if (key == null || key == 'undefined') { delete okunanTumBarkodlar[key] } }
+			const {fis} = e; let hv = super.hostVars(e);
 			$.extend(hv, {
 				vioID: this.vioID || null,
 				dettipi: this.class.detTipi,
 				okunanbarkod: this.barkod || '',
-				okunanTumBarkodlar: toJSONStr(Object.keys(this.okunanTumBarkodlar || {})),
+				okunanTumBarkodlar: toJSONStr(Object.keys(okunanTumBarkodlar)),
 				okutmasayisi: asInteger(this.okutmaSayisi),
 				shkod: this.shKod || '',
 				miktar: asFloat(this.miktar) || 0,
@@ -577,42 +576,28 @@
 			}, this.ekOzelliklerYapi.hostVars($.extend({}, e, { refRafAlinirmi: true })) || {});
 
 			if (fis && fis.class.altDetayKullanilirmi) {
-				let {altDetaylar} = this;
-				if ($.isArray(altDetaylar))
-					altDetaylar = this.altDetaylar = $.extend({}, altDetaylar);
+				let {altDetaylar} = this; if ($.isArray(altDetaylar)) { altDetaylar = this.altDetaylar = $.extend({}, altDetaylar) }
 				hv.altDetaylar = toJSONStr(altDetaylar || null);
 			}
-
-			return hv;
+			return hv
 		}
-
 		async setValues(e) {
-			e = e || {};
-			await super.setValues(e);
-			
-			const {rec, fis} = e;
-			const {yerKod} = rec;
-
+			e = e || {}; await super.setValues(e);
+			const {rec, fis} = e, {yerKod} = rec;
 			if (fis && fis.class.altDetayKullanilirmi) {
-				let altDetaylar = null;
-				try { altDetaylar = rec.altDetaylar ? JSON.parse(rec.altDetaylar || null) : null }
-				catch (ex) { console.error('detay altDetaylar parse', ex) }
-				
-				altDetaylar = altDetaylar || {};
-				if ($.isArray(altDetaylar))
-					altDetaylar = $.extend({}, altDetaylar);
-				this.altDetaylar = altDetaylar;
+				let altDetaylar = null; try { altDetaylar = rec.altDetaylar ? JSON.parse(rec.altDetaylar || null) : null } catch (ex) { console.error('detay altDetaylar parse', ex) }
+				altDetaylar = altDetaylar || {}; if ($.isArray(altDetaylar)) { altDetaylar = $.extend({}, altDetaylar) }
+				this.altDetaylar = altDetaylar
 			}
 			delete this._anah2AltDetay;
-			
-			let rbkTableData = null;
-			try { rbkTableData = rec.rbkTableData ? JSON.parse(rec.rbkTableData || null) : null }
-			catch (ex) { console.error('detay rbkTableData parse', ex) }
-			
+			let rbkTableData = null; try { rbkTableData = rec.rbkTableData ? JSON.parse(rec.rbkTableData || null) : null } catch (ex) { console.error('detay rbkTableData parse', ex) }
+			let okunanTumBarkodlar = rec.okunanTumBarkodlar ? asSet(JSON.parse(rec.okunanTumBarkodlar) || []) : {};
+			if ($.isArray(okunanTumBarkodlar)) { okunanTumBarkodlar = this.okunanTumBarkodlar = asSet(okunanTumBarkodlar) }
+			for (const key in Object.keys(okunanTumBarkodlar)) { if (key == null || key == 'undefined') { delete okunanTumBarkodlar[key] } }
 			$.extend(this, {
 				vioID: rec.vioID || null,
 				barkod: rec.okunanbarkod,
-				okunanTumBarkodlar: rec.okunanTumBarkodlar ? asSet(JSON.parse(rec.okunanTumBarkodlar) || []) : {},
+				okunanTumBarkodlar,
 				shKod: rec.shkod,
 				shAdi: rec.shadi,
 				grupKod: rec.grupkod,
@@ -639,9 +624,7 @@
 			if (ekOzelliklerYapi)
 				await ekOzelliklerYapi.setValues($.extend({}, e, { refRafAlinirmi: true }));
 
-			const {barkod} = this;
-			if (barkod)
-				this.okunanTumBarkodlar[barkod] = true;
+			const {barkod} = this; if (barkod) { this.okunanTumBarkodlar[barkod] = true }
 		}
 
 		async setValuesFromSablon(e) {
