@@ -168,6 +168,7 @@
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosul.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosulKapsam.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosul_ekSiniflar.js?<?=$siteVersion?>"></script>
+	<script src="../app/prog/cetApp/classes/mf/cetPromosyonDetay.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/promosyon/cetPromosyon.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/promosyon/cetPromosyonKapsam.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/promosyon/cetPromosyon_ekSiniflar.js?<?=$siteVersion?>"></script>
@@ -189,7 +190,6 @@
 	<script src="../app/prog/cetApp/classes/mf/cetStokTicariFis.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetStokDetay.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetTicariDetay.js?<?=$siteVersion?>"></script>
-	<script src="../app/prog/cetApp/classes/mf/cetPromosyonDetay.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetStokFis.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetForkliftFis.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetBekleyenSayimDetay.js?<?=$siteVersion?>"></script>
