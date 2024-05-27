@@ -155,8 +155,7 @@
 			(this.class.kamOranKeys || []).forEach(key => hv[key.toLowerCase()] = asFloat(this[key]) || 0);
 			if (app.ozelKampanyaKullanilirmi) { const {ozelKampanyaKod} = this; (this.class.ozelKamOranKeys || []).forEach(key => hv[key] = ozelKampanyaKod ? (asFloat(this[key]) || 0) : 0) }
 			var siparisVioIDVeMiktarYapiStrListe = [];
-			const {siparisVioID2MiktarYapi} = this;
-			for (let vioID in siparisVioID2MiktarYapi) { const miktar = siparisVioID2MiktarYapi[vioID]; siparisVioIDVeMiktarYapiStrListe.push(`${vioID}=${miktar}`); }
+			const {siparisVioID2MiktarYapi} = this; for (let vioID in siparisVioID2MiktarYapi) { const miktar = siparisVioID2MiktarYapi[vioID]; siparisVioIDVeMiktarYapiStrListe.push(`${vioID}=${miktar}`); }
 			hv.siparisVioIDVeMiktarYapi = siparisVioIDVeMiktarYapiStrListe.join(`|`);
 			return hv
 		}
@@ -183,7 +182,7 @@
 				ozelIskontoVarmi: asBool(rec.ozeliskoranmi || ''),
 				promosyonYapilmazmi: asBool(rec.promosyonYapilmazmi || ''),
 				iskontoYapilmazmi: asBool(rec.iskontoYapilmazmi || ''),
-				kadIskYapi: rec.kadIskYapi ? JSON.parse(rec.kadIskYapi) : {},
+				kadIskYapi: (rec.kadIskYapi ? JSON.parse(rec.kadIskYapi) : {}),
 				kadIskOran: asFloat(rec.kadiskoran) || 0,
 				kosulYapi: (kosulYapiStr ? JSON.parse(kosulYapiStr) : null) || {}
 			});
@@ -200,67 +199,37 @@
 				const siparisVioIDVeMiktarYapiStrListe = rec.siparisVioIDVeMiktarYapi.split(`|`);
 				for (let i in siparisVioIDVeMiktarYapiStrListe) {
 					const text = siparisVioIDVeMiktarYapiStrListe[i];
-					if (text) {
-						const parts = text.split(`=`);
-						siparisVioID2MiktarYapi[asInteger(parts[0])] = asFloat(parts[1]) || 0;
-					}
+					if (text) { const parts = text.split(`=`); siparisVioID2MiktarYapi[asInteger(parts[0])] = asFloat(parts[1]) || 0 }
 				}
 			}
 		}
-
 		async setValuesFromSablon(e) {
-			e = e || {};
-			await super.setValuesFromSablon(e);
-
-			const {app} = sky;
-			const {fiyatFra, iskSayi} = app;
-			const {rec} = e;
+			e = e || {}; await super.setValuesFromSablon(e);
+			const {app} = sky, {fiyatFra, iskSayi} = app, {rec} = e;
 			$.extend(this, {
 				kdvOrani: rec.kdvOrani == null ? this.kdvOrani : asInteger(rec.kdvOrani),
 				kdv: rec.kdv == null ? this.kdv : bedel(rec.kdv),
 				fiyat: rec.fiyat == null ? this.fiyat : (roundToFra(rec.fiyat, fiyatFra) || 0)
 			});
-			this.orjFiyat = this.fiyat;
-			if (rec.fiyat != null)
-				this.brmFiyatDuzenle(e)
-			
-			for (let i = 1; i <= iskSayi; i++) {
-				let key = `iskOran${i}`;
-				let value = rec[key];
-				if (value != null)
-					this[key] = value;
-			}
-			for (let i = 1; i <= 3; i++) {
-				key = `kamOran${i}`;
-				value = rec[key];
-				if (value != null)
-					this[key] = value;
-			}
-			this.netFiyatHesapla();
+			this.orjFiyat = this.fiyat; if (rec.fiyat != null) { this.brmFiyatDuzenle(e) }
+			for (let i = 1; i <= iskSayi; i++) { let key = `iskOran${i}`, value = rec[key]; if (value != null) { this[key] = value } }
+			for (let i = 1; i <= 3; i++) { let key = `kamOran${i}`,value = rec[key]; if (value != null) { this[key] = value } }
+			this.netFiyatHesapla()
 		}
-
 		async detayEkIslemler_ekle(e) {
-			const result = await super.detayEkIslemler_ekle(e);
-			const {fis} = e;
-			const {fiyat} = this;
-			if (fis && fiyat && fis.dvKod) {
-				if (!fis.dvKur)
-					await fis.dvKurBelirle()
+			const result = await super.detayEkIslemler_ekle(e), {fis} = e, {fiyat} = this;
+			if (fiyat && fis?.dvKod) {
+				if (!fis.dvKur) { await fis.dvKurBelirle() }
 				/*const {dvKur} = fis;
 				for (const key of ['fiyat', 'orjFiyat', 'netFiyat', 'brutBedel', 'netBedel'])
 					this[key] += (this[key] * dvKur)*/
 			}
-
-			return result;
+			return result
 		}
-
 		async detayEkIslemler(e) {
-			await super.detayEkIslemler(e);
-			await this.ozelKampanyaIskOranSinirBul(e);
-			await this.kademeliIskontoHesapla(e);
-			await this.bedelHesapla(e);
-			await this.kdvHesapla(e);
-			await this.malFazlasiHesapla(e);
+			await super.detayEkIslemler(e); await this.ozelKampanyaIskOranSinirBul(e);
+			await this.kademeliIskontoHesapla(e); await this.bedelHesapla(e);
+			await this.kdvHesapla(e); await this.malFazlasiHesapla(e)
 		}
 		async satisKosulYapilariIcinDuzenle(e) {
 			e = e || {}; await super.satisKosulYapilariIcinDuzenle(e);
@@ -329,8 +298,7 @@
 			}
 		}
 		ekBilgileriBelirleDevam(e) {
-			e = e || {}; super.ekBilgileriBelirleDevam(e);
-			const {app} = sky, {fiyatFra} = app, {fis, rec} = e;
+			e = e || {}; super.ekBilgileriBelirleDevam(e); const {app} = sky, {fiyatFra} = app, {fis, rec} = e;
 			this.orjKdvOrani = asInteger(rec.kdvOrani) || 0;
 			if (fis?.ihracatmi) { this.kdvOrani = 0 }
 			let oncekiFiyat = this.fiyat; if (!(this._fiyatBelirlendimi || this.ozelFiyatVarmi)) { this.fiyat = (roundToFra(rec.brmFiyat, fiyatFra) || 0) }
@@ -360,38 +328,20 @@
 		malFazlasiHesapla(e) {
 			const {mfPay, mfBaz, miktar} = this; let malFazlasi = 0;
 			if (mfBaz && mfPay && miktar >= mfBaz) { malFazlasi = asInteger(miktar * mfPay / mfBaz) }
-			this.malFazlasi = malFazlasi
-			if (malFazlasi) { this.iskontoKampanyaReset() }
+			this.malFazlasi = malFazlasi; if (malFazlasi) { this.iskontoKampanyaReset() }
 		}
-
 		async ozelKampanyaIskOranSinirBul(e) {
-			const {app} = sky;
-			const {ozelKampanyaKod} = this;
-			if (!app.ozelKampanyaKullanilirmi || !ozelKampanyaKod) {
-				this.ozelKampanyaIskSinir = null;
-				return;
-			}
-			
-			const ozelKampanyaKod2Rec = (app.caches || {}).ozelKampanyaKod2Rec || {};
-			let rec = ozelKampanyaKod2Rec[ozelKampanyaKod] || null;
+			const {app} = sky, {ozelKampanyaKod} = this; if (!app.ozelKampanyaKullanilirmi || !ozelKampanyaKod) { this.ozelKampanyaIskSinir = null; return }
+			const ozelKampanyaKod2Rec = app.caches?.ozelKampanyaKod2Rec || {}; let rec = ozelKampanyaKod2Rec[ozelKampanyaKod] || null;
 			if (rec == null) {
 				const dbMgr = this.class.fisSinif.dbMgr || sky.app.dbMgr_mf;
-				const sent = new MQSent({
-					from: `mst_OzelKampanya`,
-					where: [{ degerAta: ozelKampanyaKod, saha: `kod` }],
-					sahalar: [`*`]
-				});
-				const stm = new MQStm({ sent: sent });
-				rec = await dbMgr.tekilExecuteSelect({ tx: e.tx, query: stm });
-				ozelKampanyaKod2Rec[ozelKampanyaKod] = rec;
+				const sent = new MQSent({ from: `mst_OzelKampanya`, where: [{ degerAta: ozelKampanyaKod, saha: `kod` }], sahalar: [`*`] });
+				const stm = new MQStm({ sent }); rec = await dbMgr.tekilExecuteSelect({ tx: e.tx, query: stm }); ozelKampanyaKod2Rec[ozelKampanyaKod] = rec;
 			}
-			const iskSinir = roundToFra(asFloat(rec.iskSinir), 2) || 100;
-			this.ozelKampanyaIskSinir = iskSinir;
+			const iskSinir = roundToFra(asFloat(rec.iskSinir), 2) || 100; this.ozelKampanyaIskSinir = iskSinir
 		}
-
 		kademeliIskontoHesapla(e) {
-			e = e || {}; const {miktar} = this;
-			if (!miktar) { this.kadIskOran = 0; return }
+			e = e || {}; const {miktar} = this; if (!miktar) { this.kadIskOran = 0; return }
 			const {kadIskYapi} = this; const keys = Object.keys(kadIskYapi).map(x => asFloat(x)).sort(((a, b) => a < b ? 1 : -1));			// reversed sort
 			this.kadIskOran = 0; for (const hMiktar of keys) { if (miktar >= hMiktar) { this.kadIskOran = kadIskYapi[hMiktar]; break } }
 		}
@@ -400,19 +350,11 @@
 			let proc = oranListe => { for (const oran of oranListe) { if (oran) { let xBedel = bedel(_bedel * oran / 100) || 0; _bedel -= xBedel } } };
 			proc(this.iskOranListe); proc(this.kamOranListe); proc([this.kadIskOran]);
 			if (sky.app.ozelKampanyaKullanilirmi && this.ozelKampanyaKod) { proc(this.ozelKamOranListe) }
-			
 			this.netBedel = bedel(_bedel); this.netFiyatHesapla(e);
 		}
-		netFiyatHesapla(e) {
-			const {fiyatFra} = sky.app;
-			this.netFiyat = roundToFra(this.netBedel / asFloat(this.miktar), fiyatFra) || 0;
-		}
-		iskontoKampanyaReset(e) {
-			super.iskontoKampanyaReset(e); const {kosulYapi} = this; 
-			for (const key of ['SB', 'KM', 'MF']) { delete kosulYapi[kosulTip] }
-			this.bedelHesapla()
-		}
-		ozelKampanyaOranReset(e) { super.iskontoKampanyaReset(e); this.bedelHesapla() }
+		netFiyatHesapla(e) { const {fiyatFra} = sky.app; this.netFiyat = roundToFra(this.netBedel / asFloat(this.miktar), fiyatFra) || 0 }
+		iskontoKampanyaReset(e) { super.iskontoKampanyaReset(e); const {kosulYapi} = this; for (const key of ['SB', 'KM', 'MF']) { delete kosulYapi[key] } this.bedelHesapla() }
+		ozelKampanyaOranReset(e) { super.ozelKampanyaOranReset(e); this.bedelHesapla() }
 		siparisKarsilamaYapiReset(e) { super.siparisKarsilamaYapiReset(e); this.siparisVioID2MiktarYapi = {} }
 		static getDokumAttr2Baslik(e) {
 			return $.extend(super.getDokumAttr2Baslik(e) || {}, {

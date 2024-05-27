@@ -87,7 +87,7 @@
 				data = new Uint8Array(await fh.arrayBuffer())
 			}
 			if (data) { await dbMgr.dbSave({ data }, true); await dbMgr.dbLoad() }
-			return {file, fh, data}
+			const {dbStoragePath, dbFileName} = this; return {dbStoragePath, dbFileName, file, fh, data}
 		}
 		async dbLoad(e) {
 			const {app} = this;
