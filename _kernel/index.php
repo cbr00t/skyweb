@@ -168,7 +168,6 @@
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosul.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosulKapsam.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosul_ekSiniflar.js?<?=$siteVersion?>"></script>
-	<script src="../app/prog/cetApp/classes/mf/cetPromosyonDetay.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/promosyon/cetPromosyon.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/promosyon/cetPromosyonKapsam.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/promosyon/cetPromosyon_ekSiniflar.js?<?=$siteVersion?>"></script>
@@ -200,7 +199,8 @@
 	<script src="../app/prog/cetApp/classes/mf/cetUgramaFis.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetBekleyenUgramaDetay.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetBekleyenUgramaFis.js?<?=$siteVersion?>"></script>
-	
+	<script src="../app/prog/cetApp/classes/mf/cetPromosyonDetay.js?<?=$siteVersion?>"></script>
+
 	<link rel="stylesheet" href="../app/prog/cetApp/cetApp.css?<?=$siteVersion?>" />
 	<script src="../app/prog/cetApp/cetApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/cetSubPart.js?<?=$siteVersion?>"></script>
