@@ -295,14 +295,15 @@
 				subWSConfig.cihazKod = (value || '').trimEnd();
 				this.rootConfigKaydet(e);
 			});
-			const txtPdksWSIP = subConfigParent.find(`#pdksWSIP`);
-			txtPdksWSIP.val(subWSConfig.wsIP);
+			const txtPdksWSIP = subConfigParent.find(`#pdksWSIP`); txtPdksWSIP.val(subWSConfig.wsIP);
 			txtPdksWSIP.on('change', evt => {
-				const {value} = evt.target;
-				const {wsConfig} = this;
-				const subWSConfig = wsConfig[key] = wsConfig[key] || {};
-				subWSConfig.wsIP = (value || '').trim();
-				this.rootConfigKaydet(e);
+				const {value} = evt.target, {wsConfig} = this, subWSConfig = wsConfig[key] = wsConfig[key] || {};
+				subWSConfig.wsIP = (value || '').trim(); this.rootConfigKaydet(e)
+			});
+			const txtPdksPort = subConfigParent.find(`#pdksWSPort`); txtPdksPort.val(subWSConfig.wsPort || null);
+			txtPdksPort.on('change', evt => {
+				const {value} = evt.target, {wsConfig} = this, subWSConfig = wsConfig[key] = wsConfig[key] || {};
+				subWSConfig.wsPort = asInteger((value || '').trim()) ?? null; this.rootConfigKaydet(e)
 			});
 			const txtPdksUser = subConfigParent.find(`#pdksUser`);
 			txtPdksUser.val(subWSConfig.user);
@@ -988,6 +989,7 @@
 			const subWSConfig_pdks = wsConfig.pdks || {}, pdksSubConfigParent = tabPage.find(`#pdksSubConfig_parent`);
 			pdksSubConfigParent.find(`#cihazKod`).val(subWSConfig_pdks.cihazKod);
 			pdksSubConfigParent.find(`#pdksWSIP`).val(subWSConfig_pdks.wsIP);
+			pdksSubConfigParent.find(`#pdksWSPort`).val(asInteger(subWSConfig_pdks.wsPort) || null);
 			pdksSubConfigParent.find(`#pdksUser`).val(subWSConfig_pdks.user);
 			pdksSubConfigParent.find(`#pdksPass`).val(subWSConfig_pdks.pass);
 			pdksSubConfigParent.find(`#pdksMaxWait`).val(subWSConfig_pdks.maxWait);

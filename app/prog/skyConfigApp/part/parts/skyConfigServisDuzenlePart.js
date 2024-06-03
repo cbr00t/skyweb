@@ -192,26 +192,12 @@
 				const arr = value ? value.split('\n').map(x => x.trimEnd(' ', '\t', '\r')) : null;
 				args.args = arr;
 			});
-
-			const txtUrl = tabPage.find(`#url`);
-			txtUrl.val(args.url);
-			txtUrl.on('focus', evt =>
-				evt.target.select())
-			txtUrl.on('change', evt => {
-				args.url = evt.target.value;
-				args.httpMethod = args.httpMethod || 'GET';
-			});
-
-			const txtPOSTData = tabPage.find(`#postData`);
-			txtPOSTData.val(args.args);
-			txtPOSTData.on('focus', evt =>
-				evt.target.select())
-			txtPOSTData.on('change', evt => {
-				const {value} = evt.target;
-				args.postData = args;
-				args.httpMethod = args.postData ? 'POST' : 'GET';
-			});
-
+			const txtUrl = tabPage.find(`#url`); txtUrl.val(args.url);
+			txtUrl.on('focus', evt => evt.target.select())
+			txtUrl.on('change', evt => { args.url = evt.target.value; args.httpMethod = args.httpMethod || 'GET' });
+			const txtPOSTData = tabPage.find(`#postData`); txtPOSTData.val(args.args);
+			txtPOSTData.on('focus', evt => evt.target.select())
+			txtPOSTData.on('change', evt => { const {value} = evt.target; args.postData = args; args.httpMethod = args.postData ? 'POST' : 'GET'; });
 			const srcDestDirParent = tabPage.find(`#srcDestDirParent`);
 			const txtSrcDir = srcDestDirParent.find(`#srcDirParent #srcDir`);
 			txtSrcDir.val(args.src || args.srcDir);
@@ -243,12 +229,10 @@
 				const {value} = evt.target;
 				args.cihazKod = (value || '').trimEnd()
 			});
-			const txtPdksWSIP = pdksSubConfigParent.find(`#pdksWSIP`);
-			txtPdksWSIP.val(args.wsIP);
-			txtPdksWSIP.on('change', evt => {
-				const {value} = evt.target;
-				args.wsIP = (value || '').trim();
-			});
+			const txtPdksWSIP = pdksSubConfigParent.find(`#pdksWSIP`); txtPdksWSIP.val(args.wsIP);
+			txtPdksWSIP.on('change', evt => { const {value} = evt.target; args.wsIP = (value || '').trim() });
+			const txtPdksWSPort = pdksSubConfigParent.find(`#pdksWSPort`); txtPdksWSPort.val(args.wsPort || null);
+			txtPdksWSPort.on('change', evt => { const {value} = evt.target; args.wsPort = asInteger((value || '').trim()) ?? null });
 			const txtPdksUser = pdksSubConfigParent.find(`#pdksUser`);
 			txtPdksUser.val(args.user);
 			txtPdksUser.on('change', evt => {

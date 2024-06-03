@@ -19,12 +19,11 @@
 				result = this._servisTip2Aciklama = {
 					vioWS: `VIO WebServis`, cariEFatListeSorgula: `Cari e-Fat Sorgula`, cariEFatListeGuncelle: `Cari e-Fat Güncelle`, cariEFatListeSorgulaVeGuncelle: `Cari e-Fat Sorgula ve Güncelle`,
 					zamanlanmisGorev: `VIO (<i>Ticari Program</i>) Zamanlanmış Görevler`, maliyetDuzenle: `Maliyet Düzenleme İşlemi`,
-					pdaIPC: `Eski ElTerminali (<i>PDA</i>) IPC Sunucusu`, pdaAktarici: `Eski ElTerminali (<i>PDA</i>) Ticariye Aktarıcı`,
-					pdks: `PDKS Veri Alımı`, 'pdks-mukerrerSil': `PDKS Tekrarlayan Kayıtları Sil`,
-					'pdks-db-zktime': `PDKS Veri Alımı (<i>ZKTime Veritabanından</i>)`, 'pdks-db-timeroll': `PDKS Veri Alımı (<i>TimeRoll Veritabanından</i>)`,
-					skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
-					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`,
-					eMail: `e-Mail Gönderimi`, eMailQueue: `e-Mail Kuyruğu İşlet`, cvmRestart: `CVM Yeniden Başlat`, wsRestart: `SkyWS Yeniden Başlat`
+					pdaIPC: `Eski ElTerminali (<i>PDA</i>) IPC Sunucusu`, pdaAktarici: `Eski ElTerminali (<i>PDA</i>) Ticariye Aktarıcı`, 'pdks-mukerrerSil': `PDKS Tekrarlayan Kayıtları Sil`,
+					'pdks-api': 'PDKS Veri Alımı (<i>API</i>)', 'pdks-db-zktime': `PDKS Veri Alımı (<i>ZKTime Veritabanından</i>)`, 'pdks-db-timeroll': `PDKS Veri Alımı (<i>TimeRoll Veritabanından</i>)`,
+					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`,
+					eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
+					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, eMail: `e-Mail Gönderimi`, eMailQueue: `e-Mail Kuyruğu İşlet`, cvmRestart: `CVM Yeniden Başlat`, wsRestart: `SkyWS Yeniden Başlat`
 				};
 				if (gelismisModmu && !gelismisModDisabledFlag && SkyConfigYetki.yetkilimi({ yetki: 'subServiceManager' })) {
 					$.extend(result, {
@@ -928,7 +927,8 @@
 								type: 'object', title: `PDKS İşlemleri`,
 								properties: {
 									sql: item_sql, cihazKod: { type: 'string', title: `Cihaz Kodu` },
-									odbcAdi: { type: 'string', title: 'ZKTime Programı Veritabanı Erişimi için ODBC Adı'}, wsIP: { type: 'string', title: `PDKS Cihazı Webservis IP Adresi` },
+									odbcAdi: { type: 'string', title: 'ZKTime Programı Veritabanı Erişimi için ODBC Adı'},
+									wsIP: { type: 'string', title: `PDKS Cihazı Webservis IP Adresi` }, wsPort: { type: 'number', title: `PDKS Cihazı Webservis Port` },
 									user: { type: 'string', title: `PDKS Cihazı Kullanıcı Kodu` }, pass: { type: 'string', format: 'password', title: `PDKS Cihazı Kullanıcı Şifresi` },
 									maxWait: { type: 'string', format: 'number', title: `PDKS Cihazına Bağlantı Zaman Aşımı (saniye)` }, disabled: item_disabled
 								}
