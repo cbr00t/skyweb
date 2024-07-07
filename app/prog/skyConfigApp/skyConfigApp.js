@@ -158,7 +158,7 @@
 					sessionInfo.yetki = 'restricted';
 				this.sessionInfoDegisti(e);
 				try {
-					const key = 'skyBulutYedekleme',wsConfig = await this.wsConfigOku(), subWSConfig = wsConfig[key] = wsConfig[key] || {};
+					const key = 'skyBulutYedekleme', wsConfig = await this.wsConfigOku(), subWSConfig = wsConfig[key] = wsConfig[key] || {};
 					const part = new SkyConfigSkyBulutYedeklemeVeriYonetimiPart({ parentPart: this, canClose: false });
 					await part.open();
 					$('.jqx-window-modal').css('z-index', 1)
