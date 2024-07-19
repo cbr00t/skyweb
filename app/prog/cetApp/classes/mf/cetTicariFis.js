@@ -1095,9 +1095,9 @@
 			const kapsam = e.kapsam = $.extend(e.kapsam || {}, { tarih: this.tarih, cari: this.mustKod }), cariEkBilgi = await this.getCariEkBilgi();
 			if (cariEkBilgi != null) {
 				const {tipKod, bolgeKod, kosulGrupKod} = cariEkBilgi;
-				if (tipKod != null) kapsam.cariTip = tipKod;
-				if (bolgeKod != null) kapsam.cariBolge = bolgeKod;
-				if (kosulGrupKod != null) kapsam.cariKosulGrup = kosulGrupKod;
+				if (tipKod != null) { kapsam.cariTip = tipKod }
+				if (bolgeKod != null) { kapsam.cariBolge = bolgeKod }
+				if (kosulGrupKod != null) { kapsam.cariKosulGrup = kosulGrupKod }
 			}
 			const plasiyerKod = sky.app.defaultPlasiyerKod; if (plasiyerKod) { kapsam.plasiyer = plasiyerKod }
 			$.extend(result, await CETSatisKosul.tip2KosulYapilari(e)); return result
