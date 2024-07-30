@@ -414,175 +414,100 @@
 							break;
 						}
 				}
-
-				const mustRec = musteriKullanilirmi ? await fis.getCariEkBilgi({ mustKod: mustKod }) : null;
+				const mustRec = musteriKullanilirmi ? await fis.getCariEkBilgi({ mustKod }) : null;
 				let mevcutKonumBilgi = null;
 				if (mustKod && islem != 'izle' && musteriKullanilirmi && app.konumTakibiYapilirmi) {
-					const promise_konumBilgi = navigator.geolocation && navigator.geolocation.getCurrentPosition
-							? new $.Deferred(p =>
-								navigator.geolocation.getCurrentPosition(
-									konumBilgi =>
-										p.resolve($.extend({}, konumBilgi))),
-									null,
-									{ enableHighAccuracy: true })
-							: null;
-					try {
-						if (promise_konumBilgi)
-							mevcutKonumBilgi = await promise_konumBilgi;
-					}
-					catch (ex) {
-						console.error(`Mevcut Konum bilgisi alınamadı`, ex)
-					}
-
-					mevcutKonumBilgi = e.mevcutKonumBilgi = (mevcutKonumBilgi || {}).coords;
-					if (mevcutKonumBilgi)
-						mevcutKonumBilgi = $.extend({}, mevcutKonumBilgi);
-					
+					const promise_konumBilgi = navigator?.geolocation.getCurrentPosition
+						? new $.Deferred(p => navigator.geolocation.getCurrentPosition(konumBilgi => p.resolve({ ...konumBilgi })), null, { enableHighAccuracy: true })
+						: null;
+					try { if (promise_konumBilgi) { mevcutKonumBilgi = await promise_konumBilgi } }
+					catch (ex) { console.error(`Mevcut Konum bilgisi alınamadı`, ex) }
+					mevcutKonumBilgi = e.mevcutKonumBilgi = mevcutKonumBilgi?.coords;
+					if (mevcutKonumBilgi) { mevcutKonumBilgi = $.extend({}, mevcutKonumBilgi) }
 					if (!mevcutKonumBilgi && !konumsuzIslemYapilirmi) {
-						const ex = {
-							isError: true, rc: 'mevcutKonumBelirlenemedi',
-							errorText: `<b>Mevcut Konum belirlenemediği</b> için işlem yapılamaz`
-						};
-						setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200));
-						throw ex;
+						const ex = { isError: true, rc: 'mevcutKonumBelirlenemedi', errorText: `<b>Mevcut Konum belirlenemediği</b> için işlem yapılamaz` };
+						setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
 					}
-					
 					if (mevcutKonumBilgi) {
 						const mustKod2Bilgi = param.mustKod2Bilgi = param.mustKod2Bilgi || {};
-						let paramMustRec = mustKod2Bilgi[mustKod] = mustKod2Bilgi[mustKod] || {};
-						let mustKonumBilgi = paramMustRec.konumBilgi;
+						let paramMustRec = mustKod2Bilgi[mustKod] = mustKod2Bilgi[mustKod] || {}, mustKonumBilgi = paramMustRec.konumBilgi;
 						if (!mustKonumBilgi) {
 							const {konumLatitude, konumLongitude, konumAccuracy} = mustRec;
-							if (konumLatitude && konumLongitude)
-								mustKonumBilgi = { latitude: konumLatitude, longitude: konumLongitude, accuracy: konumAccuracy };
+							if (konumLatitude && konumLongitude) { mustKonumBilgi = { latitude: konumLatitude, longitude: konumLongitude, accuracy: konumAccuracy } }
 						}
 						if (!mustKonumBilgi) {
-							mustKonumBilgi = paramMustRec.konumBilgi = mevcutKonumBilgi;
-							param.kaydet();
-
+							mustKonumBilgi = paramMustRec.konumBilgi = mevcutKonumBilgi; param.kaydet();
 							let upd = new MQIliskiliUpdate({
-								from: 'mst_Cari',
-								where: { degerAta: mustKod, saha: `kod` },
+								from: 'mst_Cari', where: { degerAta: mustKod, saha: 'kod' },
 								set: [
-									{ degerAta: mustKonumBilgi.longitude, saha: `konumLongitude` },
-									{ degerAta: mustKonumBilgi.latitude, saha: `konumLatitude` },
-									{ degerAta: mustKonumBilgi.accuracy, saha: `konumAccuracy` }
+									{ degerAta: mustKonumBilgi.longitude, saha: 'konumLongitude' },
+									{ degerAta: mustKonumBilgi.latitude, saha: 'konumLatitude' },
+									{ degerAta: mustKonumBilgi.accuracy, saha: 'konumAccuracy' }
 								]
-							});
-							await dbMgr.executeSql({ query: upd });
+							}); await dbMgr.executeSql({ query: upd })
 						}
-
 						/*if (
 							(Math.abs(mevcutKonumBilgi.latitude - mustKonumBilgi.latitude) > (konumLatitudeTolerans || 0)) ||
 							(Math.abs(mevcutKonumBilgi.longitude - mustKonumBilgi.longitude) > (konumLongitudeTolerans || 0))
 						) {*/
 						if (app.konumFarki({ konum1: mevcutKonumBilgi, konum2: mustKonumBilgi }) > (app.konumToleransMetre || 0)) {
-							const ex = {
-								isError: true, rc: 'mustKonumGecersiz',
-								errorText: `<b>(${mustKod}) ${mustRec.unvan}</b> Müşterisine ait <u>Konum civarında olmadığınız</u> için işlem yapılamaz`
-							};
-							setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200));
-							throw ex;
+							const ex = { isError: true, rc: 'mustKonumGecersiz', errorText: `<b>(${mustKod}) ${mustRec.unvan}</b> Müşterisine ait <u>Konum civarında olmadığınız</u> için işlem yapılamaz` };
+							setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
 						}
 					}
-
-					// mustKonumBilgi;
-					// mevcutKonumBilgi;
 				}
-
-				let promise_numaratorOlustur = fis.numaratorOlustur();
-				let fisGirisIslemiBittimi = false;
-				let hizliGirisPartPromise = { isCancelled: false };
+				let promise_numaratorOlustur = fis.numaratorOlustur(), fisGirisIslemiBittimi = false, hizliGirisPartPromise = { isCancelled: false };
 				if (islem == 'yeni' && fis.class.sonStoktanSecimYapilirmi && app.sonStoktanSecimYapilirmi) {
 					(savedProcs || window).showProgress(null, null, 1, true);
 					hizliGirisPartPromise = new $.Deferred(p => {
 						setTimeout(async () => {
 							let promise = CETFisGirisSonStoktanSecimPart.run({
-								parentPart: this, islem: islem,
-								eskiFis: eskiFis, fis: fis,
+								parentPart: this, islem, eskiFis, fis,
 								secince: async e => {
-									const result = { sender: e.sender, isCancelled: false, recs: part.altListePart.listeWidget.getRows() };
-									const {recs} = result;
+									const result = { sender: e.sender, isCancelled: false, recs: part.altListePart.listeWidget.getRows() },  {recs} = result;
 									const {satisKosulYapilari, promosyonYapilari} = part;
 									if (!$.isEmptyObject(recs)) {
 										const detaySinif = fis.class.detaySinif;
 										for (const rec of recs) {
-											const _detaySinif = fis.class.uygunDetaySinif({ rec: rec }) || detaySinif;
-											const det = new _detaySinif(rec);
-											await det.detayEkIslemler_ekle({ fis: fis, satisKosulYapilari: satisKosulYapilari, promosyonYapilari: promosyonYapilari });
-											fis.detaylar.push(det)
+											const _detaySinif = fis.class.uygunDetaySinif({ rec }) || detaySinif, det = new _detaySinif(rec);
+											await det.detayEkIslemler_ekle({ fis, satisKosulYapilari, promosyonYapilari }); fis.detaylar.push(det)
 										}
-									}
-									p.resolve(result)
+									} p.resolve(result)
 								},
 								geriCallback: async e => {
-									// this.islemTuslariVarsaGoster();
 									fisGirisIslemiBittimi = true;
-									if (fis) {
-										if (fis.geciciFis_destroyTimer)
-											fis.geciciFis_destroyTimer();
-										await fis.geciciFisleriTemizle({ tx: e.tx });
-									}
+									if (fis) { if (fis.geciciFis_destroyTimer) { fis.geciciFis_destroyTimer() } await fis.geciciFisleriTemizle({ tx: e.tx }) }
 									p.resolve({ isCancelled: true })
 								}
 							});
-							setTimeout(() =>
-								(savedProcs || window).hideProgress(), 200);
-							
+							setTimeout(() => (savedProcs || window).hideProgress(), 200);
 							let part = (await promise).part
 							// await part.run()
 						}, 10)
 					})
 				}
-
 				(savedProcs || window).showProgress(null, null, 1, true);
-				const basTS = now();
-				let result = await hizliGirisPartPromise;
-				if (!result || result.isCancelled) {
-					await fis.geciciFisleriTemizle({ tx: e.tx });
-					p.resolve(result);
-					return
-				}
-				
-				const hizliGirisPart = result.sender;
-				const fisGirisPartPromise = new $.Deferred(async p => {
-					if (promise_numaratorOlustur)
-						await promise_numaratorOlustur;
-					if (hizliGirisPart)
-						await hizliGirisPart.promise_ilkIslemler
-					
+				const basTS = now(); let result = await hizliGirisPartPromise;
+				if (!result || result.isCancelled) { await fis.geciciFisleriTemizle({ tx: e.tx }); p.resolve(result); return }
+				const hizliGirisPart = result.sender, fisGirisPartPromise = new $.Deferred(async p => {
+					if (promise_numaratorOlustur) { await promise_numaratorOlustur }
+					if (hizliGirisPart) { await hizliGirisPart.promise_ilkIslemler }
 					let fisGirisPart = new uiSinif({
-						parentPart: this, islem: islem,
-						eskiFis: eskiFis, fis: fis,
-						satisKosulYapilari: (hizliGirisPart || {}).satisKosulYapilari,
-						promosyonYapilari: (hizliGirisPart || {}).promosyonYapilari,
+						parentPart: this, islem, eskiFis, fis,
+						satisKosulYapilari: hizliGirisPart?.satisKosulYapilari, promosyonYapilari: hizliGirisPart?.promosyonYapilari,
 						kaydedince: async e => {
-							fisGirisIslemiBittimi = true;
-							const sender = e.sender || {};
+							fisGirisIslemiBittimi = true; const sender = e.sender || {};
 							const _e = $.extend({}, e, {
-								isCancelled: false, islem: islem,
-								eskiFis: eskiFis, fis: sender.fis || fis,
-								kaydederkenYazdirFlag: sender.kaydederkenYazdirFlag,
-								kaydederkenAktarFlag: sender.kaydederkenAktarFlag
+								isCancelled: false, islem, eskiFis: eskiFis, fis: sender.fis || fis,
+								kaydederkenYazdirFlag: sender.kaydederkenYazdirFlag, kaydederkenAktarFlag: sender.kaydederkenAktarFlag
 							});
-							await fis.geciciFisleriTemizle({ tx: e.tx });
-							// this.islemTuslariVarsaGoster();
-							p.resolve(_e);
-
-							setTimeout(_e =>
-								this.kaydetSonrasi($.extend({}, e, {
-									result: _e, basTS: basTS,
-									mevcutKonumBilgi: mevcutKonumBilgi
-								})),
-								1, _e)
+							await fis.geciciFisleriTemizle({ tx: e.tx }); p.resolve(_e);
+							setTimeout(_e => this.kaydetSonrasi($.extend({}, e, { result: _e, basTS: basTS, mevcutKonumBilgi })), 1, _e)
 						},
 						geriCallback: async e => {
 							fisGirisIslemiBittimi = true;
-
-							// this.islemTuslariVarsaGoster();
 							if (fis) {
-								if (fis.geciciFis_destroyTimer)
-									fis.geciciFis_destroyTimer();
+								if (fis.geciciFis_destroyTimer) { fis.geciciFis_destroyTimer() }
 								await fis.geciciFisleriTemizle({ tx: e.tx });
 							}
 							p.resolve({ isCancelled: true })
