@@ -418,13 +418,13 @@
 				let mevcutKonumBilgi = null;
 				if (mustKod && islem != 'izle' && musteriKullanilirmi && app.konumTakibiYapilirmi) {
 					const promise_konumBilgi = navigator?.geolocation.getCurrentPosition
-						? new $.Deferred(p => navigator.geolocation.getCurrentPosition(konumBilgi => p.resolve({ ...konumBilgi })), null, { enableHighAccuracy: true })
+						? new $.Deferred(p => navigator.geolocation.getCurrentPosition(konumBilgi => p.resolve($.extend({}, konumBilgi)), null, { enableHighAccuracy: true }))
 						: null;
 					try { if (promise_konumBilgi) { mevcutKonumBilgi = await promise_konumBilgi } }
 					catch (ex) { console.error(`Mevcut Konum bilgisi alınamadı`, ex) }
 					mevcutKonumBilgi = e.mevcutKonumBilgi = mevcutKonumBilgi?.coords;
 					if (mevcutKonumBilgi) { mevcutKonumBilgi = $.extend({}, mevcutKonumBilgi) }
-					if (!mevcutKonumBilgi && !konumsuzIslemYapilirmi) {
+					if (!mevcutKonumBilgi && !sky.app.konumsuzIslemYapilirmi) {
 						const ex = { isError: true, rc: 'mevcutKonumBelirlenemedi', errorText: `<b>Mevcut Konum belirlenemediği</b> için işlem yapılamaz` };
 						setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
 					}
