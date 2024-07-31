@@ -517,11 +517,11 @@
 			return `${this.wsURLBase}download/?${$.param(this.buildAjaxArgs(e))}`
 		}
 		wsUpload(e) {
-			e = e || {}; const data = toJSONStr(e.args); delete e.args;
+			e = e || {}; const data = e.args; delete e.args;
 			lastAjaxObj = $.ajax({
-				cache: false, type: 'POST', timeout: 1000000, contentType: `application/octet-stream; charset=utf-8`,
+				cache: false, type: 'POST', timeout: 1000000, contentType: 'application/octet-stream; charset=utf-8',
 				url: `${this.wsURLBase}upload/?${$.param(this.buildAjaxArgs(e))}`,
-				processData: false, data: data
+				processData: false, data
 			});
 			return lastAjaxObj
 		}
