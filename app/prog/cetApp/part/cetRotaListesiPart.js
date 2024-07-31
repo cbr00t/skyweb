@@ -195,6 +195,8 @@
 				{ text: 'Müşteri Kodu', align: 'left', dataField: 'kod', hidden: true },
 				{ text: 'VKN', align: 'left', dataField: 'vkn', hidden: true },
 				{ text: 'Yöre', align: 'left', dataField: 'yore', hidden: true },
+				{ text: 'İl', align: 'left', dataField: 'ilKod', hidden: true },
+				{ text: 'İl Adı', align: 'left', dataField: 'ilAdi', hidden: true },
 				{ text: 'Konsolide Tip', align: 'left', dataField: 'konTipKod', hidden: true },
 				{ text: 'Konsolide Şube Adı', align: 'left', dataField: 'konSubeAdi', hidden: true }
 			);

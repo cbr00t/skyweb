@@ -423,7 +423,7 @@
 					try { if (promise_konumBilgi) { mevcutKonumBilgi = await promise_konumBilgi } }
 					catch (ex) { console.error(`Mevcut Konum bilgisi alınamadı`, ex) }
 					mevcutKonumBilgi = e.mevcutKonumBilgi = mevcutKonumBilgi?.coords;
-					if (mevcutKonumBilgi) { mevcutKonumBilgi = $.extend({}, mevcutKonumBilgi) }
+					if (mevcutKonumBilgi) { mevcutKonumBilgi = { latitude: mevcutKonumBilgi.latitude, longitude: mevcutKonumBilgi.longitude, accuracy: mevcutKonumBilgi.accuracy } }
 					if (!mevcutKonumBilgi && !sky.app.konumsuzIslemYapilirmi) {
 						const ex = { isError: true, rc: 'mevcutKonumBelirlenemedi', errorText: `<b>Mevcut Konum belirlenemediği</b> için işlem yapılamaz` };
 						setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
@@ -436,15 +436,17 @@
 							if (konumLatitude && konumLongitude) { mustKonumBilgi = { latitude: konumLatitude, longitude: konumLongitude, accuracy: konumAccuracy } }
 						}
 						if (!mustKonumBilgi) {
-							mustKonumBilgi = paramMustRec.konumBilgi = mevcutKonumBilgi; param.kaydet();
-							let upd = new MQIliskiliUpdate({
-								from: 'mst_Cari', where: { degerAta: mustKod, saha: 'kod' },
-								set: [
-									{ degerAta: mustKonumBilgi.longitude, saha: 'konumLongitude' },
-									{ degerAta: mustKonumBilgi.latitude, saha: 'konumLatitude' },
-									{ degerAta: mustKonumBilgi.accuracy, saha: 'konumAccuracy' }
-								]
-							}); await dbMgr.executeSql({ query: upd })
+							mustKonumBilgi = paramMustRec.konumBilgi = { latitude: mevcutKonumBilgi.latitude, longitude: mevcutKonumBilgi.longitude, accuracy: mevcutKonumBilgi.accuracy }; param.kaydet();
+							if (mustKonumBilgi.latitude != null && mustKonumBilgi.longitude != null) {
+								let upd = new MQIliskiliUpdate({
+									from: 'mst_Cari', where: { degerAta: mustKod, saha: 'kod' },
+									set: [
+										{ degerAta: mustKonumBilgi.longitude, saha: 'konumLongitude' },
+										{ degerAta: mustKonumBilgi.latitude, saha: 'konumLatitude' },
+										{ degerAta: mustKonumBilgi.accuracy || 0, saha: 'konumAccuracy' }
+									]
+								}); await dbMgr.executeSql({ query: upd })
+							}
 						}
 						/*if (
 							(Math.abs(mevcutKonumBilgi.latitude - mustKonumBilgi.latitude) > (konumLatitudeTolerans || 0)) ||
