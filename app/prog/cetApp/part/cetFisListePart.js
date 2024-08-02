@@ -1568,7 +1568,7 @@
 				return;
 			}
 
-			const fisSinif = e.fisSinif = e.fisSinif || (e.fis ? e.fis.class : null) || CETFis.fisSinifFor({ rec: rec });
+			const fisSinif = e.fisSinif = e.fisSinif || (e.fis ? e.fis.class : null) || CETFis.fisSinifFor({ rec });
 			if (!fisSinif) {
 				displayMessage(`Seçilen belge için Fiş Sınıfı belirlenemedi`, `Belge Transfer`);
 				return;

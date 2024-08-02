@@ -462,7 +462,7 @@
 			let txtFisNo = subContent.find('#fisNo')
 				.attr('maxLength', 9)
 				.jqxNumberInput({
-					theme: theme, width: 165, inputMode: 'simple',
+					theme: theme, width: 150, inputMode: 'simple',
 					min: 0, max: 999999999, decimalDigits: 0,
 					spinButtons: true, spinButtonsWidth: 32,
 					decimal: asInteger(fis.fisNo) || null

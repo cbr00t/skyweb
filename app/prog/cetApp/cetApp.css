@@ -2888,13 +2888,12 @@ body.cetApp {
 }
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer > div {
 	margin: 0;
-	padding: 13px 0 0 8px;
+	padding: 3px 0 0 3px;
 	height: 65px !important;
 }
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer .etiket {
 	font-size: 100%;
-	min-width: 130px;
-	max-width: 130px;
+	width: 80px;
 	padding-top: 5px;
 }
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer #eskiFisSeri,
@@ -2903,12 +2902,12 @@ body.cetApp {
 }
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer #eskiFisSeri,
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer #yeniFisSeri {
-	width: 65px;
+	width: 50px;
 	text-transform: uppercase;
 	text-align: center;
 }
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer #yeniFisSeri {
-	width: 83px;
+	width: 70px;
 }
 .part.cetApp.cetFisListe.belgeTransfer.jqx-window .jqx-window-content #tabs .jqx-tabs-content #belgeTransfer #eskiFisNo {
 	text-align: right;
@@ -3455,7 +3454,7 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetFisGiris .etiket {
 	font-size: 80%;
 	font-weight: bold;
-	width: 110px;
+	width: 80px;
 }
 .part.cetApp.cetFisGiris .baslik .jqx-widget-header {
 }

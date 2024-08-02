@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<title>Sky Web</title>
 	<meta name="description" content="Sky Web" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
+	<meta name="viewport" content="width=device-width, initial-scale=.97, minimum-scale=.97, maximum-scale=.97, user-scalable=no" />
 	<link rel="manifest" href="manifest.php?<?=$siteVersion?>" />
 
 	<script async="false" src="../../vio/vioweb/lib/ieKontrol.js?<?=$siteVersion?>"></script>
