@@ -1,68 +1,31 @@
 (function() {
 	window.CETFisGirisSonStoktanSecimPart = class extends window.CETListeOrtakPart {
-		static get canDestroy() { return false }
-		static get canDefer_slow() { return true }
-		static get noResizeEvent() { return true }
-		static get partName() { return 'cetFisGirisSonStoktanSecim' }
-		get fisGirisEkranimi() { return true }
-		get adimText() { return 'Hızlı Fiş Giriş' }
-		
+		static get canDestroy() { return false } static get canDefer_slow() { return true } static get noResizeEvent() { return true }
+		static get partName() { return 'cetFisGirisSonStoktanSecim' } get fisGirisEkranimi() { return true } get adimText() { return 'Hızlı Fiş Giriş' }
 		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			const {app} = this;
-			const {fis, sonStokKontrolEdilirmi, sonStokFilterDisabled} = e;
+			e = e || {}; super(e); const {app} = this, {fis, sonStokKontrolEdilirmi, sonStokFilterDisabled} = e;
 			$.extend(this, {
-				islem: e.islem,
-				eskiFis: e.eskiFis,
-				fis: fis,
-				sonStokKontrolEdilirmi: sonStokKontrolEdilirmi == null ? (fis.class.sonStokKontrolEdilirmi || null) : sonStokKontrolEdilirmi,
-				sonStokFilterDisabled: sonStokFilterDisabled == null ? app.sonStokKontrolEdilirmi && fis.class.sonStokKontrolEdilirmi : sonStokFilterDisabled,
-				secButonuKontrolEdilirmi: false,
-				altListe_rowHeight: 40
+				islem: e.islem, eskiFis: e.eskiFis, fis,
+				sonStokKontrolEdilirmi: sonStokKontrolEdilirmi == null ? (fis.class.sonStokKontrolEdilirmi ?? null) : sonStokKontrolEdilirmi,
+				sonStokFilterDisabled: sonStokFilterDisabled == null ? (app.sonStokKontrolEdilirmi && fis.class.sonStokKontrolEdilirmi) : sonStokFilterDisabled,
+				secButonuKontrolEdilirmi: false, altListe_rowHeight: 40
 			});
-			if (!(this.layout || this.template))
-				this.template = this.app.templates.fisGirisSonStoktanSecim
+			if (!(this.layout ?? this.template)) { this.template = this.app.templates.fisGirisSonStoktanSecim }
 		}
-		async postInitLayout(e) {
-			e = e || {};
-			await super.postInitLayout(e)
-		}
+		async postInitLayout(e) { e = e || {}; await super.postInitLayout(e) }
 		async activatePart(e) {
-			e = e || {};
-			await super.activatePart(e);
-			if (this.sonStokKontrolEdilirmi == null)
-				this.sonStokKontrolEdilirmi = this.savedValue_sonStokKontrolEdilirmi;
-			if (this.savedValue_sonStokKontrolEdilirmi == null || this.savedValue_sonStokKontrolEdilirmi != this.sonStokKontrolEdilirmi) {
-				this.savedValue_sonStokKontrolEdilirmi = this.sonStokKontrolEdilirmi;
-				// this.tazele();
-			}
-
-			// this.islemTuslariOrtakInit(e);
-			await this._initActivatePartOrtak(e);
-			setTimeout(() => this.tazele(), 1000);
+			e = e || {}; await super.activatePart(e);
+			if (this.sonStokKontrolEdilirmi == null) { this.sonStokKontrolEdilirmi = this.savedValue_sonStokKontrolEdilirmi }
+			if (this.savedValue_sonStokKontrolEdilirmi == null || this.savedValue_sonStokKontrolEdilirmi != this.sonStokKontrolEdilirmi) { this.savedValue_sonStokKontrolEdilirmi = this.sonStokKontrolEdilirmi }
+			await this._initActivatePartOrtak(e); setTimeout(() => this.tazele(), 1000)
 		}
-
 		async _initActivatePartOrtak(e) {
-			e = e || {};
-			this.initActivatePartOrtak(e);
-			const layout = e.layout || this.layout;
-			// layout.parent().addClass('basic-hidden');
-
-			const {app, fis} = this;
-			const {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla} = app;
-			if (btnToggleFullScreen && btnToggleFullScreen.length)
-				btnToggleFullScreen.addClass(`jqx-hidden`);
-			if (chkOtoAktar && chkOtoAktar.length)
-				chkOtoAktar.addClass(`jqx-hidden`);
-			if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length)
-				btnGonderimIsaretSifirla.addClass(`jqx-hidden`);
-
-			const {mustKod} = fis;
-			this.fiyatGorurmu = fis && !fis.class.fiiliCikismi ? app.alimFiyatGorurmu : app.satisFiyatGorurmu;
-			this.bedelKullanilirmi = fis.class.bedelKullanilirmi;
-
+			e = e || {}; this.initActivatePartOrtak(e); const layout = e.layout || this.layout;
+			const {app, fis} = this, {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla} = app;
+			if (btnToggleFullScreen?.length) { btnToggleFullScreen.addClass('jqx-hidden') }
+			if (chkOtoAktar?.length) { chkOtoAktar.addClass(`jqx-hidden`) }
+			if (btnGonderimIsaretSifirla?.length) { btnGonderimIsaretSifirla.addClass('jqx-hidden') }
+			const {mustKod} = fis; this.fiyatGorurmu = fis && !fis.class.fiiliCikismi ? app.alimFiyatGorurmu : app.satisFiyatGorurmu; this.bedelKullanilirmi = fis.class.bedelKullanilirmi;
 			const mustKod2KosulProYapilari = app.mustKod2KosulProYapilari = app.mustKod2KosulProYapilari || {};
 			const promise_ilkIslemler = this.promise_ilkIslemler = new $.Deferred(p => {
 				setTimeout(async () => {
@@ -72,162 +35,73 @@
 							satisKosulYapilari: await fis.getSatisKosulYapilari({ /* kosulTip: ['FY', 'SB', 'KM', 'MF'] */ }),
 							promosyonYapilari: await fis.getPromosyonYapilari()
 						};
-						$.extend(this, kosulProYapilari);
-						p.resolve(kosulProYapilari);
+						$.extend(this, kosulProYapilari); p.resolve(kosulProYapilari)
 					}
-					finally {
-						delete this.promise_ilkIslemler;
-					}
-				}, 500);
+					finally { delete this.promise_ilkIslemler }
+				}, 500)
 			});
-
-			const divDiger = this.divDiger = layout.find('.diger');
-			const chkSonStoktaOlanlarmi = this.chkSonStoktaOlanlarmi = divDiger.find('#chkSonStoktaOlanlarmi');
-			let handler = evt => {
-				this.sonStokKontrolEdilirmi = this.savedValue_sonStokKontrolEdilirmi = chkSonStoktaOlanlarmi.is(':checked');
-				this.tazele(e);
-			};
-			chkSonStoktaOlanlarmi.parent().find('#chkSonStoktaOlanlarmi_label')
-				.off('mouseup, touchend')
-				.on('mouseup, touchend', evt => {
-					if (!(this.disableEventsFlag || this.sonStokFilterDisabled)) {
-						chkSonStoktaOlanlarmi.prop('checked', !chkSonStoktaOlanlarmi.prop('checked'));
-						handler(evt);
-					}
-				});
-			chkSonStoktaOlanlarmi
-				.off('change')
-				.on('change', evt => {
-					if (!(this.disableEventsFlag || this.sonStokFilterDisabled))
-						handler(evt);
-			});
-			this.disableEventsDo(() =>
-				chkSonStoktaOlanlarmi.prop('checked', this.sonStokKontrolEdilirmi));
+			const divDiger = this.divDiger = layout.find('.diger'), chkSonStoktaOlanlarmi = this.chkSonStoktaOlanlarmi = divDiger.find('#chkSonStoktaOlanlarmi');
+			let handler = evt => { this.sonStokKontrolEdilirmi = this.savedValue_sonStokKontrolEdilirmi = chkSonStoktaOlanlarmi.is(':checked'); this.tazele(e) };
+			chkSonStoktaOlanlarmi.parent().find('#chkSonStoktaOlanlarmi_label').off('mouseup, touchend')
+				.on('mouseup, touchend', evt => { if (!(this.disableEventsFlag || this.sonStokFilterDisabled)) { chkSonStoktaOlanlarmi.prop('checked', !chkSonStoktaOlanlarmi.prop('checked')); handler(evt) } });
+			chkSonStoktaOlanlarmi.off('change').on('change', evt => { if (!(this.disableEventsFlag || this.sonStokFilterDisabled)) { handler(evt) }});
+			this.disableEventsDo(() => { chkSonStoktaOlanlarmi.prop('checked', this.sonStokKontrolEdilirmi) });
 			this.islemTuslariOrtakInit(e);
-
-			const grupListeParent = this.grupListeParent = this.grupListeParent || layout.find(`#grupListeParent`);
-			let grupListePart = this.grupListePart;
-			if (grupListePart) {
-				grupListePart.tazele();
-			}
+			const grupListeParent = this.grupListeParent = this.grupListeParent || layout.find(`#grupListeParent`); let {grupListePart} = this;
+			if (grupListePart) { grupListePart.tazele() }
 			else {
 				grupListePart = this.grupListePart = new CETListeOrtakPart({
 					isComponent: true, content: false, layout: grupListeParent,
-					// template: this.app.templates.cetListeOrtak,
 					listeLayout: `#grupListe`, listePartsLayout: '.listeParts',
-					widgetDuzenleyici: e => {
-						$.extend(e.listeArgs, {
-							showToolbar: false, columnsHeight: 28, pagerHeight: 30,
-							pageable: false, filterable: false, /*pageSize: 12,*/
-							serverProcessing: false, height: $(window).height() - 90,
-							// pageSize: grupListePart.userSettings_liste.pageSize || 40,
-						})
-					},
+					widgetDuzenleyici: e => { $.extend(e.listeArgs, { showToolbar: false, columnsHeight: 28, pagerHeight: 30, pageable: false, filterable: false, serverProcessing: false, height: $(window).height() - 90 }) },
 					listeColumnsDuzenleFunc: e => this.grupListe_columnsDuzenle(e),
-					// listeDataAdapterOlusturFunc: e => this.getDataAdapter_grupListe(e),
-					liste_loadServerData_buildQuery: e => this.grupListe_loadServerData_buildQuery(e),
-					liste_loadServerData_ekIslemler: e => this.grupListe_loadServerData_ekIslemler(e),
-					listeSatirSecildiFunc: e =>
-						this.grupListe_satirSecildi(e)
+					liste_loadServerData_buildQuery: e => this.grupListe_loadServerData_buildQuery(e), liste_loadServerData_ekIslemler: e => this.grupListe_loadServerData_ekIslemler(e),
+					listeSatirSecildiFunc: e => { this.grupListe_satirSecildi(e) }
 				});
-				grupListePart.run();
+				grupListePart.run()
 			}
-
-			let {genelIslemTuslari} = this;
-			if (!genelIslemTuslari) {
+			let {genelIslemTuslari} = this; if (!genelIslemTuslari) {
 				genelIslemTuslari = this.genelIslemTuslari = layout.find(`.genelIslemTuslari`);
-				genelIslemTuslari.jqxMenu({
-					theme: theme, mode: 'horizontal',
-					animationShowDuration: 0, animationHideDuration: 0
-				});
+				genelIslemTuslari.jqxMenu({ theme, mode: 'horizontal', animationShowDuration: 0, animationHideDuration: 0 });
 			}
 			let liItems = genelIslemTuslari.find('ul > li');
-			liItems
-				.off('click')
-				.on('click', evt =>
-					this.islemTusuTiklandi($.extend({}, e, { event: evt })));
-			
-			const altListeParent = this.altListeParent = this.altListeParent || layout.find(`#altListeParent`);
-			let {altListePart} = this;
-			if (altListePart) {
-				altListePart.tazele();
-			}
+			liItems.off('click')
+				.on('click', evt => this.islemTusuTiklandi($.extend({}, e, { event: evt })));
+			const altListeParent = this.altListeParent = this.altListeParent || layout.find(`#altListeParent`); let {altListePart} = this;
+			if (altListePart) { altListePart.tazele() }
 			else {
 				altListePart = this.altListePart = new CETListeOrtakPart({
 					isComponent: true, content: false, layout: altListeParent,
-					// template: this.app.templates.cetListeOrtak,
 					listeLayout: `#altListe`, listePartsLayout: '.listeParts',
 					widgetDuzenleyici: e => {
 						const {layout, genelIslemTuslari, altListe_rowHeight} = this;
 						$.extend(e.listeArgs, {
-							showToolbar: false, columnsHeight: 23, pagerHeight: 30,
-							pageSize: altListePart.userSettings_liste.pageSize || 10,
-							autoRowHeight: true,
-							height: $(window).height() - (
-								genelIslemTuslari.position().top +
-								genelIslemTuslari.height()
-							) - (15 + altListe_rowHeight)
+							showToolbar: false, columnsHeight: 23, pagerHeight: 30, pageSize: altListePart.userSettings_liste.pageSize || 10, autoRowHeight: true,
+							height: $(window).height() - (genelIslemTuslari.position().top + genelIslemTuslari.height()) - (15 + altListe_rowHeight)
 						})
 					},
 					listeColumnsDuzenleFunc: e => this.altListe_columnsDuzenle(e),
-					listeDataAdapterOlusturFunc: e => {
-						return new $.jqx.dataAdapter({
-							id: 'seq', datatype: 'array',
-							localdata: []
-							/*	new CKodVeAdi({ kod: 'a01', aciklama: 'satır 1' }),
-								new CKodVeAdi({ kod: 'a02', aciklama: 'satır 2' }),
-								new CKodVeAdi({ kod: 'a03', aciklama: 'satır 3' })
-							*/
-						})
-					},
-					listeSatirTiklandiFunc: e => this.altListe_satirTiklandi(e),
-					listeSatirCiftTiklandiFunc: e => this.altListe_satirCiftTiklandi(e),
+					listeDataAdapterOlusturFunc: e => new $.jqx.dataAdapter({ id: 'seq', datatype: 'array', localdata: [] }),
+					listeSatirTiklandiFunc: e => this.altListe_satirTiklandi(e), listeSatirCiftTiklandiFunc: e => this.altListe_satirCiftTiklandi(e),
 					listeSatirSecimDegistiFunc: e => this.altListe_satirSecimDegisti(e)
 				});
-				await altListePart.run();
+				await altListePart.run()
 			}
-			altListePart.liste_hideFilterBar();
-
-			setTimeout(() =>
-				layout.parent().removeClass('basic-hidden'),
-				10);
-			setTimeout(() => hideProgress(), 100);
-			// await promise_ilkIslemler;
+			altListePart.liste_hideFilterBar(); setTimeout(() => layout.parent().removeClass('basic-hidden'), 10); setTimeout(() => hideProgress(), 100)
 		}
-
 		async deactivatePart(e) {
-			e = e || {};
-
-			const {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla} = sky.app;
+			e = e || {}; const {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla} = sky.app;
 			setTimeout(() => {
-				if (btnToggleFullScreen && btnToggleFullScreen.length)
-					btnToggleFullScreen.removeClass(`jqx-hidden`);
-				if (chkOtoAktar && chkOtoAktar.length)
-					chkOtoAktar.removeClass(`jqx-hidden`);
-				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length)
-					btnGonderimIsaretSifirla.removeClass(`jqx-hidden`);
+				if (btnToggleFullScreen?.length) { btnToggleFullScreen.removeClass('jqx-hidden') }
+				if (chkOtoAktar?.length) { chkOtoAktar.removeClass('jqx-hidden') }
+				if (btnGonderimIsaretSifirla?.length) { btnGonderimIsaretSifirla.removeClass('jqx-hidden') }
 			}, 100);
-			
-			await this.grupListePart.deactivatePart(e);
-			await this.altListePart.deactivatePart(e);
-
-			await super.deactivatePart(e);
+			await this.grupListePart.deactivatePart(e); await this.altListePart.deactivatePart(e); await super.deactivatePart(e)
 		}
-
-		async destroyPart(e) {
-			e = e || {};			
-			await this.grupListePart.destroyPart(e);
-			await this.altListePart.destroyPart(e);
-
-			await super.destroyPart(e);
-		}
-
+		async destroyPart(e) { e = e || {}; await this.grupListePart.destroyPart(e); await this.altListePart.destroyPart(e); await super.destroyPart(e) }
 		islemTuslariOrtakInit(e) {
-			e = e || {};
-			const layout = e.layout || this.layout;
-			
-			const divDiger = this.divDiger;
-			const chkSonStoktaOlanlarmi = this.chkSonStoktaOlanlarmi;
+			e = e || {}; const layout = e.layout || this.layout;
+			const divDiger = this.divDiger, chkSonStoktaOlanlarmi = this.chkSonStoktaOlanlarmi;
 			this.disableEventsDo(() =>
 				chkSonStoktaOlanlarmi.prop('checked', this.sonStokKontrolEdilirmi));
 			
@@ -256,56 +130,25 @@
 
 		async liste_columnsDuzenle(e) {
 			await super.liste_columnsDuzenle(e);
-			
 			$.merge(e.listeColumns, [
 				{
 					text: 'Ürün Adı', align: 'left', dataField: 'aciklama',
 					cellsRenderer: (rowIndex, dataField, value, rec) => {
-						const {fiyatGorurmu, bedelKullanilirmi} = this;
-						rec = rec.originalRecord || rec;
-
-						const divSatir = this.newListeSatirDiv($.extend({}, e));
-						divSatir.attr('data-index', rowIndex);
-						$.each(rec, (key, value) => {
-							key = (key || '').trim()
-							if (!key)
-								return true;
-
+						const {fiyatGorurmu, bedelKullanilirmi} = this, {stokFiyatKdvlimi, kdvDahilFiyatGosterim, fiyatFra} = sky.app;
+						rec = rec.originalRecord || rec; const divSatir = this.newListeSatirDiv($.extend({}, e)); divSatir.attr('data-index', rowIndex);
+						for (let key in rec) {
+							key = key?.trim(); if (!key) { return true } value = rec[key];
 							switch (key) {
 								case 'brmFiyat':
-									value = (value || 0).toLocaleString();
-									break;
+									value = asFloat(value) || 0;
+									if (!stokFiyatKdvlimi && kdvDahilFiyatGosterim) { value = roundToFra(rec.brmFiyat + (rec.brmFiyat * bedel(rec.kdvOrani / 100)), fiyatFra) }
+									value = `<span class="orangered">KD:</span>${value.toLocaleString()}`; break
 							}
-							if (!value) {
-								switch (key) {
-									case 'sonStok':
-									case 'sonStok2':
-									case 'miktar':
-									case 'miktar2':
-										value = 0;
-										break;
-								}
-							}
-							
-							const item = divSatir.find(`.${key}`);
-							if (item.length)
-								item.html(value);
-							
-							const fiyatParent = divSatir.find(`.brmFiyatParent`);
-							if (!(fiyatGorurmu && bedelKullanilirmi && rec.brmFiyat))
-								fiyatParent.addClass(`jqx-hidden`);
-							
-							if (rec.ozelFiyatVarmi) {
-								fiyatParent.addClass('ozelFiyat');
-								fiyatParent.find('.etiket').html('Koş:');
-							}
-						});
-						
-						/*let div = divSatir.find('.miktar');
-						let miktar = rec.miktar;
-						if (div.length)
-							div.html(miktar || 1);*/
-
+							if (!value) { switch (key) { case 'sonStok': case 'sonStok2': case 'miktar': case 'miktar2': value = 0; break } }
+							const item = divSatir.find(`.${key}`); if (item.length) { item.html(value) }
+							const fiyatParent = divSatir.find(`.brmFiyatParent`); if (!(fiyatGorurmu && bedelKullanilirmi && rec.brmFiyat)) { fiyatParent.addClass(`jqx-hidden`) }
+							if (rec.ozelFiyatVarmi) { fiyatParent.addClass('ozelFiyat'); fiyatParent.find('.etiket').html('Koş:') }
+						}
 						return divSatir[0].outerHTML.trim();
 					}
 				},
@@ -529,7 +372,7 @@
 			$.merge(e.listeColumns, [
 				{	datafield: ' ', text: 'Seçilenler', align: 'left',
 					cellsRenderer: (rowIndex, dataField, value, rec) => {
-						const {altListe_rowHeight, fiyatGorurmu, bedelKullanilirmi} = this;
+						const {altListe_rowHeight, fiyatGorurmu, bedelKullanilirmi} = this, {stokFiyatKdvlimi, kdvDahilFiyatGosterim, fiyatFra} = sky.app;
 						rec = rec.originalRecord || rec;
 
 						const divSatir = this.altListePart.newListeSatirDiv($.extend({}, e));
@@ -543,8 +386,9 @@
 
 							switch (key) {
 								case 'brmFiyat':
-									value = (value || 0).toLocaleString();
-									break;
+									value = asFloat(value) || 0;
+									if (!stokFiyatKdvlimi && kdvDahilFiyatGosterim) { value = roundToFra(rec.brmFiyat + (rec.brmFiyat * bedel(rec.kdvOrani / 100)), fiyatFra) }
+									value = `<span class="orangered">KD:</span>${value.toLocaleString()}`; break
 							}
 							if (!value) {
 								switch (key) {

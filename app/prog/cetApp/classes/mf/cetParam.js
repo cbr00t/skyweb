@@ -33,6 +33,7 @@
 				nakitUstLimit: this.nakitUstLimit == null ? 7000 : this.nakitUstLimit,
 				stokFiyatKdvlimi: this.stokFiyatKdvlimi == null ? false : asBool(this.stokFiyatKdvlimi),
 				isaretliBelgeKDVDurumu: this.isaretliBelgeKDVDurumu == null ? '' : this.isaretliBelgeKDVDurumu || '',
+				kdvDahilFiyatGosterim: this.kdvDahilFiyatGosterim == null ? false : asBool(this.kdvDahilFiyatGosterim),
 				alimFiyatGorurmu: this.alimFiyatGorurmu == null ? true : asBool(this.alimFiyatGorurmu),
 				satisFiyatGorurmu: this.satisFiyatGorurmu == null ? true : asBool(this.satisFiyatGorurmu),
 				konumToleransMetre: asFloat(this.konumToleransMetre) || 1000,

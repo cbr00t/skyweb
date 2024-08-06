@@ -128,18 +128,19 @@
 				});
 				if (app.satisFiyatGorurmu) {
 					recs.push({
-						etiket: 'FİYAT',
-						veri: (
+						etiket: 'FİYAT', veri: (
 							toStringWithFra(
-								( dovizlimi
-									? (fiyatKosulDetay.ozelDvFiyat || stokRec.dvFiyatGorFiyati || stokRec.dvBrmFiyat || 0)
-									: (fiyatKosulDetay.ozelFiyat || stokRec.fiyatGorFiyati || stokRec.brmFiyat || 0)
-								),
+								(dovizlimi ? (fiyatKosulDetay.ozelDvFiyat || stokRec.dvFiyatGorFiyati || stokRec.dvBrmFiyat || 0) : (fiyatKosulDetay.ozelFiyat || stokRec.fiyatGorFiyati || stokRec.brmFiyat || 0)),
 								fiyatFra
 							) + (` ${dvKod || 'TL'}`)
 						),
 						bedelmi: true
 					});
+					if (!dovizlimi && !app.stokFiyatKdvlimi && app.kdvDahilFiyatGosterim) {
+						const fiyat = fiyatKosulDetay.ozelFiyat || stokRec.fiyatGorFiyati || stokRec.brmFiyat || 0;
+						const kdvliFiyat = roundToFra(fiyat + (fiyat * bedel((stokRec.kdvOrani || 0) / 100)), fiyatFra);
+						recs.push({ etiket: `FİYAT (<span class="orangered">KDV Dahil</span>)`, veri: `<span class="orangered">${toStringWithFra(kdvliFiyat)} TL</span>`, bedelmi: true })
+					}
 				}
 				if (iskKosulDetay && asFloat(iskKosulDetay.iskOran1)) {
 					const Prefix = 'iskOran';

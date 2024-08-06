@@ -429,13 +429,13 @@
 			return result;
 		}
 		get fiyatFra() {
-			let result = (this.ozelYetkiler || {}).fiyatFra;
+			let result = this.ozelYetkiler?.fiyatFra;
 			if (result == null)
 				result = this.param.fiyatFra;
 			return result;
 		}
 		get dvFiyatFra() {
-			let result = (this.ozelYetkiler || {}).dvFiyatFra;
+			let result = this.ozelYetkiler?.dvFiyatFra;
 			if (result == null)
 				result = this.param.dvFiyatFra;
 			if (result == null)
@@ -443,7 +443,7 @@
 			return result;
 		}
 		get brm2Fra() {
-			let result = (this.ozelYetkiler || {}).brm2Fra;
+			let result = this.ozelYetkiler?.brm2Fra;
 			if (result == null)
 				result = this.param.brm2Fra;
 			return result || {};
@@ -482,7 +482,7 @@
 			return result;
 		}
 		get tip2Renk() {
-			let result = (this.ozelYetkiler || {}).tip2Renk;
+			let result = this.ozelYetkiler?.tip2Renk;
 			if (result == null)
 				result = this.param.tip2Renk;
 			if (!result || $.isEmptyObject(result))
@@ -490,7 +490,7 @@
 			return result;
 		}
 		get tarihAralik() {
-			let result = (this.ozelYetkiler || {}).tarihAralik;
+			let result = this.ozelYetkiler?.tarihAralik;
 			if (result == null)
 				result = this.param.tarihAralik;
 			if (result == null) {
@@ -500,171 +500,53 @@
 			return result;
 		}
 		get sonStoktanSecimYapilirmi() {
-			if (!this.class.sonStoktanSecimYapilirmi)
-				return false;
-			let flag = (this.ozelYetkiler || {}).sonStoktanSecim;
-			if (flag == null) {
-				if (this.rbkKullanilirmi && this.fisGirisiRbkOtomatikAcilsinmi)
-					return false;
-				const _flag = this.param.sonStoktanSecimYapilirmi;
-				flag = _flag == null || _flag === '' ? true : asBool(_flag);
+			if (!this.class.sonStoktanSecimYapilirmi) { return false }
+			let flag = this.ozelYetkiler?.sonStoktanSecim; if (flag == null) {
+				if (this.rbkKullanilirmi && this.fisGirisiRbkOtomatikAcilsinmi) { return false }
+				const _flag = this.param.sonStoktanSecimYapilirmi; flag = _flag == null || _flag === '' ? true : asBool(_flag);
 			}
 			return flag;
 		}
-		get rotaKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).rota;
-			if (flag == null)
-				flag = this.param.rotaKullanilirmi;
-			return flag;
-		}
-		get rotaDevreDisiGosterilirmi() {
-			let flag = (this.ozelYetkiler || {}).rotaDevreDisi;
-			if (flag == null)
-				flag = this.param.rotaDevreDisiGosterilirmi;
-			return flag;
-		}
-		get sicakTeslimFisimi() {
-			let flag = (this.ozelYetkiler || {}).sicakTeslimFisi;
-			if (flag == null)
-				flag = this.param.sicakTeslimFisimi;
-			return flag;
-		}
-		get riskKontrolDurum() {
-			let value = (this.ozelYetkiler || {}).riskKontrolDurum;
-			if (value == null)
-				value = this.param.riskKontrolDurum;
-			return value || '';
-		}
-		get stokFiyatKdvlimi() {
-			let flag = (this.ozelYetkiler || {}).stokFiyatKdvli;
-			if (flag == null)
-				flag = this.param.stokFiyatKdvlimi;
-			return flag;
-		}
-		get ozelIsaretKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).ozelIsaret;
-			if (flag == null)
-				flag = this.param.yildizKullanilirmi;
-			return flag;
-		}
-		get isaretliBelgeKDVDurumu() {
-			let flag = (this.ozelYetkiler || {}).isaretliBelgeKDVDurumu
-			if (flag == null)
-				flag = this.param.isaretliBelgeKDVDurumu;
-			return flag;
-		}
-		get yildizFiyatKdvlimi() {
-			return this.isaretliBelgeKDVDurumu == 'K';
-		}
-		get yildizYuvarlamaFarkimi() {
-			return this.isaretliBelgeKDVDurumu == 'N';
-		}
-		get sonStokKontrolEdilirmi() {
-			let flag = (this.ozelYetkiler || {}).sonStok;
-			if (flag == null)
-				flag = this.param.sonStokKontrolEdilirmi;
-			return flag;
-		}
-		get sonStokKontrolEdilirmi_siparis() {
-			let flag = (this.ozelYetkiler || {}).sonStok_siparis;
-			if (flag == null)
-				flag = this.param.sonStokKontrolEdilirmi_siparis;
-			return flag;
-		}
+		get rotaKullanilirmi() { let flag = this.ozelYetkiler?.rota; if (flag == null) { flag = this.param.rotaKullanilirmi } return flag; }
+		get rotaDevreDisiGosterilirmi() { let flag = this.ozelYetkiler?.rotaDevreDisi; if (flag == null) { flag = this.param.rotaDevreDisiGosterilirmi } return flag }
+		get sicakTeslimFisimi() { let flag = this.ozelYetkiler?.sicakTeslimFisi; if (flag == null) { flag = this.param.sicakTeslimFisimi } return flag }
+		get riskKontrolDurum() { let value = this.ozelYetkiler?.riskKontrolDurum; if (value == null) { value = this.param.riskKontrolDurum } return value || '' }
+		get stokFiyatKdvlimi() { let flag = this.ozelYetkiler?.stokFiyatKdvli; if (flag == null) { flag = this.param.stokFiyatKdvlimi } return flag }
+		get kdvDahilFiyatGosterim() { let flag = this.ozelYetkiler?.kdvDahilFiyatGosterim; if (flag == null) { flag = this.param.kdvDahilFiyatGosterim } return flag }
+		get ozelIsaretKullanilirmi() { let flag = this.ozelYetkiler?.ozelIsaret; if (flag == null) { flag = this.param.yildizKullanilirmi } return flag }
+		get isaretliBelgeKDVDurumu() { let flag = this.ozelYetkiler?.isaretliBelgeKDVDurumu; if (flag == null) { flag = this.param.isaretliBelgeKDVDurumu } return flag }
+		get yildizFiyatKdvlimi() { return this.isaretliBelgeKDVDurumu == 'K' }
+		get yildizYuvarlamaFarkimi() { return this.isaretliBelgeKDVDurumu == 'N' }
+		get sonStokKontrolEdilirmi() { let flag = this.ozelYetkiler?.sonStok; if (flag == null) { flag = this.param.sonStokKontrolEdilirmi } return flag }
+		get sonStokKontrolEdilirmi_siparis() { let flag = this.ozelYetkiler?.sonStok_siparis; if (flag == null) { flag = this.param.sonStokKontrolEdilirmi_siparis } return flag }
 		static get defaultUygunAyrimTipleri() {
 			return [
-				{ kod: '', aciklama: 'Normal' },
-				{ kod: 'IH', aciklama: 'İhr.' },
-				{ kod: 'FS', aciklama: 'Fason' },
-				{ kod: 'EM', aciklama: 'Emanet' },
-				{ kod: 'KN', aciklama: 'Konsinye' }
-			];
+				{ kod: '', aciklama: 'Normal' }, { kod: 'IH', aciklama: 'İhr.' }, { kod: 'FS', aciklama: 'Fason' },
+				{ kod: 'EM', aciklama: 'Emanet' }, { kod: 'KN', aciklama: 'Konsinye' }
+			]
 		}
 		get uygunAyrimTipleri() {
-			let result = (this.ozelYetkiler || {}).uygunAyrimTipleri;
-			if (result == null)
-				result = this.param.uygunAyrimTipleri;
-			if ($.isEmptyObject(result))
-				result = this.class.defaultUygunAyrimTipleri;
-			return result;
+			let result = this.ozelYetkiler?.uygunAyrimTipleri; if (result == null) { result = this.param.uygunAyrimTipleri }
+			if ($.isEmptyObject(result)) { result = this.class.defaultUygunAyrimTipleri }
+			return result
 		}
-		get serbestModmu() {
-			let flag = (this.ozelYetkiler || {}).serbestMod;
-			if (flag == null)
-				flag = this.param.serbestModmu;
-			return flag;
-		}
-		get gridAltMultiSelectFlag() {
-			let flag = (this.ozelYetkiler || {}).gridAltMultiSelect;
-			if (flag == null)
-				flag = this.param.gridAltMultiSelectFlag;
-			return flag;
-		}
-		get listeKodDogrudanAramaYapilirmi() {
-			let flag = (this.ozelYetkiler || {}).listeKodDogrudanArama;
-			if (flag == null)
-				flag = this.param.listeKodDogrudanAramaYapilirmi;
-			return flag;
-		}
-		get fisOzetBilgiGosterilirmi() {
-			let flag = (this.ozelYetkiler || {}).fisOzetBilgi;
-			if (flag == null)
-				flag = this.param.fisOzetBilgiGosterilirmi;
-			return flag;
-		}
-		get eIslemDesteklenirmi() {
-			return true;
-		}
-		get eIslemKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).eIslem;
-			if (flag == null)
-				flag = asBool(this.param.eIslemKullanilirmi)
-			return flag
-		}
+		get serbestModmu() { let flag = this.ozelYetkiler?.serbestMod; if (flag == null) { flag = this.param.serbestModmu } return flag }
+		get gridAltMultiSelectFlag() { let flag = this.ozelYetkiler?.gridAltMultiSelect; if (flag == null) { flag = this.param.gridAltMultiSelectFlag } return flag }
+		get listeKodDogrudanAramaYapilirmi() { let flag = this.ozelYetkiler?.listeKodDogrudanArama; if (flag == null) { flag = this.param.listeKodDogrudanAramaYapilirmi } return flag }
+		get fisOzetBilgiGosterilirmi() { let flag = this.ozelYetkiler?.fisOzetBilgi; if (flag == null) { flag = this.param.fisOzetBilgiGosterilirmi } return flag }
+		get eIslemDesteklenirmi() { return true }
+		get eIslemKullanilirmi() { let flag = this.ozelYetkiler?.eIslem; if (flag == null) { flag = asBool(this.param.eIslemKullanilirmi) } return flag }
 		get eIrsaliyeKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).eIrsaliye;
-			if (flag == null) {
-				const _flag = this.param.eIrsaliyeKullanilirmi;
-				flag = _flag == null ? this.eIslemKullanilirmi : asBool(this.param.eIrsaliyeKullanilirmi)
-			}
+			let flag = this.ozelYetkiler?.eIrsaliye;
+			if (flag == null) { const _flag = this.param.eIrsaliyeKullanilirmi; flag = _flag == null ? this.eIslemKullanilirmi : asBool(this.param.eIrsaliyeKullanilirmi) }
 			return flag
 		}
-		get eBelgeAltSinir() {
-			let result = (this.ozelYetkiler || {}).eBelgeAltSinir;
-			if (result == null)
-				result = asFloat(this.param.eBelgeAltSinir) || 0;
-			return result;
-		}
-		get rotaKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).rota;
-			if (flag == null)
-				flag = asBool(this.class.rotaKullanilirmi) || false;
-			return flag;
-		}
-		get musteriDegistirilirmi() {
-			let flag = (this.ozelYetkiler || {}).musteriDegistirilir;
-			if (flag == null)
-				flag = asBool(this.param.musteriDegistirilirmi) || false;
-			return flag;
-		}
-		get musteriRotaZorunlumu() {
-			let flag = (this.ozelYetkiler || {}).rotaZorunlu;
-			if (flag == null)
-				flag = asBool(this.param.musteriRotaZorunlumu) || false;
-			return flag;
-		}
-		get bakiyeRiskGosterilmezmi() {
-			let flag = (this.ozelYetkiler || {}).bakiyeRiskGosterilmez;
-			if (flag == null)
-				flag = asBool(this.param.bakiyeRiskGosterilmezmi) || false;
-			return flag;
-		}
-		get oncekiFislerGosterilmezmi() {
-			let flag = (this.ozelYetkiler || {}).oncekiFislerGosterilmez;
-			if (flag == null)
-				flag = asBool(this.param.oncekiFislerGosterilmezmi) || false;
-			return flag;
-		}
+		get eBelgeAltSinir() { let result = this.ozelYetkiler?.eBelgeAltSinir; if (result == null) { result = asFloat(this.param.eBelgeAltSinir) || 0 } return result }
+		get rotaKullanilirmi() { let flag = this.ozelYetkiler?.rota; if (flag == null) { flag = asBool(this.class.rotaKullanilirmi) || false } return flag }
+		get musteriDegistirilirmi() { let flag = this.ozelYetkiler?.musteriDegistirilir; if (flag == null) { flag = this.param.musteriDegistirilirmi ?? false } return flag }
+		get musteriRotaZorunlumu() { let flag = this.ozelYetkiler?.rotaZorunlu; if (flag == null) { flag = asBool(this.param.musteriRotaZorunlumu) ?? false } return flag }
+		get bakiyeRiskGosterilmezmi() { let flag = this.ozelYetkiler?.bakiyeRiskGosterilmez; if (flag == null) { flag = asBool(this.param.bakiyeRiskGosterilmezmi) ?? false } return flag }
+		get oncekiFislerGosterilmezmi() { let flag = this.ozelYetkiler?.oncekiFislerGosterilmez; if (flag == null) { flag = asBool(this.param.oncekiFislerGosterilmezmi) ?? false } return flag }
 		get musteriDurumuKullanilirmi() {
 			const {menuAdimKisitIDSet} = this;
 			return $.isEmptyObject(menuAdimKisitIDSet) || !!menuAdimKisitIDSet.musteriDurumu;
@@ -673,21 +555,21 @@
 		get maxKadIskSayi() { return 5 }
 		get iskSayi() {
 			const {maxIskSayi} = this;
-			let result = (this.ozelYetkiler || {}).iskSayi;
+			let result = this.ozelYetkiler?.iskSayi;
 			if (result == null)
 				result = asFloat(this.param.iskSayi) || 1;
 			return Math.min(result, maxIskSayi);
 		}
 		get kadIskSayi() {
 			const {maxKadIskSayi} = this;
-			let result = (this.ozelYetkiler || {}).kadIskSayi;
+			let result = this.ozelYetkiler?.kadIskSayi;
 			if (result == null)
 				result = asFloat(this.param.kadIskSayi) || 1;
 			return Math.min(result, maxKadIskSayi);
 		}
 		get iskontoArttirilirmi() {
 			const {param} = this;
-			const ozelYetki_iskontoArttirilirmi = (this.ozelYetkiler || {}).iskonto;
+			const ozelYetki_iskontoArttirilirmi = this.ozelYetkiler?.iskonto;
 			const {satirIskOranSinir} = this;
 			let flag;
 			if (ozelYetki_iskontoArttirilirmi != null)
@@ -701,9 +583,9 @@
 			return flag;
 		}
 		get satirIskOranSinir() {
-			let result = (this.ozelYetkiler || {}).satirIskOranSinir;
+			let result = this.ozelYetkiler?.satirIskOranSinir;
 			if (result == null)
-				result = (this.ozelYetkiler || {}).iskOranSinir;
+				result = this.ozelYetkiler?.iskOranSinir;
 			if (result == null)
 				result = asFloat(this.param.satirIskOranSinir) || 0;
 			if (result && result <= 0.1)
@@ -711,42 +593,42 @@
 			return result;
 		}
 		get detaylardaFiyatDegistirilirmi() {
-			let flag = (this.ozelYetkiler || {}).fiyat;
+			let flag = this.ozelYetkiler?.fiyat;
 			if (flag == null)
 				flag = this.param.detaylardaFiyatDegistirilirmi;
 			return flag;
 		}
 		get yazdirilanTahsilatDegistirilmezmi() {
-			let flag = (this.ozelYetkiler || {}).yazdirilanTahsilatDegistirilmez;
+			let flag = this.ozelYetkiler?.yazdirilanTahsilatDegistirilmez;
 			if (flag == null)
 				flag = this.param.yazdirilanTahsilatDegistirilmezmi || false;
 			return flag;
 		}
 		get tahsilatIptalEdilemezmi() {
-			let flag = (this.ozelYetkiler || {}).tahsilatIptal;
+			let flag = this.ozelYetkiler?.tahsilatIptal;
 			flag = flag == null ? this.param.tahsilatIptalEdilemezmi : !flag;
 			return flag;
 		}
 		get alimNetFiyatGosterilirmi() {
-			let flag = (this.ozelYetkiler || {}).alimNetFiyat;
+			let flag = this.ozelYetkiler?.alimNetFiyat;
 			if (flag == null)
 				flag = this.param.alimNetFiyatGosterilirmi;
 			return flag;
 		}
 		get alimFiyatGorurmu() {
-			let flag = (this.ozelYetkiler || {}).alimFiyatGormez;
+			let flag = this.ozelYetkiler?.alimFiyatGormez;
 			flag = flag == null ? this.param.alimFiyatGorurmu : !flag;
 			return flag;
 		}
 		get satisFiyatGorurmu() {
-			let flag = (this.ozelYetkiler || {}).satisFiyatGormez;
+			let flag = this.ozelYetkiler?.satisFiyatGormez;
 			flag = flag == null ? this.param.satisFiyatGorurmu : !flag;
 			return flag;
 		}
 		get menuAdimKisitIDSet() {
 			let result = this._menuAdimKisitIDSet;
 			if (result === undefined) {
-				let idListe = (this.ozelYetkiler || {}).menuAdimKisitIDListe;
+				let idListe = this.ozelYetkiler?.menuAdimKisitIDListe;
 				if ($.isEmptyObject(idListe))
 					idListe = this.param.menuAdimKisitIDListe;
 				result = idListe ? asSet(idListe) : null;
@@ -759,7 +641,7 @@
 		get fisAdimKisitIDSet() {
 			let result = this._fisAdimKisitIDSet;
 			if (result === undefined) {
-				let idListe = (this.ozelYetkiler || {}).fisAdimKisitIDListe;
+				let idListe = this.ozelYetkiler?.fisAdimKisitIDListe;
 				if ($.isEmptyObject(idListe))
 					idListe = this.param.fisAdimKisitIDListe;
 				result = idListe ? asSet(idListe) : null;
@@ -768,37 +650,37 @@
 			return result;
 		}
 		get dogrudanFisListeyeGirilirmi() {
-			let flag = (this.ozelYetkiler || {}).dogrudanFisListe;
+			let flag = this.ozelYetkiler?.dogrudanFisListe;
 			if (flag == null)
 				flag = this.param.dogrudanFisListeyeGirilirmi;
 			return flag;
 		}
 		get barkodluFisGirisYapilirmi() {
-			let flag = (this.ozelYetkiler || {}).barkodluFisGiris;
+			let flag = this.ozelYetkiler?.barkodluFisGiris;
 			if (flag == null)
 				flag = this.param.barkodluFisGirisYapilirmi;
 			return flag;
 		}
 		get fisGirisSadeceBarkodZorunlumu() {
-			let flag = (this.ozelYetkiler || {}).fisGirisSadeceBarkod;
+			let flag = this.ozelYetkiler?.fisGirisSadeceBarkod;
 			if (flag == null)
 				flag = this.param.fisGirisSadeceBarkodZorunlumu;
 			return flag;
 		}
 		get geciciFisKullanilmazmi() {
-			let flag = (this.ozelYetkiler || {}).geciciFisYok;
+			let flag = this.ozelYetkiler?.geciciFisYok;
 			if (flag == null)
 				flag = this.param.geciciFisKullanilmazmi;
 			return flag;
 		}
 		get silerekBilgiAlYapilirmi() {
-			let flag = (this.ozelYetkiler || {}).silerekBilgiAl;
+			let flag = this.ozelYetkiler?.silerekBilgiAl;
 			if (flag == null)
 				flag = this.param.silerekBilgiAlYapilirmi;
 			return flag;
 		}
 		get nakitUstLimit() {
-			let result = (this.ozelYetkiler || {}).nakitUstLimit;
+			let result = this.ozelYetkiler?.nakitUstLimit;
 			if (result == null)
 				result = this.param.nakitUstLimit;
 			if (result != null)
@@ -809,55 +691,55 @@
 			return this.depoMalKabulSiparisKontrolEdilirmi || this.depoSevkiyatSiparisKontrolEdilirmi
 		}
 		get depoMalKabulSiparisKontrolEdilirmi() {
-			let flag = (this.ozelYetkiler || {}).depoMalKabulSiparisKontrolEdilir;
+			let flag = this.ozelYetkiler?.depoMalKabulSiparisKontrolEdilir;
 			if (flag == null)
 				flag = this.param.depoMalKabulSiparisKontrolEdilirmi;
 			return flag;
 		}
 		get depoMalKabulSiparisMiktariKontrolEdilirmi() {
-			let flag = (this.ozelYetkiler || {}).depoMalKabulSiparisMiktariKontrolEdilir;
+			let flag = this.ozelYetkiler?.depoMalKabulSiparisMiktariKontrolEdilir;
 			if (flag == null)
 				flag = this.param.depoMalKabulSiparisMiktariKontrolEdilirmi;
 			return flag;
 		}
 		get depoMalKabulSiparisHMRlimi() {
-			let flag = (this.ozelYetkiler || {}).depoMalKabulSiparisHMRli;
+			let flag = this.ozelYetkiler?.depoMalKabulSiparisHMRli;
 			if (flag == null)
 				flag = this.param.depoMalKabulSiparisHMRlimi;
 			return flag;
 		}
 		get depoSevkiyatSiparisKontrolEdilirmi() {
-			let flag = (this.ozelYetkiler || {}).depoSevkiyatSiparisKontrolEdilir;
+			let flag = this.ozelYetkiler?.depoSevkiyatSiparisKontrolEdilir;
 			if (flag == null)
 				flag = this.param.depoSevkiyatSiparisKontrolEdilirmi;
 			return flag;
 		}
 		get depoSevkiyatSiparisMiktariKontrolEdilirmi() {
-			let flag = (this.ozelYetkiler || {}).depoSevkiyatSiparisMiktariKontrolEdilir;
+			let flag = this.ozelYetkiler?.depoSevkiyatSiparisMiktariKontrolEdilir;
 			if (flag == null)
 				flag = this.param.depoSevkiyatSiparisMiktariKontrolEdilirmi;
 			return flag;
 		}
 		get depoSevkiyatSiparisHMRlimi() {
-			let flag = (this.ozelYetkiler || {}).depoSevkiyatSiparisHMRli;
+			let flag = this.ozelYetkiler?.depoSevkiyatSiparisHMRli;
 			if (flag == null)
 				flag = this.param.depoSevkiyatSiparisHMRlimi;
 			return flag;
 		}
 		get depoSiparisRefKontrolEdilirmi() {
-			let flag = (this.ozelYetkiler || {}).depoSiparisRefKontrolEdilir;
+			let flag = this.ozelYetkiler?.depoSiparisRefKontrolEdilir;
 			if (flag == null)
 				flag = this.param.depoSiparisRefKontrolEdilirmi;
 			return flag;
 		}
 		get depoSevkiyatSiparisKarsilamaOdemeGunTekmi() {
-			let flag = (this.ozelYetkiler || {}).depoSiparisKarsilamaOdemeGunTekmi;
+			let flag = this.ozelYetkiler?.depoSiparisKarsilamaOdemeGunTekmi;
 			if (flag == null)
 				flag = this.param.depoSevkiyatSiparisKarsilamaOdemeGunTekmi;
 			return flag;
 		}
 		get ozelKampanyaKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).ozelKampanya;
+			let flag = this.ozelYetkiler?.ozelKampanya;
 			if (flag == null)
 				flag = this.param.ozelKampanyaKullanilirmi;
 			return flag;
@@ -865,13 +747,13 @@
 		get ozelKampanyaOranSayisi() {
 			if (!this.ozelKampanyaKullanilirmi)
 				return 0;
-			let result = (this.ozelYetkiler || {}).ozelKampanyaOranSayisi;
+			let result = this.ozelYetkiler?.ozelKampanyaOranSayisi;
 			if (result == null)
 				result = asFloat(this.param.ozelKampanyaOranSayisi) || 0;
 			return result;
 		}
 		get otoSonStokGuncellenirmi() {
-			let flag = (this.ozelYetkiler || {}).otoSonStokGuncelle;
+			let flag = this.ozelYetkiler?.otoSonStokGuncelle;
 			if (flag == null)
 				flag = this.param.otoSonStokGuncellenirmi;
 			return flag;
@@ -879,37 +761,37 @@
 		get kmTakibiYapilirmi() {
 			if (!this.class.kmTakibiDesteklenirmi)
 				return false;
-			let flag = (this.ozelYetkiler || {}).kmTakip;
+			let flag = this.ozelYetkiler?.kmTakip;
 			if (flag == null)
 				flag = this.param.kmTakibiYapilirmi;
 			return flag;
 		}
 		get ilkIrsaliyeDokumuZorunlumu() {
-			let flag = (this.ozelYetkiler || {}).ilkIrsaliye;
+			let flag = this.ozelYetkiler?.ilkIrsaliye;
 			if (flag == null)
 				flag = this.param.ilkIrsaliyeDokumuZorunlumu;
 			return flag;
 		}
 		get konumTakibiYapilirmi() {
-			let flag = (this.ozelYetkiler || {}).konumTakip;
+			let flag = this.ozelYetkiler?.konumTakip;
 			if (flag == null)
 				flag = this.param.konumTakibiYapilirmi;
 			return flag;
 		}
 		get konumsuzIslemYapilirmi() {
-			let flag = (this.ozelYetkiler || {}).konumsuzIslem;
+			let flag = this.ozelYetkiler?.konumsuzIslem;
 			if (flag == null)
 				flag = this.param.konumsuzIslemYapilirmi;
 			return flag;
 		}
 		get konumToleransMetre() {
-			let result = (this.ozelYetkiler || {}).konumToleransMetre;
+			let result = this.ozelYetkiler?.konumToleransMetre;
 			if (result == null)
 				result = asFloat(this.param.konumToleransMetre);
 			return result || 0;
 		}
 		get rbkKullanilirmi() {
-			let flag = (this.ozelYetkiler || {}).rbk;
+			let flag = this.ozelYetkiler?.rbk;
 			if (flag == null)
 				flag = this.param.rbkKullanilirmi;
 			return flag;
@@ -920,13 +802,13 @@
 			return flag;
 		}
 		get dokumNettenmi() {
-			let flag = (this.ozelYetkiler || {}).dokumNetten;
+			let flag = this.ozelYetkiler?.dokumNetten;
 			if (flag == null)
 				flag = this.param.dokumNettenmi;
 			return flag;
 		}
 		get depoSiparisKarsilamaZorunluHMRListe() {
-			let result = (this.ozelYetkiler || {}).depoSiparisKarsilamaZorunluHMRListe;
+			let result = this.ozelYetkiler?.depoSiparisKarsilamaZorunluHMRListe;
 			if (result == null)
 				result = this.param.depoSiparisKarsilamaZorunluHMRListe;
 			return result || [];
@@ -938,20 +820,20 @@
 			return result
 		}
 		get dovizKullanilirmi() {
-			let result = (this.ozelYetkiler || {}).doviz;
+			let result = this.ozelYetkiler?.doviz;
 			if (result == null)
 				result = this.param.dovizKullanilirmi
 				// result = this.programcimi && this.param.dovizKullanilirmi;
 			return result == null ? false : result;
 		}
 		get nakliyeSekliKullanilmazmi() {
-			let result = (this.ozelYetkiler || {}).nakliyeSekliKullanilmaz;
+			let result = this.ozelYetkiler?.nakliyeSekliKullanilmaz;
 			if (result == null)
 				result = this.param.nakliyeSekliKullanilmazmi;
 			return result == null ? false : result;
 		}
 		get eIslemOzelDokummu() {
-			let flag = (this.ozelYetkiler || {}).eIslemOzelDokum;
+			let flag = this.ozelYetkiler?.eIslemOzelDokum;
 			if (flag == null)
 				flag = this.param.dokumRuloDuzmu;
 			return flag;
@@ -959,7 +841,7 @@
 		get ruloParam() {
 			let result = this._ruloParam;
 			if (result === undefined) {
-				result = (this.ozelYetkiler || {}).ruloParam;
+				result = this.ozelYetkiler?.ruloParam;
 				if (result == null)
 					result = this.param.ruloParam || {};
 				this._ruloParam = result;
@@ -969,7 +851,7 @@
 		get ruloEkNotlar() {
 			let result = this._ruloEkNotlar;
 			if (result === undefined) {
-				result = (this.ozelYetkiler || {}).ruloEkNotlar;
+				result = this.ozelYetkiler?.ruloEkNotlar;
 				if (result == null)
 					result = this.param.ruloEkNotlar || {}
 				this._ruloEkNotlar = result
@@ -979,7 +861,7 @@
 		get ekOzellikKullanim() {
 			let result = this._ekOzellikKullanim;
 			if (result === undefined) {
-				result = (this.ozelYetkiler || {}).ekOzellikKullanim;
+				result = this.ozelYetkiler?.ekOzellikKullanim;
 				if (result == null)
 					result = this.param.ekOzellikKullanim || {}
 				this._ekOzellikKullanim = result
@@ -990,7 +872,7 @@
 		get isyeri() {
 			let result = this._isyeri;
 			if (result === undefined) {
-				result = (this.ozelYetkiler || {}).isyeri;
+				result = this.ozelYetkiler?.isyeri;
 				if (result == null)
 					result = this.param.isyeri || {};
 				this._isyeri = result;
@@ -1000,7 +882,7 @@
 		get tip2MatbuuFormDuzenleyiciler() {
 			let result = this._tip2MatbuuFormDuzenleyiciler;
 			if (result === undefined) {
-				result = (this.ozelYetkiler || {}).tip2MatbuuFormDuzenleyiciler;
+				result = this.ozelYetkiler?.tip2MatbuuFormDuzenleyiciler;
 				if (result == null)
 					result = this.param.tip2MatbuuFormDuzenleyiciler || {};
 				this._tip2MatbuuFormDuzenleyiciler = result;
@@ -1011,7 +893,7 @@
 		get tip2MatbuuFormDuzenleyiciler_runtime() {
 			let result = this._tip2MatbuuFormDuzenleyiciler_runtime;
 			if (result === undefined) {
-				result = (this.ozelYetkiler || {}).tip2MatbuuFormDuzenleyiciler_runtime;
+				result = this.ozelYetkiler?.tip2MatbuuFormDuzenleyiciler_runtime;
 				if (result == null)
 					result = this.param.tip2MatbuuFormDuzenleyiciler_runtime || {};
 				this._tip2MatbuuFormDuzenleyiciler_runtime = result;

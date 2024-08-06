@@ -85,7 +85,7 @@
 				{
 					text: 'Ürün Adı', align: 'left', dataField: 'aciklama',
 					cellsRenderer: (rowIndex, columnIndex, value, rec) => {
-						const {fiyatGorurmu} = this;
+						const {fiyatGorurmu} = this, {stokFiyatKdvlimi, kdvDahilFiyatGosterim, fiyatFra} = sky.app;
 						rec = rec.originalRecord || rec;
 						
 						const divSatir = this.newListeSatirDiv($.extend({}, e, { cssSubClass: 'asil' }));
@@ -93,12 +93,20 @@
 						$.each(rec, (key, value) => {
 							let item = divSatir.find(`.${key}`);
 							if (item.length)
-								item.html(value);
+								item.html(value)
 						});
 						['kdvOrani', 'brmFiyat', 'yerKod', 'sonStok', 'olasiMiktar', 'brm'].forEach(key => {
 							const spanParent = divSatir.find(`.${key}Parent`);
-							if (!rec[key] && spanParent.length)
-								spanParent.addClass(`jqx-hidden`);
+							if (!rec[key] && spanParent.length) { spanParent.addClass(`jqx-hidden`) }
+							else {
+								switch (key) {
+									case 'brmFiyat':
+										if (!stokFiyatKdvlimi && kdvDahilFiyatGosterim) {
+											divSatir.find(`.${key}`).html(`<span class="orangered">KD:</span>${roundToFra(rec.brmFiyat + (rec.brmFiyat * bedel(rec.kdvOrani / 100)), fiyatFra)}`)
+										}
+										break
+								}
+							}
 						});
 						if (!fiyatGorurmu) {
 							const spanParent = divSatir.find(`.brmFiyatParent`);
