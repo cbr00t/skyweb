@@ -165,6 +165,7 @@
 	<script src="../app/prog/cetApp/classes/barkod/parser/cetBarkodParser_kuralli.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/barkod/parser/cetBarkodParser_tarti.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/barkod/parser/cetBarkodParser_ayrisim.js?<?=$siteVersion?>"></script>
+	<script src="../app/prog/cetApp/classes/barkod/parser/cetBarkodParser_karmaPalet.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosul.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosulKapsam.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/satisKosul/cetSatisKosul_ekSiniflar.js?<?=$siteVersion?>"></script>

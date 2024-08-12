@@ -152,6 +152,7 @@
 
 			this.bedelKullanilirmi = fis.class.bedelKullanilirmi;
 			this.fiyatGorurmu = fis && !fis.class.fiiliCikismi ? app.alimFiyatGorurmu : app.satisFiyatGorurmu;
+			fis._detaylar = fis.detaylar
 		}
 
 		async postInitLayout(e) {
@@ -1160,9 +1161,7 @@
 						const subPart = part.split(' ');
 						const paketKod = (subPart.length > 1 ? subPart[1] : subPart[0]).trim();
 						paketKod2IcAdet[paketKod] = null;
-						
-						stokKodSet[det.shKod] = true;
-						paketKodSet[paketKod] = true;
+						stokKodSet[det.shKod] = true; paketKodSet[paketKod] = true;
 					}
 				}
 			}
@@ -1184,21 +1183,15 @@
 				});
 				const _recs = await sky.app.dbMgr_mf.executeSqlReturnRowsBasic({ query: sent });
 				for (let i = 0; i < _recs.length; i++) {
-					const _rec = _recs[i];
-					const {stokKod, paketKod} = _rec;
+					const _rec = _recs[i], {stokKod, paketKod} = _rec;
 					const paketKod2IcAdet = stokKod2PaketKod2IcAdet[stokKod] = stokKod2PaketKod2IcAdet[stokKod] || {};
-					if (paketKod2IcAdet[paketKod] == null)
-						paketKod2IcAdet[paketKod] = asFloat(_rec.paketIcAdet);
+					if (paketKod2IcAdet[paketKod] == null) { paketKod2IcAdet[paketKod] = asFloat(_rec.paketIcAdet) }
 				}
 			}
-			
-			const anah2Detaylar = this.anah2Detaylar = {};
-			const {ayrisimAyiracli_barkod2Detay} = this;
+			const anah2Detaylar = this.anah2Detaylar = {}, {ayrisimAyiracli_barkod2Detay} = this;
 			for (let i = 0; i < recs.length; i++) {
 				let det = recs[i];
-				if ($.isPlainObject(det))
-					det = recs[i] = new detaySinif(det);
-				
+				if ($.isPlainObject(det)) { det = recs[i] = new detaySinif(det) }
 				const {paketBilgi, shKod, altDetaylar} = det;
 				if (paketBilgi) {
 					const {paketKod2IcAdet} = det;
@@ -1206,14 +1199,12 @@
 						const paketIcAdet = (stokKod2PaketKod2IcAdet[shKod] || {})[paketKod] || 1;
 						paketKod2IcAdet[paketKod] = paketIcAdet;
 						const anahStr = det.getAnahtarStr({ with: [paketKod], hmrSet: depoSiparisKarsilamaZorunluHMRSet });
-						(anah2Detaylar[anahStr] = anah2Detaylar[anahStr] || []).push(det);
+						(anah2Detaylar[anahStr] = anah2Detaylar[anahStr] || []).push(det)
 					}
 				}
-
 				if (altDetaylar) {
 					for (const key in altDetaylar) {
-						const altDetay = altDetaylar[key];
-						const {okunanbarkod} = altDetay;
+						const altDetay = altDetaylar[key], {okunanbarkod} = altDetay;
 						const okunanTumBarkodlar = altDetay.okunanTumBarkodlar = altDetay.okunanTumBarkodlar || {};
 						if (okunanbarkod)
 							okunanTumBarkodlar[okunanbarkod] = true;
@@ -1224,6 +1215,7 @@
 				
 				const anahStr = det.getAnahtarStr({ with: [''], hmrSet: depoSiparisKarsilamaZorunluHMRSet });
 				(anah2Detaylar[anahStr] = anah2Detaylar[anahStr] || []).push(det);
+				fis.detaylar = []
 			}
 			e.callback({ totalrecords: recs.length, records: recs });
 		}
@@ -1280,7 +1272,6 @@
 				)
 			})
 		}
-
 
 		txtBarkod_enterIstendi(e) {
 			const {target} = (e || {}).event;
@@ -1803,18 +1794,10 @@
 				det.getAnahtarStr({ with: [altDet.paketkod, altDet.paketicadet], hmrSet: null })
 			*/
 		}
-
 		liste_degisti(e) {
-			e = e || {};
-			super.liste_degisti(e);
-
-			this.degistimi = true;
-			
-			const {fis} = this;
-			fis.detaylar = this.listeRecs.map(rec =>
-				$.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec);
+			e = e || {}; super.liste_degisti(e); this.degistimi = true;
+			const {fis} = this; fis.detaylar = this.listeRecs.map(rec => $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec)
 		}
-
 		async liste_satirSecildi(e) {
 			e = e || {};
 			await super.liste_satirSecildi(e);
@@ -1865,83 +1848,85 @@
 					break;*/
 			}
 		}
-
 		async degistirIstendi(e) {
-			e = e || {};
-			let rec;
-			const {app, listeWidget} = this;
-			let {barkod} = e;
-			const {fis, anah2Detaylar} = this;
-			const fisSinif = fis.class;
-			let barkodDetay;
-			
-			app.hideNotifications();
-			let carpan;
+			e = e || {}; let rec; const {app, listeWidget} = this, {fis, anah2Detaylar} = this, fisSinif = fis.class, {bekleyenUgramaFismi} = fisSinif;
+			let {barkod, carpan} = e, barkodDetay; app.hideNotifications();
 			if (barkod) {
-				barkod = barkod.trim();
-				let ind = -1;
-				$.each(['x', 'X', '*'], (_, matchStr) => {
-					ind = barkod.indexOf(matchStr);
-					if (ind > -1)
-						return false;			// break loop
-				});
-				
+				barkod = barkod.trim(); let ind = -1; for (const matchStr of ['x', 'X', '*']) { ind = barkod.indexOf(matchStr); if (ind > -1) { break } }
 				if (ind > -1) {
-					let miktarStr = barkod.substring(0, ind);		// substring from->to .. (to dahil degil)
-					e.barkod = barkod = barkod.substring(ind + 1);
-					e.carpan = carpan = asFloat(miktarStr) || null;
+					let miktarStr = barkod.substring(0, ind);				/* substring from->to .. (to dahil degil) */
+					e.barkod = barkod = barkod.substring(ind + 1); e.carpan = carpan = asFloat(miktarStr) || null;
 				}
-				
 				const {fisGirisSadeceBarkodZorunlumu, depoSiparisKarsilamaZorunluHMRSet} = app;
-				// const _depoSiparisKarsilamaZorunluHMRSet = $.extend({}, depoSiparisKarsilamaZorunluHMRSet, { raf: true });
-				/*if ((carpan && carpan != 1)) {
-					app.playSound_barkodError();
-					displayMessage(`Barkodlu eklemede <b>Miktar Belirtimi</b> (<i><u>3x12345</u> gibi</i>) yapamazsınız !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
-					return false;
-				}*/
-
 				try {
-					const barkodBilgi = await app.barkodBilgiBelirle({ barkod: barkod, /*carpan: carpan,*/ fis: fis });
+					const barkodBilgi = await app.barkodBilgiBelirle({ barkod, /*carpan: carpan,*/ fis });
 					if (barkodBilgi) {
-						/*if (fisGirisSadeceBarkodZorunlumu && barkodBilgi.barkod == barkodBilgi.shKod) {
-							app.playSound_barkodError();
-							displayMessage(`Barkod olarak doğrudan <b>Ürün Kodu</b> okutulamaz !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
-							return false;
-						}*/
-
-						//if (barkodBilgi.class.ayrisimmi)
-						//	delete barkodBilgi.paketIcAdet;
-						
-						const _barkod = barkodBilgi.barkod;
+						const _barkod = barkodBilgi.barkod, {karmaPaletmi} = barkodBilgi;
+						if (karmaPaletmi) {
+							if (!bekleyenUgramaFismi) {
+								app.playSound_barkodError();
+								displayMessage(`<u class="bold darkred">${_barkod}</u> <b>Karma Palet</b> barkodu sadece <b class="royalblue">Bekleyen Yükleme Fişinde</b> kullanılabilir !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
+								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
+							}
+							if (fis.planNo != barkodBilgi.planNo) {
+								app.playSound_barkodError();
+								displayMessage(`<u class="bold darkred">${_barkod}</u> barkodlu <b>Karma Palet</b> <b class="royalblue">${barkodBilgi.planNo}</b> nolu fişe aittir ve bu fişte kullanılamaz !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
+								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
+							}
+							let uygunDetListe = fis._detaylar.filter(det => det.karmaPaletNo == barkodBilgi.paletNo);
+							if (!uygunDetListe.length) {
+								app.playSound_barkodError();
+								displayMessage(`<u class="bold darkred">${_barkod}</u> barkodlu <b>Karma Palet</b>, bu Bekleyen Yükleme fişine ait değildir !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
+								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
+							}
+							for (const det of uygunDetListe) {
+								if (!$.isEmptyObject(det.altDetaylar)) {
+									app.playSound_barkodError();
+									displayMessage(`<u class="bold darkred">${_barkod}</u> barkodlu <b>Karma Palet</b> yeniden okutulamaz !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
+									setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
+								}
+							}
+							/* uygunDetListe için barkodOkutuldu işlemi */
+							for (const det of uygunDetListe) {
+								const {paketBilgi, paketKod2IcAdet} = det; let paketKod2Miktar = {}, parts = paketBilgi ? paketBilgi.split(',') : null;
+								if (parts?.length) {
+									for (let part of parts) {
+										part = part.trim(); const subParts = part.split(' '), paketMiktar = asInteger(subParts[0].trim()), paketKod = subParts[1].trimEnd();
+										paketKod2Miktar[paketKod] = paketMiktar
+									}
+								}
+								if ($.isEmptyObject(paketKod2Miktar)) { continue }
+								for (const [paketKod, paketMiktar] of Object.entries(paketKod2Miktar)) {
+									if (paketMiktar <= 0) { continue } const paketIcAdet = paketKod2IcAdet[paketKod] || 0;
+									const detaySinif = fisSinif.uygunDetaySinif({ rec: barkodBilgi }) || fisSinif.detaySinif;
+									const barkodDetay = new detaySinif({ shKod: det.shKod, paketIcAdet, paketKod });
+									const _e = { ...e, barkodDetay, rec: det, carpan: paketMiktar }; delete _e.barkod; await this.degistirIstendi(_e)
+								}
+							}
+							/*const paketKod = '', _det = anah2Detaylar[uygunDetListe[0].getAnahtarStr({ with: [paketKod], hmrSet: depoSiparisKarsilamaZorunluHMRSet })]*/
+							setTimeout(async () => { await this.onResize(); this.focusToDefault() }, 50); return true
+						}
 						if (barkodBilgi.ayrisimAyiraclimi && barkodBilgi.zVarmi) {
 							const _det = this.ayrisimAyiracli_barkod2Detay[_barkod];
 							if (_det) {
-								const {uid} = _det;
-								listeWidget.selectrowbykey(uid);
-								let displayIndex = listeWidget.getrowdisplayindex(_det);
-								let araMesaj = displayIndex < 0 ? `` : `<b>${displayIndex + 1}. satırda</b> `;
+								const {uid} = _det; listeWidget.selectrowbykey(uid);
+								let displayIndex = listeWidget.getrowdisplayindex(_det), araMesaj = displayIndex < 0 ? `` : `<b>${displayIndex + 1}. satırda</b> `;
 								app.playSound_barkodError();
 								displayMessage(`<u class="bold darkred">${_barkod}</u> barkoduna ait ${araMesaj}tekrar eden kalem var !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
-								setTimeout(async () => {
-									await this.onResize();
-									this.focusToDefault();
-								}, 50);
-								return false;
+								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50);
+								return false
 							}
 						}
-
 						const detaySinif = fisSinif.uygunDetaySinif({ rec: barkodBilgi }) || fisSinif.detaySinif;
-						barkodDetay = await detaySinif.fromBarkodBilgi({ fis: fis, barkodBilgi: barkodBilgi });
+						barkodDetay = await detaySinif.fromBarkodBilgi({ fis, barkodBilgi });
 						const {paketKod} = barkodDetay;
 						// const paketIcAdet = asInteger(barkodDetay.paketIcAdet) || 0;
 						const anahStr = barkodDetay.getAnahtarStr({ with: [paketKod], hmrSet: depoSiparisKarsilamaZorunluHMRSet });
 						const _recs = anah2Detaylar[anahStr];
 						if (!$.isEmptyObject(_recs)) {
 							for (const _rec of _recs) {
-								rec = _rec;
-								const {miktar, hMiktar} = _rec;
-								if (miktar < hMiktar)
-									break;
+								rec = _rec; const {miktar, hMiktar} = _rec;
+								if (miktar < hMiktar) { break }
 							}
 						}
 						if (!rec) {
@@ -1951,11 +1936,8 @@
 							return false;
 						}
 
-						if (barkodDetay.barkodParser)
-							rec.barkodParser = barkodDetay.barkodParser;
-						barkodDetay.barkod = _barkod;
-						
-						app.playSound_barkodOkundu();
+						if (barkodDetay.barkodParser) { rec.barkodParser = barkodDetay.barkodParser }
+						barkodDetay.barkod = _barkod; app.playSound_barkodOkundu();
 					}
 					else {
 						app.playSound_barkodError();
@@ -1984,47 +1966,25 @@
 					return false;
 				}
 			}
-			else
-				rec = e.rec || this.selectedBoundRec;
+			else { rec = e.rec ?? this.selectedBoundRec; if (!barkodDetay) { barkodDetay = e.barkodDetay } }
 
-			if (!rec) {
-				this.focusToDefault();
-				return false;
-			}
-			
-			let det = rec;
-			det.cacheReset();
-			if (det)
-				det = $.isPlainObject(det) ? fis.class.detaySinif.From(det) : det.deepCopy();
-			if (!det)
-				return false;
-
-			// det.miktar = asFloat(det.miktar || 0) + 1;
+			if (!rec) { this.focusToDefault(); return false }
+			let det = rec; det.cacheReset();
+			if (det) { det = $.isPlainObject(det) ? fis.class.detaySinif.From(det) : det.deepCopy() } if (!det) { return false }
 			det.okutmaSayisi++;
-			
-			const paketKod = coalesce(barkodDetay.paketKod, null);
-			let paketIcAdet = paketKod ? coalesce((det.paketKod2IcAdet || {})[paketKod], null) : null;
+			const paketKod = barkodDetay.paketKod ?? null;
+			let paketIcAdet = paketKod ? (det.paketKod2IcAdet || {})[paketKod] ?? null : null;
 			let {miktar} = barkodDetay;
 			const barkoddanMiktarGeldimi = !!miktar;
 			let paketMiktar = 0;
 			if (paketKod) {
-				/*const barkodDetay_paketIcAdet = barkodDetay.paketIcAdet;
-				if (barkodDetay_paketIcAdet)
-					miktar *= barkodDetay_paketIcAdet;
-				paketMiktar = barkodDetay.paketMiktar = barkodDetay.paketMiktar || paketMiktar;
-				det.paketMiktar += paketMiktar;*/
-				paketMiktar = (carpan || 1);
-				det.paketMiktar += paketMiktar;
-
-				if (!miktar)
-					miktar = paketMiktar * paketIcAdet;
+				paketMiktar = (carpan || 1); det.paketMiktar += paketMiktar;
+				if (!miktar) { miktar = paketMiktar * paketIcAdet }
 			}
 			miktar = miktar || 1;
 			if (barkoddanMiktarGeldimi) {
-				if (paketKod)
-					paketIcAdet = miktar;
-				if (carpan)
-					miktar *= carpan;
+				if (paketKod) paketIcAdet = miktar;
+				if (carpan) miktar *= carpan;
 			}
 			det.miktar += miktar;
 			
@@ -2044,40 +2004,26 @@
 				await barkodDetay.ekOzelliklerDo({ callback: async _e => {
 					const rafmi = _e.tip == 'raf';
 					const refRafmi = _e.tip == 'refRaf';
-					if (rafmi && !fis.class.rafKullanilirmi)
-						return true;			// continue loop
-					if (refRafmi && !fis.class.refRafKullanilirmi)
-						return true;			// continue loop
-					
-					const ekOzellik = _e.item;
-					const {idSaha, value} = ekOzellik;
+					if (rafmi && !fis.class.rafKullanilirmi) return true;			// continue loop
+					if (refRafmi && !fis.class.refRafKullanilirmi) return true;			// continue loop
+					const ekOzellik = _e.item, {idSaha, value} = ekOzellik;
 					ekOzellikler[idSaha] = (value == null ? '' : value);
 				} });
 				altDetaylar[detAnahStr] = altDetay;
 			}
 			altDetay.okunanTumBarkodlar[barkod] = true;
-				
-			altDetay.miktar += miktar;
-			altDetay.paketmiktar += paketMiktar;
+			altDetay.miktar += miktar; altDetay.paketmiktar += paketMiktar;
 			
 			const _rec = listeWidget.rowsByKey[det.uid];
-			if (_rec)
-				_rec.cacheReset();
-			
+			if (_rec) _rec.cacheReset();
 			const result = await this.degistir({ rec: det });
 			listeWidget.selectrowbykey(det.uid);
-			
 			const index = listeWidget.getrowdisplayindex(rec);
-			if (index > -1) {
-				if (listeWidget.pageable) {
-					const {pageSize} = listeWidget;
-					const pageIndex = Math.floor(index / pageSize);
-					listeWidget.goToPage(pageIndex);
-				}
+			if (index > -1 && listeWidget.pageable) {
+				const {pageSize} = listeWidget, pageIndex = Math.floor(index / pageSize);
+				listeWidget.goToPage(pageIndex);
 			}
-			this.focusToDefault();
-
-			return result;
+			this.focusToDefault(); return result
 		}
 
 		async silIstendi(e) {

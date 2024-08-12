@@ -678,6 +678,7 @@ CREATE TABLE IF NOT EXISTS data_PIFFis (
 	containerNox				TEXT NOT NULL DEFAULT '',
 	soforAdi					TEXT NOT NULL DEFAULT '',
 	plaka						TEXT NOT NULL DEFAULT '',
+	planNo						INTEGER NOT NULL DEFAULT 0,
 	ekBilgi						TEXT NOT NULL DEFAULT '',
 
 	--odemeguntext				TEXT NOT NULL DEFAULT '',
@@ -788,6 +789,7 @@ CREATE TABLE IF NOT EXISTS data_PIFStok (
 	paketkod					TEXT NOT NULL DEFAULT '',
 	paketmiktar					REAL NOT NULL DEFAULT 0,
 	paketicadet					REAL NOT NULL DEFAULT 0,
+	karmaPaletNo				INTEGER NOT NULL DEFAULT 0,
 	
 	--paketkod					TEXT NOT NULL DEFAULT '',
 	--koli						REAL NOT NULL DEFAULT 0,

@@ -1,12 +1,7 @@
 (function() {
 	window.CETBarkodParser_Ayrisim = class extends window.CETBarkodParser_Kuralli {
-		constructor(e) {
-			e = e || {};
-			super(e);
-		}
-
-		static get aciklama() { return 'Ayrışım' }
-		static get ayrisimmi() { return true }
+		constructor(e) { e = e || {}; super(e) }
+		static get aciklama() { return 'Ayrışım' } static get ayrisimmi() { return true }
 		get ayrisimAyiraclimi() { return this.formatAyiraclimi }
 		get zVarmi() { return (this.kural || {}).zVarmi /* && !!this.zSeq */ }
 

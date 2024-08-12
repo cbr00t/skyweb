@@ -367,8 +367,12 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
-					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'kosulYapi')),
-					queries: [ `ALTER TABLE data_PIFStok ADD kosulYapi TEXT NOT NULL DEFAULT ''`]
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'planNo')),
+					queries: [`ALTER TABLE data_PIFFis ADD planNo INTEGER NOT NULL DEFAULT 0`]
+				},
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'karmaPaletNo')),
+					queries: [`ALTER TABLE data_PIFStok ADD karmaPaletNo INTEGER NOT NULL DEFAULT 0`]
 				}
 			]
 		}
@@ -551,6 +555,7 @@
 			const {menuAdimKisitIDSet} = this;
 			return $.isEmptyObject(menuAdimKisitIDSet) || !!menuAdimKisitIDSet.musteriDurumu;
 		}
+		get karmaPaletBarkodBaslangic() { let value = this.ozelYetkiler?.karmaPaletBarkodBaslangic; if (value == null) { value = this.param.karmaPaletBarkodBaslangic } return value }
 		get maxIskSayi() { return 6 }
 		get maxKadIskSayi() { return 5 }
 		get iskSayi() {
@@ -1412,7 +1417,7 @@
 							`'U' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `'' ozelIsaret`, `fis.tarih`, `NULL vade`, `'' seri`, `0 fisno`,
 							'fis.mustkod ticmustkod', /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
 							`fis.mustkod`, 'car.unvan mustunvan', 'car.yore', 'car.ilKod', 'car.ilAdi', `car.efatmi`, `fis.fisaciklama`, `'' ba`,
-						    `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+						    `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
 						  ])
 				}));
 			//}
@@ -1495,7 +1500,7 @@
 								else
 									'A'
 							end) ba`,
-						`fis.seferAdi`, `fis.soforAdi`, `fis.plaka`, `fis.ekBilgi`, `fis.containerNox`,
+						`fis.seferAdi`, `fis.soforAdi`, `fis.plaka`, `fis.ekBilgi`, `fis.containerNox`, `fis.planNo`,
 					   `fis.dipiskoran`, `fis.dipiskbedel`, `fis.dvkod`
 					  ])
 			}));
@@ -1523,7 +1528,7 @@
 						`'BT' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `fis.ozelisaret ozelIsaret`, `fis.tarih`, `NULL vade`, `fis.seri`, `fis.fisno`,
 						`fis.mustkod ticmustkod`, /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
 						`fis.mustkod`, `car.unvan mustunvan`, `car.yore`, `car.ilKod`, `car.ilAdi`, `car.efatmi`, `fis.fisaciklama`, `'' ba`,
-					   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+					   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
 					  ])
 			}));
 
@@ -1542,7 +1547,7 @@
 							`fis.fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimTipi`, `fis.ozelisaret ozelIsaret`, `fis.tarih`, `fis.vade`, `fis.seri`, `fis.fisno`,
 							'fis.mustkod ticmustkod', /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
 							`fis.mustkod`, `car.unvan mustunvan`, `car.yore`, `car.ilKod`, `car.ilAdi`, `car.efatmi`, `fis.refText fisaciklama`, `fis.ba`,
-						   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+						   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
 						  ])
 				}));
 			}
@@ -2503,8 +2508,7 @@
 		}
 
 		async barkodBilgiBelirle(e) {
-			let parser, barkod = (e.barkod || '').trim();
-			if (!barkod) return null
+			let parser, barkod = (e.barkod || '').trim(); if (!barkod) { return null }
 			if (barkod.length > 2) {
 				let kural = await CETBarkodParser_Kuralli.kuralFor({ barkod, basKod: barkod.substring(0, 2) });
 				if (kural) { parser = await kural.parseSonucu(e); if (parser) return parser }

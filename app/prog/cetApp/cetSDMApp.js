@@ -235,6 +235,7 @@
 					containerNox: rec.containerNox || rec.containernox || '',
 					soforAdi: rec.soforAdi || rec.soforadi || '',
 					plaka: rec.plaka || '',
+					planNo: rec.planNo || rec.planno || 0,
 					ekBilgi: rec.ekBilgi || rec.ekbilgi || ''
 				};
 				await dbMgr.insertOrReplaceTable({
@@ -272,7 +273,8 @@
 					hMiktar: hMiktar == null ? 0 : (asFloat(hMiktar) || 0),
 					paketkod: rec.paketKod || rec.paketkod || '',
 					paketmiktar: asFloat(rec.paketMiktar || rec.paketmiktar) || 0,
-					paketicadet: asFloat(rec.paketIcAdet || rec.paketicadet || rec.paketIci || rec.paketIci) || 0
+					paketicadet: asFloat(rec.paketIcAdet || rec.paketicadet || rec.paketIci || rec.paketIci) || 0,
+					karmaPaletNo: asInteger(rec.karmaPaletNo) || 0
 				};
 				if (!$.isEmptyObject(ekOzelliklerIDSahalar)) {
 					const Prefix_EkOz = 'ekoz_';
@@ -487,13 +489,13 @@
 					xplasiyerkod: rec.plasiyerKod || rec.plasiyerkod || defaultPlasiyerKod || '',
 					xadreskod: rec.xadreskod || rec.sevkadreskod || rec.sevkAdresKod || '',
 					seferAdi: rec.seferAdi || rec.seferadi || '',
-					containerNox: rec.containerNox || rec.containernox || '',
 					soforAdi: rec.soforAdi || rec.soforadi || '',
 					plaka: rec.plaka || '',
+					containerNox: rec.containerNox || rec.containernox || '',
+					planNo: rec.planNo || rec.planno || 0,
 					ekBilgi: rec.ekBilgi || rec.ekbilgi || ''
 				};
-				for (const kod of [hv.mustkod, hv.ticmustkod].filter(x => !!x))
-					mustKodSet[kod] = true
+				for (const kod of [hv.mustkod, hv.ticmustkod].filter(x => !!x)) { mustKodSet[kod] = true }
 				await dbMgr.insertOrReplaceTable({
 					table: 'data_PIFFis', mode: 'insert', hv: hv,
 					parcaCallback: e => {
@@ -545,6 +547,7 @@
 						paketkod: rec.paketKod || rec.paketkod || '',
 						paketmiktar: asFloat(rec.paketMiktar || rec.paketmiktar) || 0,
 						paketicadet: asFloat(rec.paketIcAdet || rec.paketicadet || rec.paketIci || rec.paketIci) || 0,
+						karmaPaletNo: asInteger(rec.karmaPaletNo),
 						sevkSipHarSayac: rec.sevkSipHarSayac || rec.sevksipharsayac || null
 					}, updHV);
 					if (!$.isEmptyObject(ekOzelliklerIDSahalar)) {

@@ -9,8 +9,7 @@
 			this.setGlobals(e)
 		}
 		async parse(e) {
-			let result = await this.parseDevam(e);
-			if (!result) return result
+			let result = await this.parseDevam(e); if (!result) { return result }
 			return await this.parseSonrasi(e)
 		}
 		async parseDevam(e) { this.setGlobals(e); return false }
@@ -53,7 +52,7 @@
 		}
 		async shEkBilgileriBelirle(e) {
 			e = e || {}; let shKod = e.shKod || this.shKod;
-			if (!shKod) return false
+			if (!shKod) { return false }
 			const {app} = sky, dbMgr = e.dbMgr || this.dbMgr, {fis} = e, dovizlimi = fis?.dovizlimi;
 			let stkFytInd = e.cariRow?.stkFytInd || fis?.cariStkFytInd;
 			if (!stkFytInd) {

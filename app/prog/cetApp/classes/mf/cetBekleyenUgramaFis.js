@@ -62,57 +62,31 @@
 			return result;
 		}
 		
-		constructor(e) {
-			e = e || {};
-			super(e);
-
-			$.extend(this, {
-				soforAdi: e.soforAdi || '',
-				plaka: e.plaka || '',
-				ekBilgi: e.ekBilgi || ''
-			})
-		}
-
+		constructor(e) { e = e || {}; super(e); $.extend(this, { soforAdi: e.soforAdi || '', plaka: e.plaka || '', ekBilgi: e.ekBilgi || '', containerNox: e.containerNox || '', planNo: e.planNo || 0 }) }
 		static varsayilanKeyHostVars(e) {
 			e = e || {};
 			let hv = super.varsayilanKeyHostVars();
 			$.extend(hv, { piftipi: this.pifTipi || '', almsat: this.almSat || '', iade: this.iade || '' });
-			
 			return hv
 		}
-
 		hostVars(e) {
-			e = e || {};
-			let hv = super.hostVars();
+			e = e || {}; let hv = super.hostVars();
 			$.extend(hv, {
-				seferAdi: this.seferAdi || '',
-				soforAdi: this.soforAdi || '',
-				plaka: this.plaka || '',
-				ekBilgi: this.ekBilgi || '',
-				containerNox: this.containerNox || ''
+				seferAdi: this.seferAdi || '', soforAdi: this.soforAdi || '', plaka: this.plaka || '',
+				ekBilgi: this.ekBilgi || '', containerNox: this.containerNox || ''  /* planNo kaydedilmez */
 			});
-
 			return hv
 		}
-
 		async setValues(e) {
-			e = e || {};
-			await super.setValues(e);
-
-			const {rec} = e;
+			e = e || {}; await super.setValues(e); const {rec} = e;
 			$.extend(this, {
-				seferAdi: rec.seferAdi || '',
-				soforAdi: rec.soforAdi || '',
-				plaka: rec.plaka || '',
-				ekBilgi: rec.ekBilgi || '',
-				containerNox: rec.containerNox || ''
+				seferAdi: rec.seferAdi || '', soforAdi: rec.soforAdi || '', plaka: rec.plaka || '',
+				ekBilgi: rec.ekBilgi || '', containerNox: rec.containerNox || '', planNo: rec.planNo || 0
 			});
 		}
 
 		async onKontrol(e) {
-			e = e || {};
-			const mesajlar = [];
-			const {detaylar} = this;
+			e = e || {}; const mesajlar = [], {detaylar} = this;
 			for (let i = 0; i < detaylar.length; i++) {
 				const seq = i + 1;
 				const det = detaylar[i];
