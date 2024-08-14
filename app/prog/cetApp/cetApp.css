@@ -2772,21 +2772,12 @@ body.cetApp {
 	font-style: italic;
 	color: #6b36d5;
 }
-.part.cetApp.cetFisListe #liste .listeSatir .seferBilgiParent,
-.part.cetApp.cetFisListe #liste .listeSatir .containerNoxBilgiParent {
-	font-size: 90%;
-	color: #555;
-}
-.part.cetApp.cetFisListe #liste .listeSatir .seferBilgiParent > *:not(._etiket),
-.part.cetApp.cetFisListe #liste .listeSatir .containerNoxBilgiParent > *:not(._etiket) {
-	color: #ad8923;
-}
-.part.cetApp.cetFisListe #liste .listeSatir .seferBilgiParent {
-	margin-left: 15px;
-}
-.part.cetApp.cetFisListe #liste .listeSatir .containerNoxBilgiParent {
-	margin-left: 10px;
-}
+.part.cetApp.cetFisListe #liste .listeSatir .seferBilgiParent, .part.cetApp.cetFisListe #liste .listeSatir .containerNoxBilgiParent { font-size: 90%; color: #555 }
+.part.cetApp.cetFisListe #liste .listeSatir .seferBilgiParent > *:not(._etiket), .part.cetApp.cetFisListe #liste .listeSatir .containerNoxBilgiParent > *:not(._etiket) { color: #ad8923 }
+.part.cetApp.cetFisListe #liste .listeSatir .seferBilgiParent { margin-left: 15px }
+.part.cetApp.cetFisListe #liste .listeSatir .planNoParent { font-size: 90%; color: #555 }
+.part.cetApp.cetFisListe #liste .listeSatir .planNoParent > *:not(._etiket) { font-weight: bold; font-size: 110%; color: forestgreen }
+.part.cetApp.cetFisListe #liste .listeSatir .planNoParent { margin: 0 8px }
 .part.cetApp.cetFisListe #liste .listeSatir .fisTipText,
 .part.cetApp.cetFisListe #liste .listeSatir .seri,
 .part.cetApp.cetFisListe #liste .listeSatir .fisno {

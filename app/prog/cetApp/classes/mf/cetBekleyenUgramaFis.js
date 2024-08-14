@@ -2,18 +2,13 @@
 	window.CETBekleyenUgramaFis = class extends window.CETSevkiyatFis {
 		static get aciklama() {
 			const {pifTipi, almSat, iademi} = this;
-			return (
-				`<span>Bek.Yük.</span>` +
-				` <span style="color: ${this.renkFor({ tip: 'pifTipi' })};">${pifTipi == 'F' ? 'Fatura' : pifTipi == 'I' ? 'İrsaliye': pifTipi == 'S' ? 'Sipariş' : ''}</span>`
-			)
+			return `<span>Bek.Yük.</span> <span style="color: ${this.renkFor({ tip: 'pifTipi' })};">${pifTipi == 'F' ? 'Fatura' : pifTipi == 'I' ? 'İrsaliye': pifTipi == 'S' ? 'Sipariş' : ''}</span>`
 		}
 		static get adimTipi() { return `UG` }
 		static get numaratorTip() { return null }
 		get matbuuFormTip() {
-			const {app} = sky;
-			if (app.eIslemKullanilirmi && this.eIslemTip)
-				return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem';
-			return null;
+			const {app} = sky; if (app.eIslemKullanilirmi && this.eIslemTip) { return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem' }
+			return null
 		}
 		async eIslemTipDegeriFor(e) { return await super.eIslemTipDegeriFor(e) }
 		static get almSat() { return 'T' }
@@ -39,33 +34,21 @@
 		static get siparisMiktarKontrolEdilirmi() { return false }
 		static get siparisRefKontrolEdilirmi() { return false }
 
+		constructor(e) { e = e || {}; super(e); $.extend(this, { soforAdi: e.soforAdi || '', plaka: e.plaka || '', ekBilgi: e.ekBilgi || '', containerNox: e.containerNox || '', planNo: e.planNo || 0 }) }
 		static fisSinifDuzenlenmis(e) {
-			e = e || {};
-			let result = super.fisSinifDuzenlenmis(e);
-			if (result != CETBekleyenUgramaFis)
-				return result;
-			
+			e = e || {}; let result = super.fisSinifDuzenlenmis(e); if (result != CETBekleyenUgramaFis) { return result }
 			const rec = e.rec || e;
 			if (rec) {
 				const pifTipi = rec.piftipi || rec.pifTipi;
 				if (pifTipi) {
 					const subClasses = [CETBekleyenUgramaFaturaFis, CETBekleyenUgramaIrsaliyeFis];
-					for (const cls of subClasses) {
-						if (cls.pifTipi == pifTipi) {
-							result = cls;
-							break;
-						}
-					}
+					for (const cls of subClasses) { if (cls.pifTipi == pifTipi) { result = cls; break } }
 				}
 			}
-
-			return result;
+			return result
 		}
-		
-		constructor(e) { e = e || {}; super(e); $.extend(this, { soforAdi: e.soforAdi || '', plaka: e.plaka || '', ekBilgi: e.ekBilgi || '', containerNox: e.containerNox || '', planNo: e.planNo || 0 }) }
 		static varsayilanKeyHostVars(e) {
-			e = e || {};
-			let hv = super.varsayilanKeyHostVars();
+			e = e || {}; let hv = super.varsayilanKeyHostVars();
 			$.extend(hv, { piftipi: this.pifTipi || '', almsat: this.almSat || '', iade: this.iade || '' });
 			return hv
 		}
@@ -84,15 +67,11 @@
 				ekBilgi: rec.ekBilgi || '', containerNox: rec.containerNox || '', planNo: rec.planNo || 0
 			});
 		}
-
 		async onKontrol(e) {
 			e = e || {}; const mesajlar = [], {detaylar} = this;
 			for (let i = 0; i < detaylar.length; i++) {
-				const seq = i + 1;
-				const det = detaylar[i];
-				const {shKod, shAdi, miktar, hMiktar} = det;
-				if (miktar && hMiktar && miktar > hMiktar)
-					mesajlar.push(`<li><u>${seq}. satırdaki</u> <b>${shKod}-${shAdi} ürüne ait <b>Miktar(${miktar})</b>, <u>Hedef Miktar(${hMiktar})</u>'dan fazladır</li>`);
+				const seq = i + 1, det = detaylar[i], {shKod, shAdi, miktar, hMiktar} = det;
+				if (miktar && hMiktar && miktar > hMiktar) { mesajlar.push(`<li><u>${seq}. satırdaki</u> <b>${shKod}-${shAdi} ürüne ait <b>Miktar(${miktar})</b>, <u>Hedef Miktar(${hMiktar})</u>'dan fazladır</li>`) }
 			}
 			if (!$.isEmptyObject(mesajlar)) {
 				const mesaj = `<ul>${mesajlar.join('')}</ul><p/>Devam edilsin mi?`;
@@ -115,12 +94,10 @@
 						}
 					}
 				);
-				await promise;
+				await promise
 			}
-
-			return await super.onKontrol(e);
+			return await super.onKontrol(e)
 		}
-
 		async yeniTanimOncesiIslemler(e) {
 			const {islem} = e;
 			throw {

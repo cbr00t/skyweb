@@ -1,421 +1,155 @@
 (function() {
 	window.CETFisListePart = class extends window.CETListeOrtakPart {
+		static get partName() { return 'cetFisListe' } get adimText() { return 'Fiş Listesi' }
 		constructor(e) {
-			e = e || {};
-			super(e);
-
-			$.extend(this, {
-				mustKod: e.mustKod,
-				idSaha: ''				// coklu tablo verisi icin uid kendisi oluştursun liste
-			});
-			if (!(this.layout || this.template))
-				this.template = this.app.templates.fisListe;
+			e = e || {}; super(e); $.extend(this, { mustKod: e.mustKod, idSaha: '' });
+			if (!(this.layout || this.template)) { this.template = this.app.templates.fisListe }
 		}
-
-		static get partName() { return 'cetFisListe' }
-		get adimText() { return 'Fiş Listesi' }
-
-
 		preInitLayout(e) {
-			e = e || {};
-			super.preInitLayout(e);
-
-			const layout = e.layout || this.layout;
-			this.templates = $.extend(this.templates || {}, {
-				windows: layout.find(`#windows`)
-			});
+			e = e || {}; super.preInitLayout(e); const layout = e.layout || this.layout;
+			this.templates = $.extend(this.templates || {}, { windows: layout.find(`#windows`) })
 		}
-
 		async postInitLayout(e) {
-			e = e || {};
-			const layout = e.layout || this.layout;
-			this.height = $(window).height() - 130;
-			
-			/*const serbestModmu = this.app.serbestModmu;
-			if (!serbestModmu) {
-				const liDegistir = layout.find('.liste.popup #degistir');
-				liDegistir.find(`span`).html('İZLE');
-			}*/
-
-			await super.postInitLayout(e);
-			await this.initIslemTuslari(e);
-
+			e = e || {}; const layout = e.layout || this.layout; this.height = $(window).height() - 130;
+			await super.postInitLayout(e); await this.initIslemTuslari(e);
 			const barkodParent = layout.find(`#barkodParent`);
-			if (barkodParent && barkodParent.length) {
+			if (barkodParent?.length) {
 				this.barkodParent = barkodParent;
-				
-				const txtBarkod = this.txtBarkod = barkodParent.find(`#txtBarkod`);
-				txtBarkod.attr(`placeHolder`, `Belge barkodunu buraya okutunuz`);
-				txtBarkod.off('click').on('click', evt => {
-					txtBarkod.blur();
-					txtBarkod.focus();
-				});
-				txtBarkod.off('focus').on('focus', evt => {
-					const elm = evt.target;
-					if (elm && elm.select)
-						elm.select();
-				});
+				const txtBarkod = this.txtBarkod = barkodParent.find(`#txtBarkod`); txtBarkod.attr(`placeHolder`, `Belge barkodunu buraya okutunuz`);
+				txtBarkod.off('click').on('click', evt => { txtBarkod.blur(); txtBarkod.focus() });
+				txtBarkod.off('focus').on('focus', evt => { const elm = evt.target; if (elm?.select) { elm.select() } });
 				txtBarkod.off('keyup').on('keyup', async evt => {
 					const key = (evt.key || '').toLowerCase();
 					if (key == 'enter' || key == 'linefeed') {
-						const target = evt.target;
-						target.value = (target.value || '').trim();
-						target.select();
-						try {
-							await this.barkodOkundu($.extend({}, e, { event: evt, barkod: target.value }))
-						}
-						catch (ex) {
-							ex = ex.responseJSON || ex;
-							if (ex.errorText)
-								displayMessage(ex.errorText, `Barkod Okutma İşlemi`);
-						}
-						target.value = '';
+						const target = evt.target; target.value = (target.value || '').trim(); target.select();
+						try { await this.barkodOkundu($.extend({}, e, { event: evt, barkod: target.value })) }
+						catch (ex) { ex = ex.responseJSON || ex; if (ex.errorText) { displayMessage(ex.errorText, `Barkod Okutma İşlemi`) } }
+						target.value = ''
 					}
 				});
-				// txtBarkod.focus();
 			}
-			this.focusToDefault();
+			this.focusToDefault()
 		}
-
-		async activatePart(e) {
-			e = e || {};
-			const layout = e.layout || this.layout;
-			
-			this.initMustBilgi(e);
-			// setTimeout(() => this.tazele(e), 100);
-			
-			await super.activatePart(e);
-
-			this.cleanUpWidgets();
-		}
-
-		async initActivatePartOrtak(e) {
-			await super.initActivatePartOrtak(e);
-
-			/*setTimeout(async () => {
-				await this.setUniqueTimeout({
-					key: 'yeniToolTip',
-					delayMS: 2500,
-					block: () => {
-						if ($.isEmptyObject(this.listeRecs)) {
-							const {ozelIslemTuslariPart} = this;
-							const yeniItem = ozelIslemTuslariPart && ozelIslemTuslariPart.layout
-												? ozelIslemTuslariPart.parentMenu.find(`#yeni.item`)
-												: null;
-							if (yeniItem && yeniItem.length)
-								yeniItem.jqxTooltip('open');
-						}
-					}
-				});
-
-				const {ozelIslemTuslariPart} = this;
-				const yeniItem = ozelIslemTuslariPart && ozelIslemTuslariPart.layout
-									? ozelIslemTuslariPart.parentMenu.find(`#yeni.item`)
-									: null;
-				if (yeniItem && yeniItem.length) {
-					yeniItem.on('focus, touchstart', evt =>
-						yeniItem.jqxTooltip('destroy'));
-				}
-			}, 100);*/
-		}
-
-		async deactivePart(e) {
-			e = e || {};
-			const layout = e.layout || this.layout;	
-			
-			await super.deactivePart(e);
-		}
+		async activatePart(e) { e = e || {}; const layout = e.layout || this.layout; this.initMustBilgi(e); await super.activatePart(e); this.cleanUpWidgets() }
+		async initActivatePartOrtak(e) { await super.initActivatePartOrtak(e) }
+		async deactivePart(e) { e = e || {}; const layout = e.layout || this.layout; await super.deactivePart(e) }
 
 		async initMustBilgi(e) {
-			e = e || {};
-			const {layout} = this;
-			if (!(layout && layout.length))
-				return;
-			
-			const {bakiyeRiskGosterilmezmi} = this.app;
-			const divMustBilgi = layout.find(`#mustBilgi`);
-			
-			const dbMgr = this.app.dbMgr_mf;
-			let {mustKod} = this;
+			e = e || {}; const {layout} = this; if (!layout?.length) { return }
+			const {bakiyeRiskGosterilmezmi} = this.app, divMustBilgi = layout.find(`#mustBilgi`), dbMgr = this.app.dbMgr_mf; let {mustKod} = this;
 			if (mustKod) {
-				let stm;
-				let rec = await MQCogul.getCariEkBilgi({ mustKod: mustKod });
+				let stm, rec = await MQCogul.getCariEkBilgi({ mustKod });
 				if (!rec) {
-					stm = new MQStm({
-						sent: new MQSent({
-							from: `mst_Cari`,
-							where: [{ degerAta: mustKod, saha: 'kod' }],
-							sahalar: [`unvan`]
-						})
-					});
+					stm = new MQStm({ sent: new MQSent({ from: `mst_Cari`, where: [{ degerAta: mustKod, saha: 'kod' }], sahalar: [`unvan`] }) });
 					rec = await dbMgr.tekilExecuteSelect({ query: stm });
 				}
-				
-				let unvan;
-				if (rec) {
+				let unvan; if (rec) {
 					unvan = (rec.unvan || '').trim();
-					const {konSubeAdi} = rec;
-					if (konSubeAdi)
-						unvan += ` (<span class="bold green">${konSubeAdi}</span>)`;
-					divMustBilgi.find('.adresText')
-						.html(`${rec.adres || ''} ${rec.yore || ''}` + (rec.ilAdi ? ` / ${rec.ilAdi}` : ''));
+					const {konSubeAdi} = rec; if (konSubeAdi) { unvan += ` (<span class="bold green">${konSubeAdi}</span>)` }
+					divMustBilgi.find('.adresText').html(`${rec.adres || ''} ${rec.yore || ''}` + (rec.ilAdi ? ` / ${rec.ilAdi}` : ''));
 				}
-				divMustBilgi.find('.mustText')
-					.html(new CKodVeAdi({ kod: mustKod, aciklama: unvan }).parantezliOzet({ styled: true }));
-				rec = null;
-				
-				const riskCariKod = await MQCogul.getRiskCariKod({ mustKod: mustKod });
+				divMustBilgi.find('.mustText').html(new CKodVeAdi({ kod: mustKod, aciklama: unvan }).parantezliOzet({ styled: true }));
+				rec = null; const riskCariKod = await MQCogul.getRiskCariKod({ mustKod });
 				if (riskCariKod) {
 					stm = new MQStm({
 						sent: new MQSent({
-							from: `mst_Cari`,
-							where: [{ degerAta: riskCariKod, saha: 'kod' }],
+							from: `mst_Cari`, where: [{ degerAta: riskCariKod, saha: 'kod' }],
 							sahalar: [`bakiye`, `riskLimiti`, `riskli`, `takipBorcLimiti`, `takipBorc`]
 						})
 					});
-					rec = await dbMgr.tekilExecuteSelect({ query: stm });
+					rec = await dbMgr.tekilExecuteSelect({ query: stm })
 				}
-				
 				const bakiye = !rec || bakiyeRiskGosterilmezmi ? `` : bedel(rec.bakiye);
 				const kalanRisk = !rec || bakiyeRiskGosterilmezmi ? `` : rec.riskLimiti ? bedel(rec.riskLimiti - rec.riskli) : `-Limit Yok-`;
 				const kalanTakipBorc = !rec || bakiyeRiskGosterilmezmi ? `` : rec.takipBorcLimiti ? bedel(rec.takipBorcLimiti - rec.takipBorc) : ``;
 				if (bakiye || kalanRisk || kalanTakipBorc) {
 					let elm = divMustBilgi.find('.bakiyeText').html(typeof bakiye == 'number' ? `${bedelStr(bakiye)}` : bakiye || ``);
-					if (typeof bakiye != 'number')
-						elm.addClass(`gray bold`);
-					else if (bakiye < 0)
-						elm.addClass(`red`);
-					
+					if (typeof bakiye != 'number') { elm.addClass(`gray bold`) } else if (bakiye < 0) { elm.addClass(`red`) }
 					elm = divMustBilgi.find('.kalanRiskText').html(typeof kalanRisk == 'number' ? `${bedelStr(kalanRisk)}` : kalanRisk || ``);
-					if (typeof kalanRisk != 'number')
-						elm.addClass(`gray bold`);
-					else if (kalanRisk < 0)
-						elm.addClass(`red`);
-
+					if (typeof kalanRisk != 'number') { elm.addClass(`gray bold`) } else if (kalanRisk < 0) { elm.addClass(`red`) }
 					elm = divMustBilgi.find('.kalanTakipBorcText').html(typeof kalanTakipBorc == 'number' ? `${bedelStr(kalanTakipBorc)}` : kalanTakipBorc || ``);
-					if (typeof kalanTakipBorc != 'number') {
-						elm.addClass(`gray bold`);
-						divMustBilgi.find('.kalanTakipBorcParent').addClass('jqx-hidden');
-					}
-					else if (kalanTakipBorc < 0)
-						elm.addClass(`red`);
-					
+					if (typeof kalanTakipBorc != 'number') { elm.addClass(`gray bold`); divMustBilgi.find('.kalanTakipBorcParent').addClass('jqx-hidden') } else if (kalanTakipBorc < 0) { elm.addClass(`red`) }
 					divMustBilgi.find('.bakiyeVeRiskBilgi').removeClass('jqx-hidden');
 				}
-				else {
-					divMustBilgi.find('.bakiyeVeRiskBilgi').addClass('jqx-hidden');
-				}
-				divMustBilgi.removeClass('jqx-hidden');
+				else { divMustBilgi.find('.bakiyeVeRiskBilgi').addClass('jqx-hidden') }
+				divMustBilgi.removeClass('jqx-hidden')
 			}
-			else {
-				divMustBilgi.addClass('jqx-hidden');
-			}
+			else { divMustBilgi.addClass('jqx-hidden') }
 		}
-		
 		async fisGirisYap(e) {
-			const {app} = sky;
-			const {param, serbestModmu} = app;
-			let {islem, rec, fis, sablon} = e;
-			
-			await new $.Deferred(p => {
-				document.activeElement.blur();
-				this.divListe.focus();
-				setTimeout(() => p.resolve(true), 50);
-			});
-			
-			(savedProcs || window).showProgress(null, null, 1, true);
-			setTimeout(() =>
-				(savedProcs || window).hideProgress(null, null, 1, true), 10);
-			
-			if (islem == 'yeniSablonlu')
-				islem = 'yeni';
-			if (islem == 'yeni')
-				delete e.rec;
-			
-			if (!serbestModmu && param.kapandimi) {
-				displayMessage(`<b>Kapanış yapıldığı için</b> <b><u>Belge Girişi</u></b> yapılamaz`, `@ ${this.app.appText} @`);
-				return;
-			}
-			
-			const devreDisimi = rec && asBool(rec.devreDisimi || rec.silindi);
-			const gonderildimi = rec && asBool(rec.gonderildimi || rec.gonderildi);
-			const gecicimi = rec && asBool(rec.gecicimi || rec.gecici);
-			const rapormu = rec && asBool(rec.rapormu || rec.rapor);
-			
+			const {app} = sky, {param, serbestModmu} = app; let {islem, rec, fis, sablon} = e;
+			await new $.Deferred(p => { document.activeElement.blur(); this.divListe.focus(); setTimeout(() => p.resolve(true), 50) });
+			(savedProcs || window).showProgress(null, null, 1, true); setTimeout(() => (savedProcs || window).hideProgress(null, null, 1, true), 10);
+			if (islem == 'yeniSablonlu') { islem = 'yeni' } if (islem == 'yeni') { delete e.rec }
+			if (!serbestModmu && param.kapandimi) { displayMessage(`<b>Kapanış yapıldığı için</b> <b><u>Belge Girişi</u></b> yapılamaz`, `@ ${this.app.appText} @`); return }
+			const devreDisimi = rec && asBool(rec.devreDisimi || rec.silindi), gonderildimi = rec && asBool(rec.gonderildimi || rec.gonderildi);
+			const gecicimi = rec && asBool(rec.gecicimi || rec.gecici), rapormu = rec && asBool(rec.rapormu || rec.rapor);
 			if (!fis && islem == 'yeni') {
 				const sablondanSec = async e => {
-					let _result;
-					let {sablon} = e;
+					let _result, {sablon} = e;
+					if (sablon) { if (sablon == true) { setTimeout(() => (savedProcs || window).hideProgress(), 300); _result = await this.fisSablonTipiSec(e); sablon = _result?.rec } }
+					if (sablon && typeof sablon != 'object') { sablon = this.app.sablonFisTipiKod2Rec[sablon] }
 					if (sablon) {
-						if (sablon == true) {
-							setTimeout(() =>
-								(savedProcs || window).hideProgress(), 300);
-							_result = await this.fisSablonTipiSec(e);
-							sablon = (_result || {}).rec;
+						try { _result = await this.barkodOkundu($.extend({}, e, { barkod: sablon.data })) }
+						catch (ex) {
+							ex = ex.responseJSON || ex; if (ex.errorText) { displayMessage(ex.errorText, `Şablon Fiş İşlemi`) } result = false;
+							(savedProcs || window).hideProgress(); hideProgress()
 						}
+						return _result
 					}
-					if (sablon && typeof sablon != 'object')
-						sablon = this.app.sablonFisTipiKod2Rec[sablon];
-					
-					if (sablon) {
-						try {
-							_result = await this.barkodOkundu($.extend({}, e, { barkod: sablon.data }));
-						}
-						catch (ex) {
-							ex = ex.responseJSON || ex;
-							if (ex.errorText)
-								displayMessage(ex.errorText, `Şablon Fiş İşlemi`);
-							
-							result = false;
-							// displayMessage((_result || {}).errorText || `Yeni Fiş işlemi yapılamadı`, `Barkod Okutma İşlemi`);
-							(savedProcs || window).hideProgress();
-							hideProgress();
-						}
-
-						return _result;
-					};
 				}				
-
-				if (sablon) {
-					let result = await sablondanSec(e);
-					return result;
-				}
-				
-				let result = await this.fisIslemTipiSec();
-				const fisTipi = (result || {}).rec;
-				if (!fisTipi)
-					return
-				
-				// (savedProcs || window).showProgress(null, null, 1, true);
-				if (fisTipi.kod == 'sablon')
-					return await sablondanSec($.extend(e, { sablon: true }))
-
-				$.extend(e, {
-					fisTipi: fisTipi,
-					ayrimTipi: result.sender.ayrimTipi || '',
-					yildizlimi: result.sender.yildizlimi || false
-				})
+				if (sablon) { let result = await sablondanSec(e); return result }
+				let result = await this.fisIslemTipiSec(); const fisTipi = result?.rec; if (!fisTipi) { return }
+				if (fisTipi.kod == 'sablon') { return await sablondanSec($.extend(e, { sablon: true })) }
+				$.extend(e, { fisTipi, ayrimTipi: result.sender.ayrimTipi || '', yildizlimi: result.sender.yildizlimi || false })
 			}
-
-			fis = e.fis = await this.getFis(e);
-			if (!fis)
-				return null
-
-			let eskiFis = fis;
-			fis = fis.deepCopy();
-			if (islem == 'kopya') {
-				delete fis.id;
-				fis.devreDisimi = fis.yazdirildimi = fis.gonderildimi = fis.gecicimi = fis.rapormu = false;
-			}
-			
-			const fisSinif = fis.class;
-			const {musteriKullanilirmi} = fisSinif;
-			const uiSinif = fis.gecicimi || (islem == 'yeni' || islem == 'kopya')
-								? fisSinif.fisGirisUISinif
-								: fisSinif.degistirFisGirisUISinif;
-			if (!uiSinif)
-				return
-			
+			fis = e.fis = await this.getFis(e); if (!fis) { return null }
+			let eskiFis = fis; fis = fis.deepCopy();
+			if (islem == 'kopya') { delete fis.id; fis.devreDisimi = fis.yazdirildimi = fis.gonderildimi = fis.gecicimi = fis.rapormu = false }
+			const fisSinif = fis.class, {musteriKullanilirmi} = fisSinif;
+			const uiSinif = fis.gecicimi || (islem == 'yeni' || islem == 'kopya') ? fisSinif.fisGirisUISinif : fisSinif.degistirFisGirisUISinif; if (!uiSinif) { return }
 			let result = await new $.Deferred(async p => {
-				const {dbMgr} = fis;
-				let mustKod = fis.mustKod || this.mustKod;
+				const {dbMgr} = fis; let mustKod = fis.mustKod || this.mustKod;
 				if (!mustKod && fis.class.musteriKullanilirmi) {
-					setTimeout(() =>
-						(savedProcs || window).hideProgress(null, null, 1, true), 300);
+					setTimeout(() => (savedProcs || window).hideProgress(null, null, 1, true), 300);
 					await new $.Deferred(async p => {
-						// this.islemTuslariVarsaGizle();
 						await CETCariListePart.run({
-							parentPart: this,
-							targetRec: mustKod,
-							/*geriCallback: e => {
-								this.islemTuslariVarsaGoster()
-							},*/
-							secince: e => {
-								// this.islemTuslariVarsaGoster();
-								mustKod = fis.mustKod = e.rec.kod;
-								p.resolve(mustKod)
-							}
+							parentPart: this, targetRec: mustKod,
+							secince: e => { mustKod = fis.mustKod = e.rec.kod; p.resolve(mustKod) }
 						})
-						/*await new CETCariListePart({
-							parentPart: this.parentPart || this,
-							secince: e => p.resolve(e.rec.kod)
-						}).run()*/
-					});
-				};
-				
-				switch (islem) {
-					case 'yeni':
-					case 'kopya':
-						try {
-							await fis.yeniTanimOncesiIslemler(e);
-						}
-						catch (ex) {
-							if (ex.statusText)
-								displayServerResponse(ex);
-							else
-								displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge Girişi ${ex.isError ? '@' : '!'}`);
-							(savedProcs || window).hideProgress();
-							hideProgress();
-							throw ex
-						}
-						break;
-					case 'degistir':
-						try {
-							await fis.degistirOncesiIslemler(e);
-							app.merkezeBilgiGonderTimer_start(e);
-							try { await fis.belgeGonderimKontrol($.extend({}, e, { id: undefined, inst: undefined, fis: undefined })) }
-							catch (ex) { console.warn(ex) }
-						}
-						catch (ex) {
-							if (ex.statusText)
-								displayServerResponse(ex);
-							else
-								displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge Girişi ${ex.isError ? '@' : '!'}`);
-							(savedProcs || window).hideProgress();
-							hideProgress();
-							throw ex
-						}
-						break;
+					})
 				}
-
-				islem = e.islem;
-				/*if (!serbestModmu && islem == 'degistir' && fis.yazdirildimi)
-					islem = e.islem = 'izle';*/
-				
-				$.extend(e, { eskiFis: eskiFis, fis: fis });
 				switch (islem) {
+					case 'yeni': case 'kopya':
+						try { await fis.yeniTanimOncesiIslemler(e) }
+						catch (ex) {
+							if (ex.statusText) { displayServerResponse(ex) } else { displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge Girişi ${ex.isError ? '@' : '!'}`) }
+							(savedProcs || window).hideProgress(); hideProgress(); throw ex
+						}
+						break
 					case 'degistir':
-					case 'iptal':
-					case 'sil':
-						if (devreDisimi) {
-							setTimeout(() =>
-								displayMessage(`Bu belge DevreDışı olduğu için değişiklik yapılamaz!<br/> <i>&nbsp;&nbsp;&nbsp;Sadece izlemeye izin verilecek...</i>`, app.appText),
-								500);
-							// return null;
+						try {
+							await fis.degistirOncesiIslemler(e); app.merkezeBilgiGonderTimer_start(e);
+							try { await fis.belgeGonderimKontrol($.extend({}, e, { id: undefined, inst: undefined, fis: undefined })) } catch (ex) { console.warn(ex) }
 						}
-						if (gonderildimi) {
-							setTimeout(() =>
-								displayMessage(`Bu belge Merkeze Gönderildiği için değişiklik yapılamaz!<br/> <i>&nbsp;&nbsp;&nbsp;Sadece izlemeye izin verilecek...</i>`, app.appText),
-								500);
-							// return null;
+						catch (ex) {
+							if (ex.statusText) { displayServerResponse(ex) } else { displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge Girişi ${ex.isError ? '@' : '!'}`) }
+							(savedProcs || window).hideProgress(); hideProgress(); throw ex
 						}
-						if (rapormu) {
-							setTimeout(() =>
-								displayMessage(`Bu belge Merkezeden Gelen bir belgedir ve değişiklik yapılamaz!<br/> <i>&nbsp;&nbsp;&nbsp;Sadece izlemeye izin verilecek...</i>`, app.appText),
-								500);
-							// return null;
-						}
-						break;
+						break
+				}
+				islem = e.islem; $.extend(e, { eskiFis: eskiFis, fis });
+				switch (islem) {
+					case 'degistir': case 'iptal': case 'sil':
+						if (devreDisimi) { setTimeout(() => displayMessage(`Bu belge DevreDışı olduğu için değişiklik yapılamaz!<br/> <i>&nbsp;&nbsp;&nbsp;Sadece izlemeye izin verilecek...</i>`, app.appText), 500) }
+						if (gonderildimi) { setTimeout(() => displayMessage(`Bu belge Merkeze Gönderildiği için değişiklik yapılamaz!<br/> <i>&nbsp;&nbsp;&nbsp;Sadece izlemeye izin verilecek...</i>`, app.appText), 500) }
+						if (rapormu) { setTimeout(() => displayMessage(`Bu belge Merkezeden Gelen bir belgedir ve değişiklik yapılamaz!<br/> <i>&nbsp;&nbsp;&nbsp;Sadece izlemeye izin verilecek...</i>`, app.appText), 500) }
+						break
 					case 'izle':
-						if (!fis.gecicimi) {
-							setTimeout(() =>
-								displayMessage(`Sadece <b>BELGE İZLEME</b> için giriş yapıldı!<br/><i> &nbsp;&nbsp;&nbsp;Belgede yapacağınız değişiklikleri kaydede<u>me</u>zsiniz...`, `** UYARI **`),
-								500);
-							break;
-						}
+						if (!fis.gecicimi) { setTimeout(() => displayMessage(`Sadece <b>BELGE İZLEME</b> için giriş yapıldı!<br/><i> &nbsp;&nbsp;&nbsp;Belgede yapacağınız değişiklikleri kaydede<u>me</u>zsiniz...`, `** UYARI **`), 500) }
+						break
 				}
-				const mustRec = musteriKullanilirmi ? await fis.getCariEkBilgi({ mustKod }) : null;
-				let mevcutKonumBilgi = null;
+				const mustRec = musteriKullanilirmi ? await fis.getCariEkBilgi({ mustKod }) : null; let mevcutKonumBilgi = null;
 				if (mustKod && islem != 'izle' && musteriKullanilirmi && app.konumTakibiYapilirmi) {
 					const promise_konumBilgi = navigator?.geolocation.getCurrentPosition
 						? new $.Deferred(p => navigator.geolocation.getCurrentPosition(konumBilgi => p.resolve($.extend({}, konumBilgi)), null, { enableHighAccuracy: true }))
@@ -760,19 +494,13 @@
 						
 						const eIslemTip = rec.efayrimtipi;
 						if (eIslemTip) {
-							divSatir.find('.eIslemParent').removeClass('jqx-hidden');
-							divSatir.find('.eIslemText').html(app.eIslemTip2KisaAdi(rec.efayrimtipi));
-							divSatir.addClass('eIslem');
-							divSatir.addClass(`eIslem-${eIslemTip}`);
+							divSatir.find('.eIslemParent').removeClass('jqx-hidden'); divSatir.find('.eIslemText').html(app.eIslemTip2KisaAdi(rec.efayrimtipi));
+							divSatir.addClass(`eIslem eIslem-${eIslemTip}`)
 						}
-						if (rec.zorunluguidstr)
-							divSatir.find('.uuidParent').removeClass('jqx-hidden');
-
-						if (rec.soforAdi || rec.plaka || rec.ekBilgi)
-							divSatir.find('.seferBilgiParent').removeClass('jqx-hidden');
-						if (rec.containerNox)
-							divSatir.find('.containerNoxBilgiParent').removeClass('jqx-hidden');
-
+						if (rec.zorunluguidstr) { divSatir.find('.uuidParent').removeClass('jqx-hidden') }
+						if (rec.soforAdi || rec.plaka || rec.ekBilgi) { divSatir.find('.seferBilgiParent').removeClass('jqx-hidden') }
+						if (rec.containerNox) { divSatir.find('.containerNoxBilgiParent').removeClass('jqx-hidden') }
+						if (rec.planNo) { divSatir.find('.planNoParent').removeClass('jqx-hidden') }
 						return divSatir[0].outerHTML.trim();
 					}
 				},
