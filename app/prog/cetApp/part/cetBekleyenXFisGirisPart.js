@@ -1,12 +1,8 @@
 (function() {
 	window.CETBekleyenXFisGirisPart = class extends window.CETListeOrtakPart {
 		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			const {app} = this;
-			const param = app.param.deepCopy();
-			const {fis} = e;
+			e = e || {}; super(e);
+			const {app} = this, param = app.param.deepCopy(), {fis} = e;
 			$.extend(this, {
 				islem: e.islem || 'degistir',
 				param: param,
@@ -1850,7 +1846,7 @@
 		}
 		async degistirIstendi(e) {
 			e = e || {}; let rec; const {app, listeWidget} = this, {fis, anah2Detaylar} = this, fisSinif = fis.class, {bekleyenUgramaFismi} = fisSinif;
-			let {barkod, carpan} = e, barkodDetay; app.hideNotifications();
+			let {barkod, carpan} = e, barkodDetay; app.hideNotifications(); const paketKodVarmi = paketKod => paketKod && paketKod != 'Tek';
 			if (barkod) {
 				barkod = barkod.trim(); let ind = -1; for (const matchStr of ['x', 'X', '*']) { ind = barkod.indexOf(matchStr); if (ind > -1) { break } }
 				if (ind > -1) {
@@ -1879,14 +1875,17 @@
 								displayMessage(`<u class="bold darkred">${_barkod}</u> barkodlu <b>Karma Palet</b>, bu Bekleyen Yükleme fişine ait değildir !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
 								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
 							}
-							for (const det of uygunDetListe) {
+							let stokSet = {}; for (const det of uygunDetListe) {
 								if (!$.isEmptyObject(det.altDetaylar)) {
 									app.playSound_barkodError();
 									displayMessage(`<u class="bold darkred">${_barkod}</u> barkodlu <b>Karma Palet</b> yeniden okutulamaz !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
 									setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
 								}
+								stokSet[det.shKod] = true
 							}
 							/* uygunDetListe için barkodOkutuldu işlemi */
+							const {ekOzellikBelirtecSet_stokMstVeDiger, tip2EkOzellik} = app;
+							const stokMstBelirtecSet = ekOzellikBelirtecSet_stokMstVeDiger.stokMst, digerBelirtecSet = ekOzellikBelirtecSet_stokMstVeDiger.diger, {yerKod} = fis; let barkodDetayYapilar = [];
 							for (const det of uygunDetListe) {
 								const {paketBilgi, paketKod2IcAdet} = det; let paketKod2Miktar = {}, parts = paketBilgi ? paketBilgi.split(',') : null;
 								if (parts?.length) {
@@ -1900,8 +1899,52 @@
 									if (paketMiktar <= 0) { continue } const paketIcAdet = paketKod2IcAdet[paketKod] || 0;
 									const detaySinif = fisSinif.uygunDetaySinif({ rec: barkodBilgi }) || fisSinif.detaySinif;
 									const barkodDetay = new detaySinif({ shKod: det.shKod, paketIcAdet, paketKod });
-									const _e = { ...e, barkodDetay, rec: det, carpan: paketMiktar }; delete _e.barkod; await this.degistirIstendi(_e)
+									barkodDetayYapilar.push({ det, barkodDetay, paketMiktar })
 								}
+							}
+							let sent = new MQSent({
+								from: 'mst_SonStok', where: [{ degerAta: yerKod, saha: 'yerKod' }, { inDizi: Object.keys(stokSet), saha: 'stokKod' }],
+								sahalar: ['stokKod', 'SUM(miktar) miktar'], groupBy: ['stokKod']
+							});
+							let stm = new MQStm({ sent, orderBy: ['stokKod'] });
+							const ekOzSiraliKodSahalar = { stokMst: [], diger: [] }; for (const key in ekOzSiraliKodSahalar) {
+								ekOzSiraliKodSahalar[key].push(...Object.keys(ekOzellikBelirtecSet_stokMstVeDiger[key]).map(belirtec => tip2EkOzellik[belirtec].idSaha)) }
+							for (const belirtec in { ...stokMstBelirtecSet, ...digerBelirtecSet }) {
+								const {idSaha} = tip2EkOzellik[belirtec]; sent.sahalar.add(idSaha);
+								sent.groupBy.add(idSaha); stm.orderBy.add(idSaha)
+							}
+							sent.groupBy.add(); const anah2SonStokBilgiler = {};
+							let recs = await app.dbMgr_mf.executeSqlReturnRows(stm); for (let i = 0; i < recs.length; i++) {
+								const rec = recs[i], {stokKod, miktar} = rec, anahStr = [stokKod, ...ekOzSiraliKodSahalar.stokMst.map(attr => rec[attr] || '')].join(delimWS);
+								const sonStokBilgi = { miktar }; for (const attr of ekOzSiraliKodSahalar.diger) { sonStokBilgi[attr] = rec[attr] || '' }
+								(anah2SonStokBilgiler[anahStr] = anah2SonStokBilgiler[anahStr] || []).push(sonStokBilgi)
+							}
+							const _barkodDetayYapilar = barkodDetayYapilar; barkodDetayYapilar = []; let yetersizStokKodSet = {};
+							for (const barkodDetayYapi of _barkodDetayYapilar) {
+								const {det, barkodDetay, paketMiktar} = barkodDetayYapi;
+								const {shKod, paketKod} = barkodDetay, paketIcAdet = barkodDetay.paketIcAdet || 1;
+								const barDetMiktar = paketKodVarmi(paketKod) ? paketIcAdet * paketMiktar : paketMiktar, barkodDetay_tip2EkOzellik = barkodDetay.ekOzelliklerYapi.tip2EkOzellik;
+								const anahStr = [shKod, ...ekOzSiraliKodSahalar.stokMst.map(attr => barkodDetay_tip2EkOzellik[attr]?.value || '')].join(delimWS);
+								let sonStokBilgiler = anah2SonStokBilgiler[anahStr]; if (!sonStokBilgiler?.length) { yetersizStokKodSet[shKod] = true; continue }
+								let kalan = barDetMiktar; for (const sonStokBilgi of sonStokBilgiler) {
+									let sonKalan = sonStokBilgi.miktar, dusulecek = paketKodVarmi(paketKod) ? asInteger(sonKalan / paketIcAdet) * paketIcAdet : Math.min(kalan, sonKalan);
+									if (dusulecek <= 0) { continue }
+									let yBarkodDetay = barkodDetay.deepCopy(), yPaketMiktar = paketKodVarmi(paketKod) ? asInteger(dusulecek / paketIcAdet) : dusulecek;
+									let yBarkodDetay_tip2EkOzellik = yBarkodDetay.ekOzelliklerYapi.tip2EkOzellik;for (const belirtec in digerBelirtecSet) {
+										const kodSaha = tip2EkOzellik[belirtec].idSaha, value = sonStokBilgi[kodSaha];
+										if (value != null) { yBarkodDetay_tip2EkOzellik[belirtec].value = value }
+									} kalan -= dusulecek;
+									const yBarkodDetayYapi = { ...barkodDetayYapi, paketMiktar: yPaketMiktar, barkodDetay: yBarkodDetay }; barkodDetayYapilar.push(yBarkodDetayYapi)
+								}
+							}
+							if (!$.isEmptyObject(yetersizStokKodSet)) {
+								app.playSound_barkodError();
+								displayMessage(`<u class="bold darkred">${_barkod}</u> barkoduna ait şu ürünler için <b class="firebrick">Son Stok yetersizdir:</b> <ul>${Object.keys(yetersizStokKodSet).map(x => `<li>${x}</li>`)}</ul> !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
+								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
+							}
+							for (const {det, barkodDetay, paketMiktar} of barkodDetayYapilar) {
+								const _e = { ...e, rec: det, barkodDetay, carpan: paketMiktar }; delete _e.barkod;
+								await this.degistirIstendi(_e)
 							}
 							/*const paketKod = '', _det = anah2Detaylar[uygunDetListe[0].getAnahtarStr({ with: [paketKod], hmrSet: depoSiparisKarsilamaZorunluHMRSet })]*/
 							setTimeout(async () => { await this.onResize(); this.focusToDefault() }, 50); return true
@@ -1973,7 +2016,7 @@
 			if (det) { det = $.isPlainObject(det) ? fis.class.detaySinif.From(det) : det.deepCopy() } if (!det) { return false }
 			det.okutmaSayisi++;
 			const paketKod = barkodDetay.paketKod ?? null;
-			let paketIcAdet = paketKod ? (det.paketKod2IcAdet || {})[paketKod] ?? null : null;
+			let paketIcAdet = paketKodVarmi(paketKod) ? (det.paketKod2IcAdet || {})[paketKod] ?? null : null;
 			let {miktar} = barkodDetay;
 			const barkoddanMiktarGeldimi = !!miktar;
 			let paketMiktar = 0;

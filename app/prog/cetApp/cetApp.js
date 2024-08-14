@@ -221,149 +221,83 @@
 		}
 
 		get tip2EkOzellik() {
-			const {param} = this;
-			const kullanimYapi = this.ekOzellikKullanim || {};
-			const tip2EkOzellik = {};
-			let tip;
+			const {param} = this, kullanimYapi = this.ekOzellikKullanim || {}, tip2EkOzellik = {}; let tip;
 			if (this.isDevMode && this.class.appMagazaVeyaSDMmi) {
 				tip = 'yer';
 				tip2EkOzellik[tip] = new CETEkOzellik_KA({
-					tip: tip, mbTable: `mst_Yer`, tipAdi: `Detay Yer`,
+					tip, mbTable: `mst_Yer`, tipAdi: `Detay Yer`,
 					widgetEvents: {
 						comboBox_stmDuzenleyici: e => {
 							const subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
-							if (subeKod != null) {
-								e.stm.sentDo(sent =>
-									sent.where.degerAta(subeKod, `mst.subeKod`));
-							}
+							if (subeKod != null) { e.stm.sentDo(sent => sent.where.degerAta(subeKod, `mst.subeKod`)) }
 						},
 						liste_stmDuzenleyici: e => {
 							const subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
-							if (subeKod != null) {
-								e.stm.sentDo(sent =>
-									sent.where.degerAta(subeKod, `mst.subeKod`));
-							}
+							if (subeKod != null) { e.stm.sentDo(sent => sent.where.degerAta(subeKod, `mst.subeKod`)) }
 						}
 					}
-				});
+				})
 			}
-			
-			tip = 'model';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_KA({ tip: tip, mbTable: 'mst_Model', tipAdi: (kullanimYapi[tip]).etiket || 'Model' });
-			tip = 'renk';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_KA({ tip: tip, mbTable: 'mst_Renk', tipAdi: (kullanimYapi[tip]).etiket || 'Renk' });
-			tip = 'desen';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_KA({ tip: tip, mbTable: 'mst_Desen', tipAdi: (kullanimYapi[tip]).etiket || 'Desen' });
-			
-			tip = 'raf';
-			if ((kullanimYapi[tip] || {}).kullanilirmi) {
+			tip = 'model'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_KA({ tip, mbTable: 'mst_Model', tipAdi: (kullanimYapi[tip]).etiket || 'Model' });
+			tip = 'renk'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_KA({ tip, mbTable: 'mst_Renk', tipAdi: (kullanimYapi[tip]).etiket || 'Renk' });
+			tip = 'desen'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_KA({ tip, mbTable: 'mst_Desen', tipAdi: (kullanimYapi[tip]).etiket || 'Desen' });
+			tip = 'raf'; if (kullanimYapi[tip]?.kullanilirmi) {
 				tip2EkOzellik[tip] = new CETEkOzellik_KA({
-					tip: tip, mbTable: 'mst_YerRaf', tipAdi: (kullanimYapi[tip]).etiket || 'Raf Kodu',
+					tip, mbTable: 'mst_YerRaf', tipAdi: (kullanimYapi[tip]).etiket || 'Raf Kodu',
 					mbKodSaha: 'rafKod', mbAdiSaha: 'rafKod',
 					sadeceKodmu: true, placeHolder: 'Raf kodu',
 					widgetEvents: {
 						comboBox_stmDuzenleyici: e => {
-							const yerKod = e.sender.parentPart.fis.yerKod || this.defaultYerKod;
-							if (!yerKod)
-								return false;
-							e.stm.sentDo(sent =>
-								sent.where.degerAta(yerKod, `mst.yerKod`));
+							const yerKod = e.sender.parentPart.fis.yerKod || this.defaultYerKod; if (!yerKod) return false;
+							e.stm.sentDo(sent => sent.where.degerAta(yerKod, `mst.yerKod`));
 						}
 					}
-				});
+				})
 			}
-			tip = 'refRaf';
-			if ((kullanimYapi.raf || {}).kullanilirmi) {
+			tip = 'refRaf'; if ((kullanimYapi.raf || {}).kullanilirmi) {
 				tip2EkOzellik[tip] = new CETEkOzellik_KA({
-					tip: tip, mbTable: 'mst_YerRaf', tipAdi: (kullanimYapi.raf).etiket || 'Giriş Raf Kodu',
-					mbKodSaha: 'rafKod', mbAdiSaha: 'rafKod',
-					idSaha: 'refRafKod', adiSaha: 'refRafKod',
+					tip, mbTable: 'mst_YerRaf', tipAdi: (kullanimYapi.raf).etiket || 'Giriş Raf Kodu',
+					mbKodSaha: 'rafKod', mbAdiSaha: 'rafKod', idSaha: 'refRafKod', adiSaha: 'refRafKod',
 					sadeceKodmu: true, placeHolder: 'Giriş Raf kodu',
 					widgetEvents: {
 						comboBox_stmDuzenleyici: e => {
-							const refYerKod = e.sender.parentPart.fis.refYerKod || this.defaultYerKod;
-							if (!refYerKod)
-								return false;
-							e.stm.sentDo(sent =>
-								sent.where.degerAta(refYerKod, `mst.yerKod`));
+							const refYerKod = e.sender.parentPart.fis.refYerKod || this.defaultYerKod; if (!refYerKod) return false;
+							e.stm.sentDo(sent => sent.where.degerAta(refYerKod, `mst.yerKod`));
 						}
 					}
-				});
+				})
 			}
-			
-			tip = 'lotNo';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'Lot No' });
-			tip = 'en';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'En' });
-			tip = 'boy';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'Boy' });
-			tip = 'yukseklik';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'Yukseklik' });
-			tip = 'beden';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'Beden' });
-			tip = 'utsNo';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'UTS No' });
-			tip = 'harDet';
-			if ((kullanimYapi[tip] || {}).kullanilirmi)
-				tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip: tip, tipAdi: (kullanimYapi[tip]).etiket || 'Har.Det.' });
-
+			tip = 'lotNo'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Lot No' });
+			tip = 'en'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'En' });
+			tip = 'boy'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Boy' });
+			tip = 'yukseklik'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Yukseklik' });
+			tip = 'beden'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Beden' });
+			tip = 'utsNo'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'UTS No' });
+			tip = 'harDet'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Har.Det.' });
 			const _tip2EkOzellikYapi = param.tip2EkOzellikYapi;
 			if (!$.isEmptyObject(_tip2EkOzellikYapi)) {
 				for (const _tip in _tip2EkOzellikYapi) {
-					const rec = _tip2EkOzellikYapi[_tip];
-					if (!rec.kullanilirmi)
-						continue;
-					
-					const sinif = CETEkOzellik.classFor({ ozellikTip: rec.ozellikTip });
-					if (!sinif)
-						continue;
-					
-					const inst = new sinif({ tip: _tip, mbTable: `mst_${_tip}`, tipAdi: rec.tipAdi });
-					tip2EkOzellik[_tip] = inst;
+					const rec = _tip2EkOzellikYapi[_tip]; if (!rec.kullanilirmi) continue;
+					const sinif = CETEkOzellik.classFor({ ozellikTip: rec.ozellikTip }); if (!sinif) continue;
+					const inst = new sinif({ tip: _tip, mbTable: `mst_${_tip}`, tipAdi: rec.tipAdi }); tip2EkOzellik[_tip] = inst
 				}
 			}
-			
-			return tip2EkOzellik;
+			return tip2EkOzellik
 		}
-
-		/*get tip2EkOzellik() {
-			const param = this.param;
-			const tip2EkOzellik = {
-				model: new CETEkOzellik_KA({
-					tip: 'model', tipAdi: 'Model',
-					// mbTable: 'mst_Model',
-					widgetEvents: (() => {
-						const ornekVeri = [
-							{ kod: 'm01', aciklama: 'model 1' },
-							{ kod: 'm02', aciklama: 'model 2' },
-							{ kod: 'm03', aciklama: 'model 3' }
-						];
-						return {
-							comboBox_loadServerData: e => $.merge([
-								{ action: 'listedenSec', kod: '', aciklama: `<div class="action">Listeden Seç...<hr/></div>` }
-							], ornekVeri),
-							liste_loadServerData: e => ornekVeri
-						}
-					})()
-				}),
-				serbest1: new CETEkOzellik_Ozellik({
-					tip: 'serbest1', tipAdi: 'Serbest 1',
-					maxLength: 30
-				})
-			};
-
-			return tip2EkOzellik;
-		}*/
-
+		get ekOzellikBelirtecSet_stokMstVeDiger() {
+			let result = this._ekOzellikBelirtecSet_stokMstVeDiger;
+			if (result === undefined) {
+				const {tip2EkOzellik} = this, uygunBelirtecSet = asSet(['model', 'renk', 'desen', 'beden']);
+				result = { stokMst: {}, diger: {} }; if (tip2EkOzellik.lotNo) { result.diger.lotNo = true }					/* 'lotNo' en başa gelir */
+				for (const tip in tip2EkOzellik) {
+					if (tip == 'raf' || tip == 'refRaf') { continue }
+					const target = uygunBelirtecSet[tip] ? result.stokMst : result.diger;
+					if (!target[tip]) { target[tip] = true }
+				}
+				this._ekOzellikBelirtecSet_stokMstVeDiger = result
+			}
+			return result
+		}
 		get tabloEksikIslemYapi() {
 			return [
 				{
@@ -2128,28 +2062,16 @@
 			}
 		}
 		ortakReset(e) {
-			/*$.extend(this.param, {
-				ilkKMGirildimi: false, sonKMGirildimi: false,
-				ilkIrsaliyeRaporuAlindimi: false
-			});*/
-			
-			[	'_matbuuFormYapilari', '_grupKod2Adi', 'mustKod2KosulProYapilari',
+			for (const key of [
+				'_matbuuFormYapilari', '_grupKod2Adi', 'mustKod2KosulProYapilari',
 				'_ekOzellikKullanim', '_isyeri', '_ruloParam', '_ruloEkNotlar',
 				 '_tip2MatbuuFormDuzenleyiciler', '_tip2MatbuuFormDuzenleyiciler_runtime',
-				 '_defaultTip2Renk', /*, '_menuAdimKisitIDSet', '_fisAdimKisitIDSet'*/
-			].forEach(key =>
-				delete this[key]);
-			
-			['baslangicKod2Kural', 'ayrisimKurallari'].forEach(key =>
-				delete CETBarkodParser_Kuralli[key]);
+				 '_defaultTip2Renk', '_ekOzellikBelirtecSet_stokMstVeDiger' /*, '_menuAdimKisitIDSet', '_fisAdimKisitIDSet'*/
+			]) { delete this[key] }
+			for (const key of ['baslangicKod2Kural', 'ayrisimKurallari']) { delete CETBarkodParser_Kuralli[key] }
 			
 			const {caches, isDevMode} = this;
-			if (caches) {
-				for (let key in caches)
-					delete caches[key];
-				delete this.caches;
-			}
-			
+			if (caches) { for (let key in caches) delete caches[key]; delete this.caches }
 			this.initCaches(e);
 			// if (!isDevMode) {
 			this.promise_prefetchUI = new $.Deferred(p => {
@@ -2184,7 +2106,6 @@
 			}
 
 		}
-
 		async onbellekOlustur(e) {
 			this.doInitialFetches();
 			await this.initCaches(e);
