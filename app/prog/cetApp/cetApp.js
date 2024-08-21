@@ -5732,7 +5732,7 @@
 				data: toJSONStr(wsArgs)
 			})
 		}
-		konumFarki(e) { const {konum1, konum2} = e; return 0; }
+		konumFarki(e) { const {konum1, konum2} = e; const result = Utils.konumFarki(konum1, konum2); console.info('konumFarki', result, 'mt'); return result }
 		kisitlamalariUygula(e) {
 			this._fisTipleri = this._fisAdimKisitIDSet = this._menuAdimKisitIDSet = undefined;
 			setTimeout(() => {

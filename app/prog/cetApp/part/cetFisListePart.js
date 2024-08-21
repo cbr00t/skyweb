@@ -151,6 +151,7 @@
 				}
 				const mustRec = musteriKullanilirmi ? await fis.getCariEkBilgi({ mustKod }) : null; let mevcutKonumBilgi = null;
 				if (mustKod && islem != 'izle' && musteriKullanilirmi && app.konumTakibiYapilirmi) {
+					const {konumsuzIslemYapilirmi} = app;
 					const promise_konumBilgi = navigator?.geolocation.getCurrentPosition
 						? new $.Deferred(p => navigator.geolocation.getCurrentPosition(konumBilgi => p.resolve($.extend({}, konumBilgi)), null, { enableHighAccuracy: true }))
 						: null;
@@ -158,18 +159,19 @@
 					catch (ex) { console.error(`Mevcut Konum bilgisi alınamadı`, ex) }
 					mevcutKonumBilgi = e.mevcutKonumBilgi = mevcutKonumBilgi?.coords;
 					if (mevcutKonumBilgi) { mevcutKonumBilgi = { latitude: mevcutKonumBilgi.latitude, longitude: mevcutKonumBilgi.longitude, accuracy: mevcutKonumBilgi.accuracy } }
-					if (!mevcutKonumBilgi && !sky.app.konumsuzIslemYapilirmi) {
+					if (!mevcutKonumBilgi && !konumsuzIslemYapilirmi) {
 						const ex = { isError: true, rc: 'mevcutKonumBelirlenemedi', errorText: `<b>Mevcut Konum belirlenemediği</b> için işlem yapılamaz` };
 						setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
 					}
 					if (mevcutKonumBilgi) {
 						const mustKod2Bilgi = param.mustKod2Bilgi = param.mustKod2Bilgi || {};
-						let paramMustRec = mustKod2Bilgi[mustKod] = mustKod2Bilgi[mustKod] || {}, mustKonumBilgi = paramMustRec.konumBilgi;
-						if (!mustKonumBilgi) {
-							const {konumLatitude, konumLongitude, konumAccuracy} = mustRec;
-							if (konumLatitude && konumLongitude) { mustKonumBilgi = { latitude: konumLatitude, longitude: konumLongitude, accuracy: konumAccuracy } }
-						}
-						if (!mustKonumBilgi) {
+						let mustKonumBilgi, paramMustRec = mustKod2Bilgi[mustKod] = mustKod2Bilgi[mustKod] || {};
+						let sent = new MQSent({
+							from: 'mst_Cari', where: { degerAta: mustKod, saha: 'kod' },
+							sahalar: ['konumLatitude latitude', 'konumLongitude longitude', 'konumAccuracy accuracy']
+						});
+						let rec = await dbMgr.tekilExecuteSelect(sent); if (rec) { mustKonumBilgi = paramMustRec.konumBilgi = rec; param.kaydet() }
+						/*if (!mustKonumBilgi) {
 							mustKonumBilgi = paramMustRec.konumBilgi = { latitude: mevcutKonumBilgi.latitude, longitude: mevcutKonumBilgi.longitude, accuracy: mevcutKonumBilgi.accuracy }; param.kaydet();
 							if (mustKonumBilgi.latitude != null && mustKonumBilgi.longitude != null) {
 								let upd = new MQIliskiliUpdate({
@@ -181,12 +183,13 @@
 									]
 								}); await dbMgr.executeSql({ query: upd })
 							}
+						}*/
+						let konumFarkMT = app.konumFarki({ konum1: mevcutKonumBilgi, konum2: mustKonumBilgi });
+						if (konumFarkMT == null && !konumsuzIslemYapilirmi) {
+							const ex = { isError: true, rc: 'mevcutKonumBelirlenemedi', errorText: `<b>Mevcut Konum belirlenemediği</b> için işlem yapılamaz` };
+							setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
 						}
-						/*if (
-							(Math.abs(mevcutKonumBilgi.latitude - mustKonumBilgi.latitude) > (konumLatitudeTolerans || 0)) ||
-							(Math.abs(mevcutKonumBilgi.longitude - mustKonumBilgi.longitude) > (konumLongitudeTolerans || 0))
-						) {*/
-						if (app.konumFarki({ konum1: mevcutKonumBilgi, konum2: mustKonumBilgi }) > (app.konumToleransMetre || 0)) {
+						if (konumFarkMT > (app.konumToleransMetre || 0)) {
 							const ex = { isError: true, rc: 'mustKonumGecersiz', errorText: `<b>(${mustKod}) ${mustRec.unvan}</b> Müşterisine ait <u>Konum civarında olmadığınız</u> için işlem yapılamaz` };
 							setTimeout(() => displayMessage(ex.errorText, `@ Fiş Girişi @`, 200)); throw ex
 						}
