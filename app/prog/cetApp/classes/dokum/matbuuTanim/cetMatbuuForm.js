@@ -160,7 +160,7 @@
 		getGecerliSahaYapilari(e) {
 			const {dipYazdirilirmi} = this.formBilgi; let result = { normal: {}, aciklama: {}, otomatik: {}, detay: {} };
 			const block = e => {
-				const {sahalar, sabitKey} = e;
+				const {sahalar, sabitKey} = e; if ($.isEmptyObject(sahalar)) { return }
 				for (let [attr, saha] of Object.entries(sahalar)) {
 					attr = saha.attr || attr; if ((attr == 'Dip' && dipYazdirilirmi) || saha.yazdirilabilirmi) {
 						const key = e.sabitKey || (saha.otomatikmi ? 'otomatik' : 'normal');
