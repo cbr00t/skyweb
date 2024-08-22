@@ -1,31 +1,15 @@
 (function() {
-	window.CETMatbuuForm = class extends window.CObject {
-		/* örnek:
-				CETMatbuuForm.fromTip({ tip: 'Fatura' })
-		*/
+	window.CETMatbuuForm = class extends window.CObject {			/* örnek: CETMatbuuForm.fromTip({ tip: 'Fatura' }) */
 		constructor(e) {
 			e = e || {}; super(e);
 			let sahalarDuzenlenmis = e => {
-				const {digermi} = e; let tip2Sahalar = {};
-				for (let tip in e.tip2Sahalar) {
-					const sahalarOrTanim = e.tip2Sahalar[tip]; let sahaSinif = e.sahaSinif || CETMatbuuSaha.sahaSinifFor(tip);
+				const {digermi} = e, tip2Sahalar = {};
+				for (let [tip, sahalarOrTanim] of Object.entries(e.tip2Sahalar)) {
+					let sahaSinif = e.sahaSinif || CETMatbuuSaha.sahaSinifFor(tip);
 					if (sahaSinif) {
-						const _sahalar = digermi ? $.isArray(sahalarOrTanim) ? sahalarOrTanim : [sahalarOrTanim] : sahalarOrTanim; let sahalar = [];
-						for (const key in _sahalar) {
-							let saha = _sahalar[key];
-							if (saha && $.isPlainObject(saha)) {
-								/*if (sahaSinif.aciklamami && saha.pos.x && !saha.pos.y)
-									sahaSinif = CETMatbuuSaha_OtoAciklama;*/
-								saha = new sahaSinif(saha)
-							}
-							sahalar.push(saha)
-						}
-						if (e.tekilmi)
-							tip2Sahalar[tip] = sahalar[0]
-						else {
-							let attr2Saha = asDict(sahalar, (saha, ind) => { return { key: saha.attr || ind, value: saha } });
-							tip2Sahalar[tip] = attr2Saha
-						}
+						const _sahalar = digermi ? $.isArray(sahalarOrTanim) ? sahalarOrTanim : [sahalarOrTanim] : sahalarOrTanim;
+						let sahalar = []; for (let saha of Object.values(_sahalar)) { if (saha && $.isPlainObject(saha)) { saha = new sahaSinif(saha) } sahalar.push(saha) }
+						if (e.tekilmi) { tip2Sahalar[tip] = sahalar[0] } else { let attr2Saha = asDict(sahalar, (saha, ind) => ({ key: saha.attr || ind, value: saha })); tip2Sahalar[tip] = attr2Saha }
 					}
 				}
 				return tip2Sahalar
@@ -48,266 +32,170 @@
 			return matbuuForm
 		}
 		async yazdir(e) {
-			e.matbuuForm = this; const {dokumcu} = e; const fis = e.fis = $.isFunction(e.fis) ? e.fis.call(this, e) : (e.fis || {}).run ? e.fis.run(this, e) : e.fis;
-			if (!await this.class.matbuuFormDuzenleRuntime({ tip: this.tip, fis: fis, matbuuForm: this, dokumcu: dokumcu }))
-				return false
+			e.matbuuForm = this; const {dokumcu} = e, {tip} = this, fis = e.fis = $.isFunction(e.fis) ? e.fis.call(this, e) : e.fis?.run ? e.fis.run(this, e) : e.fis;
+			if (!await this.class.matbuuFormDuzenleRuntime({ tip, fis, matbuuForm: this, dokumcu })) { return false }
 			const {formBilgi} = this; e.gecerliSahaYapilari = this.getGecerliSahaYapilari(e); const bedelSaha = e.bedelSaha = (formBilgi.bedelSaha || this.bedelSahaBul(e));
-			$.extend(e, {
-				bedelEtiketUzunluk: formBilgi.bedelEtiketUzunluk || 12,
-				bedelVeriUzunluk: formBilgi.bedelVeriUzunluk || bedelSaha?.genislik || 13
-			});
-			await this.yeniSayfaOlustur(e);
-			await this.yazdir_otomatikSahalar(e)
+			$.extend(e, { bedelEtiketUzunluk: formBilgi.bedelEtiketUzunluk || 12, bedelVeriUzunluk: formBilgi.bedelVeriUzunluk || bedelSaha?.genislik || 13 });
+			await this.yeniSayfaOlustur(e); await this.yazdir_otomatikSahalar(e)
 		}
 		async yeniSayfaOlustur(e) {
 			const {dokumcu} = e; let sayfa = dokumcu.sayfaEkle({ matbuuForm: this }); const {fis, gecerliSahaYapilari} = e; let sahalar = gecerliSahaYapilari.normal;
 			for (let attr in sahalar) {
 				const saha = sahalar[attr]; attr = saha.attr || attr;
-				let value = await fis.dokumSahaDegeri($.extend({}, e, { attr: attr }));
-				value = await saha.getConvertedValue($.extend({}, e, { value: value, fis: fis }));
-				value = await this.getConvertedValue({ tip: 'tekil', attr: attr, value: value });
-				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value: value })
+				let value = await fis.dokumSahaDegeri($.extend({}, e, { attr }));
+				value = await saha.getConvertedValue($.extend({}, e, { value, fis })); value = await this.getConvertedValue({ tip: 'tekil', attr, value });
+				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value })
 			}
 			sahalar = gecerliSahaYapilari.aciklama;
-			for (const text in sahalar) {
-				const saha = sahalar[text], srDict = {}, expListe = await Utils.getExpressions($.extend({}, e, { text: text }));
+			for (const [text, saha] of Object.entries(sahalar)) {
+				const {kosul, isaret} = saha; if (fis) {
+					const fisSinif = fis.class;
+					if (kosul && !(kosul == 'N' ? !fisSinif.iademi : kosul == 'I' ? fisSinif.iademi : false)) { continue }
+					if (isaret && !(isaret == 'N' ? !fis.yildizlimi : isaret == 'I' ? fis.yildizlimi : false)) { continue }
+				}
+				const srDict = {}, expListe = await Utils.getExpressions($.extend({}, e, { text }));
 				if (!$.isEmptyObject(expListe)) {
 					for (const exp of expListe) {
 						if (exp) {
 							let value = await fis.dokumSahaDegeri($.extend({}, e, { attr: exp }));
-							value = await saha.getConvertedValue($.extend({}, e, { value: value, fis: fis }));
-							value = await this.getConvertedValue({ tip: 'tekil', attr: exp, value: value });
+							value = await saha.getConvertedValue($.extend({}, e, { value, fis })); value = await this.getConvertedValue({ tip: 'tekil', attr: exp, value });
 							srDict[exp] = (value || '').toString().trimEnd()
 						}
 					}
 				}
-				let value = text;
-				if (!$.isEmptyObject(srDict)) {
-					for (const key in srDict) {
-						value = value.replaceAll(`[${key}]`, srDict[key]);
-						value = value.replaceAll(`#${key}#`, srDict[key])
-					}
-				}
+				let value = text; if (!$.isEmptyObject(srDict)) {
+					for (const key in srDict) { value = value.replaceAll(`[${key}]`, srDict[key]).replaceAll(`#${key}#`, srDict[key]) } }
 				value = await fis.dokumSahaDegeri($.extend({}, e, { attr: value })) || value;
-				value = await saha.getConvertedValue($.extend({}, e, { value: value, fis: fis }));
-				value = await this.getConvertedValue({ tip: 'aciklama', attr: value, value: value });
-				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value: value });
+				value = await saha.getConvertedValue($.extend({}, e, { value, fis })); value = await this.getConvertedValue({ tip: 'aciklama', attr: value, value });
+				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value });
 			}
 			return e.sayfa = sayfa
 		}
 		async yazdir_otomatikSahalar(e) {
-			const {fis, gecerliSahaYapilari} = e;
-			const {formBilgi} = this;
+			const {fis, gecerliSahaYapilari} = e, {formBilgi} = this; let {sayfa} = e;
 			const {sayfaBoyutlari, otoYBasiSonu, tekDetaySatirSayisi, nakilYapilirmi, kolonBaslikGosterilirmi} = formBilgi;
-			let {sayfa} = e;
-			
-			let sahalar = gecerliSahaYapilari.detay;
-			const detRelY2Sahalar = {};
-			$.each(sahalar, (attr, saha) => {
+			let sahalar = gecerliSahaYapilari.detay; const detRelY2Sahalar = {};
+			for (const [attr, saha] of Object.entries(sahalar)) {
 				const y = Math.min((saha.pos.y || 0), tekDetaySatirSayisi) || 1;
-				const dict = detRelY2Sahalar[y] = detRelY2Sahalar[y] || {};
-				dict[saha.attr] = saha;
-			});
-			
-			const otoSatirSayisi0 = otoYBasiSonu.sonu && otoYBasiSonu.sonu > 0 ? otoYBasiSonu.sonu - otoYBasiSonu.basi : null;
-			let otoInd = -1, maxX = 0;
+				const dict = detRelY2Sahalar[y] = detRelY2Sahalar[y] || {}; dict[saha.attr] = saha
+			}
+			const otoSatirSayisi0 = otoYBasiSonu.sonu && otoYBasiSonu.sonu > 0 ? otoYBasiSonu.sonu - otoYBasiSonu.basi : null; let otoInd = -1, maxX = 0;
 			if (kolonBaslikGosterilirmi) {
 				for (let detRelY = 1; detRelY <= tekDetaySatirSayisi; detRelY++) {
-					let y = otoYBasiSonu.basi + otoInd + detRelY;							// y = one-based
+					let y = otoYBasiSonu.basi + otoInd + detRelY;														/* y = one-based */
 					const attr2Sahalar = detRelY2Sahalar[detRelY] || {};
 					for (let attr in attr2Sahalar) {
-						const saha = attr2Sahalar[attr];
-						attr = saha.attr || attr;
-						maxX = Math.max(saha.pos.x + saha.genislik, maxX) - 1;
-						let value = await fis.getDokumBaslikDegeri($.extend({}, e, { attr: attr, saha: saha, fis: fis }));
-						value = await saha.getConvertedKolonBaslikValue($.extend({}, e, { attr: attr, value: value, fis: fis }));
-						value = await this.getConvertedValue({ tip: 'kolonBaslik', attr: attr, saha: saha, value: value, fis: fis });
-							// 'value' dizi gelmez varsayılıyor ...
-						await sayfa.yazdir({ pos: { x: saha.pos.x, y: y }, genislik: saha.genislik, value: value });
+						const saha = attr2Sahalar[attr]; attr = saha.attr || attr;
+						maxX = Math.max(saha.pos.x + saha.genislik, maxX) - 1; let value = await fis.getDokumBaslikDegeri($.extend({}, e, { attr, saha, fis }));
+						value = await saha.getConvertedKolonBaslikValue($.extend({}, e, { attr, value, fis })); value = await this.getConvertedValue({ tip: 'kolonBaslik', attr, saha, value, fis });
+						await sayfa.yazdir({ pos: { x: saha.pos.x, y: y }, genislik: saha.genislik, value });			/* 'value' dizi gelmez varsayılıyor ... */
 					}
 				}
 				otoInd += Math.max(tekDetaySatirSayisi - 1, 1);
-				
 				// otoInd += tekDetaySatirSayisi;
 				if (maxX) {
-					const value = `-`.repeat(maxX);
-					const genislik = value.length;
-					let y = otoYBasiSonu.basi + otoInd + tekDetaySatirSayisi;				// y = one-based
-					await sayfa.yazdir({ pos: { x: 1, y: y }, genislik: genislik, value: value });
+					const value = `-`.repeat(maxX), genislik = value.length;
+					let y = otoYBasiSonu.basi + otoInd + tekDetaySatirSayisi;											/* y = one-based */
+					await sayfa.yazdir({ pos: { x: 1, y: y }, genislik, value });
 				}
 				otoInd += tekDetaySatirSayisi;
 			}
-
-			const detaylar = await fis.getDokumDetaylar(e) || [];
-			for (const ind in detaylar) {
+			const detaylar = await fis.getDokumDetaylar(e) || []; for (const ind in detaylar) {
 				const det = detaylar[ind];
-					// bu detay ile bimiyor ve nakil gerekiyorsa 
-				if (nakilYapilirmi && otoSatirSayisi0 && ((otoInd + tekDetaySatirSayisi + 1) > otoSatirSayisi0)) {
-					otoInd++;
-					let nakilText = 'Sonraki Sayfaya Nakil ....';
-					let y = otoYBasiSonu.basi + otoInd + 1;									// y = one-based
+				if (nakilYapilirmi && otoSatirSayisi0 && ((otoInd + tekDetaySatirSayisi + 1) > otoSatirSayisi0)) {		/* bu detay ile bimiyor ve nakil gerekiyorsa  */
+					otoInd++; let nakilText = 'Sonraki Sayfaya Nakil ....';
+					let y = otoYBasiSonu.basi + otoInd + 1;																/* y = one-based */
 					await sayfa.yazdir({ pos: { x: 10, y: y }, genislik: 50, value: nakilText });
-					this.sayfaBitti({ sayfa: sayfa });
-					sayfa = await this.yeniSayfaOlustur(e);
-					otoInd = 0;		// ilk nakil satiri icin
-
-					nakilText = 'Önceki Sayfadan Nakil ....';
-					y = otoYBasiSonu.basi + otoInd + 1;										// y = one-based
+					this.sayfaBitti({ sayfa }); sayfa = await this.yeniSayfaOlustur(e); otoInd = 0;						/* ilk nakil satiri icin */
+					nakilText = 'Önceki Sayfadan Nakil ....'; y = otoYBasiSonu.basi + otoInd + 1;						/* y = one-based */
 					await sayfa.yazdir({ pos: { x: 10, y: y }, genislik: 50, value: nakilText });
 				}
-
-					// detay satırı kendi içinde birlikte olmalı  (KeepTogether)
-				if (otoSatirSayisi0 && (otoInd + tekDetaySatirSayisi) > otoSatirSayisi0) {
-					if (!nakilYapilirmi)
-						break;
-					// buraya gelmemli
-					this.sayfaBitti({ sayfa: sayfa });
-					sayfa = await this.yeniSayfaOlustur(e);
-					otoInd = -1;
+				if (otoSatirSayisi0 && (otoInd + tekDetaySatirSayisi) > otoSatirSayisi0) {								/* detay satırı kendi içinde birlikte olmalı  (KeepTogether) */
+					if (!nakilYapilirmi) { break }
+					/* buraya gelmemli */ this.sayfaBitti({ sayfa }); sayfa = await this.yeniSayfaOlustur(e); otoInd = -1;
 				}
-
 				for (let detRelY = 1; detRelY <= tekDetaySatirSayisi; detRelY++) {
-					let y = otoYBasiSonu.basi + otoInd + detRelY;							// y = one-based
+					let y = otoYBasiSonu.basi + otoInd + detRelY;														/* y = one-based */
 					const attr2Sahalar = detRelY2Sahalar[detRelY] || {};
-					for (let attr in attr2Sahalar) {
-						const saha = attr2Sahalar[attr];
-						attr = saha.attr || attr;
-						let value = await det.dokumSahaDegeri($.extend({}, e, { attr: attr, saha: saha, fis: fis, detay: det, index: ind }));
-						value = await saha.getConvertedValue($.extend({}, e, { attr: attr, value: value, fis: fis, detay: det, index: ind }));
-						value = await this.getConvertedValue({ tip: 'detay', attr: attr, saha: saha, value: value, detay: det, index: ind });
-							// value  dizi gelmez varsayılıyor ...
-						await sayfa.yazdir({ pos: { x: saha.pos.x, y: y }, genislik: saha.genislik, value: value });
+					for (let [attr, saha] of Object.entries(attr2Sahalar)) {
+						attr = saha.attr || attr; let value = await det.dokumSahaDegeri($.extend({}, e, { attr, saha, fis, detay: det, index: ind }));
+						value = await saha.getConvertedValue($.extend({}, e, { attr, value, fis, detay: det, index: ind }));
+						value = await this.getConvertedValue({ tip: 'detay', attr, saha, value, detay: det, index: ind });
+						await sayfa.yazdir({ pos: { x: saha.pos.x, y: y }, genislik: saha.genislik, value });			/* value  dizi gelmez varsayılıyor ... */
 					}
 				}
 				otoInd += Math.max(tekDetaySatirSayisi, 1);
 			}
-			// otoInd--;
-			if (otoSatirSayisi0 && (otoInd > otoSatirSayisi0 && !nakilYapilirmi))
-				return;
-			
-			// otoInd = Math.max(otoInd, (otoYBasiSonu.sonu || 0));
-			otoInd = (otoYBasiSonu.sonu && otoYBasiSonu.sonu > 0)
-						? otoYBasiSonu.sonu
-						: (otoYBasiSonu.basi || 0) + otoInd;
-
-			sahalar = gecerliSahaYapilari.otomatik;
-			for (let attr in sahalar) {
-				const saha = sahalar[attr];
-				attr = saha.attr || attr;
-				let value = await fis.dokumSahaDegeri($.extend({}, e, { attr: attr, saha: saha, digerSahami: true }));
-				if (!saha.class.aciklamami && (value == null || value == '' || value == ' '))
-					continue;
-				
-				value = await saha.getConvertedValue($.extend({}, e, { value: value, fis: fis, digerSahami: true }));
-				value = await this.getConvertedValue({ tip: 'detay', attr: attr, saha: saha, value: value, digerSahami: true });
-				
+			if (otoSatirSayisi0 && (otoInd > otoSatirSayisi0 && !nakilYapilirmi)) { return }
+			otoInd = (otoYBasiSonu.sonu && otoYBasiSonu.sonu > 0) ? otoYBasiSonu.sonu : (otoYBasiSonu.basi || 0) + otoInd;
+			sahalar = gecerliSahaYapilari.otomatik; for (let [attr, saha] of Object.entries(sahalar)) {
+				attr = saha.attr || attr; let value = await fis.dokumSahaDegeri($.extend({}, e, { attr, saha, digerSahami: true }));
+				if (!saha.class.aciklamami && (value == null || value == '' || value == ' ')) { continue }
+				value = await saha.getConvertedValue($.extend({}, e, { value, fis, digerSahami: true }));
+				value = await this.getConvertedValue({ tip: 'detay', attr, saha, value, digerSahami: true });
 				let textDizi = $.isArray(value) ? value : [value];
-				let olasiOtoInd = otoInd + textDizi.length - 1 - 3;		// -2 ==> sığmama durumunda 2 satıra kadar tolerans göster , nakil yapıp yeni sayfa açma
+				let olasiOtoInd = otoInd + textDizi.length - 1 - 3;														/* -2 ==> sığmama durumunda 2 satıra kadar tolerans göster, nakil yapıp yeni sayfa açma */
 				if (otoSatirSayisi0 && sayfaBoyutlari.y && olasiOtoInd > sayfaBoyutlari.y) {
-					if (nakilYapilirmi) {
-						this.sayfaBitti({ sayfa: sayfa });
-						sayfa = await this.yeniSayfaOlustur(e);
-						otoInd = -1;
-					}
-				}
+					if (nakilYapilirmi) { this.sayfaBitti({ sayfa }); sayfa = await this.yeniSayfaOlustur(e); otoInd = -1 } }
 				for (const ind in textDizi) {
-						// çoklu satır için sayfa dışına çıkma önlemi
-					let text = textDizi[ind];
-					otoInd++;
+					let text = textDizi[ind]; otoInd++;																	/* çoklu satır için sayfa dışına çıkma önlemi */
 					if (otoSatirSayisi0 && sayfaBoyutlari.y && olasiOtoInd > sayfaBoyutlari.y) {
-						if (!nakilYapilirmi)
-							break;
-						// buraya gelmemeli
-						this.sayfaBitti({ sayfa: sayfa });
-						sayfa = await this.yeniSayfaOlustur(e);
-						otoInd = 0;
+						if (!nakilYapilirmi) { break }
+						/* buraya gelmemeli */ this.sayfaBitti({ sayfa }); sayfa = await this.yeniSayfaOlustur(e); otoInd = 0
 					}
-
-					let x = saha.pos.x;
-					let y = otoInd;
-					let {genislik} = saha;
-					if (attr == 'Dip') {
+					let x = saha.pos.x, y = otoInd, {genislik} = saha; if (attr == 'Dip') {
 						const ozelDipPos = this.dipPos || CPoint.empty, {bedelSaha} = e;
 						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 18) + 5, 1) : 1) || 1;
-						y = ozelDipPos.y || y;
-						genislik = text.length;
+						y = ozelDipPos.y || y; genislik = text.length
 					}
-					
-					await sayfa.yazdir({ pos: { x: x, y: y }, genislik: genislik, value: text });
+					await sayfa.yazdir({ pos: { x, y }, genislik, value: text });
 				}
 			}
-
-			this.sayfaBitti({ sayfa: sayfa });
+			this.sayfaBitti({ sayfa });
 		}
 		sayfaBitti(e) {
-			const sayfa = e.sayfa;
-			if (!sayfa.sinir) {
-				for (let i = 0; i < 5; i++)
-					sayfa.satirlar.push(new CETDokumSatir());
-			}
-			/*if (sayfa.sinir) {
-				while (sayfa.satirlar.length < sinir)
-					sayfa.satirlar.push(new CETDokumSatir());
-			}*/
+			const sayfa = e.sayfa; if (!sayfa.sinir) { for (let i = 0; i < 5; i++) { sayfa.satirlar.push(new CETDokumSatir()) } }
+			/*if (sayfa.sinir) { while (sayfa.satirlar.length < sinir) sayfa.satirlar.push(new CETDokumSatir()) }*/
 		}
 		getGecerliSahaYapilari(e) {
-			const {dipYazdirilirmi} = this.formBilgi;
-			// const dipYazdirilirmi = true;
-			let result = { normal: {}, aciklama: {}, otomatik: {}, detay: {} };
+			const {dipYazdirilirmi} = this.formBilgi; let result = { normal: {}, aciklama: {}, otomatik: {}, detay: {} };
 			const block = e => {
 				const {sahalar, sabitKey} = e;
-				for (let attr in sahalar) {
-					const saha = sahalar[attr];
-					attr = saha.attr || attr;
-					if ((attr == 'Dip' && dipYazdirilirmi) || saha.yazdirilabilirmi) {
+				for (let [attr, saha] of Object.entries(sahalar)) {
+					attr = saha.attr || attr; if ((attr == 'Dip' && dipYazdirilirmi) || saha.yazdirilabilirmi) {
 						const key = e.sabitKey || (saha.otomatikmi ? 'otomatik' : 'normal');
-						let sahaYapi = (result[key] = result[key] || {});
-						sahaYapi[attr] = saha
+						let sahaYapi = (result[key] = result[key] || {}); sahaYapi[attr] = saha
 					}
 				}
 			};
-			const {normalSahalar} = this;
-			block({ sahalar: normalSahalar.Tekil });
-			block({ sahalar: normalSahalar.Detay, sabitKey: 'detay' });
-			block({ sahalar: normalSahalar.TekilOzel });
-			block({ sahalar: normalSahalar.Aciklama, sabitKey: 'aciklama' });
-			block({ sahalar: this.digerSahalar });
+			const {normalSahalar} = this; block({ sahalar: normalSahalar.Tekil }); block({ sahalar: normalSahalar.Detay, sabitKey: 'detay' });
+			block({ sahalar: normalSahalar.TekilOzel }); block({ sahalar: normalSahalar.Aciklama, sabitKey: 'aciklama' }); block({ sahalar: this.digerSahalar });
 			return result
 		}
 		bedelSahaBul(e) {
-			const bedelSahaAttrSet = asSet(['bedel', 'brutBedel', 'netBedel']), sahaYapilari = e.gecerliSahaYapilari;
-			let bedelSaha = null;
-			for (const tip in sahaYapilari) {
-				const attr2Saha = sahaYapilari[tip];
+			const bedelSahaAttrSet = asSet(['bedel', 'brutBedel', 'netBedel']), sahaYapilari = e.gecerliSahaYapilari; let bedelSaha = null;
+			for (const [tip, attr2Saha] in Object.entries(sahaYapilari)) {
 				for (let attr in attr2Saha) {
-					const saha = attr2Saha[attr];
-					if (saha) attr = saha.attr || attr
+					const saha = attr2Saha[attr]; if (saha) { attr = saha.attr || attr }
 					if (bedelSahaAttrSet[attr]) { bedelSaha = attr2Saha[attr]; break }
 				}
-				if (bedelSaha) break
+				if (bedelSaha) { break }
 			}
 			return bedelSaha
 		}
-		getConvertedValue(e) {
-			const {tip} = e; let {value} = e;
-			if ($.isEmptyObject(value))
-				value = null
-			return value
-		}
+		getConvertedValue(e) { const {tip} = e; let {value} = e; return $.isEmptyObject(value) ? null : value }
 		static async matbuuFormDuzenlenmis(e) {
 			const {app} = sky, {tip2MatbuuFormDuzenleyiciler} = app, {tip, matbuuFormYapilari, fis} = e, fisSinif = fis?.class; let ozelForm;
-			switch (tip) { case 'e-Islem-Ozel': ozelForm = await (fisSinif ?? CETFaturaFis).getOzelForm_eIslem(e); break }
-			let {matbuuForm} = e; if (ozelForm) matbuuForm = e.matbuuForm = ozelForm
+			if (tip == 'e-Islem-Ozel') { ozelForm = await (fisSinif ?? CETFaturaFis).getOzelForm_eIslem(e) }
+			let {matbuuForm} = e; if (ozelForm) { matbuuForm = e.matbuuForm = ozelForm }
 			if (matbuuForm) matbuuForm = await $.isFunction(matbuuForm) ? matbuuForm.call(this, _e) : matbuuForm.run ? matbuuForm.run(_e) : matbuuForm
-			const matbuuFormDuzenleyiciler = tip2MatbuuFormDuzenleyiciler ? tip2MatbuuFormDuzenleyiciler[tip] : null;
-			if (!$.isEmptyObject(matbuuFormDuzenleyiciler)) {
-				e.tip2MatbuuFormDuzenleyiciler = tip2MatbuuFormDuzenleyiciler;
-				const _e = { tip, fis, matbuuForm, matbuuFormYapilari };
+			const matbuuFormDuzenleyiciler = tip2MatbuuFormDuzenleyiciler ? tip2MatbuuFormDuzenleyiciler[tip] : null; if (!$.isEmptyObject(matbuuFormDuzenleyiciler)) {
+				$.extend(e, { tip2MatbuuFormDuzenleyiciler }); const _e = { tip, fis, matbuuForm, matbuuFormYapilari };
 				for (const i in matbuuFormDuzenleyiciler) {
 					let matbuuFormDuzenleyici = matbuuFormDuzenleyiciler[i];
-					if (matbuuFormDuzenleyici && typeof matbuuFormDuzenleyici == 'string') matbuuFormDuzenleyici = matbuuFormDuzenleyiciler[i] = eval(matbuuFormDuzenleyici)
+					if (matbuuFormDuzenleyici && typeof matbuuFormDuzenleyici == 'string') { matbuuFormDuzenleyici = matbuuFormDuzenleyiciler[i] = eval(matbuuFormDuzenleyici) }
 					const result = await $.isFunction(matbuuFormDuzenleyici) ? matbuuFormDuzenleyici.call(this, _e) : matbuuFormDuzenleyici.run ? matbuuFormDuzenleyici.run(_e) : matbuuFormDuzenleyici;
-					if (result != null) matbuuForm = result
+					if (result != null) { matbuuForm = result }
 				}
 			}
 			return matbuuForm
@@ -315,17 +203,15 @@
 		static async matbuuFormDuzenleRuntime(e) {
 			const {app} = sky, {tip2MatbuuFormDuzenleyiciler_runtime} = app;
 			const {tip, dokumcu, fis, matbuuForm, matbuuFormYapilari} = e, fisSinif = fis?.class;
-			let result = true; const _e = { tip: tip, fis: fis, matbuuForm: matbuuForm, matbuuFormYapilari: matbuuFormYapilari, dokumcu: dokumcu, userData: null };
-			switch (tip) { case 'e-Islem-Ozel': result = await (fisSinif || CETFaturaFis).matbuuFormDuzenleRuntime_eIslem(_e); break }
-			_e.lastResult = result;
+			let result = true; const _e = { tip, fis, matbuuForm, matbuuFormYapilari, dokumcu, userData: null };
+			if (tip == 'e-Islem-Ozel') { result = await (fisSinif || CETFaturaFis).matbuuFormDuzenleRuntime_eIslem(_e) } _e.lastResult = result;
 			const matbuuFormDuzenleyiciler_runtime = tip2MatbuuFormDuzenleyiciler_runtime ? tip2MatbuuFormDuzenleyiciler_runtime[tip] : null;
 			if (!$.isEmptyObject(matbuuFormDuzenleyiciler_runtime)) {
-				_e.tip2MatbuuFormDuzenleyiciler_runtime = tip2MatbuuFormDuzenleyiciler_runtime;
-				for (const i in matbuuFormDuzenleyiciler_runtime) {
+				$.extend(_e, { tip2MatbuuFormDuzenleyiciler_runtime }); for (const i in matbuuFormDuzenleyiciler_runtime) {
 					let matbuuFormDuzenleyici = matbuuFormDuzenleyiciler_runtime[i];
-					if (matbuuFormDuzenleyici && typeof matbuuFormDuzenleyici == 'string') matbuuFormDuzenleyici = matbuuFormDuzenleyiciler_runtime[i] = eval(matbuuFormDuzenleyici);
+					if (matbuuFormDuzenleyici && typeof matbuuFormDuzenleyici == 'string') { matbuuFormDuzenleyici = matbuuFormDuzenleyiciler_runtime[i] = eval(matbuuFormDuzenleyici) }
 					const _result = await $.isFunction(matbuuFormDuzenleyici) ? matbuuFormDuzenleyici.call(this, _e) : matbuuFormDuzenleyici.run ? matbuuFormDuzenleyici.run(_e) : matbuuFormDuzenleyici;
-					if (_result != null) result = _result && result
+					if (_result != null) { result = _result && result }
 				}
 			}
 			return result
