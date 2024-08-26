@@ -1726,13 +1726,9 @@
 			})
 		}
 		focusToDefault() {
-			const {activePart} = sky.app, {windows, focusPart} = this;
-			if (!(focusPart && activePart == this && $.isEmptyObject(windows)))
-				return false
-			if (focusPart.focusToDefault)
-				focusPart.focusToDefault()
-			else if (focusPart.focus)
-				focusPart.focus()
+			const {activePart} = sky.app, {windows, focusPart, barcodeReader} = this; if (!(focusPart && activePart == this && $.isEmptyObject(windows))) { return false }
+			if (barcodeReader?.isRunning) { this.divListe.focus(); return false }
+			if (focusPart.focusToDefault) { focusPart.focusToDefault() } else if (focusPart.focus) { focusPart.focus() }
 			return true
 		}
 		async geriYapilabilirmi(e) {
@@ -2060,8 +2056,7 @@
 				// this.fis.detaylar.push(det);
 				await this.ekle({ rec: det });
 				setTimeout(() => {
-					if (app.rbkKullanilirmi && det.rbkIcinUygunmu && app.fisGirisiRbkOtomatikAcilsinmi)
-						this.rbkDuzenleIstendi({ rec: det })
+					if (app.rbkKullanilirmi && det.rbkIcinUygunmu && app.fisGirisiRbkOtomatikAcilsinmi) { this.rbkDuzenleIstendi({ rec: det }) }
 				}, 100);
 				if (!batchFlag) {
 					// let rec = this.selectedRec;				// selectrowbykey sırasında event tetikleniyor
@@ -2680,27 +2675,18 @@
 		}
 		async barkodIstendi(e) {
 			e = e || {}; const layout = this.layout, barkodContainer = layout.find('#barkodContainer');
-			let barcodeReader = this.barcodeReader;
-			if (!barcodeReader) {
-				const deviceClass = CETBarkodDevice.defaultDeviceClass;
-				if (!deviceClass)
-					return
+			let {barcodeReader} = this; if (!barcodeReader) {
+				const deviceClass = CETBarkodDevice.defaultDeviceClass; if (!deviceClass) { return }
 				barcodeReader = this.barcodeReader = new deviceClass({
-					content: barkodContainer,
-					debug: this.app.class.isDebug,
-					onKamerami: this.app.onKamerami,
+					content: barkodContainer, debug: this.app.class.isDebug, onKamerami: this.app.onKamerami,
 					readCallback: e => {
 						const barkod = e.result; this.hizliStokPart.text = barkod;
 						this.hizliStok_itemSelected({ value: barkod }); this.focusToDefault()
 					}
 				})
 			}
-			if (!barcodeReader.initFlag || barcodeReader.isReady)
-				await barcodeReader.start()
-			else
-				await barcodeReader.destroy()
-			let elm = (e.event || {}).currentTarget;
-			if (elm) { elm = $(elm); elm.removeClass(`ready paused running`); elm.addClass(barcodeReader.state) }
+			if (!barcodeReader.initFlag || barcodeReader.isReady) { await barcodeReader.start() } else { await barcodeReader.destroy() }
+			let elm = e.event?.currentTarget; if (elm) { elm = $(elm); elm.removeClass(`ready paused running`); elm.addClass(barcodeReader.state) }
 			setTimeout(() => this.focusToDefault(), 10)
 		}
 		async fiyatGorIstendi(e) {
@@ -2853,7 +2839,7 @@
 					await this.degistir({ rec: detay })
 				}
 			}
-			finally { setTimeout(() => { this.liste_hideFilterBar(e); this.onResize(e); this.focusToDefault(e); }, 150) }
+			finally { setTimeout(() => { this.liste_hideFilterBar(e); this.onResize(e); this.focusToDefault(e) }, 150) }
 		}
 		async fisOzetBilgiIstendi(e) {
 			await this.birlestir(e); await this.aboutToDeactivate(e);
@@ -2867,7 +2853,7 @@
 					setTimeout(() => {
 						this.liste_hideFilterBar(e);
 						this.onResize(e);
-						this.focusToDefault(e);
+						this.focusToDefault(e)
 					}, 150)
 				}
 			}).run();
@@ -2875,24 +2861,14 @@
 		async rbkDuzenleIstendi(e) {
 			const rec = e.rec || this.selectedBoundRec; let detay = rec;
 			try {
-				if (detay)
-					detay = $.isPlainObject(detay) ? fis.class.detaySinif.From(detay) : detay;
-				if (!detay)
-					return
-				if (!sky.app.rbkKullanilirmi) {
-					displayMessage(`RBK Kullanımı merkez parametrelerinde kapalıdır`, '! RBK Düzenleme İşlemi !');
-					return
-				}
-				if (!detay.rbkIcinUygunmu) {
-					displayMessage(`<b>(${detay.shKod}) ${detay.shAdi}</b> ürünü RBK için <u>uygun değildir</u>`, '! RBK Düzenleme İşlemi !');
-					return
-				}
+				if (detay) { detay = $.isPlainObject(detay) ? fis.class.detaySinif.From(detay) : detay } if (!detay) { return }
+				if (!sky.app.rbkKullanilirmi) { displayMessage(`RBK Kullanımı merkez parametrelerinde kapalıdır`, '! RBK Düzenleme İşlemi !'); return }
+				if (!detay.rbkIcinUygunmu) { displayMessage(`<b>(${detay.shKod}) ${detay.shAdi}</b> ürünü RBK için <u>uygun değildir</u>`, '! RBK Düzenleme İşlemi !'); return }
 			}
 			finally { setTimeout(() => this.focusToDefault(), 10) }
 			let {rbkGirisPart} = this;
 			if (rbkGirisPart) {
-				if (!rbkGirisPart.isDestroyed)
-					await rbkGirisPart.destroyPart();
+				if (!rbkGirisPart.isDestroyed) { await rbkGirisPart.destroyPart() }
 				rbkGirisPart = this.rbkGirisPart = null
 			}
 			const islemYeniVeyaKopyami = this.yeniKayitmi;
@@ -2900,10 +2876,8 @@
 				parentPart: this, from: 'fisGiris',
 				fis: this.fis, eskiFis: (islemYeniVeyaKopyami ? null : this.eskiFis),
 				detay: detay, tableData: detay.rbkTableData,
-				tamamIslemi: e =>
-					this.rbkDuzenleIstendi_devam(e),
-				geriCallback: _e =>
-					setTimeout(() => { this.liste_hideFilterBar(e); this.onResize(e); this.focusToDefault(e) }, 150)
+				tamamIslemi: e => this.rbkDuzenleIstendi_devam(e),
+				geriCallback: _e => setTimeout(() => { this.liste_hideFilterBar(e); this.onResize(e); this.focusToDefault(e) }, 150)
 			});
 			await this.aboutToDeactivate(e);
 			return await rbkGirisPart.run()
@@ -2932,7 +2906,7 @@
 					setTimeout(() => {
 						this.liste_hideFilterBar(e);
 						this.onResize(e);
-						this.focusToDefault(e);
+						this.focusToDefault(e)
 					}, 150)
 				}
 			}).run()
@@ -3045,17 +3019,11 @@
 		}
 		async aboutToActivate(e) {
 			const {barcodeReader} = this;
-			if (this._barcodeReaderRunningFlag) {
-				delete this._barcodeReaderRunningFlag;
-				this.barkodIstendi(e)
-			}
+			if (this._barcodeReaderRunningFlag) { delete this._barcodeReaderRunningFlag; this.barkodIstendi(e) }
 		}
 		async aboutToDeactivate(e) {
 			const {barcodeReader} = this;
-			if (barcodeReader && (barcodeReader.initFlag || !barcodeReader.isReady)) {
-				this._barcodeReaderRunningFlag = true;
-				await barcodeReader.destroy()
-			}
+			if (barcodeReader && (barcodeReader.initFlag || !barcodeReader.isReady)) { this.barkodIstendi(e) }
 		}
 		async onResize(e) {
 			await super.onResize(e);

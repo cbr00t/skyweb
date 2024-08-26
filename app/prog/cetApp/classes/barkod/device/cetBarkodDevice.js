@@ -1,17 +1,10 @@
 (function() {
 	window.CETBarkodDevice = class extends window.CObject {
-		static State = { READY: '', RUNNING: 'running', PAUSED: 'paused' };
-		static get tip() { return null }
-		static get aciklama() { return null }
+		static State = { READY: '', RUNNING: 'running', PAUSED: 'paused' }; static get tip() { return null } static get aciklama() { return null }
 		static get tip2Device() {
-			let result = this._tip2Device;
-			if (!result) {
+			let result = this._tip2Device; if (!result) {
 				result = this._tip2Device = {};
-				for (const cls of [CETBarkodDevice_Camera_HTML5, CETBarkodDevice_Camera_QRCode]) {
-					const {tip} = cls;
-					if (tip)
-						result[tip] = cls
-				}
+				for (const cls of [CETBarkodDevice_Camera_HTML5, CETBarkodDevice_Camera_QRCode]) { const {tip} = cls; if (tip) { result[tip] = cls } }
 			}
 			return result
 		}
@@ -32,8 +25,7 @@
 		get isPaused() { return this.state == this.class.State.PAUSED }
 
 		constructor(e) {
-			e = e || {}; super(e);
-			const {app} = sky;
+			e = e || {}; super(e); const {app} = sky;
 			$.extend(this, {
 				debug: e.debug == null ? app.class.isDebug : asBool(e.debug),
 				content: e.content || (app.activePart || app).content,
