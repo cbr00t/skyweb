@@ -301,6 +301,10 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_BarkodReferans', 'beden')),
+					queries: [`ALTER TABLE mst_BarkodReferans ADD beden TEXT NOT NULL DEFAULT ''`]
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'planNo')),
 					queries: [`ALTER TABLE data_PIFFis ADD planNo INTEGER NOT NULL DEFAULT 0`]
 				},
@@ -3685,8 +3689,7 @@
 					koliBarkodmu: bool2Int(rec.bkolibarkodmu), paketKod: rec.paketkod || '', koliIci: asFloat(rec.koliici) || 0
 				};
 				for (const tip of Object.keys(barkodRef_ekOzellikTipSet)) {
-					const ekOzellik = tip2EkOzellik[tip] || {};
-					const {idSaha} = ekOzellik;
+					const ekOzellik = tip2EkOzellik[tip] || {}, {idSaha} = ekOzellik;
 					const recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
 					let value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
 					hv[idSaha] = value || '';

@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS mst_BarkodReferans (
 	modelKod					TEXT NOT NULL DEFAULT '',
 	renkKod						TEXT NOT NULL DEFAULT '',
 	desenKod					TEXT NOT NULL DEFAULT '',
+	beden						TEXT NOT NULL DEFAULT '',
 	rafKod						TEXT NOT NULL DEFAULT '',
 	lotNo						TEXT NOT NULL DEFAULT '',
 	koliBarkodmu				INTEGER NOT NULL DEFAULT 0,
