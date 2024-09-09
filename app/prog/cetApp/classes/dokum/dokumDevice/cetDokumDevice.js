@@ -263,7 +263,7 @@
 		async start(controller) { this.buffer = ''; await super.start(controller); }
 		async close() {
 			let {buffer} = this; if (buffer) {
-				const encodedBuffer = encodeURI(buffer);	/*.replaceAll('%C2%A0', ' ');
+				const encodedBuffer = encodeURI(buffer).replaceAll(':', '%3A');	/*.replaceAll('%C2%A0', ' ');
 					.replaceAll('%3C', '<').replaceAll('%3E', '>').replaceAll('%20', ' ').replaceAll('%0A', '\n');
 					.replaceAll('%0A', '\\n').replaceAll('%3C', '<').replaceAll('%3E', '>');*/
 				let result = await this.beforeClose({ buffer, encodedBuffer });

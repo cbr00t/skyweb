@@ -26,7 +26,7 @@
 			await this.yazdirDevam(e);
 			
 			e.dokumDevice = e.dokumDevice || this.dokumDevice;
-			if (sky.app.param.dokumEkranami /*&& !((e.dokumDevice || {}).class || {}).ekranmi*/) {
+			if (e.ekranami ?? sky.app.param.dokumEkranami /*&& !((e.dokumDevice || {}).class || {}).ekranmi*/) {
 				let _dokumDevice = e.dokumDevice;
 				if (_dokumDevice.class.ekranmi)
 					_dokumDevice = await this.initDokumDevice();

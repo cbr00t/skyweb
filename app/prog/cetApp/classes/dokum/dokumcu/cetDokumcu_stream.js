@@ -12,7 +12,7 @@
 
 			const fis = e.fis;
 			if (fis) {
-				result = await fis.dokumcuWriteToDevice(e);
+				let result = await fis.dokumcuWriteToDevice(e);
 				if (result)
 					return result;
 			}
@@ -21,3 +21,13 @@
 		}
 	}
 })()
+
+
+/*
+let ekranami = false, dokumIslemi = e => {
+	const srm = e.stream, lines = [
+		'<IMAGE>http://cloud.vioyazilim.com.tr:81/files/vio/Kurulus-Ek/gib.bmp<BR>'
+	]; for (let line of lines) { srm.write(`${line || ' '}\n`) }
+};
+await new CETDokumcu_Stream().yazdir({ ekranami, dokumIslemi })
+*/
