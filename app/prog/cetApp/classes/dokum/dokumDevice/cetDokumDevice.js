@@ -284,9 +284,8 @@
 			let result = await super.beforeClose(e); if (!result) { return result }
 			const {encodedBuffer} = e, url = `intent://${encodedBuffer}#Intent;scheme=quickprinter;package=pe.diegoveloper.printerserverapp;end;`;
 			/*url = `quickprinter://${encodedBuffer}`; */
-			/*url = `intent://${encodedBuffer}#Intent;scheme=quickprinter;package=pe.diegoveloper.printerserverapp;end;`;*/
-			/*location.href = url;*/ window.open(url);
-			/* location.href = `intent://${encodedBuffer}#Intent;scheme=quickprinter;package=mate.bluetoothprint;end;`;*/
+			let wnd; try { wnd = window.open(url) } catch (ex) { console.error(ex) }
+			if (!wnd) { location.href = url }
 			return true
 		}
 	}
