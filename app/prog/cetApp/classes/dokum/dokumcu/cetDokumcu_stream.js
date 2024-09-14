@@ -30,4 +30,25 @@ let ekranami = false, dokumIslemi = e => {
 	]; for (let line of lines) { srm.write(`${line || ' '}\n`) }
 };
 await new CETDokumcu_Stream().yazdir({ ekranami, dokumIslemi })
+
+let ekranami = false, dokumIslemi = e => {
+	const srm = e.stream, lines = ['ABC', '! U', '! U1 ! 0 200 200 500 1', '! U1 PCX 0 30 !<GIB.PCX', ...new Array(2).fill(' ')];
+	for (let line of lines) { srm.write(`${line || ' '}\n`) }
+};
+await new CETDokumcu_Stream().yazdir({ ekranami, dokumIslemi })
+
+let ekranami = false, dokumIslemi = e => {
+	const srm = e.stream, lines = [
+		'! U1 setvar "device.languages" "zpl"',
+		'^XA',
+		'^FO10,10',
+		'^XGGIB.PCX,1,1',
+		'^XZ',
+		'! U1 setvar "device.languages" "line_print"'
+	];
+	for (let line of lines) { srm.write(`${line || ' '}\n`) }
+};
+await new CETDokumcu_Stream().yazdir({ ekranami, dokumIslemi })
+
+// ^FO150,%d,^IME:SIGNATURE.PNG^FS
 */
