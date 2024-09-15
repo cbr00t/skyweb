@@ -5,6 +5,7 @@
 const APP_NAME = 'SkyWeb';
 const VERSION = '<?=$siteVersion?>';
 const CACHE_NAME = `cache-${APP_NAME}-${VERSION}`;
+const StreamHeaders = { 'text/event-stream': true, 'application/x-ndjson' };
 
 const staticAssets = [
 	'./',
@@ -153,7 +154,8 @@ async function networkFirst(req) {
 	const cache = await caches.open(CACHE_NAME);
 	try { 
 		const fresh = await fetch(req);
-		if (req.method == 'GET') {
+		if (req.method == 'GET' && !StreamHeaders[req.headers?.get('Content-Type')]) {
+			{ try { await cache.put(req, await resp.clone()) } catch (ex) { } }
 			try { await cache.put(req, await fresh.clone()) }
 			catch (ex) { }
 		}
