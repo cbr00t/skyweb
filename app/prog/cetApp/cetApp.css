@@ -3563,6 +3563,9 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 	min-height: 40px;
 	font-size: 80%;
 }
+.part.cetApp.cetFisGiris .baslik .content .fisBaslik .karmaTahsilat-parent.parent { padding: 3px 10px }
+.part.cetApp.cetFisGiris .baslik .content .fisBaslik .karmaTahsilat-parent.parent input#karmaTahsilat + label { font-weight: bold; font-size: 110%; color: #888 }
+.part.cetApp.cetFisGiris .baslik .content .fisBaslik .karmaTahsilat-parent.parent input#karmaTahsilat:checked + label { color: firebrick }
 .part.cetApp.cetFisGiris .detay .jqx-navigationbar {
 	margin-bottom: -4px !important;
 	z-index: 5000 !important;
@@ -4122,36 +4125,17 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 	padding-top: 5px;
 }
 
-.part.cetApp.cetTahsilatGiris #dipTable {
-	font-size: 105%;
-	padding: 1px 0 0 0;
-	border: 1px solid #ccc;
-	background: white;
-}
-.part.cetApp.cetTahsilatGiris hr.dipTable {
-	margin: 10px 0;
-	border: 1px solid #aaa;
-}
-.part.cetApp.cetTahsilatGiris #dipTable .etiket {
-	/*font-weight: bold;*/
-}
-.part.cetApp.cetTahsilatGiris #dipTable .veri {
-	font-size: 100%;
-	font-weight: bold;
-	line-height: 23px;
-	padding: 0 6px 0 6px;
-}
-.part.cetApp.cetTahsilatGiris #dipTable #toplamBedelParent {
-	width: 100%;
-	text-align: right;
-	padding: 4px 4px 0 0;
-}
-.part.cetApp.cetTahsilatGiris #dipTable #toplamBedel {
-	font-size: 210%;
-	font-weight: bold;
-	color: #34a;
-	padding: 0;
-}
+.part.cetApp.cetTahsilatGiris #dipTable { position: relative !important; font-size: 105%; text-align: right; width: 100%; padding: 1px 0 0 0; border: 1px solid #ccc; background: white }
+.part.cetApp.cetTahsilatGiris hr.dipTable { margin: 10px 0; border: 1px solid #aaa }
+.part.cetApp.cetTahsilatGiris #dipTable > div { position: absolute !important; right: 20px !important; z-index: 10 !important }
+.part.cetApp.cetTahsilatGiris #dipTable > div > div { width: auto !important }
+.part.cetApp.cetTahsilatGiris #dipTable > div > div:not(:first-child) { margin-left: 50px }
+.part.cetApp.cetTahsilatGiris #dipTable .etiket { /*font-weight: bold*/ }
+.part.cetApp.cetTahsilatGiris #dipTable .veri { font-size: 100%; font-weight: bold; line-height: 23px; padding: 0 6px 0 6px }
+.part.cetApp.cetTahsilatGiris #dipTable #fisBedelParent, .part.cetApp.cetTahsilatGiris #dipTable #toplamBedelParent { width: 100%; text-align: right; padding: 4px 4px 0 0 }
+.part.cetApp.cetTahsilatGiris #dipTable #fisBedelParent #fisBedel, .part.cetApp.cetTahsilatGiris #dipTable #toplamBedelParent #toplamBedel { font-size: 210%; font-weight: bold; padding: 0 }
+.part.cetApp.cetTahsilatGiris #dipTable #fisBedelParent #fisBedel { color: forestgreen }
+.part.cetApp.cetTahsilatGiris #dipTable #toplamBedelParent #toplamBedel { color: #34a }
 
 .part.cetApp.cetTahsilatGiris .jqx-navigationbar .header,
 .part.cetApp.cetTahsilatGiris .jqx-navigationbar .content {

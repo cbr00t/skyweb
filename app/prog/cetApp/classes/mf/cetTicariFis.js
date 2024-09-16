@@ -377,6 +377,13 @@
 				await part.run();
 			}
 
+			if (satismi && !iademi) {
+				const divSaha = layout.find('#karmaTahsilat'), sahaContainer = divSaha.parents('.parent');
+				divSaha.prop('checked', this.karmaTahsilatmi);
+				divSaha.on('change', evt => { this.karmaTahsilatmi = $(evt.currentTarget).is(':checked') });
+				sahaContainer.removeClass('jqx-hidden basic-hidden')
+			}
+			
 			if (satismi && !iademi && app.param.faturadaTahsilatYapilirmi) {
 				let kodNo = asInteger(this.tahSekliKodNo);
 				let sonDeger = sonDegerler.tahSekliKodNo;

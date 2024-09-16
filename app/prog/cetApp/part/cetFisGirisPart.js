@@ -849,7 +849,7 @@
 			const {app, fis} = this;
 			app.hideNotifications();
 			e = $.extend({
-				sender: this, islem: this.islem, eskiFis: this.eskiFis, gecicimi: fis.gecicimi,
+				sender: this, islem: this.islem, fis: fis, eskiFis: this.eskiFis, gecicimi: fis.gecicimi,
 				satisKosulYapilari: this.satisKosulYapilari, promosyonYapilari: this.promosyonYapilari
 			}, e);
 			const layout = e.layout || this.layout;
@@ -875,30 +875,19 @@
 			}
 			return await this.kaydetDevam(e)
 		}
-		kaydetOncesiDefault(e) {
-			/*return new Promise(then => {
-				let wnd = displayMessage(
-					`Belge kaydedilsin mi?`,
-					this.app.appText,
-					true,
-					{
-						EVET: async (dlgUI, btnUI) => {
-							dlgUI.jqxWindow('destroy');
-							this.focusToDefault();
-							then(true)
-						},
-						HAYIR: (dlgUI, btnUI) => {
-							dlgUI.jqxWindow('destroy');
-							this.focusToDefault();
-							then(false)
-						}
-					});
-				wnd.on('close', evt => {
-					// dlgUI.jqxWindow('destroy');
-					this.focusToDefault();
-				});
-				wnd.jqxWindow('position', { x: 5, y: 50 });
-			})*/
+		async kaydetOncesiDefault(e) {
+			if (this.prefetch || this.isPrefetch) { return true }
+			let {fis} = this; if (fis?.karmaTahsilatmi) {
+				let tahFisSinif = CETTahsilatFis, tahUISinif = tahFisSinif.fisGirisUISinif, {mustKod} = fis, hedefToplamBedel = fis.sonucBedel;
+				let tsn = [fis.seri, fis.noYil, fis.fisNo], aciklama = `SkyTabFis:${tsn.filter(x => !!x).join(' ')}`;
+				let tahFis = new tahFisSinif({ mustKod, aciklama }); await tahFis.numaratorOlustur();
+				let kaydetOncesi = e => {
+					let {fis} = e; if (fis.toplamBedel == hedefToplamBedel) { return true }
+					displayMessage('Tahsilat Bedel Toplamı ile Fiş Bedeli aynı olmalıdır', '! Karma Tahsilat Girişi !'); return false
+				};
+				let promise = new $.Deferred(), kaydedince = e => promise.resolve(true);
+				await new tahUISinif({ fis: tahFis, hedefToplamBedel, kaydetOncesi, kaydedince }).run(); return await promise
+			}
 			return true
 		}
 		async kaydetDevam(e) {
@@ -906,25 +895,12 @@
 			if (!(this.prefetch || this.isPrefetch)) {
 				setButonEnabled(this.islemTuslari, false);
 				(savedProcs || window).showProgress(null, null, 1, true);
-				setTimeout(() => {
-					(savedProcs || window).hideProgress();
-					setButonEnabled(this.islemTuslari, true);
-				}, 2000)
+				setTimeout(() => { (savedProcs || window).hideProgress(); setButonEnabled(this.islemTuslari, true) }, 2000)
 			}
-			if (this.paramDegistimi)
-				await param.kaydet();
-			$.extend(param, this.param);
-			const fis = e.fis || this.fis;
+			if (this.paramDegistimi) { await param.kaydet() } $.extend(param, this.param); const fis = e.fis || this.fis;
 			let handler = this.kaydetIslemi || this.kaydetDevam2;
-			if (handler) {
-				let result = await handler.call(this, e);
-				if (!result)
-					return false
-			}
-			this.degistimi = false;
-			handler = this.kaydedince;
-			if (handler)
-				handler.call(this, e)
+			if (handler) { let result = await handler.call(this, e); if (!result) { return false } }
+			this.degistimi = false; handler = this.kaydedince; if (handler) { handler.call(this, e) }
 			return true
 		}
 		async kaydetDevam2(e) {

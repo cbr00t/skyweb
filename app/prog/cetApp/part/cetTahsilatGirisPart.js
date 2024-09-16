@@ -502,11 +502,7 @@
 
 		async kaydet(e) {
 			const fis = this.fis;
-			e = $.extend({
-				sender: this, islem: this.islem, eskiFis: this.eskiFis,
-				gecicimi: fis.gecicimi
-			}, e);
-			
+			e = $.extend({ sender: this, islem: this.islem, fis, eskiFis: this.eskiFis, gecicimi: fis.gecicimi }, e);
 			const layout = e.layout || this.layout;
 			$.extend(fis, {
 				/*seri: layout.find('#fisSeri').val(),
@@ -567,8 +563,8 @@
 				param.kaydet();
 			}
 
-			const fis = e.fis || this.fis;
-			let handler = this.kaydetIslemi || this.kaydetDevam2;
+			const fis = e.fis = e.fis ?? this.fis;
+			let handler = this.kaydetIslemi ?? this.kaydetDevam2;
 			if (handler) {
 				let result = await handler.call(this, e);
 				if (!result)
@@ -884,86 +880,35 @@
 					this.isListeVeriYuklendiEventTriggered = true;
 				}
 				this.degistimi = false;
-			}, 10);
+			}, 10)
 		}
-
 		async liste_degisti(e) {
-			e = e || {};
-			// super.liste_degisti(e);
-			
-			//if (!this.listeReadyFlag)
-			//	return;
-			
-			const {fis} = this;
-			await fis.dipHesapla();
-			
-			const {dipTable} = this;
+			e = e || {}; const {fis, dipTable} = this, {hedefToplamBedel} = this; await fis.dipHesapla();
 			let uiSetValue = e => {
 				let ui = dipTable.find(e.selector);
-				if (e.value) {
-					// ui.parent().removeClass('jqx-hidden');
-					ui.html(`${bedelStr(e.value)}`);
-				}
-				else {
-					// ui.parent().addClass('jqx-hidden');
-				}
-			};
-			['toplamBedel'].forEach(key =>
-				uiSetValue({ selector: `#${key}`, value: fis[key] }));
-		}
-
-		liste_satirCiftTiklandi(e) {
-			// super.liste_satirCiftTiklandi(e);
-
-			if (!this.isEventFired_satirCifTiklandi) {
-				this.isEventFired_satirCifTiklandi = true;
-				return;
+				if (e.value) { ui.html(`${bedelStr(e.value)}`); ui.parent().removeClass('jqx-hidden basic-hidden') } /*else { ui.parent().addClass('jqx-hidden') }*/
 			}
-			
-			// return this.degistirIstendi();
+			if (hedefToplamBedel) { uiSetValue({ selector: '#fisBedel', value: hedefToplamBedel }) }
+			uiSetValue({ selector: '#toplamBedel', value: fis.toplamBedel })
 		}
 
-		liste_satirTiklandi(e) {
-			super.liste_satirTiklandi(e);
-
-			this.selectedDataField = e.event.args.dataField;
-		}
-		
+		liste_satirCiftTiklandi(e) { if (!this.isEventFired_satirCifTiklandi) { this.isEventFired_satirCifTiklandi = true; return } }
+		liste_satirTiklandi(e) { super.liste_satirTiklandi(e); this.selectedDataField = e.event.args.dataField }
 		liste_satirSecildi(e) {
-			e = e || {};
-			const lastSelectedIndex = e.lastSelectedIndex || this.lastSelectedIndex;
-			
-			super.liste_satirSecildi(e);
-
-			if (!this.listeReadyFlag || this.lastSelectedIndex != lastSelectedIndex)
-				return;
-			
-			let dataField = this.selectedDataField || 'bedel';
-			let rec = this.selectedRec;
+			e = e || {}; const lastSelectedIndex = e.lastSelectedIndex || this.lastSelectedIndex;
+			super.liste_satirSecildi(e); if (!this.listeReadyFlag || this.lastSelectedIndex != lastSelectedIndex) { return }
+			let dataField = this.selectedDataField || 'bedel', rec = this.selectedRec;
 			if (rec) {
-				const listeWidget = this.listeWidget;
-				if (listeWidget.isBindingCompleted() && !listeWidget.updating()) {
-					let editingCell = this.editingCell;
-					if (editingCell) {
-						try {
-							if (!listeWidget._validateEditors(editingCell.dataField)) {
-								delete this.editingCell;
-								return;
-							}
-						}
-						catch (ex) { }
-
-						try { listeWidget.endCellEdit(editingCell.rowIndex, editingCell.dataField, false) }
-						catch (ex) { }
-						editingCell = this.editingCell;
+				const {listeWidget} = this; if (listeWidget.isBindingCompleted() && !listeWidget.updating()) {
+					let {editingCell} = this; if (editingCell) {
+						try { if (!listeWidget._validateEditors(editingCell.dataField)) { delete this.editingCell; return } } catch (ex) { }
+						try { listeWidget.endCellEdit(editingCell.rowIndex, editingCell.dataField, false) } catch (ex) { }
+						editingCell = this.editingCell
 					}
-
-					try { listeWidget.beginCellEdit(listeWidget.getrowdisplayindex(rec), dataField) }
-					catch (ex) { }
+					try { listeWidget.beginCellEdit(listeWidget.getrowdisplayindex(rec), dataField) } catch (ex) { }
 				}
 			}
 		}
-
 		async liste_islemTusuTiklandi(e) {
 			let elm = e.event.currentTarget;
 			// let rec = this.selectedRec;
@@ -982,36 +927,19 @@
 		}
 
 		async kalaniYazIstendi(e) {
-			e = e || {};
-
-			const listeWidget = this.listeWidget;
-			let editingIndex = this.editingRowIndex;
-			if (editingIndex != null) {
-				try { listeWidget.endRowEdit(editingIndex, false) }
-				catch (ex) { }
+			e = e || {}; const {listeWidget} = this;
+			let editingIndex = this.editingRowIndex; if (editingIndex != null) { try { listeWidget.endRowEdit(editingIndex, false) } catch (ex) { } }
+			let recs = this.listeRecs, rec = editingIndex ? recs[editingIndex] : this.selectedRec, kalan = bedel(this.hedefToplamBedel) || 0;
+			for (const _rec of recs) { if (_rec != rec && _rec.bedel) { kalan -= _rec.bedel } }
+			kalan = bedel(kalan); if (kalan > 0) {
+				let {uid} = rec; rec = rec.deepCopy ? rec.deepCopy() : $.extend(true, {}, rec); delete rec.uid;
+				rec.bedel = kalan; listeWidget.updaterowbykey(uid, rec)
 			}
-
-			let recs = this.listeRecs;
-			// let recs = this.fis.detaylar;
-			let rec = editingIndex ? recs[editingIndex] : this.selectedRec;
-			let kalan = bedel(this.hedefToplamBedel) || 0;
-			recs.forEach(_rec => {
-				if (_rec != rec && _rec.bedel)
-					kalan -= _rec.bedel;
-			});
-			kalan = bedel(kalan);
-			if (kalan > 0) {
-				rec = rec.deepCopy ? rec.deepCopy() : $.extend(true, {}, rec);
-				rec.bedel = kalan;
-				this.degistir({ rec: rec });
-			}
-			
-			this.focusToDefault();
+			this.focusToDefault()
 		}
 
 		async silIstendi(e) {
 			e = e || {};
-
 			const listeWidget = this.listeWidget;
 			let editingIndex = this.editingRowIndex;
 			if (editingIndex != null) {
