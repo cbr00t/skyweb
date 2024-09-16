@@ -891,7 +891,7 @@
 			
 			const maxOrtIskOranBelirleForKeys = e => {
 				const {keys, det, index} = e;
-				const oranlar = (keys || []).map(key => det[key]);
+				const oranlar = det.ozelIskontoVarmi ? [] : (keys || []).map(key => det[key]);
 				const ortIskOran = maxOrtIskOranBelirleForOranlar(oranlar);
 				const detIskOranSinir = det.satirIskOranSinirUyarlanmis;
 				if (ortIskOran > detIskOranSinir) {
@@ -1236,6 +1236,13 @@
 		static get siparisMiktarKontrolEdilirmi() { return !this.iademi && sky.app[this.fiiliCikismi ? 'depoSevkiyatSiparisMiktariKontrolEdilirmi' : 'depoMalKabulSiparisMiktariKontrolEdilirmi'] }
 		static get siparisRefKontrolEdilirmi() { return sky.app.depoSiparisRefKontrolEdilirmi }
 		static get depoSevkiyatSiparisKarsilamaOdemeGunTekmi() { return sky.app.depoSevkiyatSiparisKarsilamaOdemeGunTekmi }
+		get hesaplanmisBakiyeArtisi() {
+			if (!(this.class.faturami || (this.class.irsaliyemi && sky.app.irsaliyeBakiyeyiEtkilermi))) { return super.hesaplanmisBakiyeArtisi }
+			let result = this.tahsilatDusulmusBedel;
+			if (this.ihracKayitlimi) { this.gerekirseDipHesapla(); result -= bedel(this.icmal.topKdv || 0) }
+			if (!this.class.fiiliCikismi) { result = -result }
+			return result
+		}
 		get hesaplanmisSiparisVioID2MiktarBilgileri() {
 			let result = {};
 			const katSayi = this.class.fiiliCikismi ? -1 : 1;
@@ -1384,7 +1391,7 @@
 
 
 	window.CETFaturaFis = class extends window.CETSevkiyatFis {
-		static get pifTipi() { return 'F' }
+		static get pifTipi() { return 'F' } static get faturami() { return true }
 		get matbuuFormTip() {
 			const {app} = sky;
 			if (app.eIslemKullanilirmi && this.eIslemTip) return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem';
@@ -1394,16 +1401,6 @@
 			// if (this.class.alimmi || this.class.iademi)
 			if (this.class.alimmi != this.class.iademi) return ''
 			return await super.eIslemTipDegeriFor(e)
-		}
-		get hesaplanmisBakiyeArtisi() {
-			let result = this.tahsilatDusulmusBedel;
-			if (this.ihracKayitlimi) {
-				this.gerekirseDipHesapla();
-				result -= bedel(this.icmal.topKdv || 0)
-			}
-			if (!this.class.fiiliCikismi)
-				result = -result
-			return result
 		}
 
 		hostVars(e) {
@@ -1461,7 +1458,7 @@
 
 
 	window.CETIrsaliyeFis = class extends window.CETSevkiyatFis {
-		static get pifTipi() { return 'I' }
+		static get pifTipi() { return 'I' } static get irsaliyemi() { return true }
 		get matbuuFormTip() {
 			const {app} = sky;
 			if (app.eIslemKullanilirmi && this.eIslemTip) {

@@ -494,8 +494,8 @@
 			return $.isEmptyObject(menuAdimKisitIDSet) || !!menuAdimKisitIDSet.musteriDurumu;
 		}
 		get karmaPaletBarkodBaslangic() { let value = this.ozelYetkiler?.karmaPaletBarkodBaslangic; if (value == null) { value = this.param.karmaPaletBarkodBaslangic } return value }
-		get maxIskSayi() { return 6 }
-		get maxKadIskSayi() { return 5 }
+		get irsaliyeBakiyeyiEtkilermi() { let flag = this.ozelYetkiler?.irsaliyeBakiyeyiEtkiler; if (flag == null) { flag = asBool(this.param.irsaliyeBakiyeyiEtkilermi) ?? false } return flag }
+		get maxIskSayi() { return 6 } get maxKadIskSayi() { return 5 }
 		get iskSayi() {
 			const {maxIskSayi} = this;
 			let result = this.ozelYetkiler?.iskSayi;

@@ -265,26 +265,21 @@
 				if (rec) {
 					let uygunmu = false;
 					for (let i = 1; i <= iskSayi; i++) { const key = `iskOran${i}`; let value = asFloat(rec[key]) || 0; if (value) { uygunmu = true; this[key] = value } }
-					if (uygunmu) { this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
-					let value = roundToFra(rec.enDusukFiyat, fiyatFra);
-					if (value) { this.enDusukFiyat = value }
+					if (uygunmu) { this.ozelIskontoVarmi = true; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
+					let value = roundToFra(rec.enDusukFiyat, fiyatFra); if (value) { this.enDusukFiyat = value }
 				}
 				kosulTip = 'KM'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
 				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe }, _e));
 				if (rec) {
-					for (let i = 1; i <= 3; i++) {
-						const key = `kamOran${i}`; let value = asFloat(rec[key]) || 0;
-						if (value) { this[key] = value; this.ozelKampanyaVarmi = true }
-					}
-					let value = roundToFra(rec.enDusukFiyat, fiyatFra);
-					if (value) { this.enDusukFiyat = value; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
+					let uygunmu = false;
+					for (let i = 1; i <= 3; i++) { const key = `kamOran${i}`; let value = asFloat(rec[key]) || 0; if (value) { uygunmu = true; this[key] = value } }
+					if (uygunmu) { this.ozelKampanyaVarmi = true; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
+					let value = roundToFra(rec.enDusukFiyat, fiyatFra); if (value) { this.enDusukFiyat = value }
 				}
 				kosulTip = 'SN'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
 				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe }, _e));
-				if (rec) {
-					let value = rec.iskSinir;
-					if (value) { this.iskSinir = value; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
-				}
+				if (rec) { let value = rec.iskSinir; if (value) { this.iskSinir = value; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } } }
+				
 				kosulTip = 'KD'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
 				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe: kosulKodListe }, _e));
 				if (rec) {
@@ -293,7 +288,7 @@
 						const hMiktar = asFloat(rec[`kadHMiktar${i}`]) || 0;
 						if (hMiktar) { uygunmu = true; const iskOran = asFloat(rec[`kadIskOran${i}`]) || 0; kadIskYapi[hMiktar] = iskOran }
 					}
-					if (uygunmu) { this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
+					if (uygunmu) { this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod }; this.ozelIskontoVarmi = true }
 				}
 			}
 		}

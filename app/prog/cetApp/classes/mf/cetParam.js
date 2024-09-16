@@ -47,11 +47,10 @@
 		static get sabitAttrListe() {
 			return [
 				'version', 'wsHostName', 'wsHostName2', 'varsayilanWSHostName', 'wsPort', 'skyWSURL', 'fiyatFra', 'uygunAyrimTipleri', 'subeKod', 'yerKod', 'ilkKM', 'sonKM', 'fisTip2SonSeri',
-				'ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi',
-				'bakiyeRiskGosterilmezmi', 'oncekiFislerGosterilmezmi', 'nakitUstLimit', 'dokumEkranami', 'dokumDeviceTip', 'dokumDeviceSP_baudRate', 'barkodDeviceTip',
-				'dokumTurkceHarfYontemKod', 'dokumEncoding', 'dokumDataPrefix', 'dokumDataPostfix', 'darDokummu', 'serbestModmu', 'gridAltMultiSelectFlag', 'brm2Fra', 'tip2Renk',
-				'tarihAralik', 'fisTarihDegistirilirmi', 'kmTakibiYapilirmi', 'ilkIrsaliyeDokumuZorunlumu', 'dokumNettenmi', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'isaretliBelgeKDVDurumu',
-				'bakiyeyeEtkilenirmi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'detaylardaFiyatDegistirilirmi', 'iskontoArttirilirmi',
+				'ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi', 'bakiyeRiskGosterilmezmi', 'oncekiFislerGosterilmezmi', 'nakitUstLimit',
+				'dokumEkranami', 'dokumDeviceTip', 'dokumDeviceSP_baudRate', 'barkodDeviceTip', 'dokumTurkceHarfYontemKod', 'dokumEncoding', 'dokumDataPrefix', 'dokumDataPostfix', 'darDokummu',
+				'serbestModmu', 'gridAltMultiSelectFlag', 'brm2Fra', 'tip2Renk', 'tarihAralik', 'fisTarihDegistirilirmi', 'kmTakibiYapilirmi', 'ilkIrsaliyeDokumuZorunlumu', 'dokumNettenmi', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'isaretliBelgeKDVDurumu',
+				'bakiyeyeEtkilenirmi', 'irsaliyeBakiyeyiEtkilermi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'detaylardaFiyatDegistirilirmi', 'iskontoArttirilirmi',
 				'menuAdimKisitIDListe', 'fisAdimKisitIDListe', 'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'silerekBilgiAlYapilirmi',
 				'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi', 'stokPaketKodlari', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis', 'alimNetFiyatGosterilirmi',
 				'iskSayi', 'kadIskSayi', 'satirIskOranSinir', 'musteriDegistirilirmi', 'musteriRotaZorunlumu', 'rotaDevreDisiGosterilirmi',
