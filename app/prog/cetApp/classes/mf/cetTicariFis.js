@@ -373,86 +373,55 @@
 						}
 					}
 				});
-				sahaContainer.removeClass(`jqx-hidden`);
-				await part.run();
+				sahaContainer.removeClass(`jqx-hidden`); await part.run();
 			}
-
 			if (satismi && !iademi) {
-				const divSaha = layout.find('#karmaTahsilat'), sahaContainer = divSaha.parents('.parent');
-				divSaha.prop('checked', this.karmaTahsilatmi);
-				divSaha.on('change', evt => { this.karmaTahsilatmi = $(evt.currentTarget).is(':checked') });
-				sahaContainer.removeClass('jqx-hidden basic-hidden')
+				const divSaha_tahSekliKodNo = layout.find('#tahSekliKodNo'), sahaContainer_tahSekliKodNo = divSaha_tahSekliKodNo?.parents('.parent');
+				let hasTahSekliNoLayout; const divSaha = layout.find('#karmaTahsilat'), sahaContainer = divSaha.parents('.parent');
+				let value = this.karmaTahsilatmi; divSaha.prop('checked', value);
+				const changeHandler = evt => {
+					value = this.karmaTahsilatmi = $(evt.currentTarget).is(':checked');
+					setTimeout(() => {
+						if (hasTahSekliNoLayout == null) { hasTahSekliNoLayout = sahaContainer_tahSekliKodNo?.length && !(sahaContainer_tahSekliKodNo.hasClass('jqx-hidden') || sahaContainer_tahSekliKodNo.hasClass('basic-hidden')) }
+						if (hasTahSekliNoLayout) { if (value) { sahaContainer_tahSekliKodNo.addClass('jqx-hidden') } else { sahaContainer_tahSekliKodNo.removeClass('jqx-hidden basic-hidden') } }
+					}, 10)
+				}
+				changeHandler({ currentTarget: divSaha[0] });
+				divSaha.on('change', changeHandler); sahaContainer.removeClass('jqx-hidden basic-hidden')
 			}
-			
 			if (satismi && !iademi && app.param.faturadaTahsilatYapilirmi) {
-				let kodNo = asInteger(this.tahSekliKodNo);
-				let sonDeger = sonDegerler.tahSekliKodNo;
-				/*if (kodNo && sonDeger != kodNo) {
-					sonDeger = sonDegerler.tahSekliKodNo = kodNo;
-					parentPart.paramDegistimi = true;
-				}*/
-
-				const divSaha = layout.find(`#tahSekliKodNo`);
-				const sahaContainer = divSaha.parents(`.parent`);
-				const divEtiket = sahaContainer.find(`.etiket`);
+				let kodNo = asInteger(this.tahSekliKodNo), sonDeger = sonDegerler.tahSekliKodNo;
+				const divSaha = layout.find('#tahSekliKodNo'), sahaContainer = divSaha.parents('.parent');
+				const divEtiket = sahaContainer.find('.etiket');
 				let part = new CETMstComboBoxPart({
-					parentPart: parentPart,
-					content: divSaha,
-					// layout: layout.find('.hizliStok'),
-					placeHolder: 'Tahsil Şekli',
-					listeSinif: CETKAListePart, table: 'mst_TahsilSekli',
-					idSaha: 'kodNo', adiSaha: 'aciklama',
-					selectedId: kodNo || null,
+					parentPart, content: divSaha, placeHolder: 'Tahsil Şekli', listeSinif: CETKAListePart, table: 'mst_TahsilSekli',
+					idSaha: 'kodNo', adiSaha: 'aciklama', selectedId: kodNo || null,
 					widgetDuzenleyici: e => {
-						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
-							e.widgetArgs.width - (divEtiket.width() ||  0) );
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (e.widgetArgs.width - (divEtiket.width() || 0));
 						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
 					},
 					events: {
-						comboBox_loadServerData: e => {
-							return (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.tahsilSekliKodNo2Rec)
-						},
+						comboBox_loadServerData: e => (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.tahsilSekliKodNo2Rec),
 						comboBox_itemSelected: e => {
-							const rec = e.rec || {};
-							kodNo = this.tahSekliKodNo = asInteger(rec.kod || rec.kodNo) || null;
-							if (sonDeger != kodNo) {
-								sonDeger = sonDegerler.tahSekliKodNo = kodNo;
-								parentPart.paramDegistimi = true;
-							}
+							const rec = e.rec || {}; kodNo = this.tahSekliKodNo = asInteger(rec.kod || rec.kodNo) || null;
+							if (sonDeger != kodNo) { sonDeger = sonDegerler.tahSekliKodNo = kodNo; parentPart.paramDegistimi = true }
 						}
 					}
 				});
-				sahaContainer.removeClass(`jqx-hidden`);
-				await part.run()
+				sahaContainer.removeClass('jqx-hidden'); await part.run()
 			}
-
 			if (app.dovizKullanilirmi && !app.defaultDovizKod) {
-				let kod = this.dvKod;
-				let sonDeger = sonDegerler.dvKod;
-				/*if (sonDeger != kod) {
-					sonDeger = sonDegerler.plasiyerKod = kod;
-					parentPart.paramDegistimi = true;
-				}*/
-				const divSaha = layout.find(`#dvKod`);
-				const sahaContainer = divSaha.parents(`.parent`);
-				const divEtiket = sahaContainer.find(`.etiket`);
+				let kod = this.dvKod, sonDeger = sonDegerler.dvKod;
+				const divSaha = layout.find(`#dvKod`), sahaContainer = divSaha.parents(`.parent`), divEtiket = sahaContainer.find(`.etiket`);
 				let part = new CETMstComboBoxPart({
-					parentPart: parentPart, content: divSaha,
-					placeHolder: 'Döviz',
-					listeSinif: CETKAListePart, table: 'mst_Doviz',
-					idSaha: 'kod', adiSaha: 'aciklama',
-					selectedId: kod || sonDeger,
+					parentPart, content: divSaha, placeHolder: 'Döviz', listeSinif: CETKAListePart, table: 'mst_Doviz',
+					idSaha: 'kod', adiSaha: 'aciklama', selectedId: kod || sonDeger,
 					widgetDuzenleyici: e => {
-						const {widgetArgs} = e;
-						savedParentWidth = widgetArgs.width = savedParentWidth || (
-							widgetArgs.width - (divEtiket.width() ||  0) );
-						$.extend(widgetArgs, {
-							dropDownWidth: widgetArgs.width
-						})
+						const {widgetArgs} = e; savedParentWidth = widgetArgs.width = savedParentWidth || (widgetArgs.width - (divEtiket.width() ||  0));
+						$.extend(widgetArgs, { dropDownWidth: widgetArgs.width })
 					},
 					events: {
-						comboBox_loadServerData: e =>
-							(e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.dvKod2Rec),
+						comboBox_loadServerData: e => (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.dvKod2Rec),
 						comboBox_itemSelected: async e => {
 							const {sender} = e, {parentPart} = sender;
 							kod = this.dvKod = (e.rec || {}).kod || e.value || sky.app.defaultDovizKod;

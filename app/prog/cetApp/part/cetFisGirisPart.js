@@ -818,66 +818,39 @@
 		}
 		async ekle(e) {
 			e = e || {}; let result = await super.ekle(e);
-			const rec = e.rec || {};
-			const {barkodParser} = rec;
-			const barkod = rec.barkod || (rec.barkodParser || {}).barkod;
-			if (barkod && barkodParser && barkodParser.ayrisimAyiraclimi && barkodParser.zVarmi)
-				this.ayrisimAyiracli_barkod2Detay[barkod] = rec
-			const okunanTumBarkodlar = rec.okunanTumBarkodlar = rec.okunanTumBarkodlar || {};
-			okunanTumBarkodlar[barkod] = true;
-			return result
+			const rec = e.rec || {}, {barkodParser} = rec; const barkod = rec.barkod || (rec.barkodParser || {}).barkod;
+			if (barkod && barkodParser?.ayrisimAyiraclimi && barkodParser?.zVarmi) { this.ayrisimAyiracli_barkod2Detay[barkod] = rec }
+			const okunanTumBarkodlar = rec.okunanTumBarkodlar = rec.okunanTumBarkodlar || {}; okunanTumBarkodlar[barkod] = true; return result
 		}
 		sil(e) {
-			e = e || {};
-			const rec = e.rec || this.selectedBoundRec || {};
-			let result = super.sil(e);
-			const {ayrisimAyiracli_barkod2Detay} = this;
-			const {barkod} = rec;
-			if (barkod)
-				delete ayrisimAyiracli_barkod2Detay[barkod]
+			e = e || {}; const rec = e.rec || this.selectedBoundRec || {}; let result = super.sil(e);
+			const {ayrisimAyiracli_barkod2Detay} = this, {barkod} = rec; if (barkod) { delete ayrisimAyiracli_barkod2Detay[barkod] }
 			const okunanTumBarkodlar = rec.okunanTumBarkodlar = rec.okunanTumBarkodlar || {};
-			for (const barkod in okunanTumBarkodlar)
-				delete ayrisimAyiracli_barkod2Detay[barkod];
+			for (const barkod in okunanTumBarkodlar) { delete ayrisimAyiracli_barkod2Detay[barkod] }
 			return result
 		}
-		temizle(e) {
-			let result = super.temizle(e);
-			this.ayrisimAyiracli_barkod2Detay = {};
-			return result
-		}
+		temizle(e) { let result = super.temizle(e); this.ayrisimAyiracli_barkod2Detay = {}; return result }
 		async kaydet(e) {
-			const {app, fis} = this;
-			app.hideNotifications();
-			e = $.extend({
-				sender: this, islem: this.islem, fis: fis, eskiFis: this.eskiFis, gecicimi: fis.gecicimi,
-				satisKosulYapilari: this.satisKosulYapilari, promosyonYapilari: this.promosyonYapilari
-			}, e);
-			const layout = e.layout || this.layout;
-			if (this.otoBirlestirFlag)
-				await this.birlestir(e)
-			$.extend(fis, {
-				/*seri: layout.find('#fisSeri').val(),
-				fisNo: layout.find('#fisNo').val(),
-				aciklama: layout.find('#notlar').val(),*/
-				detaylar: this.listeRecs.map(rec => {
-					rec = $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec;
-					['_visible'].forEach(key =>
-						delete rec[key]);
-					return rec;
-				})
-			});
+			const {app, fis} = this; app.hideNotifications();
+			e = { sender: this, islem: this.islem, fis, eskiFis: this.eskiFis, gecicimi: fis.gecicimi, satisKosulYapilari: this.satisKosulYapilari, promosyonYapilari: this.promosyonYapilari, ...e };
+			const layout = e.layout || this.layout; if (this.otoBirlestirFlag) { await this.birlestir(e) }
+			$.extend(fis, { detaylar: this.listeRecs.map(rec => { rec = $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec; delete rec._visible; return rec }) });
 			await fis.dipHesapla();
-			let handler = this.kaydetOncesi || this.kaydetOncesiDefault;
-			if (handler) {
-				let result = await handler.call(this, e);
-				if (result === false)
-					return false
+			let handler = this.kaydetOncesi ?? this.kaydetOncesiDefault; if (handler) {
+				try { let result = await handler.call(this, e); if (result === false) { return false } }
+				catch (ex) {
+					displayMessage(`${ex.errorText || ex.message || ex}`, `@ Fiş Kayıt İşlemi @`, undefined, undefined, false, true);
+					console.error('fiş kayıt hatası', 'ön kontrol', ex); throw ex
+				}
 			}
-			return await this.kaydetDevam(e)
+			let result; try { result = await this.kaydetDevam(e) }
+			finally { const {_karmaTahsilatFis} = fis; if (!result && _karmaTahsilatFis) { await _karmaTahsilatFis.sil(); delete fis._karmaTahsilatFis } }
+			return result
 		}
 		async kaydetOncesiDefault(e) {
 			if (this.prefetch || this.isPrefetch) { return true }
 			let {fis} = this; if (fis?.karmaTahsilatmi) {
+				let _result = await fis.kaydetOncesiKontrol(e); if (_result === false) { return false }
 				let tahFisSinif = CETTahsilatFis, tahUISinif = tahFisSinif.fisGirisUISinif, {mustKod} = fis, hedefToplamBedel = fis.sonucBedel;
 				let tsn = [fis.seri, fis.noYil, fis.fisNo], aciklama = `SkyTabFis:${tsn.filter(x => !!x).join(' ')}`;
 				let tahFis = new tahFisSinif({ mustKod, aciklama }); await tahFis.numaratorOlustur();
@@ -885,7 +858,7 @@
 					let {fis} = e; if (fis.toplamBedel == hedefToplamBedel) { return true }
 					displayMessage('Tahsilat Bedel Toplamı ile Fiş Bedeli aynı olmalıdır', '! Karma Tahsilat Girişi !'); return false
 				};
-				let promise = new $.Deferred(), kaydedince = e => promise.resolve(true);
+				let promise = new $.Deferred(), kaydedince = e => { fis._karmaTahsilatFis = e.fis; promise.resolve(true) };
 				await new tahUISinif({ fis: tahFis, hedefToplamBedel, kaydetOncesi, kaydedince }).run(); return await promise
 			}
 			return true
@@ -897,80 +870,44 @@
 				(savedProcs || window).showProgress(null, null, 1, true);
 				setTimeout(() => { (savedProcs || window).hideProgress(); setButonEnabled(this.islemTuslari, true) }, 2000)
 			}
-			if (this.paramDegistimi) { await param.kaydet() } $.extend(param, this.param); const fis = e.fis || this.fis;
-			let handler = this.kaydetIslemi || this.kaydetDevam2;
-			if (handler) { let result = await handler.call(this, e); if (!result) { return false } }
+			if (this.paramDegistimi) { await param.kaydet() } $.extend(param, this.param);
+			const fis = e.fis = e.fis ?? this.fis;
+			let handler = this.kaydetIslemi ?? this.kaydetDevam2; if (handler) { let result = await handler.call(this, e); if (!result) { return false } }
 			this.degistimi = false; handler = this.kaydedince; if (handler) { handler.call(this, e) }
 			return true
 		}
 		async kaydetDevam2(e) {
-			e = e || {}; const fis = e.fis || this.fis, dbMgr = fis.dbMgr;
-			let savedFisNo = fis.fisNo;
-			const num = fis.numarator;
+			e = e || {}; const fis = e.fis = e.fis ?? this.fis, dbMgr = fis.dbMgr, num = fis.numarator; let savedFisNo = fis.fisNo;
 			if (num /*&& !(e.gecicimi || fis.gecicimi)*/) {
 				$.extend(num, { seri: fis.seri, sonNo: num.sonNo + 1 });
 				let numaratorIcinUygunmu = !fis.fisNo && (e.gecicimi || fis.gecicimi || this.yeniKayitmi);
 				if (numaratorIcinUygunmu) {
-					try {
-						await num.kesinlestir({
-							yeniKayitmi: numaratorIcinUygunmu && this.yeniKayitmi, islem: this.islem, dbMgr: dbMgr,
-							fisSinif: fis.class, fisID: fis.id
-						});
-					}
+					try { await num.kesinlestir({ yeniKayitmi: numaratorIcinUygunmu && this.yeniKayitmi, islem: this.islem, dbMgr, fisSinif: fis.class, fisID: fis.id }) }
 					catch (ex) {
-						if (ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort') return false
+						if (ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort') { return false }
 						displayMessage(`${ex.errorText || ex.message || ex}`, `@ Numaratör Kayıt İşlemi @`, undefined, undefined, false, true);
-						console.error(`numarator kayıt hatası`, ex);
-						throw ex
+						console.error(`numarator kayıt hatası`, ex); throw ex
 					}
 					fis.fisNo = num.sonNo || 1
 				}
-
 				if (savedFisNo) {
-					let yeniNo = await num.fisNoDuzelt({
-						yeniKayitmi: numaratorIcinUygunmu && this.yeniKayitmi,
-						islem: this.islem, dbMgr: dbMgr, fisSinif: fis.class,
-						fisID: fis.id, seri: fis.seri, fisNo: fis.fisNo || num.sonNo
-					});
-					if (fis.fisNo != yeniNo) {
-						fis.fisNo = yeniNo || 1;
-						if (numaratorIcinUygunmu) {
-							num.sonNo = fis.fisNo;
-							await num.kaydet()
-						}
-					}
+					let yeniNo = await num.fisNoDuzelt({ yeniKayitmi: numaratorIcinUygunmu && this.yeniKayitmi, islem: this.islem, dbMgr, fisSinif: fis.class, fisID: fis.id, seri: fis.seri, fisNo: fis.fisNo || num.sonNo });
+					if (fis.fisNo != yeniNo) { fis.fisNo = yeniNo || 1; if (numaratorIcinUygunmu) { num.sonNo = fis.fisNo; await num.kaydet() } }
 				}
 			}
-			//let tx = await dbMgr.transaction();
 			try {
-				fis.gecicimi = false;
-				// let result = await fis.kaydet($.extend({ tx: tx }, e));
-				let result = await fis.kaydet(e);
-				//if (!result)
-				//	dbMgr.abortTransaction();
-				if (!result || result.isError)
-					return result
-				await fis.geciciFisleriTemizle();
-				await dbMgr.transaction();
-				if (savedFisNo && fis.fisNo != savedFisNo) {
-					displayMessage(
-						`<i>${savedFisNo}</i> olan Belge Numarası <b>${fis.fisNo}</b> olarak değişti.`,
-						`Bilgilendirme`
-					)
-				}
+				fis.gecicimi = false; if (fis._karmaTahsilatFis) { fis.tahSekliKodNo = null }
+				let result = await fis.kaydet(e); if (!result || result.isError) { return result }
+				await fis.geciciFisleriTemizle(); await dbMgr.transaction();
+				if (savedFisNo && fis.fisNo != savedFisNo) { displayMessage(`<i>${savedFisNo}</i> olan Belge Numarası <b>${fis.fisNo}</b> olarak değişti.`, `Bilgilendirme`) }
 				return result
 			}
 			catch (ex) {
-				if (ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort')
-					return false
+				if (ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort') { return false }
 				displayMessage(`${ex.errorText || ex.message || ex}`, `@ Belge Kayıt İşlemi @`, undefined, undefined, false, true);
 				console.error(`fiş kayıt hatası`, ex)
-				// setTimeout(() => this.tazele(), 1500)
 			}
-			finally {
-				if (fis)
-					fis.gecicimi = e.gecicimi
-			}
+			finally { if (fis) { fis.gecicimi = e.gecicimi } }
 		}
 		async listeArgsDuzenle(e) {
 			await super.listeArgsDuzenle(e);
