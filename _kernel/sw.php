@@ -5,7 +5,7 @@
 const APP_NAME = 'SkyWeb';
 const VERSION = '<?=$siteVersion?>';
 const CACHE_NAME = `cache-${APP_NAME}-${VERSION}`;
-const StreamHeaders = { 'text/event-stream': true, 'application/x-ndjson' };
+const StreamHeaders = { 'text/event-stream': true, 'application/x-ndjson': true };
 
 const staticAssets = [
 	'./',
