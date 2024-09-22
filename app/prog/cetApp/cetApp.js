@@ -301,6 +301,17 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup1Miktar')),
+					queries: [
+						`ALTER TABLE mst_Promosyon ADD voGrup1Kod		TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup1Miktar	REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup2Varmi		INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup2Kod		TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup2Miktar	REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD hIskOran			REAL NOT NULL DEFAULT 0`
+					]
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_BarkodReferans', 'beden')),
 					queries: [`ALTER TABLE mst_BarkodReferans ADD beden TEXT NOT NULL DEFAULT ''`]
 				},

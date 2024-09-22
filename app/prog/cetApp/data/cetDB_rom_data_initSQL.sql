@@ -567,6 +567,14 @@ CREATE TABLE IF NOT EXISTS mst_Promosyon (
 	cariSonu					TEXT NOT NULL DEFAULT '',
 	plasiyerBasi				TEXT NOT NULL DEFAULT '',
 	plasiyerSonu				TEXT NOT NULL DEFAULT '',
+	
+	voGrup1Kod					TEXT NOT NULL DEFAULT '',
+	voGrup1Miktar				REAL NOT NULL DEFAULT 0,
+	voGrup2Varmi				INTEGER NOT NULL DEFAULT 0,	
+	voGrup2Kod					TEXT NOT NULL DEFAULT '',
+	voGrup2Miktar				REAL NOT NULL DEFAULT 0,
+	hIskOran					REAL NOT NULL DEFAULT 0,
+
 	PRIMARY KEY (proTip, kod)
 );
 CREATE INDEX IF NOT EXISTS idx_mstPromosyon2TarihVeCari ON mst_Promosyon (tarihBasi, tarihSonu, cariBasi, cariSonu);

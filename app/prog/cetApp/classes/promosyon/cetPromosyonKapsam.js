@@ -11,8 +11,7 @@
 			for (const key of attrListe) {
 				let value = e[key]; if (value) value = value.deger ?? value.value ?? value;
 				value = convertValue(value); if (value == null) value = ''; /*if (!value) continue;*/
-				const bs = this[key];
-				if (key == 'tarih') { for (const _key in bs) { const _value = bs[_key]; bs[_key] = asDate(_value) } }
+				const bs = this[key]; if (key == 'tarih') { for (const _key in bs) { const _value = bs[_key]; bs[_key] = asDate(_value) } }
 				_uygunmu = _uygunmu && !( (bs.basi && value < convertValue(bs.basi)) || (bs.sonu && value > convertValue(bs.sonu)) || (bs.deger && convertValue(bs.deger) != value) );
 				if (!_uygunmu) break
 			}

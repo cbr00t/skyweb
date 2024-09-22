@@ -40,7 +40,9 @@
 		static get table() { return 'mst_Promosyon' } static get tableAlias() { return 'pro' } static get idSaha() { return 'kod' }
 		static get proTip() { return null } static get stokSecimlimi() { return false }
 		static get proSiniflari() {
-			if (this._proSiniflari == null) this._proSiniflari = [CETPromosyon_CIRO1, CETPromosyon_STOK1, CETPromosyon_STOK2, CETPromosyon_GRUP3, CETPromosyon_GRUP1, CETPromosyon_GRUP2]
+			if (this._proSiniflari == null) this._proSiniflari = [
+				CETPromosyon_CIRO1, CETPromosyon_STOK1, CETPromosyon_STOK2, CETPromosyon_GRUP3, CETPromosyon_GRUP1, CETPromosyon_GRUP2
+			]
 			return this._proSiniflari
 		}
 		constructor(e) {
@@ -51,21 +53,20 @@
 			$.extend(this, { hMFVarsaSatirIskKapatmi: asBool(e.hMFVarsaSatirIskKapatmi || e.hMFVarsaSatirIskKapat), kapsam: e.kapsam || {} });
 		}
 		static proTip2Sinif(e) {
-			e = e || {};
-			let _proTip2Sinif = this._proTip2Sinif;
-			if (_proTip2Sinif == null) {
+			e = e || {}; let _proTip2Sinif = this._proTip2Sinif; if (_proTip2Sinif == null) {
 				_proTip2Sinif = this._proTip2Sinif = {}; const siniflar = this.proSiniflari;
-				for (let cls of siniflar) { const tip = cls.proTip; if (tip) _proTip2Sinif[tip] = cls }
+				for (let cls of siniflar) { const tip = cls.proTip; if (tip) { _proTip2Sinif[tip] = cls } }
 			}
 			const tip = e.proTip ?? e.tip ?? e; return _proTip2Sinif[tip]
 		}
 		static async tip2ProYapilari(e) {
 			e = e || {}; if (typeof e != 'object') e = { kod: e }
-			const dbMgr = e.dbMgr || this.dbMgr; let tipListe = e.proTip || e.tip || null; if (tipListe && !$.isArray(tipListe)) tipListe = [tipListe]
-			let idListe = e.kod || e.id || null; if (idListe && !$.isArray(idListe)) idListe = [idListe]
-			let _e = $.extend({}, e, { tipListe: tipListe, idListe: idListe, kapsam: e.kapsam }); _e.cariRec = await this.tip2ProYapilari_gerekirseCariEkBilgiler(_e);
+			const dbMgr = e.dbMgr || this.dbMgr, {kapsam} = e;
+			let tipListe = e.proTip || e.tip || null; if (tipListe && !$.isArray(tipListe)) tipListe = [tipListe]
+			let idListe = e.kod || e.id || null; if (idListe && !$.isArray(idListe)) { idListe = [idListe] }
+			let _e = $.extend({}, e, { tipListe, idListe, kapsam }); _e.cariRec = await this.tip2ProYapilari_gerekirseCariEkBilgiler(_e);
 			let stm = this.tip2ProYapiStm(_e); if (!stm) { return null } let recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
-			const result = {}, proTip2Kod2Inst = {}, uygunProKodSet = {}, istenenKapsam = e.kapsam;
+			const result = {}, proTip2Kod2Inst = {}, uygunProKodSet = {}, istenenKapsam = kapsam;
 			for (let i = 0; i < recs.length; i++) {
 				const rec = recs[i], {proTip} = rec, proKod = rec.kod, sinif = this.proTip2Sinif(proTip);
 				if (sinif) {

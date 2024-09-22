@@ -24,31 +24,24 @@
 		get hedefStokKod() { return null }
 		async _promosyonSonucu(e) {
 			// shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod
-			const shKod2Bilgi = e.shKod2Bilgi; let vStokKod = this.vStokKod;
-			let hesapBilgi = shKod2Bilgi[vStokKod]; if (!hesapBilgi) return null		// bu promosyonun uygulanacagi stok yoksa
-			let kaynakMiktar = e.kaynakMiktar = hesapBilgi.topMiktar; if (!kaynakMiktar) return null
+			const {shKod2Bilgi} = e; let {vStokKod} = this;
+			let hesapBilgi = shKod2Bilgi[vStokKod]; if (!hesapBilgi) { return null }					/* bu promosyonun uygulanacagi stok yoksa */
+			let kaynakMiktar = e.kaynakMiktar = hesapBilgi.topMiktar; if (!kaynakMiktar) { return null }
 			// her vMiktar icin hMiktar kadar vStokKod veya hStokKod prom. olarak verilir
-			let hedefMiktar = e.hedefMiktar = this.getHedefMiktar(e); if (!hedefMiktar) return null
-			let {hedefStokKod} = this; if (!hedefStokKod) return null
-			let proDet = new CETPromosyonDetay({ shKod: hedefStokKod, miktar: hedefMiktar });
-			return { proDet, uygulananStoklar: [vStokKod] };
+			let hedefMiktar = e.hedefMiktar = this.getHedefMiktar(e); if (!hedefMiktar) { return null }
+			let {hedefStokKod} = this; if (!hedefStokKod) { return null } let proDet = new CETPromosyonDetay({ shKod: hedefStokKod, miktar: hedefMiktar });
+			return { proDet, uygulananStoklar: [vStokKod] }
 		}
 	};
 	window.CETPromosyon_MalFazlasi_Grup = class extends window.CETPromosyon_MalFazlasi {
-		async _promosyonSonucu(e) {		// belirli stok var ekran islemi olmaz
-			// shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod
-			const {shKod2Bilgi, grupKod2StokSet} = e;
-			let uygunStokKodlari = grupKod2StokSet[this.vGrupKod]; if ($.isEmptyObject(uygunStokKodlari)) return null
-			let kaynakMiktar = 0;
-			for (let shKod in uygunStokKodlari) {
-				let hesapBilgi = shKod2Bilgi[shKod];
-				if (hesapBilgi) kaynakMiktar += hesapBilgi.topMiktar
-			}
-			e.kaynakMiktar = kaynakMiktar; if (!kaynakMiktar) return null
-			let hedefMiktar = e.hedefMiktar = this.getHedefMiktar(e); if (!hedefMiktar) return null
-			let hedefStokKod = e.tavsiyeStokKod || await this.secilenStok(e); if (!hedefStokKod) return null
-			// her vMiktar icin hMiktar kadarb elirlenen hedefStokKod prom. olarak verilir
-			let proDet = new CETPromosyonDetay({ shKod: hedefStokKod, miktar: hedefMiktar });
+		async _promosyonSonucu(e) {																		/* belirli stok var ekran islemi olmaz */
+			const {shKod2Bilgi, grupKod2StokSet} = e;													/* shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod */
+			let uygunStokKodlari = grupKod2StokSet[this.vGrupKod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
+			let kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { kaynakMiktar += hesapBilgi.topMiktar } }
+			e.kaynakMiktar = kaynakMiktar; if (!kaynakMiktar) { return null }
+			let hedefMiktar = e.hedefMiktar = this.getHedefMiktar(e); if (!hedefMiktar) { return null }
+			let hedefStokKod = e.tavsiyeStokKod || await this.secilenStok(e); if (!hedefStokKod) { return null }
+			let proDet = new CETPromosyonDetay({ shKod: hedefStokKod, miktar: hedefMiktar });			/* her vMiktar icin hMiktar kadarb elirlenen hedefStokKod prom. olarak verilir */
 			return { proDet, uygulananStoklar: uygunStokKodlari }
 		}
 	};
