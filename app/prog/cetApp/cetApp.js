@@ -312,6 +312,10 @@
 					]
 				},
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'proIskOran')),
+					queries: [`ALTER TABLE data_PIFStok ADD proIskOran	REAL NOT NULL DEFAULT 0`]
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_BarkodReferans', 'beden')),
 					queries: [`ALTER TABLE mst_BarkodReferans ADD beden TEXT NOT NULL DEFAULT ''`]
 				},

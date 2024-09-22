@@ -840,6 +840,8 @@ CREATE TABLE IF NOT EXISTS data_PIFStok (
 	kosulYapi					TEXT NOT NULL DEFAULT '',
 	altDetaylar					TEXT NOT NULL DEFAULT '',
 
+	proIskOran					REAL NOT NULL DEFAULT 0,
+
 	FOREIGN KEY (fissayac) REFERENCES data_PIFFis (rowid) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_dataPIFStok2Asil ON data_PIFStok (fissayac, seq);
