@@ -99,4 +99,34 @@
 		static get proTip() { return 'GRUP2' }
 		get secimeEsasHedefGrupKod() { return this.hGrupKod }	/* hedef grup esas alinir */
 	};
+	window.CETPromosyon_OGRP1 = class extends window.CETPromosyon {
+		static get proTip() { return 'OGRP1' }
+		constructor(e) {
+			e = e || {}; super(e);
+			for (const key of ['voGrup1Kod', 'voGrup2Kod']) { this[key] = e[key] || '' }
+			for (const key of ['voGrup1Miktar', 'voGrup2Miktar', 'hIskOran']) { this[key] = asFloat(e[key]) || 0 }
+			for (const key of ['voGrup2Varmi']) { this[key] = asBool(e[key]) }
+		}
+		async setValues(e) {
+			await super.setValues(e); let rec = e.rec ?? e;
+			for (const key of ['voGrup1Kod', 'voGrup2Kod']) { this[key] = rec[key] || '' }
+			for (const key of ['voGrup1Miktar', 'voGrup2Miktar', 'hIskOran']) { this[key] = asFloat(rec[key]) || 0 }
+			for (const key of ['voGrup2Varmi']) { this[key] = asBool(rec[key]) }
+		}
+		async _promosyonSonucu(e) {
+			await super._promosyonSonucu(e); const {voGrup1Kod, voGrup1Miktar} = this;
+			if (!(voGrup1Kod && voGrup1Miktar)) { return null }
+			const {voGrup2Varmi, voGrup2Kod, voGrup2Miktar, hIskOran} = this, {grupKod2StokSet, shKod2Bilgi} = e, tumUygunStokKodSet = {};
+			let uygunStokKodlari = grupKod2StokSet[voGrup1Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
+			let kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
+			if (!kaynakMiktar || kaynakMiktar < voGrup1Miktar) { return null }
+			if (voGrup2Varmi) {
+				uygunStokKodlari = grupKod2StokSet[voGrup2Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
+				kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
+				if (!kaynakMiktar || kaynakMiktar < voGrup2Miktar) { return null }
+			}
+			for (const shKod in tumUygunStokKodSet) { for (const det of shKod2Bilgi[shKod]?.detaylar) { det.proIskOran = hIskOran } }
+			return { uygulananStoklar: Object.keys(tumUygunStokKodSet) }
+		}
+	};
 })()

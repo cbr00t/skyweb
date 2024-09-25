@@ -1018,6 +1018,9 @@
 						const kadIskOranParent = divSatir.find('.kadIskOranParent');
 						if (rec.kadIskOranVarmi) { kadIskOranParent.find('.kadIskOranText').html(`%${rec.kadIskOran.toLocaleString()}`); kadIskOranParent.removeClass('jqx-hidden') }
 						else { kadIskOranParent.addClass('jqx-hidden') }
+						const proIskOranParent = divSatir.find('.proIskOranParent');
+						if (rec.proIskOranVarmi) { proIskOranParent.find('.proIskOranText').html(`%${rec.proIskOran.toLocaleString()}`); proIskOranParent.removeClass('jqx-hidden') }
+						else { proIskOranParent.addClass('jqx-hidden') }
 						
 						const iskOranParent = divSatir.find('.iskOranParent');
 						if (rec.iskOranVarmi) {
@@ -1462,11 +1465,9 @@
 			await this.tazele()
 		}
 		async promosyonHesapla(e) {
-			e = e || {}; const {fis} = this;
-			if (!fis.class.promosyonKullanilirmi)
-				return
+			e = e || {}; const {fis} = this; if (!fis.class.promosyonKullanilirmi) { return }
 			try {
-				await fis.promosyonHesapla($.extend({}, e, { fis, promosyonYapilari: this.promosyonYapilari, satisKosulYapilari: this.satisKosulYapilari }));
+				await fis.promosyonHesapla({ ...e, fis, promosyonYapilari: this.promosyonYapilari, satisKosulYapilari: this.satisKosulYapilari });
 				setTimeout(() => this.tazele(), 100)
 			}
 			finally { setTimeout(() => this.onResize(), 50) }
@@ -2030,29 +2031,33 @@
 			const det = e.detay, {content} = e, {app, param, fis, fiyatGorurmu, bedelKullanilirmi} = this, {dovizlimi} = fis;
 			const {miktarGirilmezmi} = fis.class, {promosyonmu} = det.class, degisiklikYapilmazmi = fis.class.degisiklikYapilmazmi || promosyonmu;
 			const {fisGirisSadeceBarkodZorunlumu, rbkKullanilirmi, detaylardaFiyatDegistirilirmi, kdvDegiskenmi, iskSayi, ozelKampanyaKullanilirmi, ozelKampanyaOranSayisi} = app;
-			const fiyatFra = dovizlimi ? app.dvFiyatFra : app.fiyatFra, kadIskKullanilirmi = !$.isEmptyObject(det.kadIskYapi);
+			const fiyatFra = dovizlimi ? app.dvFiyatFra : app.fiyatFra, kadIskKullanilirmi = !$.isEmptyObject(det.kadIskYapi), proIskKullanilirmi = !!det.proIskOran;
 			const satirIskOranSinir = det.class.promosyonmu ? 0 : (asFloat(det.satirIskOranSinirUyarlanmis) || 0);
 			const iskKullanilirmi = satirIskOranSinir > 0 && app.iskontoArttirilirmi, rbkIcinUygunmu = rbkKullanilirmi && det.rbkIcinUygunmu;
-			let kadIskOranParent_hiddenState, iskOranParent_hiddenState, iskOranlarStrParent_hiddenState;
+			let kadIskOranParent_hiddenState, proIskOranParent_hiddenState, iskOranParent_hiddenState, iskOranlarStrParent_hiddenState;
 			const mfDegisti = evt => {
 				const kadIskOranParent = content.find('#kadIskOranParent'), divKadIskOranText = kadIskOranParent?.length ? kadIskOranParent.find('.veri') : null;
+				const proIskOranParent = content.find('#proIskOranParent'), divProIskOranText = proIskOranParent?.length ? proIskOranParent.find('.veri') : null;
 				const iskOranParent = content.find('#iskOranParent'), iskOranlarStrParent = content.find('#iskOranlarStrParent');
 				const {malFazlasi} = det, mfParent = content.find('#mfParent');
 				if (malFazlasi) {
 					mfParent.find('#mf').html((malFazlasi || 0).toLocaleString());
 					mfParent.removeClass('jqx-hidden');
-					if (kadIskOranParent?.length) { if (kadIskOranParent_hiddenState == null) kadIskOranParent_hiddenState = kadIskOranParent.hasClass('jqx-hidden'); kadIskOranParent.addClass('jqx-hidden') }
+					if (kadIskOranParent?.length) { if (kadIskOranParent_hiddenState == null) { kadIskOranParent_hiddenState = kadIskOranParent.hasClass('jqx-hidden') } kadIskOranParent.addClass('jqx-hidden') }
+					if (proIskOranParent?.length) { if (proIskOranParent_hiddenState == null) { proIskOranParent_hiddenState = proIskOranParent.hasClass('jqx-hidden') } proIskOranParent.addClass('jqx-hidden') }
 					if (iskOranParent?.length) { if (iskOranParent_hiddenState == null) iskOranParent_hiddenState = iskOranParent.hasClass('jqx-hidden'); iskOranParent.addClass('jqx-hidden') }
 					if (iskOranlarStrParent?.length) { if (iskOranlarStrParent_hiddenState == null) iskOranlarStrParent_hiddenState = iskOranlarStrParent.hasClass('jqx-hidden'); iskOranlarStrParent.addClass('jqx-hidden') }
 				}
 				else {
 					mfParent.addClass('jqx-hidden');
-					if (kadIskOranParent && kadIskOranParent.length) { if (kadIskOranParent_hiddenState === false) kadIskOranParent.removeClass('jqx-hidden') }
-					if (iskOranParent && iskOranParent.length) { if (iskOranParent_hiddenState === false) iskOranParent.removeClass('jqx-hidden') }
+					if (kadIskOranParent?.length) { if (kadIskOranParent_hiddenState === false) kadIskOranParent.removeClass('jqx-hidden') }
+					if (proIskOranParent?.length) { if (proIskOranParent_hiddenState === false) proIskOranParent.removeClass('jqx-hidden') }
+					if (iskOranParent?.length) { if (iskOranParent_hiddenState === false) iskOranParent.removeClass('jqx-hidden') }
 					if (iskOranlarStrParent && iskOranlarStrParent.length) { if (iskOranlarStrParent_hiddenState === false) iskOranlarStrParent.removeClass('jqx-hidden') }
 					iskOranParent_hiddenState = iskOranlarStrParent_hiddenState = null
 				}
 				if (divKadIskOranText?.length) { divKadIskOranText.html(`%${det.kadIskOran || 0}`) }
+				if (divProIskOranText?.length) { divProIskOranText.html(`%${det.proIskOran || 0}`) }
 				if (!det.iskOranVarmi) {
 					let elm = iskOranParent ? iskOranParent.find(`.iskOran`) : null; if (elm && elm.length) elm.jqxNumberInput('value', 0)
 					elm = iskOranlarStrParent ? iskOranlarStrParent.find(`#iskOranlarStr`) : null; if (elm?.length) elm.html('')
@@ -2122,8 +2127,8 @@
 				uiFiyat.attr('maxLength', 17).off('focus').on('focus', evt => evt.target.select()).off('change, blur').on('change, blur', evt => fiyatDegisti(evt))
 			}
 			else {content.find(`#fiyatParent, #bedelParent`).addClass('jqx-hidden')}
-			const _kadIskOranParent = content.find('#kadIskOranParent');
-			if (_kadIskOranParent?.length) _kadIskOranParent[kadIskKullanilirmi ? 'removeClass' : 'addClass']('jqx-hidden')
+			const _kadIskOranParent = content.find('#kadIskOranParent'); if (_kadIskOranParent?.length) { _kadIskOranParent[kadIskKullanilirmi ? 'removeClass' : 'addClass']('jqx-hidden') }
+			const _proIskOranParent = content.find('#proIskOranParent'); if (_proIskOranParent?.length) { _proIskOranParent[proIskKullanilirmi ? 'removeClass' : 'addClass']('jqx-hidden') }
 			if (iskKullanilirmi && !degisiklikYapilmazmi && (satirIskOranSinir == 100 || !det.ozelIskontoVarmi)) {
 				const iskOranParent = content.find(`#iskOranParent`); iskOranParent.removeClass('jqx-hidden'); content.find(`#iskOranlarStrParent`).addClass('jqx-hidden');
 				const uiIskOranListe = iskOranParent.find(`input.iskOran`);

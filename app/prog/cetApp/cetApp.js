@@ -4581,7 +4581,7 @@
 						hBrm: rec.hbrm || '', hDipIsk: asFloat(rec.hdipisk) || 0, hMFVarsaSatirIskKapat: bool2Int(rec.hmfvarsasatiriskkapat),
 						detayliMusterimi: bool2Int(rec.detaylimust), kademelimi: bool2Int(rec.kademelimi),
 						voGrup1Kod: rec.vogrup1kod || '', voGrup1Miktar: rec.vogrup1miktar || 0, voGrup2Varmi: bool2Int(rec.vogrup2varmi ?? rec.bvogrup2varmi),
-						voGrup2Kod: rec.vogrup2kod || '', voGrup2Miktar: rec.vogrup2miktar || 0
+						voGrup2Kod: rec.vogrup2kod || '', voGrup2Miktar: rec.vogrup2miktar || 0, hIskOran: rec.hproiskoran || 0
 					});
 					bsEkle({ hv, rec, rowAttr: 'tarih', ioAttr: 'tarih', converter: value => value ? asReverseDateString(value) : value });
 					bsEkle({ hv, rec, rowAttr: 'cariTip', ioAttr: 'ctip' });

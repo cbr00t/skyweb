@@ -3695,38 +3695,16 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetFisGiris #liste .listeSatir .kdvOraniText {
 	padding-left: 10px;
 }
-.part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent {
-	padding-left: 5px;
-	color: #999;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent .kadIskOranText {
-	font-family: Conv_Roboto-Bold;
-	color: purple;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent {
-	padding-left: 5px;
-	color: #999;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent .iskOranText {
-	font-family: Conv_Roboto-Bold;
-	color: firebrick;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent {
-	padding-left: 5px;
-	color: #999;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent .ozelKampanyaKod {
-	font-family: Conv_Roboto-Bold;
-	color: #c57825;
-}
-.part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranParent {
-	padding-left: 5px;
-	color: #777;
-}
-.part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranText {
-	font-family: Conv_Roboto-Bold;
-	color: #c57825;
-}
+.part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent,
+	.part.cetApp.cetFisGiris #liste .listeSatir .proIskOranParent,
+	.part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent,
+	.part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent,
+	.part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranParent { padding-left: 5px; color: #999 }
+.part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent .kadIskOranText { font-family: Conv_Roboto-Bold; color: purple }
+.part.cetApp.cetFisGiris #liste .listeSatir .proIskOranParent .proIskOranText { font-family: Conv_Roboto-Bold; color: forestgreen }
+.part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent .iskOranText { font-family: Conv_Roboto-Bold; color: firebrick }
+.part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent .ozelKampanyaKod { font-family: Conv_Roboto-Bold; color: #c57825 }
+.part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranText { font-family: Conv_Roboto-Bold; color: #c57825 }
 .part.cetApp.cetFisGiris #liste .listeSatir .miktarParent .miktar {
 	color: green;
 }

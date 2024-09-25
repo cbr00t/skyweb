@@ -27,33 +27,20 @@
 				kosulYapi: e.kosulYapi || {}
 			});
 			this.orjFiyat = this.orjFiyat || this.fiyat;
-			if (this.orjKdvOrani == null)
-				this.orjKdvOrani = this.kdvOrani;
-
-			if (fis && fis.ihracatmi)
-				this.kdvOrani = 0;
-			
-			if (!isCopy)
-				this.brmFiyatDuzenle(e)
-
-			this.class.iskOranKeys.forEach(key =>
-				this[key] = asFloat(e[key] || e[key.toLowerCase()]) || 0);
-			this.class.kamOranKeys.forEach(key =>
-				this[key] = asFloat(e[key] || e[key.toLowerCase()]) || 0);
-
+			if (this.orjKdvOrani == null) { this.orjKdvOrani = this.kdvOrani }
+			if (fis?.ihracatmi) { this.kdvOrani = 0 }
+			if (!isCopy) { this.brmFiyatDuzenle(e) }
+			this.class.iskOranKeys.forEach(key => this[key] = asFloat(e[key] || e[key.toLowerCase()]) || 0);
+			this.class.kamOranKeys.forEach(key => this[key] = asFloat(e[key] || e[key.toLowerCase()]) || 0);
 			if (!isCopy) {
 				this.ozelKampanyaIskOranSinirBul(e).then(() => {
-					if (!(this.brutBedel && this.netBedel))
-						this.bedelHesapla();
-					else if (this.kdv == null)
-						this.kdvHesapla();
+					if (!(this.brutBedel && this.netBedel)) { this.bedelHesapla() }
+					else if (this.kdv == null) { this.kdvHesapla() }
 				});
-				this.malFazlasiHesapla(e);
+				this.malFazlasiHesapla(e)
 			}
 		}
-
 		static get fisSinif() { return CETTicariFis }
-
 		static get iskOranKeys() {
 			const {iskSayi} = sky.app;
 			const result = super.iskOranKeys || [];
@@ -185,7 +172,8 @@
 				promosyonYapilmazmi: asBool(rec.promosyonYapilmazmi || ''),
 				iskontoYapilmazmi: asBool(rec.iskontoYapilmazmi || ''),
 				kadIskYapi: (rec.kadIskYapi ? JSON.parse(rec.kadIskYapi) : {}),
-				kadIskOran: asFloat(rec.kadiskoran) || 0, proIskOran: asFloat(rec.proIskOran) || 0,
+				kadIskOran: asFloat(rec.kadiskoran) || 0,
+				proIskOran: asFloat(rec.proIskOran) || 0,
 				kosulYapi: (kosulYapiStr ? JSON.parse(kosulYapiStr) : null) || {}
 			});
 			this.orjFiyat = this.orjFiyat || this.fiyat;
@@ -296,26 +284,21 @@
 		}
 		ekBilgileriBelirleDevam(e) {
 			e = e || {}; super.ekBilgileriBelirleDevam(e); const {app} = sky, {fiyatFra} = app, {fis, rec} = e;
-			this.orjKdvOrani = asInteger(rec.kdvOrani) || 0;
-			if (fis?.ihracatmi) { this.kdvOrani = 0 }
+			this.orjKdvOrani = asInteger(rec.kdvOrani) || 0; if (fis?.ihracatmi) { this.kdvOrani = 0 }
 			let oncekiFiyat = this.fiyat; if (!(this._fiyatBelirlendimi || this.ozelFiyatVarmi)) { this.fiyat = (roundToFra(rec.brmFiyat, fiyatFra) || 0) }
 			if (!this.orjFiyat) { this.orjFiyat = this.fiyat }
 			this.brmFiyatDuzenle(e)
 		}
 		brmFiyatDuzenle(e) {
-			if (this._fiyatBelirlendimi) { return }
-			const {app} = sky, {fiyatFra} = app, {fis} = e;
-			if (fis) {
-				const {yildizlimi} = fis, {stokFiyatKdvlimi} = app;
-				if (yildizlimi) {
-					if (app.yildizFiyatKdvlimi) { if (!stokFiyatKdvlimi) { this.fiyat = roundToFra(this.fiyat + (this.fiyat * this.kdvOrani / 100), fiyatFra) } }
-					else { if (stokFiyatKdvlimi) { this.fiyat = roundToFra(this.fiyat * 100 / (100 + this.kdvOrani), fiyatFra) } }
-				}
-				else { /* normal fişler KDV Hariç kabul edilir (gerekirse dipte kdv) */
-					if (stokFiyatKdvlimi) { this.fiyat = roundToFra(this.fiyat * 100 / (100 + this.kdvOrani), fiyatFra); }
-				}
-				this._fiyatBelirlendimi = true
-			}
+			if (this._fiyatBelirlendimi) { return } const {app} = sky, {fiyatFra} = app;
+			const {fis} = e; if (!fis) { return }
+			const {yildizlimi} = fis, {stokFiyatKdvlimi} = app;
+			if (yildizlimi) {
+				if (app.yildizFiyatKdvlimi) { if (!stokFiyatKdvlimi) { this.fiyat = roundToFra(this.fiyat + (this.fiyat * this.kdvOrani / 100), fiyatFra) } }
+				else { if (stokFiyatKdvlimi) { this.fiyat = roundToFra(this.fiyat * 100 / (100 + this.kdvOrani), fiyatFra) } }
+			}	/* normal fişler KDV Hariç kabul edilir (gerekirse dipte kdv) */
+			else if (stokFiyatKdvlimi) { this.fiyat = roundToFra(this.fiyat * 100 / (100 + this.kdvOrani), fiyatFra) }
+			this._fiyatBelirlendimi = true
 		}
 		kdvHesapla(e) {
 			e = e || {}; const {fis} = e; if (!fis) { return }
@@ -332,7 +315,7 @@
 			const ozelKampanyaKod2Rec = app.caches?.ozelKampanyaKod2Rec || {}; let rec = ozelKampanyaKod2Rec[ozelKampanyaKod] || null;
 			if (rec == null) {
 				const dbMgr = this.class.fisSinif.dbMgr || sky.app.dbMgr_mf;
-				const sent = new MQSent({ from: `mst_OzelKampanya`, where: [{ degerAta: ozelKampanyaKod, saha: `kod` }], sahalar: [`*`] });
+				const sent = new MQSent({ from: 'mst_OzelKampanya', where: [{ degerAta: ozelKampanyaKod, saha: 'kod' }], sahalar: ['*'] });
 				const stm = new MQStm({ sent }); rec = await dbMgr.tekilExecuteSelect({ tx: e.tx, query: stm }); ozelKampanyaKod2Rec[ozelKampanyaKod] = rec;
 			}
 			const iskSinir = roundToFra(asFloat(rec.iskSinir), 2) || 100; this.ozelKampanyaIskSinir = iskSinir
@@ -348,7 +331,7 @@
 		bedelHesapla(e) {
 			let _bedel = this.brutBedel = bedel((this.miktar || 0) * (this.fiyat || 0));
 			let proc = oranListe => { for (const oran of oranListe) { if (oran) { let xBedel = bedel(_bedel * oran / 100) || 0; _bedel -= xBedel } } };
-			proc(this.iskOranListe); proc(this.kamOranListe); proc([this.kadIskOran]);
+			proc(this.iskOranListe); proc(this.kamOranListe); proc([this.kadIskOran, this.proIskOran]);
 			if (sky.app.ozelKampanyaKullanilirmi && this.ozelKampanyaKod) { proc(this.ozelKamOranListe) }
 			this.netBedel = bedel(_bedel); this.netFiyatHesapla(e);
 		}
@@ -358,88 +341,40 @@
 		siparisKarsilamaYapiReset(e) { super.siparisKarsilamaYapiReset(e); this.siparisVioID2MiktarYapi = {} }
 		static getDokumAttr2Baslik(e) {
 			return $.extend(super.getDokumAttr2Baslik(e) || {}, {
-				promosyonKod: `Pro.`,
-				proKod: `Pro.`,
-				promosyonText: `Pro.`,
-				kdvOrani: `KDV%`,
-				kdvOraniText: 'KDV%',
-				kdvBedel: `KDV Tutar`
+				promosyonKod: 'Pro.', proKod: 'Pro.', promosyonText: 'Pro.',
+				kdvOrani: 'KDV%', kdvOraniText: 'KDV%', kdvBedel: 'KDV Tutar'
 			})
 		}
-
 		async dokumSahaDegeri(e) {
 			let value = await super.dokumSahaDegeri(e);
-			if (value == null)
-				return value;
-			
+			if (value == null) { return value }
 			const {saha} = e;
-			if (saha && saha.tip == 'bedel')
-				return bedelStr(value) + ' TL';
-			
-			return value;
+			if (saha?.tip == 'bedel') { return bedelStr(value) + ' TL' }
+			return value
 		}
-
 		async getDokumDegeriDict(e) {
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
-				promosyonKod: ``,
-				proKod: ``,
-				promosyonText: '',
-				proText: '',
+				promosyonKod: '', proKod: '', promosyonText: '', proText: '',
 				miktar: e => {
 					const {miktar, malFazlasi} = this;
-					let value = miktar.toString();
-					if (malFazlasi)
-						value += `+${malFazlasi.toString()}`;
-					return value;
+					let value = miktar.toString(); if (malFazlasi) { value += `+${malFazlasi.toString()}` }
+					return value
 				},
 				kdvOraniText: `%${this.kdvOrani}`,
 				kdvBedel: e => {
-					if (this.kdv == null)
-						this.kdvHesapla(e);
-					return this.kdv;
+					if (this.kdv == null) { this.kdvHesapla(e) }
+					return this.kdv
 				},
-				toplamIskontoBedel(e) {
-					return this.toplamIskontoBedel
-				},
+				toplamIskontoBedel(e) { return this.toplamIskontoBedel },
 				iskOranlariText(e) {
-					const {iskOranListe, kadIskOran} = this;
-					const liste = [];
-					for (const iskOran of iskOranListe) {
-						if (iskOran)
-							liste.push(iskOran)
-					}
-					if (kadIskOran)
-						liste.push(kadIskOran)
-					
-					return $.isEmptyObject(liste) ? '' : (
-						'%' +
-						((liste || [])
-								.map(val => val.toLocaleString())
-							.join(`+`))
-					)
+					const {iskOranListe, kadIskOran, proIskOran} = this, liste = [];
+					for (const iskOran of [...iskOranListe, kadIskOran, proIskOran]) { if (iskOran) { liste.push(iskOran) } }
+					return $.isEmptyObject(liste) ? '' : '%' + ((liste || []).map(val => val.toLocaleString()).join(`+`))
 				},
 				ozelKampanyaOranlariText(e) {
-					const {ozelKamOranListe} = this;
-					if ($.isEmptyObject(ozelKamOranListe))
-						return ``;
-					return '%' +
-						((ozelKamOranListe || [])
-								.map(val => val.toLocaleString())
-							.join(`+`))
-				},
-				proIskOranText(e) {
-					const {proIskOran} = this, liste = [];
-					for (const iskOran of iskOranListe) {
-						if (iskOran)
-							liste.push(iskOran)
-					}
-					if (kadIskOran)
-						liste.push(kadIskOran)
-					
-					return $.isEmptyObject(liste) ? '' : (
-						'%' + ((liste || []).map(val => val.toLocaleString()).join(`+`))
-					)
-				},
+					const {ozelKamOranListe} = this; if ($.isEmptyObject(ozelKamOranListe)) { return '' }
+					return '%' + (ozelKamOranListe || []).map(val => val.toLocaleString()).join('+')
+				}
 			})
 		}
 	}

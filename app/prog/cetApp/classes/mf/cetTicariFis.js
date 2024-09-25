@@ -481,23 +481,15 @@
 			this.dvKur = await this.class.dvKurBelirle($.extend({}, e, { dvKod: dvKod }));
 			return this
 		}
-
 		gerekirseDipHesapla(e) {
 			super.gerekirseDipHesapla(e); let {icmal} = this;
-			if (!icmal) {
-				icmal = this.dipOlustur(e); icmal.hesaplandimi = true;
-				return icmal
-			}
-			if (!icmal.hesaplandimi)
-				this.dipHesapla(e)
+			if (!icmal) { icmal = this.dipOlustur(e); icmal.hesaplandimi = true; return icmal }
+			if (!icmal.hesaplandimi) { this.dipHesapla(e) }
 			return icmal
 		}
 		dipHesapla(e) {
 			super.dipHesapla(e); let {icmal} = this;
-			if (!icmal) {
-				icmal = this.dipOlustur(e); icmal.hesaplandimi = true;
-				return icmal
-			}
+			if (!icmal) { icmal = this.dipOlustur(e); icmal.hesaplandimi = true; return icmal }
 			icmal.hesapla({ fis: this }); icmal.hesaplandimi = true;
 			return icmal
 		}
@@ -510,30 +502,28 @@
 				const {shKod} = det;
 				if (det.class.promosyonmu) { const proKod = det.promoKod; tavsiyeProKod2Stok[proKod] = shKod }
 				else {
-					yDetaylar.push(det); if (det.promosyonYapilmazmi) continue;
-					const {grupKod} = det; let bilgi = shKod2Bilgi[shKod] = shKod2Bilgi[shKod] || { topMiktar: 0, grupKod: grupKod }; bilgi.topMiktar = (asFloat(bilgi.topMiktar) || 0) + (asFloat(det.miktar) || 0);
-					let _detaylar = bilgi.detaylar = bilgi.detaylar || []; if (!$.isArray(_detaylar)) { _detaylar = bilgi.detaylar = Object.keys(_detaylar) } _detaylar.push(det);
-					let shKodSet = grupKod2StokSet[grupKod] = grupKod2StokSet[grupKod] || {}; shKodSet[shKod] = true
+					yDetaylar.push(det); if (det.promosyonYapilmazmi) { continue }
+					const {grupKod} = det; let bilgi = shKod2Bilgi[shKod] = shKod2Bilgi[shKod] || { topMiktar: 0, grupKod };
+					bilgi.topMiktar = (asFloat(bilgi.topMiktar) || 0) + (asFloat(det.miktar) || 0);
+					let _detaylar = bilgi.detaylar = bilgi.detaylar || []; if (!$.isArray(_detaylar)) { _detaylar = bilgi.detaylar = Object.keys(_detaylar) }
+					_detaylar.push(det); let shKodSet = grupKod2StokSet[grupKod] = grupKod2StokSet[grupKod] || {}; shKodSet[shKod] = true
 				}
 			}
-			let dogrudanProDetListe = [];
-			if (!$.isEmptyObject(yDetaylar)) {
+			let dogrudanProDetListe = []; if (!$.isEmptyObject(yDetaylar)) {
 				const promosyonYapilari = e.promosyonYapilari || {};
 				for (let proTip in promosyonYapilari) {
-					if ($.isEmptyObject(shKod2Bilgi)) break
-					const promosyonListe = promosyonYapilari[proTip];
-					for (const pro of promosyonListe) {
+					if ($.isEmptyObject(shKod2Bilgi)) { break }
+					const promosyonListe = promosyonYapilari[proTip]; for (const pro of promosyonListe) {
 						const tavsiyeStokKod = tavsiyeProKod2Stok[pro.id];
-						let result = await pro.promosyonSonucu($.extend({}, e, { detaylar, shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod }));
-						const proDet = result?.proDet;
-						if (proDet) {
+						let result = await pro.promosyonSonucu({ ...e, detaylar, yDetaylar, shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod });
+						const proDet = result?.proDet; if (proDet) {
 							proDet.promoKod = proDet.promoKod || pro.id; yDetaylar.push(proDet);
-							if (!pro.class.stokSecimlimi) dogrudanProDetListe.push(proDet)
+							if (!pro.class.stokSecimlimi) { dogrudanProDetListe.push(proDet) }
 						}
 					}
 				}
 			}
-			this.detaylar = yDetaylar
+			this.detaylar = yDetaylar; let rollbackFlag = false;
 			if (e.islem && !e.gecici && !$.isEmptyObject(dogrudanProDetListe)) {
 				let yProDetListe = await new Promise(async (resolve, fail) => {
 					let _recs = [], seq2ProDet = {};
@@ -553,54 +543,38 @@
 					});
 					await part.run();
 				}) || [];
-				if (yProDetListe && yProDetListe.isError) throw yProDetListe
-				this.detaylar = yDetaylar = yDetaylar.filter(det => !det.class.promosyonmu);
-				yDetaylar.push(...(yProDetListe || []));
+				if (yProDetListe && yProDetListe.isError) { throw yProDetListe }
+				yDetaylar = yDetaylar.filter(det => !det.class.promosyonmu); yDetaylar.push(...(yProDetListe || []));
+				this.detaylar = yDetaylar; if (this.promosyonHesaplaSonrasi_araIslem(e) === false) { rollbackFlag = true }
 			}
-			await this.dipHesapla(e);
-			const yeniSonucBedel = this.sonucBedel;
-			if (sonucBedel != yeniSonucBedel) {
-				const _result = await new $.Deferred(p => {
-					displayMessage(
-						(
-							`<p><span class="blue">Promosyon Hesabı sonrası <b>Belge Sonuç Bedeli</b> değişti!</span><br/><span class="bold">Devam edilsin mi?</span></p>` +
-							`<p class="ekBilgi"><ul><li>Önce : <span class="bold red">${bedelStr(sonucBedel)} TL</span></li><li>Sonra: <span class="bold green">${bedelStr(yeniSonucBedel)} TL</span></li></ul></p>`
-						),
-						sky.app.appText,
-						true,
-						{
-							EVET: (dlgUI, btnUI) => {
-								dlgUI.jqxWindow('destroy');
-								p.resolve(true)
-							},
-							HAYIR: (dlgUI, btnUI) => {
-								dlgUI.jqxWindow('destroy');
-								p.resolve(false)
-							}
-						}
-					)
-				});
-				if (!_result) {
-					this.detaylar = orjDetaylar;
-					await this.dipHesapla(e);
-					throw { isError: true, rc: 'userAbort' };
-				}
+			if (!rollbackFlag) {
+				await this.dipHesapla(e) /* const yeniSonucBedel = this.sonucBedel;
+				if (sonucBedel != yeniSonucBedel) {
+					const _result = await new $.Deferred(p => {
+						displayMessage(
+							(   `<p><span class="blue">Promosyon Hesabı sonrası <b>Belge Sonuç Bedeli</b> değişti!</span><br/><span class="bold">Devam edilsin mi?</span></p>` +
+								`<p class="ekBilgi"><ul><li>Önce : <span class="bold red">${bedelStr(sonucBedel)} TL</span></li><li>Sonra: <span class="bold green">${bedelStr(yeniSonucBedel)} TL</span></li></ul></p>`
+							), sky.app.appText, true,
+							{ EVET: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy'); p.resolve(true) }, HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy'); p.resolve(false) } }
+						)
+					});
+					if (!_result) { rollbackFlag = true }
+				} */
 			}
+			if (rollbackFlag) { this.detaylar = orjDetaylar; await this.dipHesapla(e); throw { isError: true, rc: 'userAbort' } }
 			return yDetaylar
 		}
+		promosyonHesaplaSonrasi_araIslem(e) { }
 		async onKontrol(e) {
 			e = e || {}; const superResult = await super.onKontrol(e);
-			if (!superResult || superResult.isError)
-				return superResult
+			if (!superResult || superResult.isError) { return superResult }
 			let kod = this.nakSekliKod;
 			if (kod) {
 				let result = sky.app.caches.nakliyeSekliKod2Rec[kod];
-				if (result == null)
-					result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_NakliyeSekli WHERE kod = ?`, params: [kod] }))
-				if (!result)
-					return this.error_onKontrol(`<b>(${kod})</b> kodlu <u>Nakliye Şekli</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Nakliye Şekli</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue');
+				if (result == null) { result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_NakliyeSekli WHERE kod = ?`, params: [kod] })) }
+				if (!result) { return this.error_onKontrol(`<b>(${kod})</b> kodlu <u>Nakliye Şekli</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Nakliye Şekli</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue') }
 			}
-			kod = this.tahSekliKodNo
+			kod = this.tahSekliKodNo;
 			if (kod) {
 				let result = sky.app.caches.tahsilSekliKodNo2Rec[kod];
 				if (result == null)
@@ -998,7 +972,7 @@
 				}
 			}
 		}
-		async kaydetOncesiKontrol_promosyon(e) { if (this.class.promosyonKullanilirmi) await this.promosyonHesapla(e) }
+		async kaydetOncesiKontrol_promosyon(e) { if (this.class.promosyonKullanilirmi) { await this.promosyonHesapla(e) } }
 		kaydetOncesiKontrol_nakitUstLimit(e) {
 			e = e || {};
 			const {app} = sky;

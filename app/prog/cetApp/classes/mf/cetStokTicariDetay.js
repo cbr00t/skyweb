@@ -1,10 +1,9 @@
 (function() {
 	window.CETStokTicariDetay = class extends window.MQDetay {
+		static get fisSinif() { return CETStokTicariFis } static get table() { return 'data_PIFStok' } static get detTipi() { return 'S' }
+		static get dipIskBedelKullanilirmi() { return false } static get promosyonmu() { return false }
 		constructor(e) {
-			e = e || {};
-			super(e);
-
-			const orjMiktar = e.miktar;
+			e = e || {}; super(e); const orjMiktar = e.miktar;
 			$.extend(this, {
 				vioID: e.vioID || null,
 				barkod: e.barkod || null,
@@ -26,39 +25,22 @@
 				satirIskOranSinirVarmi: e.satirIskOranSinirVarmi == null ? null : asBool(e.satirIskOranSinirVarmi),
 				satirIskOranSinir: null,
 				iskSinir: e.iskSinir,
-				ekOzelliklerYapi: !e.isCopy && (!e.ekOzelliklerYapi || $.isPlainObject(e.ekOzelliklerYapi))
-										? new CETEkOzellikler(e.ekOzelliklerYapi)
-										: e.ekOzelliklerYapi,
+				ekOzelliklerYapi: !e.isCopy && (!e.ekOzelliklerYapi || $.isPlainObject(e.ekOzelliklerYapi)) ? new CETEkOzellikler(e.ekOzelliklerYapi) : e.ekOzelliklerYapi,
 				iskontoYapilmazmi: true,
 				promosyonYapilmazmi: true
 			});
-			
 			// this.kdvOrani = this.fiyat = this.brutBedel = this.netBedel = this.netFiyat = 0;
 			if (this.paketKod) {
-				/*if (!this.paketMiktar)
-					this.paketMiktar = asFloat(e.carpan) || 1;*/
+				/*if (!this.paketMiktar) this.paketMiktar = asFloat(e.carpan) || 1;*/
 				const paketIcAdet = this.paketIcAdet = asFloat(e.paketIcAdet || e.carpan) || 0;
-				if (!orjMiktar)
-					this.miktar = paketIcAdet;
-				if (this.paketIcAdet && !this.paketMiktar)
-					this.miktar2PaketMiktarHesapla(e);
+				if (!orjMiktar) { this.miktar = paketIcAdet }
+				if (this.paketIcAdet && !this.paketMiktar) { this.miktar2PaketMiktarHesapla(e) }
 			}
 
-			let {okunanTumBarkodlar} = this;
-			if (!okunanTumBarkodlar)
-				okunanTumBarkodlar = this.okunanTumBarkodlar = {};
-			else if ($.isArray(okunanTumBarkodlar))
-				okunanTumBarkodlar = this.okunanTumBarkodlar = asSet(okunanTumBarkodlar);
-
+			let {okunanTumBarkodlar} = this; if (!okunanTumBarkodlar) { okunanTumBarkodlar = this.okunanTumBarkodlar = {} }
+			else if ($.isArray(okunanTumBarkodlar)) { okunanTumBarkodlar = this.okunanTumBarkodlar = asSet(okunanTumBarkodlar) }
 			const {barkod} = this; if (barkod) { okunanTumBarkodlar[barkod] = true }
 		}
-
-		static get fisSinif() { return CETStokTicariFis }
-		static get table() { return 'data_PIFStok' }
-		static get detTipi() { return 'S' }
-		static get dipIskBedelKullanilirmi() { return false }
-		static get promosyonmu() { return false }
-
 		static async getStokEkBilgiStm(e) {
 			e = e || {};
 			const alias = e.alias || 'stk';
@@ -286,58 +268,26 @@
 					} });
 				}
 			}
-			
-			return hv;
+			return hv
 		}
-
-		getAnahtarDegeriSiparis(e) {
-			const hv = this.getAnahtarHVSiparis(e);
-			return hv ? Object.values(hv) : null;
-		}
-
+		getAnahtarDegeriSiparis(e) { const hv = this.getAnahtarHVSiparis(e); return hv ? Object.values(hv) : null }
 		getAnahtarStrSiparis(e) {
-			e = e || {};
-			const anah = this.getAnahtarDegeriSiparis(e);
+			e = e || {}; const anah = this.getAnahtarDegeriSiparis(e);
 			return $.isEmptyObject(anah) ? '' : anah.join(e.delim || e.anahtarDelim || CETEkOzellikler.anahtarDelim)
 		}
-		
-		getAnahtarStr(e) {
-			e = e || {};
-			return this.ekOzelliklerYapi.getAnahtarStr($.extend({}, e, { delim: e.delim || e.anahtarDelim, anahtarDegeri: this.getAnahtarDegeri(e) }))
-		}
-
-		getSadeceOzellikAnahtarDegeri(e) {
-			e = e || {};
-			return this.ekOzelliklerYapi.getAnahtarDegeri($.extend({}, e, { delim: e.delim || e.anahtarDelim }));
-		}
-
+		getAnahtarStr(e) { e = e || {}; return this.ekOzelliklerYapi.getAnahtarStr($.extend({}, e, { delim: e.delim || e.anahtarDelim, anahtarDegeri: this.getAnahtarDegeri(e) })) }
+		getSadeceOzellikAnahtarDegeri(e) { e = e || {}; return this.ekOzelliklerYapi.getAnahtarDegeri($.extend({}, e, { delim: e.delim || e.anahtarDelim })) }
 		getSadeceOzellikAnahtarStr(e) {
-			e = e || {};
-			const anah = this.getSadeceOzellikAnahtarDegeri(e);
-			if ($.isEmptyObject(anah))
-				return '';
-			
-			return anah.filter(x => !!x)
-						.join(e.delim || e.anahtarDelim || CETEkOzellikler.anahtarDelim)
+			e = e || {}; const anah = this.getSadeceOzellikAnahtarDegeri(e);
+			if ($.isEmptyObject(anah)) { return '' }
+			return anah.filter(x => !!x).join(e.delim || e.anahtarDelim || CETEkOzellikler.anahtarDelim)
 		}
-
-		get sadeceOzellikAnahtarDegeri() {
-			return this.getSadeceOzellikAnahtarDegeri();
-		}
-		
-		get sadeceOzellikAnahtarStr() {
-			return this.getSadeceOzellikAnahtarStr();
-		}
-
-		get kadIskOranVarmi() {
-			return !!this.kadIskOran
-		}
-
+		get sadeceOzellikAnahtarDegeri() { return this.getSadeceOzellikAnahtarDegeri() }
+		get sadeceOzellikAnahtarStr() { return this.getSadeceOzellikAnahtarStr() }
+		get kadIskOranVarmi() { return !!this.kadIskOran }
+		get proIskOranVarmi() { return !!this.proIskOran }
 		static get iskOranKeys() { return [] }
-		
-		get iskOranVarmi() {
-			return this.class.iskOranKeys.find(key => !!this[key])
-		}
+		get iskOranVarmi() { return this.class.iskOranKeys.find(key => !!this[key]) }
 		
 		get iskOranListe() {
 			const liste = [];
@@ -416,7 +366,6 @@
 			}
 			return result;
 		}
-
 		get rafKod() {
 			const ekOzellik = this.ekOzellik_raf;
 			return ekOzellik ? ekOzellik.value : null;
@@ -429,10 +378,7 @@
 			}
 		}
 
-		get refRafKod() {
-			const ekOzellik = this.ekOzellik_refRaf;
-			return ekOzellik ? ekOzellik.value : null;
-		}
+		get refRafKod() { const ekOzellik = this.ekOzellik_refRaf; return ekOzellik ? ekOzellik.value : null }
 		set refRafKod(valueOrBlock) {
 			const ekOzellik = this.ekOzellik_refRaf;
 			if (ekOzellik) {

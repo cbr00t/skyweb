@@ -41,7 +41,7 @@
 		static get proTip() { return null } static get stokSecimlimi() { return false }
 		static get proSiniflari() {
 			if (this._proSiniflari == null) this._proSiniflari = [
-				CETPromosyon_CIRO1, CETPromosyon_STOK1, CETPromosyon_STOK2, CETPromosyon_GRUP3, CETPromosyon_GRUP1, CETPromosyon_GRUP2
+				CETPromosyon_CIRO1, CETPromosyon_STOK1, CETPromosyon_STOK2, CETPromosyon_GRUP3, CETPromosyon_GRUP1, CETPromosyon_GRUP2, CETPromosyon_OGRP1
 			]
 			return this._proSiniflari
 		}
@@ -107,7 +107,7 @@
 				const cariKod = istenenKapsam.cari;
 				if (cariKod) {
 					const kodClause = MQSQLOrtak.sqlDegeri(cariKod);
-					sent.leftJoin({ alias: `pro`, from: `mst_PromosyonMusteri mus`, on: [`pro.proTip = mus.proTip`, `pro.kod = mus.proKod`, `mus.kod = ${kodClause}`] });
+					sent.leftJoin({ alias: 'pro', from: `mst_PromosyonMusteri mus`, on: [`pro.proTip = mus.proTip`, `pro.kod = mus.proKod`, `mus.kod = ${kodClause}`] });
 					sent.where.add(new MQOrClause([
 						new MQSubWhereClause([`pro.detayliMusterimi <> 0`, `mus.kod is not null`]),
 						new MQSubWhereClause([`pro.detayliMusterimi = 0`, new MQSubWhereClause([`(pro.cariBasi = '' OR pro.cariBasi <= ${kodClause})`, `(pro.cariSonu = '' OR ${kodClause} <= pro.cariSonu)`])])
@@ -174,20 +174,27 @@
 			const recs = await this.dbMgr.executeSqlReturnRows({ tx: e.tx, query: new MQStm({ sent, orderBy: ['proTip', 'proKod', 'eKadar DESC', 'seq DESC'] }) }); return recs
 		}
 		async promosyonSonucu(e) {
-			let result = await this._promosyonSonucu(e);
-			const proDet = result ? result.proDet : null; if (!proDet) return proDet
-			if (!proDet.promoKod) { proDet.promoKod = this.id; await proDet.detayEkIslemler_ekle(e) }
-			const {shKod2Bilgi} = e, uygulananStoklar = result.uygulananStoklar || {};
-			if (this.hMFVarsaSatirIskKapatmi) {
-				for (let shKod in uygulananStoklar) {
-					const bilgi = shKod2Bilgi[shKod] || {}; let _detaylar = bilgi.detaylar;
-					if (_detaylar) {
-						if (!$.isArray(_detaylar)) { _detaylar = bilgi.detaylar = Object.keys(_detaylar) }
-						for (const det of _detaylar) { det.iskontoKampanyaReset() }
+			let result = await this._promosyonSonucu(e); const proDet = result?.proDet;
+			if (proDet) { if (!proDet.promoKod) { proDet.promoKod = this.id; await proDet.detayEkIslemler_ekle(e) } }
+			const {shKod2Bilgi} = e; let uygulananStoklar = result?.uygulananStoklar;
+			if (typeof uygulananStoklar == 'object' && !$.isArray(uygulananStoklar)) { uygulananStoklar = Object.keys(uygulananStoklar) }
+			if (uygulananStoklar) {
+				if (this.hMFVarsaSatirIskKapatmi) {
+					for (let shKod of uygulananStoklar) {
+						const bilgi = shKod2Bilgi[shKod] || {}; let _detaylar = bilgi.detaylar;
+						if (_detaylar) {
+							if (!$.isArray(_detaylar)) { _detaylar = bilgi.detaylar = Object.keys(_detaylar) }
+							for (const det of _detaylar) { det.iskontoKampanyaReset() }
+						}
 					}
 				}
+				for (const shKod of uygulananStoklar) {
+					const _detaylar = shKod2Bilgi[shKod]?.detaylar;
+					if (_detaylar) { for (const det of _detaylar) { await det.bedelHesapla(e) } }
+					delete shKod2Bilgi[shKod]
+				}
 			}
-			for (const shKod in uygulananStoklar) { delete shKod2Bilgi[shKod] } return result
+			return result ?? null
 		}
 		_promosyonSonucu(e) { return null }
 		error_ekranVazgecYapildi(e) { e = e || {}; return { isError: true, rc: e.rc || 'vazgecYapildi', errorText: 'Ekrandan ürün seçilmedi' } }
