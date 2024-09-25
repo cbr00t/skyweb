@@ -301,6 +301,17 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasTables('mst_ProGrup2Stok')),
+					queries: [
+						`CREATE TABLE IF NOT EXISTS mst_ProGrup2Stok (
+							rowid						INTEGER NOT NULL AUTOINCREMENT,
+							proGrupKod					TEXT NOT NULL,
+							stokKod						TEXT NOT NULL,
+							PRIMARY KEY (proGrupKod, stokKod)
+						)`
+					]
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup1Miktar')),
 					queries: [
 						`ALTER TABLE mst_Promosyon ADD voGrup1Kod		TEXT NOT NULL DEFAULT ''`,
@@ -2917,39 +2928,21 @@
 		}
 
 		async merkezdenBilgiYukleDevam(e) {
-			e = e || {};
-			this.prefetchAbortedFlag = true;
-
-			const {appMagazaVeyaSDMmi} = this.class;
-			const {isDevMode} = this;
-			const {dbMgrKeys, dbMgr, verilerSilinmesinFlag} = e;
-			const dbMgr_param = this.dbMgrs.param;
-			let wsFetches = e.wsFetches = {};
-			let islemAdi, _rec, recs, subCount, hvListe;
-
-			let _param = this.param;
+			e = e || {}; this.prefetchAbortedFlag = true;
+			const {appMagazaVeyaSDMmi} = this.class, {isDevMode} = this, {dbMgrKeys, dbMgr, verilerSilinmesinFlag} = e, dbMgr_param = this.dbMgrs.param;
+			let wsFetches = e.wsFetches = {}, _param = this.param, islemAdi, _rec, recs, subCount, hvListe;
 			if (this.kmTakibiYapilirmi /*&& !_param.kapandimi*/) {
 				// displayMessage(`UYARI: <b>Kapanış yapıldı!</b>`, this.appText);
 				const _e = { /*silent: true*/ otoGondermi: true };
 				try {
-					await this.merkezeBilgiGonderOnKontrol(_e);
-					_param = this.param;
-					_param.kapandimi = true;
-					await _param.kaydet();
-					
+					await this.merkezeBilgiGonderOnKontrol(_e); _param = this.param; _param.kapandimi = true; await _param.kaydet();
 					const _result = await this.merkezeBilgiGonder(_e);
-					if ((_result || {}).isError)
-						throw _result;
-					
+					if (_result?.isError) { throw _result }
 					const hataliTable2FisIDListe = (_result || {}).hataliTable2FisIDListe || {};
-					if (!$.isEmptyObject(hataliTable2FisIDListe))
-						throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' };
-					await _param.kaydet();
+					if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
+					await _param.kaydet()
 				}
-				catch (ex) {
-					console.error(ex);
-					_param.kapandimi = false;
-				}
+				catch (ex) { console.error(ex); _param.kapandimi = false }
 			}
 			
 			islemAdi = 'Parametreler';
@@ -3193,8 +3186,7 @@
 
 
 			islemAdi = 'Stok Yer listesi';
-			if (appMagazaVeyaSDMmi)
-				wsFetches.yerRafListe = this.wsYerRafListe();
+			if (appMagazaVeyaSDMmi) { wsFetches.yerRafListe = this.wsYerRafListe() }
 			recs = await this.fetchWSRecs({ source: wsFetches.yer, islemAdi: islemAdi, step: 1 });
 			// subCount = asInteger(recs.length / 2);
 			subCount = 1;
@@ -3283,34 +3275,32 @@
 						if (e.index % subCount == 0)
 							this.knobProgressStep();
 					}
-				});
+				})
 			}
-
 
 			islemAdi = 'Stok Grup listesi';
 			$.extend(wsFetches, {															// next prefetch
-				barkodReferans: this.wsBarkodReferansListe()
+				barkodReferans: this.wsBarkodReferansListe(),
+				proGrupDetaylar: this.wsProGrupDetaylar()
 			});
-			if (ozelKampanyaKullanilirmi)
-				wsFetches.ozelKampanyaListe = await this.wsOzelKampanyaListe();
-			recs = await this.fetchWSRecs({ source: wsFetches.stokGrup, islemAdi: islemAdi, step: 1 });
-			// subCount = asInteger(recs.length / 2);
-			subCount = 1;
-			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
-			
-			hvListe = [];
-			recs.forEach(rec => {
-				hvListe.push({ kod: rec.kod, aciklama: rec.aciklama || '' });
-			});
+			if (ozelKampanyaKullanilirmi) { wsFetches.ozelKampanyaListe = await this.wsOzelKampanyaListe() }
+			recs = await this.fetchWSRecs({ source: wsFetches.stokGrup, islemAdi, step: 1 });
+			subCount = 1; await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
+			hvListe = []; for (const rec of recs) { hvListe.push({ kod: rec.kod, aciklama: rec.aciklama || '' }) }
 			await dbMgr.insertOrReplaceTable({
-				table: 'mst_StokGrup', mode: 'insertIgnore', hvListe: hvListe,
-				parcaCallback: e => {
-					if (e.index % subCount == 0)
-						this.knobProgressStep();
-				}
+				table: 'mst_StokGrup', mode: 'insertIgnore', hvListe,
+				parcaCallback: e => { if (e.index % subCount == 0) { this.knobProgressStep() } }
+			});
+
+			islemAdi = 'Promosyon Grup Detayları';
+			recs = await this.fetchWSRecs({ source: wsFetches.proGrupDetaylar, islemAdi, step: 1 });
+			subCount = 1; await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
+			hvListe = []; for (const rec of recs) { hvListe.push({ proGrupKod: rec.proGrupKod, stokKod: rec.stokKod }) }
+			await dbMgr.insertOrReplaceTable({
+				table: 'mst_ProGrup2Stok', mode: 'insertIgnore', hvListe,
+				parcaCallback: e => { if (e.index % subCount == 0) { this.knobProgressStep() } }
 			});
 			
-
 			islemAdi = 'Marka listesi';
 			/*$.extend(wsFetches, {															// next prefetch
 				transferYontemiListe: this.wsTransferYontemiListe()
@@ -5068,24 +5058,19 @@
 		}
 
 		async fetchWSRecs(e) {
-			e = e || {};
-			await this.knobProgressSetLabel(`Merkezden ${e.islemAdi} alınıyor...`);
-
-			let recs;
+			e = e || {}; let recs; await this.knobProgressSetLabel(`Merkezden ${e.islemAdi} alınıyor...`);
 			try {
 				this.indicatorPart.ajaxCallback({ state: true });
 				recs = e.source ? await e.source : null;
-				if ($.isFunction(recs))
-					recs = await recs.call(this, e)
-				recs = e.recs = (recs || {}).rows || recs || []
+				if ($.isFunction(recs)) { recs = await recs.call(this, e) }
+				recs = e.recs = recs?.rows || recs || []
 			}
 			catch (ex) {
 				// defFailBlock(ex);
-				throw ex
+				const code = ex?.responseJSON?.rc ?? ex?.responseJSON?.code;
+				if (code == 'islemHatali') { recs = e.recs = [] } else { throw ex }
 			}
-			await this.knobProgressStep(e.step);
-
-			return recs
+			await this.knobProgressStep(e.step); return recs
 		}
 		async tablolariOlusturIslemi(e) {
 			await this.tablolariOlustur(e);
@@ -5606,16 +5591,12 @@
 			)
 		}
 		wsBarkodReferansListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}barkodReferansListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}barkodReferansListe`,
-					data: this.buildAjaxArgs(e),
-					
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}barkodReferansListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}barkodReferansListe`, data: this.buildAjaxArgs(e) }))
+		}
+		wsProGrupDetaylar(e) {
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}proGrupDetaylar`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}proGrupDetaylar`, data: this.buildAjaxArgs(e) }))
 		}
 		wsTartiBarkodKuralListe(e) {
 			return this.wsCallWithSkyWS({

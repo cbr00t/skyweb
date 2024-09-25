@@ -186,6 +186,13 @@ CREATE TABLE IF NOT EXISTS mst_StokPaket (
 	PRIMARY KEY (stokKod, paketKod, paketIcAdet)
 );
 
+CREATE TABLE IF NOT EXISTS mst_ProGrup2Stok (
+	rowid						INTEGER NOT NULL AUTOINCREMENT,
+	proGrupKod					TEXT NOT NULL,
+	stokKod						TEXT NOT NULL,
+	PRIMARY KEY (proGrupKod, stokKod)
+);
+
 CREATE TABLE IF NOT EXISTS mst_BarkodReferans (
 	rowid						INTEGER NOT NULL AUTOINCREMENT,
 	refKod						TEXT NOT NULL PRIMARY KEY,

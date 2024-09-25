@@ -116,12 +116,19 @@
 		async _promosyonSonucu(e) {
 			await super._promosyonSonucu(e); const {voGrup1Kod, voGrup1Miktar} = this;
 			if (!(voGrup1Kod && voGrup1Miktar)) { return null }
-			const {voGrup2Varmi, voGrup2Kod, voGrup2Miktar, hIskOran} = this, {grupKod2StokSet, shKod2Bilgi} = e, tumUygunStokKodSet = {};
-			let uygunStokKodlari = grupKod2StokSet[voGrup1Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
+			const {app} = sky, {ekBilgiDict} = e; let {proGrup2Stok} = ekBilgiDict;
+			if (proGrup2Stok == null) {
+				let sent = new MQSent({ from: 'mst_ProGrup2Stok', sahalar: ['proGrupKod', 'stokKod'] });
+				let recs = await app.dbMgr_mf.executeSqlReturnRows(sent); proGrup2Stok = {};
+				for (let i = 0; i < recs.length; i++) { const rec = recs[i]; proGrup2Stok[rec.proGrupKod.trimEnd()] = rec.stokKod.trimEnd() }
+				ekBilgiDict.proGrup2Stok = proGrup2Stok
+			}
+			const {voGrup2Varmi, voGrup2Kod, voGrup2Miktar, hIskOran} = this, {shKod2Bilgi} = e, tumUygunStokKodSet = {};
+			let uygunStokKodlari = proGrup2Stok[voGrup1Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
 			let kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
 			if (!kaynakMiktar || kaynakMiktar < voGrup1Miktar) { return null }
 			if (voGrup2Varmi) {
-				uygunStokKodlari = grupKod2StokSet[voGrup2Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
+				uygunStokKodlari = proGrup2Stok[voGrup2Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
 				kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
 				if (!kaynakMiktar || kaynakMiktar < voGrup2Miktar) { return null }
 			}

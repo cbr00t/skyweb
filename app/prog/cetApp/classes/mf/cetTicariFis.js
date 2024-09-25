@@ -510,12 +510,12 @@
 				}
 			}
 			let dogrudanProDetListe = []; if (!$.isEmptyObject(yDetaylar)) {
-				const promosyonYapilari = e.promosyonYapilari || {};
+				const promosyonYapilari = e.promosyonYapilari || {}, ekBilgiDict = e.ekBilgiDict = {};
 				for (let proTip in promosyonYapilari) {
 					if ($.isEmptyObject(shKod2Bilgi)) { break }
 					const promosyonListe = promosyonYapilari[proTip]; for (const pro of promosyonListe) {
 						const tavsiyeStokKod = tavsiyeProKod2Stok[pro.id];
-						let result = await pro.promosyonSonucu({ ...e, detaylar, yDetaylar, shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod });
+						let result = await pro.promosyonSonucu({ ...e, detaylar, yDetaylar, shKod2Bilgi, grupKod2StokSet, tavsiyeStokKod, ekBilgiDict });
 						const proDet = result?.proDet; if (proDet) {
 							proDet.promoKod = proDet.promoKod || pro.id; yDetaylar.push(proDet);
 							if (!pro.class.stokSecimlimi) { dogrudanProDetListe.push(proDet) }
