@@ -23,6 +23,7 @@
 				iskSinir: (e.iskSinir == null ? e.isksinir : e.iskSinir),
 				kadIskYapi: e.kadIskYapi || {},
 				kadIskOran: e.kadIskOran || 0,
+				proIskOran: e.proIskOran || 0,
 				kosulYapi: e.kosulYapi || {}
 			});
 			this.orjFiyat = this.orjFiyat || this.fiyat;
@@ -149,6 +150,7 @@
 				iskontoYapilmazmi: bool2FileStr(this.iskontoYapilmazmi || false),
 				kadIskYapi: $.isEmptyObject(this.kadIskYapi) ? '' : toJSONStr(this.kadIskYapi),
 				kadiskoran: asFloat(this.kadIskOran) || 0,
+				proIskOran: asFloat(this.proIskOran) || 0,
 				kosulYapi: toJSONStr(this.kosulYapi)
 			});
 			(this.class.iskOranKeys || []).forEach(key => hv[key.toLowerCase()] = asFloat(this[key]) || 0);
@@ -183,7 +185,7 @@
 				promosyonYapilmazmi: asBool(rec.promosyonYapilmazmi || ''),
 				iskontoYapilmazmi: asBool(rec.iskontoYapilmazmi || ''),
 				kadIskYapi: (rec.kadIskYapi ? JSON.parse(rec.kadIskYapi) : {}),
-				kadIskOran: asFloat(rec.kadiskoran) || 0,
+				kadIskOran: asFloat(rec.kadiskoran) || 0, proIskOran: asFloat(rec.proIskOran) || 0,
 				kosulYapi: (kosulYapiStr ? JSON.parse(kosulYapiStr) : null) || {}
 			});
 			this.orjFiyat = this.orjFiyat || this.fiyat;
@@ -228,7 +230,7 @@
 		}
 		async detayEkIslemler(e) {
 			await super.detayEkIslemler(e); await this.ozelKampanyaIskOranSinirBul(e);
-			await this.kademeliIskontoHesapla(e); await this.bedelHesapla(e);
+			await this.kademeliIskontoHesapla(e); await this.proIskOranHesapla(e); await this.bedelHesapla(e);
 			await this.kdvHesapla(e); await this.malFazlasiHesapla(e)
 		}
 		async satisKosulYapilariIcinDuzenle(e) {
@@ -340,6 +342,9 @@
 			const {kadIskYapi} = this; const keys = Object.keys(kadIskYapi).map(x => asFloat(x)).sort(((a, b) => a < b ? 1 : -1));			// reversed sort
 			this.kadIskOran = 0; for (const hMiktar of keys) { if (miktar >= hMiktar) { this.kadIskOran = kadIskYapi[hMiktar]; break } }
 		}
+		proIskOranHesapla(e) {
+			this.proIskOran = 0
+		}
 		bedelHesapla(e) {
 			let _bedel = this.brutBedel = bedel((this.miktar || 0) * (this.fiyat || 0));
 			let proc = oranListe => { for (const oran of oranListe) { if (oran) { let xBedel = bedel(_bedel * oran / 100) || 0; _bedel -= xBedel } } };
@@ -421,7 +426,20 @@
 						((ozelKamOranListe || [])
 								.map(val => val.toLocaleString())
 							.join(`+`))
-				}
+				},
+				proIskOranText(e) {
+					const {proIskOran} = this, liste = [];
+					for (const iskOran of iskOranListe) {
+						if (iskOran)
+							liste.push(iskOran)
+					}
+					if (kadIskOran)
+						liste.push(kadIskOran)
+					
+					return $.isEmptyObject(liste) ? '' : (
+						'%' + ((liste || []).map(val => val.toLocaleString()).join(`+`))
+					)
+				},
 			})
 		}
 	}

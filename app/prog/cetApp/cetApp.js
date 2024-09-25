@@ -4579,13 +4579,15 @@
 						vBrm: rec.vbrm || '', vCiro: asFloat(rec.vciro) || 0, vCiroKdvlimi: bool2Int(rec.vcirokdvlimi),
 						hedefTipi: rec.hedeftipi || '', hGrupKod: rec.hgrupkod || '', hStokKod: rec.hstokkod || '', hMiktar: asFloat(rec.hmiktar) || 0,
 						hBrm: rec.hbrm || '', hDipIsk: asFloat(rec.hdipisk) || 0, hMFVarsaSatirIskKapat: bool2Int(rec.hmfvarsasatiriskkapat),
-						detayliMusterimi: bool2Int(rec.detaylimust), kademelimi: bool2Int(rec.kademelimi)
+						detayliMusterimi: bool2Int(rec.detaylimust), kademelimi: bool2Int(rec.kademelimi),
+						voGrup1Kod: rec.vogrup1kod || '', voGrup1Miktar: rec.vogrup1miktar || 0, voGrup2Varmi: bool2Int(rec.vogrup2varmi ?? rec.bvogrup2varmi),
+						voGrup2Kod: rec.vogrup2kod || '', voGrup2Miktar: rec.vogrup2miktar || 0
 					});
-					bsEkle({ hv: hv, rec: rec, rowAttr: 'tarih', ioAttr: 'tarih', converter: value => value ? asReverseDateString(value) : value });
-					bsEkle({ hv: hv, rec: rec, rowAttr: 'cariTip', ioAttr: 'ctip' });
-					bsEkle({ hv: hv, rec: rec, rowAttr: 'cariBolge', ioAttr: 'bolge' });
-					bsEkle({ hv: hv, rec: rec, rowAttr: 'cari', ioAttr: 'must' });
-					bsEkle({ hv: hv, rec: rec, rowAttr: 'plasiyer', ioAttr: 'plas' });
+					bsEkle({ hv, rec, rowAttr: 'tarih', ioAttr: 'tarih', converter: value => value ? asReverseDateString(value) : value });
+					bsEkle({ hv, rec, rowAttr: 'cariTip', ioAttr: 'ctip' });
+					bsEkle({ hv, rec, rowAttr: 'cariBolge', ioAttr: 'bolge' });
+					bsEkle({ hv, rec, rowAttr: 'cari', ioAttr: 'must' });
+					bsEkle({ hv, rec, rowAttr: 'plasiyer', ioAttr: 'plas' });
 					hvListeYapi.baslik.push(hv);
 				}
 				await dbMgr.insertOrReplaceTable({
