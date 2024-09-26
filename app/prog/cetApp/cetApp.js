@@ -2158,6 +2158,7 @@
 				modelKod2Rec: {},
 				desenKod2Rec: {},
 				renkKod2Rec: {},
+				proGrupKod2Stoklar: {},
 				sablonFisTipiKod2Rec: {},
 				tahsilSekliKodNo2Rec: {},
 				nakliyeSekliKod2Rec: {},

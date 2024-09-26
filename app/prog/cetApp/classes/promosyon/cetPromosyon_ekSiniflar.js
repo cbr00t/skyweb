@@ -116,20 +116,23 @@
 		async _promosyonSonucu(e) {
 			await super._promosyonSonucu(e); const {voGrup1Kod, voGrup1Miktar} = this;
 			if (!(voGrup1Kod && voGrup1Miktar)) { return null }
-			const {app} = sky, {ekBilgiDict} = e; let {proGrup2Stok} = ekBilgiDict;
-			if (proGrup2Stok == null) {
+			const {app} = sky, {ekBilgiDict} = e; let proGrup2Stoklar = ekBilgiDict.proGrup2Stoklar || app.caches.proGrup2Stoklar;
+			if ($.isEmptyObject(proGrup2Stoklar)) {
 				let sent = new MQSent({ from: 'mst_ProGrup2Stok', sahalar: ['proGrupKod', 'stokKod'] });
-				let recs = await app.dbMgr_mf.executeSqlReturnRows(sent); proGrup2Stok = {};
-				for (let i = 0; i < recs.length; i++) { const rec = recs[i]; proGrup2Stok[rec.proGrupKod.trimEnd()] = rec.stokKod.trimEnd() }
-				ekBilgiDict.proGrup2Stok = proGrup2Stok
+				let recs = await app.dbMgr_mf.executeSqlReturnRows(sent); proGrup2Stoklar = {};
+				for (let i = 0; i < recs.length; i++) {
+					const rec = recs[i]; const proGrupKod = rec.proGrupKod.trimEnd(), stokKod = rec.stokKod.trimEnd();
+					(proGrup2Stoklar[proGrupKod] = proGrup2Stoklar[proGrupKod] || []).push(stokKod)
+				}
 			}
+			for (const target of [ekBilgiDict, app.caches]) { target.proGrup2Stoklar = proGrup2Stoklar }
 			const {voGrup2Varmi, voGrup2Kod, voGrup2Miktar, hIskOran} = this, {shKod2Bilgi} = e, tumUygunStokKodSet = {};
-			let uygunStokKodlari = proGrup2Stok[voGrup1Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
-			let kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
+			let uygunStokKodlari = proGrup2Stoklar[voGrup1Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null } if (typeof uygunStokKodlari == 'object' && !$.isArray(uygunStokKodlari)) { uygunStokKodlari = Object.keys(uygunStokKodlari) }
+			let kaynakMiktar = 0; for (let shKod of uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
 			if (!kaynakMiktar || kaynakMiktar < voGrup1Miktar) { return null }
 			if (voGrup2Varmi) {
-				uygunStokKodlari = proGrup2Stok[voGrup2Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
-				kaynakMiktar = 0; for (let shKod in uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
+				uygunStokKodlari = proGrup2Stoklar[voGrup2Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null } if (typeof uygunStokKodlari == 'object' && !$.isArray(uygunStokKodlari)) { uygunStokKodlari = Object.keys(uygunStokKodlari) }
+				kaynakMiktar = 0; for (let shKod of uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
 				if (!kaynakMiktar || kaynakMiktar < voGrup2Miktar) { return null }
 			}
 			for (const shKod in tumUygunStokKodSet) { for (const det of shKod2Bilgi[shKod]?.detaylar) { det.proIskOran = hIskOran } }
