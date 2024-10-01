@@ -682,13 +682,12 @@
 		bedelHesapla(e) { }
 		iskontoKampanyaReset(e) {
 			const resetci = keys => { for (const key of (keys || [])) { let value = this[key]; if (value) { this[key] = value = 0 } } }
-			resetci(this.class.iskOranKeys); resetci(this.class.kamOranKeys);
-			this.ozelKampanyaKod = ''; this.ozelKampanyaOranReset(e);
+			resetci(this.class.iskOranKeys); resetci(this.class.kamOranKeys); this.kademeliIskontoReset(e); this.ozelKampanyaKod = ''; this.ozelKampanyaOranReset(e);
 		}
 		ozelKampanyaIskOranSinirBul(e) { }
 		ozelKampanyaOranReset(e) {
 			this.ozelKampanyaIskSinir = null; const {ozelKamOranKeys} = this.class;
-			for (const key of ozelKamOranKeys) { const key = ozelKamOranKeys[i]; let value = this[key]; if (value) { this[key] = value = 0 } }
+			for (const key of ozelKamOranKeys) { let value = this[key]; if (value) { this[key] = value = 0 } }
 		}
 		detYerKodReset(e) { delete this.yerKod }
 		cacheReset(e) { super.cacheReset(e); delete this._ekOzellik_raf; delete this._ekOzellik_refRaf }

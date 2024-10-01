@@ -323,11 +323,10 @@
 		kademeliIskontoHesapla(e) {
 			e = e || {}; const {miktar} = this; if (!miktar) { this.kadIskOran = 0; return }
 			const {kadIskYapi} = this; const keys = Object.keys(kadIskYapi).map(x => asFloat(x)).sort(((a, b) => a < b ? 1 : -1));			// reversed sort
-			this.kadIskOran = 0; for (const hMiktar of keys) { if (miktar >= hMiktar) { this.kadIskOran = kadIskYapi[hMiktar]; break } }
+			this.kademeliIskontoReset(e); for (const hMiktar of keys) { if (miktar >= hMiktar) { this.kadIskOran = kadIskYapi[hMiktar]; break } }
 		}
-		proIskOranHesapla(e) {
-			this.proIskOran = 0
-		}
+		kademeliIskontoReset(e) { this.kadIskOran = 0 }
+		proIskOranHesapla(e) { this.proIskOran = 0 }
 		bedelHesapla(e) {
 			let _bedel = this.brutBedel = bedel((this.miktar || 0) * (this.fiyat || 0));
 			let proc = oranListe => { for (const oran of oranListe) { if (oran) { let xBedel = bedel(_bedel * oran / 100) || 0; _bedel -= xBedel } } };
