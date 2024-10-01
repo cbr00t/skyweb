@@ -727,72 +727,36 @@
 			}, 500);
 		}
 
-		async tazele(e) {
-			let result = await super.tazele(e);
-			this.liste_degisti(e);
-			this.degistimi = false;
-
-			return result;
-		}
-
+		async tazele(e) { let result = await super.tazele(e); this.degistimi = false; return result }
 		async degistir(e) {
-			e = e || {};
-			let result = await super.degistir(e);
-			
-			const rec = e.rec || {};
-			const {barkodParser} = rec;
+			e = e || {}; let result = await super.degistir(e);
+			const rec = e.rec || {}, {barkodParser} = rec;
 			const barkod = rec.barkod || (rec.barkodParser || {}).barkod;
-			if (barkod && barkodParser && barkodParser.ayrisimAyiraclimi && barkodParser.zVarmi)
-				this.ayrisimAyiracli_barkod2Detay[barkod] = rec;
-
+			if (barkod && barkodParser && barkodParser.ayrisimAyiraclimi && barkodParser.zVarmi) { this.ayrisimAyiracli_barkod2Detay[barkod] = rec }
 			return result
 		}
-		
 		sil(e) {
-			e = e || {};
-			const rec = e.rec || this.selectedBoundRec || {};
-			rec.miktar = rec.paketMiktar = rec.okutmaSayisi = 0;
-			rec.altDetaylar = {};
-			// delete rec.paketKod2IcAdet;
-
-			const {ayrisimAyiracli_barkod2Detay} = this;
-			const {barkod, okunanTumBarkodlar} = rec;
-			if (barkod)
-				delete ayrisimAyiracli_barkod2Detay[barkod];
-			if (okunanTumBarkodlar) {
-				for (const barkod in okunanTumBarkodlar)
-					delete ayrisimAyiracli_barkod2Detay[barkod];
-			}
-
+			e = e || {}; const rec = e.rec || this.selectedBoundRec || {};
+			rec.miktar = rec.paketMiktar = rec.okutmaSayisi = 0; rec.altDetaylar = {};
+			const {ayrisimAyiracli_barkod2Detay} = this, {barkod, okunanTumBarkodlar} = rec;
+			if (barkod) { delete ayrisimAyiracli_barkod2Detay[barkod] }
+			if (okunanTumBarkodlar) { for (const barkod in okunanTumBarkodlar) { delete ayrisimAyiracli_barkod2Detay[barkod] } }
 			return this.degistir(e)
 		}
-
 		temizle(e) {
 			const recs = this.listeRecs;
-			for (const rec of recs) {
-				rec.miktar = rec.paketMiktar = rec.okutmaSayisi = 0;
-				rec.altDetaylar = {};
-				// delete rec.paketKod2IcAdet;
-			}
+			for (const rec of recs) { rec.miktar = rec.paketMiktar = rec.okutmaSayisi = 0; rec.altDetaylar = {} }
 			this.ayrisimAyiracli_barkod2Detay = {};
-			
-			return this.tazele(e);
+			return this.tazele(e)
 		}
-
 		async kaydet(e) {
-			const {app, fis} = this;
-			app.hideNotifications();
-
-			e = $.extend({
-				sender: this, islem: this.islem,
-				eskiFis: this.eskiFis, gecicimi: fis.gecicimi
-			}, e);
+			const {app, fis} = this; app.hideNotifications();
+			e = $.extend({ sender: this, islem: this.islem, eskiFis: this.eskiFis, gecicimi: fis.gecicimi }, e);
 			const layout = e.layout || this.layout;
 			$.extend(fis, {
 				detaylar: this.listeRecs.map(rec => {
 					rec = $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec;
-					['_visible'].forEach(key =>
-						delete rec[key]);
+					['_visible'].forEach(key => { delete rec[key] });
 					return rec;
 				})
 			});
@@ -1137,30 +1101,21 @@
 				}
 			}			
 		}
-
 		async loadServerData(e) {
-			const {app, fis} = this;
-			const {detaySinif} = fis.class;
-			const {depoSiparisKarsilamaZorunluHMRSet} = app;
-			
-			const recs = fis.detaylar;
-			const stokKodSet = {};
-			const paketKodSet = {};
-			const stokKod2PaketKod2IcAdet = this.stokKod2PaketKod2IcAdet = {};
+			const {app, fis} = this, {detaySinif} = fis.class, {depoSiparisKarsilamaZorunluHMRSet} = app;
+			const recs = fis.orjDetaylar ?? fis.detaylar, stokKodSet = {}, paketKodSet = {}, stokKod2PaketKod2IcAdet = this.stokKod2PaketKod2IcAdet = {};
+			if (fis.orjDetaylar == null) { fis.orjDetaylar = recs }
 			for (const det of recs) {
 				const {paketBilgi} = det;
 				if (paketBilgi) {
 					const paketKod2IcAdet = det.paketKod2IcAdet = {};
 					const parts = paketBilgi.split(',').map(x => x.trim());
 					for (const part of parts) {
-						const subPart = part.split(' ');
-						const paketKod = (subPart.length > 1 ? subPart[1] : subPart[0]).trim();
-						paketKod2IcAdet[paketKod] = null;
-						stokKodSet[det.shKod] = true; paketKodSet[paketKod] = true;
+						const subPart = part.split(' '), paketKod = (subPart.length > 1 ? subPart[1] : subPart[0]).trim();
+						paketKod2IcAdet[paketKod] = null; stokKodSet[det.shKod] = true; paketKodSet[paketKod] = true;
 					}
 				}
 			}
-
 			if (!$.isEmptyObject(paketKodSet)) {
 				const sent = new MQSent({
 					from: 'mst_StokPaket',
@@ -1172,10 +1127,7 @@
 					],
 					sahalar: ['stokKod', 'paketKod', 'paketIcAdet']
 				});
-				const stm = new MQStm({
-					sent: sent,
-					orderBy: ['varsayilanmi DESC']
-				});
+				const stm = new MQStm({ sent, orderBy: ['varsayilanmi DESC'] });
 				const _recs = await sky.app.dbMgr_mf.executeSqlReturnRowsBasic({ query: sent });
 				for (let i = 0; i < _recs.length; i++) {
 					const _rec = _recs[i], {stokKod, paketKod} = _rec;
@@ -1185,8 +1137,7 @@
 			}
 			const anah2Detaylar = this.anah2Detaylar = {}, {ayrisimAyiracli_barkod2Detay} = this;
 			for (let i = 0; i < recs.length; i++) {
-				let det = recs[i];
-				if ($.isPlainObject(det)) { det = recs[i] = new detaySinif(det) }
+				let det = recs[i]; if ($.isPlainObject(det)) { det = recs[i] = new detaySinif(det) }
 				const {paketBilgi, shKod, altDetaylar} = det;
 				if (paketBilgi) {
 					const {paketKod2IcAdet} = det;
@@ -1300,70 +1251,34 @@
 		}
 
 		liste_rendered(e) {
-			let inEventFlag = false;
-			const {app} = sky;
-			const {fis} = this;
-			const {listeWidget} = this;
+			let inEventFlag = false; const {app} = sky, {fis} = this, {listeWidget} = this;
 			const rafKullanilirmi = fis.class.rafKullanilirmi && (app.ekOzellikKullanim.raf || {}).kullanilirmi;
 			if (listeWidget.table && listeWidget.table.length) {
-				const trRow = listeWidget.table.find(`tr[role=row]`);
-				const divAltDetaylar = trRow.find(`.jqx-grid-cell .listeSatir .altDetaylar`);
-				
+				const trRow = listeWidget.table.find(`tr[role=row]`), divAltDetaylar = trRow.find(`.jqx-grid-cell .listeSatir .altDetaylar`);
 				const handler_paketBoz = async evt => {
-					if (inEventFlag)
-						return;
-
-					inEventFlag = true;
-					setTimeout(() => inEventFlag = false, 50);
-
-					app.hideNotifications();
-
-					const clickedElm = $(evt.target);
-					const uid = clickedElm.parents(`tr[role=row]`).data('key');
-					let detay = listeWidget.rowsByKey[uid];
-					detay = detay.originalRecord || detay;
-
-					let divAltDetaySatir = clickedElm;
-					if (!divAltDetaySatir.hasClass('altDetaySatir'))
-						divAltDetaySatir = divAltDetaySatir.parents('.altDetaySatir');
-
-					const key = divAltDetaySatir.data('key');
-					const orj_altDetay = detay.altDetaylar[key];
-
-					const paketMiktar = orj_altDetay.paketmiktar || 0;
-					const paketIcAdet = orj_altDetay.paketicadet || 0;
-					if (paketMiktar <= 0) {
-						displayMessage(`Bozulacak paket kalmamıştır`, `! Paket Bozma İşlemi !`);
-						return;
-					}
-
-					const {shKod} = detay;
-					let maxPaketIcAdet;
-					const paketKod = orj_altDetay.paketkod;
+					if (inEventFlag) { return }
+					inEventFlag = true; setTimeout(() => inEventFlag = false, 50); app.hideNotifications();
+					const clickedElm = $(evt.target), uid = clickedElm.parents(`tr[role=row]`).data('key');
+					let detay = listeWidget.rowsByKey[uid]; detay = detay.originalRecord || detay;
+					let divAltDetaySatir = clickedElm; if (!divAltDetaySatir.hasClass('altDetaySatir')) { divAltDetaySatir = divAltDetaySatir.parents('.altDetaySatir') }
+					const key = divAltDetaySatir.data('key'), orj_altDetay = detay.altDetaylar[key];
+					const paketMiktar = orj_altDetay.paketmiktar || 0, paketIcAdet = orj_altDetay.paketicadet || 0;
+					if (paketMiktar <= 0) { displayMessage(`Bozulacak paket kalmamıştır`, `! Paket Bozma İşlemi !`); return }
+					const {shKod} = detay, paketKod = orj_altDetay.paketkod; let maxPaketIcAdet;
 					if (paketKod) {
 						let sent = new MQSent({
-							from: 'mst_StokPaket',
-							where: [
-								{ degerAta: shKod, saha: 'stokKod' },
-								{ degerAta: paketKod, saha: 'paketKod' }
-							],
-							sahalar: ['paketIcAdet']
+							from: 'mst_StokPaket', sahalar: ['paketIcAdet'],
+							where: [{ degerAta: shKod, saha: 'stokKod' }, { degerAta: paketKod, saha: 'paketKod' }]
 						});
 						maxPaketIcAdet = asInteger(await sky.app.dbMgr_mf.tekilDegerExecuteSelect({ query: sent }))
 					}
-					/*else {
-						maxPaketIcAdet = orj_altDetay.hMiktar
-					}*/
-
 					let altDetay = orj_altDetay.deepCopy ? orj_altDetay.deepCopy() : $.extend(true, {}, orj_altDetay);
-					this.disableListeResizeEventsFlag = true;
-					setTimeout(() => {
+					this.disableListeResizeEventsFlag = true; setTimeout(() => {
 						const trRow = listeWidget.table.find(`tr[role=row][data-key="${uid}"]`);
 						const divAltDetaylar = trRow.find(`.jqx-grid-cell .listeSatir .altDetaylar`);
 						divAltDetaySatir = divAltDetaylar.find(`.altDetaySatir[data-key="${key}"]`)
 						divAltDetaySatir.addClass('selected')
 					}, 100);
-					
 					let promise = new $.Deferred();
 					const wndCSSName = `paketBoz altDetay-duzenle ${this.class.partName} ${app.appName} ${app.rootAppName} cetBekleyenXFisGiris part`;
 					let wndLayout = $(
@@ -2093,16 +2008,10 @@
 			this.app.hideNotifications();
 			const wnd = displayMessage(
 				'<p class="red">Tüm Miktarlar SIFIRLANACAK!</p><p>Devam Edilsin mi?</p>',
-				this.app.appText,
-				true,
+				this.app.appText, true,
 				{
-					EVET: async (dlgUI, btnUI) => {
-						dlgUI.jqxWindow('destroy');
-						await this.temizle()
-						// setTimeout(() => this.focusToDefault(), 10)
-					},
-					HAYIR: (dlgUI, btnUI) =>
-						dlgUI.jqxWindow('destroy')
+					EVET: async (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy'); await this.temizle() },
+					HAYIR: (dlgUI, btnUI) => dlgUI.jqxWindow('destroy')
 				});
 			wnd.off('close').on('close', evt => {
 				// dlgUI.jqxWindow('destroy');
