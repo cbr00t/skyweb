@@ -27,8 +27,9 @@
 				};
 				if (gelismisModmu && !gelismisModDisabledFlag && SkyConfigYetki.yetkilimi({ yetki: 'subServiceManager' })) {
 					$.extend(result, {
-						appStart: `Uygulama Çalıştır`, shell: `Shell Komutu Çalıştır`, cvmCall: `CVM Komut Çalıştır`, sqlExec: `SQL Komutu Çalıştır`,
-						webRequest: `Web İsteği Gönder`, hamachi: `Hamachi VPN`, vioPortal: `VIO Portal`, skyTurmob: `Sky Turmob Sorgusu`
+						appStart: 'Uygulama Çalıştır', shell: 'Shell Komutu Çalıştır', cvmCall: 'CVM Komut Çalıştır', sqlExec: 'SQL Komutu Çalıştır',
+						webRequest: 'Web İsteği Gönder', hamachi: 'Hamachi VPN', skyWS: 'Sky WebServis (Alt İşlem)', hfs: 'HFS (Http File Server)',
+						vioPortal: 'VIO Portal', skyTurmob: 'Sky Turmob Sorgusu'
 					})
 				}
 			}
@@ -41,7 +42,7 @@
 				const grup_vioServer = { id: 'vioServer', aciklama: 'VIO Sunucu' };
 				result = this._servisTip2Grup = {
 					appStart: grup_system, shell: grup_system, cvmCall: grup_system, sqlExec: grup_system, webRequest: grup_system,
-					hamachi: grup_system, vioPortal: grup_vioServer, skyTurmob: grup_vioServer
+					skyWS: grup_system, hfs: grup_system, hamachi: grup_system, vioPortal: grup_vioServer, skyTurmob: grup_vioServer
 				}
 			}
 			return result
@@ -675,8 +676,8 @@
 			const handlerList = [
 				'genel', 'waitSignal', 'yonetim', 'cariEFatSorgu', 'skyMES/hatIzleme', 'skyMES/makineDurum',
 				'pdks', 'skyBulutYedekleme', 'b2b', 'b2b/fuhrer', 'b2b/atomedya', 'skyCafe/rest', 'skyCafe/pratik', /*'elterm',*/
-				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk', 'skyERP', 'skyTablet', 'vioPortal',
-				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest'
+				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk', 'skyERP', 'skyTablet',
+				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest', 'hamachi', 'skyWS', 'hfs', 'vioPortal', 'skyTurmob'
 			];
 			const servisTipListe = Object.keys(this.servisTip2Aciklama);
 			return {
@@ -1108,12 +1109,9 @@
 		}
 		gelismisModFlagDegisti(e) { this.gelismisModFlagDegistiBasit(e); this.tazele() }
 		gelismisModFlagDegistiBasit(e) {
-			const {layout, nav, gelismisModmu, gelismisModDisabledFlag} = this;
-			const yetkilimi_developer = this.programcimi && SkyConfigYetki.yetkilimi({ yetki: 'developer' });
-			const yetkilimi_admin_readOnly = SkyConfigYetki.yetkilimi({ yetki: 'admin_readOnly' });
-			const yetkilimi_admin = SkyConfigYetki.yetkilimi({ yetki: 'admin' });
-			delete this._servisTip2Aciklama;
-			if (layout && layout.length) {
+			const {layout, nav, gelismisModmu, gelismisModDisabledFlag} = this, yetkilimi_developer = this.programcimi && SkyConfigYetki.yetkilimi({ yetki: 'developer' });
+			const yetkilimi_admin_readOnly = SkyConfigYetki.yetkilimi({ yetki: 'admin_readOnly' }), yetkilimi_admin = SkyConfigYetki.yetkilimi({ yetki: 'admin' });
+			delete this._servisTip2Aciklama; if (layout?.length) {
 				layout.find(`.gelismis`)[gelismisModmu ? 'removeClass' : 'addClass']('jqx-hidden');
 				layout.find(`*[data-gelismis]`)[gelismisModmu ? 'removeClass' : 'addClass']('jqx-hidden')
 			}
@@ -1122,16 +1120,12 @@
 				nav.find(`ul > li#users`)[yetkilimi_admin_readOnly ? 'removeClass' : 'addClass']('jqx-hidden');
 				nav.find(`ul > li#gelismis`)[yetkilimi_admin_readOnly && gelismisModmu && !gelismisModDisabledFlag ? 'removeClass' : 'addClass']('jqx-hidden')
 			}
-			const gelismis_devTabs = ['sqlExec', 'appStart', 'shell', 'cvmCall'];
+			const gelismis_devTabs = ['sqlExec', 'shell', 'cvmCall', 'appStart'];
 			for (const i in gelismis_devTabs) {
-				const id = gelismis_devTabs[i];
-				const tab = layout.find(`.panel .tabs li#${id}`);
-				if (tab && tab.length)
-					tab[gelismisModmu && !gelismisModDisabledFlag && yetkilimi_developer ? 'removeClass' : 'addClass']('jqx-hidden')
+				const id = gelismis_devTabs[i], tab = layout.find(`.panel .tabs li#${id}`);
+				if (tab?.length) { tab[gelismisModmu && !gelismisModDisabledFlag && yetkilimi_developer ? 'removeClass' : 'addClass']('jqx-hidden') }
 			}
-			const tab_sgk = layout.find(`.panel .tabs li#sgk`);
-			if (tab_sgk && tab_sgk.length)
-				tab_sgk[gelismisModmu ? 'removeClass' : 'addClass']('jqx-hidden')
+			const tab_sgk = layout.find(`.panel .tabs li#sgk`); if (tab_sgk && tab_sgk.length) { tab_sgk[gelismisModmu ? 'removeClass' : 'addClass']('jqx-hidden') }
 			delete SkyConfigYetki._yetki2EkBilgi
 		}
 	}
