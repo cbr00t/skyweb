@@ -990,12 +990,11 @@
 							divHedefMiktarBilgi.removeClass('jqx-hidden');
 						}
 
-						const {paketBilgi} = rec;
-						const divPaketBilgi = divSatir.find('.paketBilgiText');
-						if (paketBilgi) {
-							divPaketBilgi.find('._veri').html(paketBilgi);
-							divPaketBilgi.removeClass('jqx-hidden');
-						}
+						const {paketBilgi} = rec, divPaketBilgi = divSatir.find('.paketBilgiText');
+						if (paketBilgi) { divPaketBilgi.find('._veri').html(paketBilgi); divPaketBilgi.removeClass('jqx-hidden') }
+
+						const {karmaPaletNo} = rec, divKarmaPaletNoBilgi = divSatir.find('.karmaPaletNoBilgi');
+						if (karmaPaletNo) { divKarmaPaletNoBilgi.find('._veri').html(karmaPaletNo); divKarmaPaletNoBilgi.removeClass('jqx-hidden') }
 
 						const {altDetaylar} = rec;
 						if (!$.isEmptyObject(altDetaylar)) {
@@ -1921,14 +1920,13 @@
 							}
 							const _barkodDetayYapilar = barkodDetayYapilar; barkodDetayYapilar = []; let yetersizStokKodSet = {};
 							for (const barkodDetayYapi of _barkodDetayYapilar) {
-								const {det, barkodDetay, paketMiktar} = barkodDetayYapi;
+								const {det, barkodDetay, paketMiktar} = barkodDetayYapi, {hMiktar} = det;
 								const {shKod, paketKod} = barkodDetay, paketIcAdet = barkodDetay.paketIcAdet || 1;
 								const barDetMiktar = paketKodVarmi(paketKod) ? paketIcAdet * paketMiktar : paketMiktar, barkodDetay_tip2EkOzellik = barkodDetay.ekOzelliklerYapi.tip2EkOzellik;
 								const anahStr = [shKod, ...ekOzSiraliKodSahalar.stokMst.map(attr => barkodDetay_tip2EkOzellik[attr]?.value || '')].join(delimWS);
 								let sonStokBilgiler = anah2SonStokBilgiler[anahStr]; if (!sonStokBilgiler?.length) { yetersizStokKodSet[shKod] = true; continue }
-								let kalan = barDetMiktar; for (const sonStokBilgi of sonStokBilgiler) {
-									let sonKalan = sonStokBilgi.miktar, dusulecek = paketKodVarmi(paketKod) ? asInteger(sonKalan / paketIcAdet) * paketIcAdet : Math.min(kalan, sonKalan);
-									if (dusulecek <= 0) { continue }
+								let kalan = hMiktar; for (const sonStokBilgi of sonStokBilgiler) {
+									let dusulecek = Math.min(kalan, sonStokBilgi.miktar); if (dusulecek <= 0) { continue }
 									let yBarkodDetay = barkodDetay.deepCopy(), yPaketMiktar = paketKodVarmi(paketKod) ? asInteger(dusulecek / paketIcAdet) : dusulecek;
 									let yBarkodDetay_tip2EkOzellik = yBarkodDetay.ekOzelliklerYapi.tip2EkOzellik;for (const belirtec in digerBelirtecSet) {
 										const kodSaha = tip2EkOzellik[belirtec].idSaha, value = sonStokBilgi[kodSaha];
@@ -2017,8 +2015,7 @@
 			det.okutmaSayisi++;
 			const paketKod = barkodDetay.paketKod ?? null;
 			let paketIcAdet = paketKodVarmi(paketKod) ? (det.paketKod2IcAdet || {})[paketKod] ?? null : null;
-			let {miktar} = barkodDetay;
-			const barkoddanMiktarGeldimi = !!miktar;
+			let {miktar} = barkodDetay; const barkoddanMiktarGeldimi = !!miktar;
 			let paketMiktar = 0;
 			if (paketKod) {
 				paketMiktar = (carpan || 1); det.paketMiktar += paketMiktar;
@@ -2026,8 +2023,8 @@
 			}
 			miktar = miktar || 1;
 			if (barkoddanMiktarGeldimi) {
-				if (paketKod) paketIcAdet = miktar;
-				if (carpan) miktar *= carpan;
+				if (paketKod) { paketIcAdet = miktar }
+				if (carpan) { miktar *= carpan }
 			}
 			det.miktar += miktar;
 			

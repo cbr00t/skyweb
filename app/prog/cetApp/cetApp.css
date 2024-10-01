@@ -4032,15 +4032,11 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .altDetay-brm {
 }
 .part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .hedefMiktarBilgi ._veri,
-.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .altDetay-hedefMiktarBilgi ._veri {
-	font-size: 95%;
-	color: #389a00;
-}
-.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .paketBilgiText,
-.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .altDetay-paketBilgiText {
-	margin-left: 13px;
-	color: #888;
-}
+.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .altDetay-hedefMiktarBilgi ._veri { font-size: 95%; font-weight: bold; color: #389a00 }
+.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .paketBilgiText, .part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .altDetay-paketBilgiText { margin-left: 13px; color: #888 }
+.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .karmaPaletNoBilgi { color: #999; margin-left: 13px }
+.part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .karmaPaletNoBilgi ._veri { font-weight: bold; color: royalblue }
+
 .part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .paketBilgiText ._veri,
 .part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .miktar .paketText,
 .part.cetApp.cetBekleyenXFisGiris #liste .listeSatir .altDetay-paketBilgiText ._veri,
