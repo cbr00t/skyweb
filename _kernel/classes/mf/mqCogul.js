@@ -345,30 +345,14 @@
 			
 			return true;
 		}
-
+		silForce(e) { e = e || {}; const force = true; return this.sil({ ...e, force }) }
 		async sil(e) {
-			e = e || {};
-			e.islem = 'sil';
-			
-			let result = true;
-			if (!this.gecicimi) {
-				await this.onKontrolWithException_sil(e);
-				result = await this.silmeOncesiKontrol(e);
-				if (result === false)
-					return false;
-			}
-
-			result = await this.silDevam(e);
-			if (!result)
-				return false;
-			
-			await this.geciciFisleriTemizle(e);
-			if (!this.gecicimi)
-				await this.silmeSonrasiIslemler(e);
-			
+			e = e || {}; e.islem = 'sil'; let result = true;
+			if (!this.gecicimi) { await this.onKontrolWithException_sil(e); result = await this.silmeOncesiKontrol(e); if (result === false) { return false } }
+			result = await this.silDevam(e); if (!result) { return false }
+			await this.geciciFisleriTemizle(e); if (!this.gecicimi) { await this.silmeSonrasiIslemler(e) }
 			return result;
 		}
-
 		async silDevam(e) {
 			e = e || {};
 			const {table} = this.class;

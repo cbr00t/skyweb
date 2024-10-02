@@ -844,19 +844,19 @@
 				}
 			}
 			let result; try { result = await this.kaydetDevam(e) }
-			finally { const {_karmaTahsilatFis} = fis; if (!result && _karmaTahsilatFis) { await _karmaTahsilatFis.sil(); delete fis._karmaTahsilatFis } }
+			finally { const {_karmaTahsilatFis} = fis; if (!result && _karmaTahsilatFis) { await _karmaTahsilatFis.silForce(); delete fis._karmaTahsilatFis } }
 			return result
 		}
 		async kaydetOncesiDefault(e) {
 			if (this.prefetch || this.isPrefetch) { return true }
 			let {fis} = this; if (fis?.karmaTahsilatmi) {
-				let _result = await fis.kaydetOncesiKontrol(e); if (_result === false) { return false }
+				/*let _result = await fis.kaydetOncesiKontrol(e); if (_result === false) { return false }*/
 				let tahFisSinif = CETTahsilatFis, tahUISinif = tahFisSinif.fisGirisUISinif, {mustKod} = fis, hedefToplamBedel = fis.sonucBedel;
 				let tsn = [fis.seri, fis.noYil, fis.fisNo], aciklama = `SkyTabFis:${tsn.filter(x => !!x).join(' ')}`;
 				let tahFis = new tahFisSinif({ mustKod, aciklama }); await tahFis.numaratorOlustur();
 				let kaydetOncesi = e => {
-					let {fis} = e; if (fis.toplamBedel == hedefToplamBedel) { return true }
-					displayMessage('Tahsilat Bedel Toplamı ile Fiş Bedeli aynı olmalıdır', '! Karma Tahsilat Girişi !'); return false
+					let {fis} = e; if (fis.toplamBedel <= hedefToplamBedel) { return true }
+					displayMessage(`Tahsilat Bedel Toplamı, Fiş Bedeli'nden DAHA YÜKSEK OLAMAZ`, '! Karma Tahsilat Girişi !'); return false
 				};
 				let promise = new $.Deferred(), kaydedince = e => { fis._karmaTahsilatFis = e.fis; promise.resolve(true) };
 				await new tahUISinif({ fis: tahFis, hedefToplamBedel, kaydetOncesi, kaydedince }).run(); return await promise
@@ -2928,12 +2928,8 @@
 			await this.tazele()
 		}
 		async kaydetIstendi(e) {
-			const {app} = this;
-			if (app.fisOzetBilgiGosterilirmi) { await this.aboutToDeactivate(e); return await this.fisOzetBilgiIstendi(e) }
-			let result = await this.kaydet(e)
-			if (result && !result.isError)
-				this.geriIstendi()
-			return result
+			const {app} = this; if (app.fisOzetBilgiGosterilirmi) { await this.aboutToDeactivate(e); return await this.fisOzetBilgiIstendi(e) }
+			let result = await this.kaydet(e); if (result && !result.isError) { this.geriIstendi() } return result
 		}
 		async aboutToActivate(e) {
 			const {barcodeReader} = this;

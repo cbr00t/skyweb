@@ -901,247 +901,74 @@
 					.css('font-weight', 'bold');
 			});
 		}
-
 		async sil(e) {
-			e = e || {};
-			const rec = e.rec || this.selectedBoundRec;
-			const index = e.index;
-			if (!rec && (index == null || index < 0))
-				return false
-			
-			/*let fisSinif = e.fisSinif || await CETFis.fisSinifFor({ rec: rec });
-			if (typeof fisSinif == 'string')
-				fisSinif = window[fisSinif];*/
-
+			e = e || {}; const rec = e.rec || this.selectedBoundRec, index = e.index;
+			if (!rec && (index == null || index < 0)) { return false }
 			try {
-				const fis = await this.getFis({ rec: rec });
-				sky.app.merkezeBilgiGonderTimer_start(e);
-				try {
-					if (fis)
-						await fis.belgeGonderimKontrol($.extend({}, e, { id: undefined, inst: undefined, fis: undefined }))
-				}
+				const fis = await this.getFis({ rec }); sky.app.merkezeBilgiGonderTimer_start(e);
+				try { if (fis) { await fis.belgeGonderimKontrol($.extend({}, e, { id: undefined, inst: undefined, fis: undefined })) } }
 				catch (ex) {
-					if (ex.statusText)
-						displayServerResponse(ex);
-					else
-						displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge Girişi ${ex.isError ? '@' : '!'}`);
-					(savedProcs || window).hideProgress();
-					hideProgress();
-					this.tazele();
-					throw ex
+					if (ex.statusText) { displayServerResponse(ex) } else { displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge Girişi ${ex.isError ? '@' : '!'}`) }
+					(savedProcs || window).hideProgress(); hideProgress(); this.tazele(); throw ex
 				}
-				
 				if (!fis && rec) {
 					let del = new MQIliskiliDelete({ from: CETStokTicariFis.table, where: { degerAta: rec.rowid, saha: 'rowid' } });
-					let result = await CETStokTicariFis.dbMgr.executeSql({ tx: e.tx, query: del });
-					if (result)
-						await this.tazele(e)
-					return result
-					// return null
+					let result = await CETStokTicariFis.dbMgr.executeSql({ tx: e.tx, query: del }); if (result) { await this.tazele(e) } return result
 				}
-
-				const {dbMgr} = fis;
-				// let tx = await dbMgr.transaction();
-				// let result = await fis.sil($.extend({ tx: tx }, e));
-				let result = await fis.sil(e);
-				if (!result)
-					return result
-				if (result.isError)
-					throw result
+				const {dbMgr} = fis; let result = await fis.sil(e); if (!result) { return result } if (result.isError) { throw result }
 			}
-			catch (ex) {
-				if (ex.statusText)
-					displayServerResponse(ex);
-				else
-					displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge İPTAL İşlemi ${ex.isError ? '@' : '!'}`);
-				throw ex;
-			}
-			
-			// tx = await dbMgr.transaction();
-			await this.tazele(e);
-
-			return result
+			catch (ex) { if (ex.statusText) { displayServerResponse(ex) } else { displayMessage(ex.errorText || (ex || '').toString(), `${ex.isError ? '@' : '!'} Belge İPTAL İşlemi ${ex.isError ? '@' : '!'}`) } throw ex }
+			await this.tazele(e); return true
 		}
-
 		async yazdirIstendi(e) {
-			e = e || {};
-			const {app} = this;
-			const rec = e.rec || this.selectedRec || {};
-			const fis = e.fis || await this.getFis({ rec: rec });
-			const devreDisimi = fis ? fis.devreDisimi : asBool(rec.silindi);
-			const gecicimi = fis ? fis.gecicimi : asBool(rec.gecici);
-			const rapormu = fis ? fis.rapormu : asBool(rec.rapor);
-			if (devreDisimi) {
-				displayMessage(`Bu belge DevreDışı olduğu için Yazdırılamaz!`, app.appText);
-				return false;
-			}
-			if (gecicimi) {
-				displayMessage(`Bu bir Geçici Belgedir ve Yazdırılamaz!`, app.appText);
-				return false;	
-			}
-			if (rapormu) {
-				displayMessage(`Bu Merkezden Gelen bir belgedir ve Yazdırılamaz!`, app.appText);
-				return false;	
-			}
-
-			// let elm = e.event.currentTarget;
-			// displayMessage(`<ul style="padding: 8px;"><li>clicked: [<b>${elm.id}</b> - ${elm.innerHTML}]</li><li>activeRec: [(${(rec || {}).mustkod}) - ${(rec || {}).mustUnvan}]</li>`);
-
-			return await this.yazdir($.extend({}, e, { rec: rec, fis: fis }));
+			e = e || {}; const {app} = this, rec = e.rec || this.selectedRec || {}, fis = e.fis || await this.getFis({ rec: rec });
+			const devreDisimi = fis ? fis.devreDisimi : asBool(rec.silindi), gecicimi = fis ? fis.gecicimi : asBool(rec.gecici), rapormu = fis ? fis.rapormu : asBool(rec.rapor);
+			if (devreDisimi) { displayMessage(`Bu belge DevreDışı olduğu için Yazdırılamaz!`, app.appText); return false }
+			if (gecicimi) { displayMessage(`Bu bir Geçici Belgedir ve Yazdırılamaz!`, app.appText); return false }
+			if (rapormu) { displayMessage(`Bu Merkezden Gelen bir belgedir ve Yazdırılamaz!`, app.appText); return false }
+			return await this.yazdir({ ...e, rec, fis })
 		}
-
 		async yazdir(e) {
 			try {
-				const {fis} = e;
-				if (!fis)
-					return null;
-
-				let result = await fis.yazdir(e);
-				if (!result)
-					return result;
-				
-				// setTimeout(() => this.tazele(), 3000);
-
-				const fisSinif = fis.class;
-				let upd = new MQIliskiliUpdate({
-					from: fisSinif.table,
-					set: `yazdirildi = '*'`,
-					where: { degerAta: fis.id, saha: `rowid` }
-				});
-				
-				result = await fis.dbMgr.executeSql({ query: upd });
-				// setTimeout(() => this.tazele(), 3000);
-				
-				return result;
+				const {fis} = e; if (!fis) { return null }
+				let result = await fis.yazdir(e); if (!result) { return result }
+				const fisSinif = fis.class; let upd = new MQIliskiliUpdate({ from: fisSinif.table, set: `yazdirildi = '*'`, where: { degerAta: fis.id, saha: `rowid` } });
+				result = await fis.dbMgr.executeSql({ query: upd }); return result
 			}
 			finally { hideProgress() }
 		}
-
 		async merkezeBilgiGonderIstendi(e) {
-			e = $.extend({}, e || {});
-			const {app} = this;
-			const rec = e.rec || this.selectedRec || {};
-			const fis = e.fis || await this.getFis({ rec: rec });
-			
-			const gonderildimi = asBool(fis ? fis.gonderildimi : rec.gonderildi);
-			const gecicimi = asBool(fis ? fis.gecicimi : rec.gecici);
-			const rapormu = fis ? fis.rapormu : asBool(rec.rapor);
-			const degismedimi = fis ? fis.degismedimi : asBool(rec.degismedi);
-			/*if (gonderildimi) {
-				displayMessage(`Bu belge zaten merkeze gönderilmiş!`, app.appText);
-				return false;
-			}*/
-			if (gecicimi) {
-				displayMessage(`Bu geçici bir belgedir ve merkeze gönderilemez!`, app.appText);
-				return false;
-			}
-			if (rapormu) {
-				displayMessage(`Bu Merkezden Gelen bir belgedir ve Yazdırılamaz!`, app.appText);
-				return false;	
-			}
-			if (degismedimi) {
-				displayMessage(`Bu belge üzerinde bir değişiklik yapılmadığı için merkeze gönderilemez!`, app.appText);
-				return false;	
-			}
-
-			const fisSinif = e.fisSinif || (fis ? fis.class : CETFis.fisSinifFor({ rec: rec }));
-			if (!fisSinif)
-				return null;
-			
-			const layout = app.templates.merkezeBilgiGonderMesaji.contents('div').clone(true);
-			layout.addClass(`part ${app.appName} ${app.rootAppName}`);
+			e = $.extend({}, e || {}); const {app} = this, rec = e.rec || this.selectedRec || {}, fis = e.fis || await this.getFis({ rec });
+			const gonderildimi = asBool(fis ? fis.gonderildimi : rec.gonderildi), gecicimi = asBool(fis ? fis.gecicimi : rec.gecici);
+			const rapormu = fis ? fis.rapormu : asBool(rec.rapor), degismedimi = fis ? fis.degismedimi : asBool(rec.degismedi);
+			if (gecicimi) { displayMessage(`Bu geçici bir belgedir ve merkeze gönderilemez!`, app.appText); return false }
+			if (rapormu) { displayMessage(`Bu Merkezden Gelen bir belgedir ve Yazdırılamaz!`, app.appText); return false }
+			if (degismedimi) { displayMessage(`Bu belge üzerinde bir değişiklik yapılmadığı için merkeze gönderilemez!`, app.appText); return false }
+			const fisSinif = e.fisSinif || (fis ? fis.class : CETFis.fisSinifFor({ rec })); if (!fisSinif) { return null }
+			const layout = app.templates.merkezeBilgiGonderMesaji.contents('div').clone(true); layout.addClass(`part ${app.appName} ${app.rootAppName}`);
 			createJQXWindow(
-				layout,
-				app.appText,
-				{
-					isModal: true, showCollapseButton: false, closeButtonAction: 'destroy',
-					width: 'auto', height: 230
-				},
-				{
-					EVET: (dlgUI, btnUI) => {
-						$.extend(e, { rec: rec, fis: fis, fisSinif: fisSinif });
-						dlgUI.jqxWindow('destroy');
-						this.merkezeBilgiGonderIstendiDevam(e);
-					},
-					HAYIR: (dlgUI, btnUI) => {
-						dlgUI.jqxWindow('destroy')
-					}
-				}
+				layout, app.appText, { isModal: true, showCollapseButton: false, closeButtonAction: 'destroy', width: 'auto', height: 230 },
+				{ EVET: (dlgUI, btnUI) => { $.extend(e, { rec, fis, fisSinif }); dlgUI.jqxWindow('destroy'); this.merkezeBilgiGonderIstendiDevam(e) }, HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy') } }
 			)
 		}
-
 		async merkezeBilgiGonderIstendiDevam(e) {
-			const rec = e.rec || this.selectedRec || {};
-			const fis = e.fis || await this.getFis({ rec: rec });
-			
-			const gonderildimi = (fis ? fis.gonderildimi : asBool(rec.gonderildi));
-			const gecicimi = (fis ? fis.gecicimi : asBool(rec.gecici));
-			const rapormu = fis ? fis.rapormu : asBool(rec.rapor);
-			const degismedimi = fis ? fis.degismedimi : asBool(rec.degismedi);
-			/*if (gonderildimi) {
-				displayMessage(`Bu belge zaten merkeze gönderilmiş!`, this.app.appText);
-				return false;
-			}*/
-			if (gecicimi) {
-				displayMessage(`Bu geçici bir belgedir ve merkeze gönderilemez!`, this.app.appText);
-				return false;
-			}
-			if (rapormu) {
-				displayMessage(`Bu Merkezden Gelen bir belgedir ve Yazdırılamaz!`, app.appText);
-				return false;	
-			}
-			if (degismedimi) {
-				displayMessage(`Bu belge üzerinde bir değişiklik yapılmadığı için merkeze gönderilemez!`, app.appText);
-				return false;	
-			}
-
-			let result = await this.merkezeBilgiGonder($.extend({}, e, { rec: rec, fis: fis }));
-			setTimeout(() => this.tazele(), 10);
-
-			return result;
+			const rec = e.rec || this.selectedRec || {}, fis = e.fis || await this.getFis({ rec });
+			const gonderildimi = (fis ? fis.gonderildimi : asBool(rec.gonderildi)), gecicimi = (fis ? fis.gecicimi : asBool(rec.gecici));
+			const rapormu = fis ? fis.rapormu : asBool(rec.rapor), degismedimi = fis ? fis.degismedimi : asBool(rec.degismedi);
+			if (gecicimi) { displayMessage(`Bu geçici bir belgedir ve merkeze gönderilemez!`, this.app.appText); return false }
+			if (rapormu) { displayMessage(`Bu Merkezden Gelen bir belgedir ve Yazdırılamaz!`, app.appText); return false }
+			if (degismedimi) { displayMessage(`Bu belge üzerinde bir değişiklik yapılmadığı için merkeze gönderilemez!`, app.appText); return false }
+			let result = await this.merkezeBilgiGonder({ ...e, rec, fis }); setTimeout(() => this.tazele(), 10); return result
 		}
-
 		async merkezeBilgiGonder(e) {
-			const {app} = this;
-			const {rec, fis} = e;
-			const fisSinif = e.fisSinif || (fis ? fis.class : CETFis.fisSinifFor({ rec: rec }));
-			if (!fisSinif)
-				return null;
-
-			const table = fisSinif ? fisSinif.table : null;
-			const fisID = fis ? fis.id : rec.rowid;
-			const dbMgr = fis ? fis.dbMgr : (fisSinif ? fisSinif.dbMgr : app.dbMgr_mf);
-			/*if (fisID) {
-				const idSaha = fisSinif.idSaha || 'rowid';
-				let sent = new MQSent({
-					from: table,
-					where: [
-						{ degerAta: fisID, saha: idSaha },
-						`gonderildi <> ''`
-					],
-					sahalar: ['COUNT(*) sayi']
-				});
-				if (asInteger(await dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: new MQStm({ sent: sent })}))) {
-					rec.gonderildimi = '*';
-					if (fis)
-						fis.gonderildimi = true;
-					return null;
-				}
-			}*/
-
-			const {divListe, islemTuslariPart, ozelIslemTuslariPart} = this;
-			const parentMenu = ozelIslemTuslariPart.parentMenu;
+			const {app} = this, {rec, fis} = e; const fisSinif = e.fisSinif || (fis ? fis.class : CETFis.fisSinifFor({ rec })); if (!fisSinif) { return null }
+			const table = fisSinif ? fisSinif.table : null, fisID = fis ? fis.id : rec.rowid, dbMgr = fis ? fis.dbMgr : (fisSinif ? fisSinif.dbMgr : app.dbMgr_mf);
+			const {divListe, islemTuslariPart, ozelIslemTuslariPart} = this, {parentMenu} = ozelIslemTuslariPart;
 			try {
-				divListe.jqxDataTable('disabled', true);
-				parentMenu.children().filter((ind, li) =>
-					li.id == 'degistir' || li.id == 'iptal'
-				).addClass(`jqx-hidden`);
-				islemTuslariPart.popupMenu.children().filter((ind, li) =>
-					li.id == 'gonder' || li.id == 'belgeTransfer'
-				).addClass(`jqx-hidden`);
+				divListe.jqxDataTable('disabled', true); parentMenu.children().filter((ind, li) => { li.id == 'degistir' || li.id == 'iptal' }).addClass(`jqx-hidden`);
+				islemTuslariPart.popupMenu.children().filter((ind, li) => { li.id == 'gonder' || li.id == 'belgeTransfer' }).addClass(`jqx-hidden`);
 			}
 			catch (ex) { }
-			
 			try {
 				if (fisID) {
 					const idSaha = fisSinif.idSaha || 'rowid';

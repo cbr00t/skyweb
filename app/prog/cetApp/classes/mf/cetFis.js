@@ -253,37 +253,20 @@
 		}
 
 		async yeniTanimOncesiIslemler(e) {
-			e = e || {};
-			await super.yeniTanimOncesiIslemler(e);
-
-			if (this.class.riskKontrolEdilirmi)
-				await this.riskKontrolIslemi($.extend({}, e, { sifirDahil: true }));
+			e = e || {}; await super.yeniTanimOncesiIslemler(e);
+			/*if (this.class.riskKontrolEdilirmi) await this.riskKontrolIslemi($.extend({}, e, { sifirDahil: true }))*/
 		}
-
 		async onKontrol(e) {
-			if (this.class.tarihKontrolYapilirmi && !this.tarih)
-				return this.error_onKontrol(`(Tarih) belirtilmelidir`, 'bos_tarih');
-			// if (!(this.numarator || this.fisNo))
-			if (this.class.fisNoKontrolYapilirmi && !this.fisNo)
-				return this.error_onKontrol(`(Fiş No) belirtilmelidir`, 'bos_fisNo');
-			
-			return await super.onKontrol(e);
+			if (this.class.tarihKontrolYapilirmi && !this.tarih) { return this.error_onKontrol(`(Tarih) belirtilmelidir`, 'bos_tarih') }
+			if (this.class.fisNoKontrolYapilirmi && !this.fisNo) { return this.error_onKontrol(`(Fiş No) belirtilmelidir`, 'bos_fisNo') }
+			return await super.onKontrol(e)
 		}
-
 		async kaydetOncesiKontrol(e) {
-			await super.kaydetOncesiKontrol(e);
-			
-			await this.kaydetOncesiKontrol_ara(e);			
-			
+			await super.kaydetOncesiKontrol(e); await this.kaydetOncesiKontrol_ara(e);			
 			this._promise_getRiskCariKod = this.getRiskCariKod(e);			// cache to instance
-			
-			if (this.class.riskKontrolEdilirmi)
-				await this.riskKontrolIslemi(e);
+			if (this.class.riskKontrolEdilirmi) { await this.riskKontrolIslemi(e) }
 		}
-
-		async kaydetOncesiKontrol_ara(e) {
-		}
-
+		async kaydetOncesiKontrol_ara(e) { }
 		async riskKontrolIslemi(e) {
 			/* riskKontrolDurum:
 					#('' 'Devam Et' #islemYapmami);
@@ -291,26 +274,13 @@
 					#('G' 'Devam için Onay iste' #onayIstemi);
 					#('S' 'Sevkiyatı Durdur ' #sevkiyatDurdurmu);
 			*/
-			const riskKontrolDurum = sky.app.riskKontrolDurum;
-			if (!riskKontrolDurum)
-				return;
-			
-			if (riskKontrolDurum == 'S') {
-				await this.riskKontrol(e);
-			}
+			const riskKontrolDurum = sky.app.riskKontrolDurum; if (!riskKontrolDurum) { return }
+			if (riskKontrolDurum == 'S') { await this.riskKontrol(e) }
 			else {
-				try {
-					await this.riskKontrol(e);
-				}
-				catch (ex) {
-					if (ex.rc == 'riskAsildi')
-						await this.riskAsildiMesajiGoster({ result: ex })
-					else
-						throw ex;
-				}
+				try { await this.riskKontrol(e) }
+				catch (ex) { if (ex.rc == 'riskAsildi') { await this.riskAsildiMesajiGoster({ result: ex }) } else { throw ex } }
 			}
 		}
-
 		async riskAsildiMesajiGoster(e) {
 			const riskKontrolDurum = sky.app.riskKontrolDurum;
 			if (riskKontrolDurum == 'S')

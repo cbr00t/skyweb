@@ -138,19 +138,10 @@
 				e.islem = 'izle';
 			}
 		}
-
 		async silmeOncesiKontrol(e) {
-			await super.silmeOncesiKontrol(e);
-
-			const {app} = sky;
-			if (app.tahsilatIptalEdilemezmi && !app.serbestModmu) {
-				throw {
-					isError: true, rc: 'noPermission',
-					errorText: `<span class="bold">Merkez Parametresi kuralı gereği, <u>TAHSİLAT İPTAL</u> yetkiniz yok</span>`
-				}
-			}
+			e = e || {}; await super.silmeOncesiKontrol(e); const {app} = sky, forceFlag = e.force ?? e.forceFlag;
+			if (!forceFlag && app.tahsilatIptalEdilemezmi && !app.serbestModmu) { throw { isError: true, rc: 'noPermission', errorText: `<span class="bold">Merkez Parametresi kuralı gereği, <u>TAHSİLAT İPTAL</u> yetkiniz yok</span>` } }
 		}
-
 		async kaydetDevam(e) {
 			const {detaylar} = this;
 			this.detaylar = detaylar.filter(det => (bedel(det.bedel) || 0) > 0);
