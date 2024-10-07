@@ -143,38 +143,35 @@
 		}
 
 		async getRiskCariKod(e) {
-			e = e || {};
 			let result = this.riskCariKod;
 			if (result == null) {
-				const mustKod = e.mustKod || this.mustKod;
-				const cariEkBilgi = await this.getCariEkBilgi(e);
-				result = await this.class.getRiskCariKod({ mustKod: mustKod, cariEkBilgi: cariEkBilgi });
-				this.riskCariKod = result;
+				e = e || {}; const mustKod = e.mustKod || this.mustKod, cariEkBilgi = await this.getCariEkBilgi(e);
+				result = await this.class.getRiskCariKod({ mustKod, cariEkBilgi });
+				this.riskCariKod = result
 			}
-			return result;
+			return result
 		}
 
 		async getRiskCariEkBilgi(e) {
 			let result = this.riskCariEkBilgi;
 			if (result == null) {
-				const mustKod = e.mustKod || this.mustKod;
-				const riskCariKod = await this.getRiskCariKod(e);
+				e = e || {}; const mustKod = e.mustKod || this.mustKod, riskCariKod = await this.getRiskCariKod(e);
 				result = (!riskCariKod || riskCariKod == mustKod)
-							? await this.getCariEkBilgi({ mustKod: mustKod })
+							? await this.getCariEkBilgi({ mustKod })
 							: await this.class.getCariEkBilgi({ mustKod: riskCariKod });
-				this.riskCariEkBilgi = result;
+				this.riskCariEkBilgi = result
 			}
-			return result;
+			return result
 		}
 
 		async getCariEFatmi(e) {
 			let result = this.cariEFatmi;
 			if (result == null) {
-				const cariEkBilgi = await this.getRiskCariEkBilgi(e);
-				result = await this.class.getCariEFatmi({ cariEkBilgi: cariEkBilgi });
-				this.cariEFatmi = result;
+				e = e || {}; const cariEkBilgi = await this.getRiskCariEkBilgi(e);
+				result = await this.class.getCariEFatmi({ cariEkBilgi });
+				this.cariEFatmi = result
 			}
-			return result;
+			return result
 		}
 
 		async getCariStkFytInd(e) {

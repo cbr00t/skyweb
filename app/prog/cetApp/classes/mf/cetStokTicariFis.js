@@ -845,77 +845,25 @@
 			/*const detaylar = await super.getDokumDetaylar(e) || [];
 			return detaylar.filter(det => !!det.miktar);*/
 		}
-
 		async getDokumDegeriDict(e) {
-			const bilgiFisiYazi = e =>
-				'BİLGİ FİŞİDİR';
-			const eBelgeBilgiFisiYazi = e =>
-				this.eBelgemi ? `e-Belge BİLGİ FİŞİDİR` : '';
-			
+			const bilgiFisiYazi = e => 'BİLGİ FİŞİDİR', eBelgeBilgiFisiYazi = e => this.eBelgemi ? `e-Belge BİLGİ FİŞİDİR` : '';
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
-				async efaturaKullanirmi(e) {
-					return sky.app.eIslemKullanilirmi && this.class.eIslemKullanilirmi && await this.getCariEFatmi(e)
-				},
+				async efaturaKullanirmi(e) { return sky.app.eIslemKullanilirmi && this.class.eIslemKullanilirmi && await this.getCariEFatmi(e) },
 				efAyrimTipi: this.eIslemTipi,
-				efBelgeTipi(e) {
-					return sky.app.eIslemTip2UzunAdi(this.eIslemTip)
-				},
-				efFaturaTipi(e) {
-					return this.class.satismi == this.class.iademi ? 'IADE' : 'SATIS'
-				},
-				efUUID: this.uuid,
-				guidStr: this.uuid,
-				efatNoStr(e) {
-					return `${this.seri}${this.noYil}${(this.fisNo || 0).toString().padStart(9, '0')}`
-				},
-				bilgiFisiYazi: e =>
-					bilgiFisiYazi(e),
-				bilgiFisiYaziKucuk: e => {
-					let result = bilgiFisiYazi();
-					if (result)
-						result = `<SMALL>${result}<NORMAL>`;
-					return result;
-				},
-				bilgiFisiYaziKoyu: e => {
-					let result = bilgiFisiYazi();
-					if (result)
-						result = `<BOLD>${result}<NORMAL>`;
-					return result;
-				},
-				bilgiFisiYaziBuyuk: e => {
-					let result = bilgiFisiYazi();
-					if (result)
-						result = `<BIG>${result}<NORMAL>`;
-					return result;
-				},
-				eBelgeBilgiFisiYazi: e =>
-					eBelgeBilgiFisiYazi(e),
-				eBelgeBilgiFisiYaziKucuk: e => {
-					let result = eBelgeBilgiFisiYazi();
-					if (result)
-						result = `<SMALL>${result}<NORMAL>`;
-					return result;
-				},
-				eBelgeBilgiFisiYaziKoyu: e => {
-					let result = eBelgeBilgiFisiYazi();
-					if (result)
-						result = `<BOLD>${result}<NORMAL>`;
-					return result;
-				},
-				eBelgeBilgiFisiYaziBuyuk: e => {
-					let result = eBelgeBilgiFisiYazi();
-					if (result)
-						result = `<BIG>${result}<NORMAL>`;
-					return result;
-				},
-				efSenaryoTipi: async e => {
-					const cariEFatmi = await this.getCariEFatmi(e);
-					return cariEFatmi ? 'TICARIFATURA' : 'EARSIVFATURA'
-				},
-				Yalniz: e => {
-					const {sonucBedel} = this;
-					return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : ''
-				}
+				efBelgeTipi(e) { return sky.app.eIslemTip2UzunAdi(this.eIslemTip) },
+				efFaturaTipi(e) { return this.class.satismi == this.class.iademi ? 'IADE' : 'SATIS' },
+				efUUID: this.uuid, guidStr: this.uuid,
+				efatNoStr(e) { return `${this.seri}${this.noYil}${(this.fisNo || 0).toString().padStart(9, '0')}` },
+				bilgiFisiYazi: e => bilgiFisiYazi(e),
+				bilgiFisiYaziKucuk: e => { let result = bilgiFisiYazi(); if (result) { result = `<SMALL>${result}<NORMAL>` } return result },
+				bilgiFisiYaziKoyu: e => { let result = bilgiFisiYazi(); if (result) { result = `<BOLD>${result}<NORMAL>` } return result },
+				bilgiFisiYaziBuyuk: e => { let result = bilgiFisiYazi(); if (result) { result = `<BIG>${result}<NORMAL>` } return result },
+				eBelgeBilgiFisiYazi: e => eBelgeBilgiFisiYazi(e),
+				eBelgeBilgiFisiYaziKucuk: e => { let result = eBelgeBilgiFisiYazi(); if (result) { result = `<SMALL>${result}<NORMAL>` } return result },
+				eBelgeBilgiFisiYaziKoyu: e => { let result = eBelgeBilgiFisiYazi(); if (result) { result = `<BOLD>${result}<NORMAL>` } return result },
+				eBelgeBilgiFisiYaziBuyuk: e => { let result = eBelgeBilgiFisiYazi(); if (result) { result = `<BIG>${result}<NORMAL>` } return result },
+				efSenaryoTipi: async e => { const cariEFatmi = await this.getCariEFatmi(e); return cariEFatmi ? 'TICARIFATURA' : 'EARSIVFATURA' },
+				Yalniz: e => { const {sonucBedel} = this; return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : '' }
 			})
 		}
 	}

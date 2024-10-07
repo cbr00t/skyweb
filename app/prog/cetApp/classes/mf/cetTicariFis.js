@@ -1,52 +1,32 @@
 (function() {
 	window.CETTicariFis = class extends window.CETStokTicariFis {
-		static get sevkTarihEtiket() { return 'Sevk' };
-		static get detaySinif() { return CETTicariDetay }
+		static get sevkTarihEtiket() { return 'Sevk' }; static get detaySinif() { return CETTicariDetay }
 		static uygunDetaySinif(e) {
-			const rec = e.rec || e;
-			if (rec.promokod || rec.promoKod) return CETPromosyonDetay
+			const rec = e.rec || e; if (rec.promokod || rec.promoKod) { return CETPromosyonDetay }
 			return super.uygunDetaySinif(e)
 		}
 		static get icmalSinif() { return CETTicariIcmal }
 		static get adimTipi() { return `${this.almSat || ''}${this.pifTipi || ''}${this.iade || ''}` }
 		static get numaratorTip() { return this.adimTipi }
-		get eIslemNumaratorTip() {
-			return super.eIslemNumaratorTip;
-			/*const {app} = sky;
-			return app.eIslemKullanilirmi
-						? super.eIslemNumaratorTip
-						: '';*/
-		}
-		static get pifTipi() { return null }
-		static get almSat() { return '' }
-		static get satismi() { return this.almSat == 'T' }
-		static get alimmi() { return this.almSat == 'A' }
-		static get fiiliCikismi() { return (this.alimmi == this.iademi) }
-		static get ozelIsaretKullanilirmi() { return true }
-		static get ayrimTipiKullanilirmi() { return true }
+		get eIslemNumaratorTip() { return super.eIslemNumaratorTip /*const {app} = sky; return app.eIslemKullanilirmi ? super.eIslemNumaratorTip : '';*/ }
+		static get pifTipi() { return null } static get almSat() { return '' } static get satismi() { return this.almSat == 'T' }
+		static get alimmi() { return this.almSat == 'A' } static get fiiliCikismi() { return (this.alimmi == this.iademi) }
+		static get ozelIsaretKullanilirmi() { return true } static get ayrimTipiKullanilirmi() { return true }
 		static get uygunAyrimTipleri() { return $.merge(super.uygunAyrimTipleri || [], sky.app.uygunAyrimTipleri) }
-		static get bedelKullanilirmi() { return true }
-		static get dipIskBedelKullanilirmi() { return true }
-		static get promosyonKullanilirmi() { return this.satismi && !this.iademi }
-		static get sevkTarihKullanilirmi() { return !(this.alimmi || this.iademi) }
-		static get sevkYeriKullanilirmi() { return (this.alimmi == this.iademi) }
-		static get riskKontrolEdilirmi() { return !(this.alimmi || this.iademi) }
-		static get bakiyeRiskEtkilenirmi() { return true }
-		static get detYerKullanilirmi() { return true }
-		get dovizlimi() { return !!this.dvKod }
+		static get bedelKullanilirmi() { return true } static get dipIskBedelKullanilirmi() { return true }
+		static get promosyonKullanilirmi() { return this.satismi && !this.iademi } static get sevkTarihKullanilirmi() { return !(this.alimmi || this.iademi) }
+		static get sevkYeriKullanilirmi() { return (this.alimmi == this.iademi) } static get riskKontrolEdilirmi() { return !(this.alimmi || this.iademi) }
+		static get bakiyeRiskEtkilenirmi() { return true } static get detYerKullanilirmi() { return true } get dovizlimi() { return !!this.dvKod }
 		static get aciklama() {
-			const {pifTipi, almSat, iademi} = this;
-			return (
+			const {pifTipi, almSat, iademi} = this; return (
 				`<span style="color: ${this.renkFor({ tip: 'almSat' })};">${(almSat == 'A' ? 'Alım' : almSat == 'T' ? 'Satış' : '')}</span>&nbsp;` +
 				`<span style="color: ${this.renkFor({ tip: 'iade' })};">${(iademi ? 'İADE&nbsp;' : '')}</span>` +
 				`<span style="color: ${this.renkFor({ tip: 'pifTipi' })};">${pifTipi == 'F' ? 'Fatura' : pifTipi == 'I' ? 'İrsaliye': pifTipi == 'S' ? 'Sipariş' : ''}</span>`
 			)
 		}
 		constructor(e) {
-			e = e || {}; super(e);
-			$.extend(this, {
-				dvKod: e.dvKod || sky.app.defaultDovizKod || '',
-				dvKur: e.dvKur || 0,
+			e = e || {}; super(e); $.extend(this, {
+				dvKod: e.dvKod || sky.app.defaultDovizKod || '', dvKur: e.dvKur || 0,
 				nakSekliKod: e.nakSekliKod == null ? e.nakseklikod : e.nakSekliKod.trimEnd(),
 				tahSekliKodNo: asInteger(e.tahSekliKodNo == null ? e.tahseklikodno : e.tahseklikodno) || null,
 				dipIskOran: asFloat(e.dipIskOran == null ? e.dipiskoran : e.dipIskOran),
@@ -1083,20 +1063,8 @@
 			}
 			return result
 		}
-		async getDokumDegeriDict(e) {
-			return $.extend(await super.getDokumDegeriDict(e) || {}, {
-				//sevkTarih: dateToString(this.sevkTarih),
-				//sevkTarihKisa: dateKisaString(this.sevkTarih),
-				Dip: e => this.dokumDipSatirlar(e),
-				tahsilSekliAdi: e => this.getTahsilSekliAdi(e),
-				TahsilYazi: async e => {
-					e = e || {}; const tahSekliAdi = await this.getTahsilSekliAdi(e); if (tahSekliAdi == null) return null
-					return tahSekliAdi ? `${tahSekliAdi || ''} ile ${bedelStr(this.sonucBedel)} TL TAHSİL EDİLMİŞTİR` : ''
-				}
-			})
-		}
 		dokumDipSatirlar(e) {
-			const {app} = sky; if (app.eIslemKullanilirmi && app.eIslemOzelDokummu && this.eIslemTip) return this.dokumDipSatirlar_ozelEIslem(e)
+			const {app} = sky; if (app.eIslemKullanilirmi && app.eIslemOzelDokummu && this.eIslemTip) { return this.dokumDipSatirlar_ozelEIslem(e) }
 			return this.dokumDipSatirlar_normal(e)
 		}
 		dokumDipSatirlar_normal(e) {
@@ -1105,8 +1073,7 @@
 			this.gerekirseDipHesapla(); const {detaylar, icmal} = this, {cokluKdvmi} = icmal, {brut} = icmal;
 			let yuruyenBakiye = brut,  toplamSatirIskBedel = 0;
 			for (const det of detaylar) { if (!det.silindimi) toplamSatirIskBedel += det.toplamIskontoBedel } toplamSatirIskBedel = bedel(toplamSatirIskBedel);
-			const satirlar = [];
-			satirlar.push(ciftCizgi, 'BRÜT'.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize));
+			const satirlar = []; satirlar.push(ciftCizgi, 'BRÜT'.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize));
 			if (toplamSatirIskBedel) { satirlar.push('SATIR ISK.'.padStart(etiketSize) + ': ' + bedelStr(toplamSatirIskBedel).padStart(veriSize) ) }
 			const {dokumNettenmi} = sky.app, {dipIskOran, dipIskBedel} = this, dipIskVarmi = dipIskOran || dipIskBedel;
 			if (dipIskVarmi && dokumNettenmi) {
@@ -1138,11 +1105,9 @@
 			const postfix = ' TL', etiketSize = e.bedelEtiketUzunluk + 2, veriSize = e.bedelVeriUzunluk - postfix.length;
 			const tekCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '-'), ciftCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '=');
 			this.gerekirseDipHesapla(); const {detaylar, icmal} = this, {cokluKdvmi} = icmal, {brut} = icmal;
-			let yuruyenBakiye = brut, toplamSatirIskBedel = 0;
-			for (const det of detaylar) { if (!det.silindimi) toplamSatirIskBedel += det.toplamIskontoBedel }
+			let yuruyenBakiye = brut, toplamSatirIskBedel = 0; for (const det of detaylar) { if (!det.silindimi) toplamSatirIskBedel += det.toplamIskontoBedel }
 			toplamSatirIskBedel = bedel(toplamSatirIskBedel);
-			const satirlar = [];
-			satirlar.push(ciftCizgi, `Brüt Tutar`.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize) + postfix);
+			const satirlar = []; satirlar.push(ciftCizgi, `Brüt Tutar`.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize) + postfix);
 			if (fiyatIskontoGosterim == 'DP' && toplamSatirIskBedel) { satirlar.push(`Satır İsk. Toplamı`.padStart(etiketSize) + ': ' + bedelStr(toplamSatirIskBedel).padStart(veriSize) + postfix) }
 			const {dipIskOran, dipIskBedel} = this, dipIskVarmi = dipIskOran || dipIskBedel;
 			if (dipIskVarmi) {
@@ -1169,6 +1134,44 @@
 			satirlar.push(`Vergiler Dahil Tutar`.padStart(etiketSize) + ': ' + bedelStr(icmal.sonuc).padStart(veriSize) + postfix);
 			satirlar.push('Ödenecek Tutar'.padStart(etiketSize) + ': ' + `<BOLD>${bedelStr(icmal.sonuc).padStart(veriSize) + postfix}<NORMAL>`);
 			return satirlar
+		}
+		async getDokumDegeriDict(e) {
+			return $.extend(await super.getDokumDegeriDict(e) || {}, {
+				//sevkTarih: dateToString(this.sevkTarih),
+				//sevkTarihKisa: dateKisaString(this.sevkTarih),
+				Dip: e => this.dokumDipSatirlar(e),
+				tahsilSekliAdi: e => this.getTahsilSekliAdi(e),
+				TahsilYazi: async e => {
+					e = e || {}; const tahSekliAdi = await this.getTahsilSekliAdi(e); if (tahSekliAdi == null) { return null }
+					return tahSekliAdi ? `${tahSekliAdi || ''} ile ${bedelStr(this.sonucBedel)} TL TAHSİL EDİLMİŞTİR` : ''
+				},
+				qrBilgi: async e => {
+					this.gerekirseDipHesapla(); const {icmal, dvKod, tarih, seri, noYil, fisNo, efUUID} = this;
+					const {satismi, iademi} = this.class, currencyID = dvKod || 'TRY', {brut, sonuc} = icmal;
+					const {oran2MatrahVeKdv} = icmal, mustRec = await this.dokum_getMustRec(e), cariEFatmi = await this.getCariEFatmi(e);
+					let qrData = {
+						vkntckn: await this.dokum_getIsyeriVKN(e), avkntckn: mustRec.vkn, senaryo: cariEFatmi ? 'TICARIFATURA' : 'EARSIVFATURA',
+						tip: satismi == iademi ? 'IADE' : 'SATIS', tarih: asReverseDateString(dateToString(tarih)), no: `${seri}${noYil}${(fisNo || 0).toString().padStart(9, '0')}`,
+						ettn: efUUID, parabirimi: currencyID, malhizmettoplam: toFileStringWithFra(brut, 2), vergidahil: toFileStringWithFra(sonuc, 2), odenecek: toFileStringWithFra(sonuc, 2)
+					};
+					for (const oran in oran2MatrahVeKdv) {
+						const matrahVeKdv = oran2MatrahVeKdv[oran], matrah = asFloat(matrahVeKdv.matrah) || 0, kdv = asFloat(matrahVeKdv.kdv) || 0;
+						qrData[`kdvmatrah(${oran})`] = toFileStringWithFra(matrah, 2); qrData[`hesaplanankdv(${oran})`] = toFileStringWithFra(kdv, 2)
+					}
+					return toJSONStr(qrData)
+					/*const qrData = {
+						vkntckn: app.params.isyeri.vknTckn, avkntckn: baslik.aliciBilgi.vknTckn, senaryo: baslik._profileID, tip: baslik._belgeTipKod,
+						tarih: asReverseDateString(baslik.tarih), no: baslik.fisnox, ettn: baslik.uuid, parabirimi: this.currencyID,
+						malhizmettoplam: toFileStringWithFra(icmal.brutBedelYapi[bedelSelector], 2), vergidahil: toFileStringWithFra(icmal.vergiDahilToplamYapi[bedelSelector], 2),
+						odenecek: toFileStringWithFra(icmal.sonucBedelYapi[bedelSelector], 2)
+					};
+					for (const oran in kdvOran2MatrahVeBedel) {
+						const {matrah, bedel} = kdvOran2MatrahVeBedel[oran];
+						qrData[`kdvmatrah(${oran})`] = toFileStringWithFra(matrah, 2);
+						qrData[`hesaplanankdv(${oran})`] = toFileStringWithFra(bedel || 0, 2)
+					}*/
+				}
+			})
 		}
 	};
 
