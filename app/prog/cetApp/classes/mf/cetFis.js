@@ -76,71 +76,28 @@
 		}
 		
 		static fisSinifFor(e) {
-			e = e || {};
-			const rec = e.rec || e;
+			e = e || {}; const rec = e.rec || e;
 			if (rec) {
-				const fisTipi = rec.fistipi || rec.fisTipi || rec.adimtipi || rec.adimTipi,
-					  pifTipi = rec.piftipi || rec.pifTipi,
-					  alimmi = (rec.almsat || rec.almSat) == 'A',
-					  iademi = rec.iade == 'I';
-				
-				/*switch (fisTipi) {
-					case 'U':
-						return CETUgramaFis;
-				}*/
-
+				const fisTipi = rec.fistipi || rec.fisTipi || rec.adimtipi || rec.adimTipi, pifTipi = rec.piftipi || rec.pifTipi;
+				const alimmi = (rec.almsat || rec.almSat) == 'A', iademi = rec.iade == 'I';
 				let fisSinif = fisTipi ? sky.app.adimTipi2FisSinif[fisTipi] : null;
-				if (fisSinif) {
-					if (fisSinif.fisSinifDuzenlenmis)
-						fisSinif = fisSinif.fisSinifDuzenlenmis(e);
-					return fisSinif;
-				}
-
+				if (fisSinif) { if (fisSinif.fisSinifDuzenlenmis) { fisSinif = fisSinif.fisSinifDuzenlenmis(e) } return fisSinif }
 				switch (pifTipi) {
-					case 'F':
-						return alimmi
-									? (iademi ? CETAlimIadeFaturaFis : CETAlimFaturaFis)
-									: (iademi ? CETSatisIadeFaturaFis : CETSatisFaturaFis);
-					case 'I':
-						return alimmi
-									? (iademi ? CETAlimIadeIrsaliyeFis : CETAlimIrsaliyeFis)
-									: (iademi ? CETSatisIadeIrsaliyeFis : CETSatisIrsaliyeFis);
-					case 'S':
-						return alimmi
-									? (iademi ? null : CETAlimSiparisFis)
-									: (iademi ? null : CETSatisSiparisFis);
+					case 'F': return alimmi ? (iademi ? CETAlimIadeFaturaFis : CETAlimFaturaFis) : (iademi ? CETSatisIadeFaturaFis : CETSatisFaturaFis);
+					case 'I': return alimmi ? (iademi ? CETAlimIadeIrsaliyeFis : CETAlimIrsaliyeFis) : (iademi ? CETSatisIadeIrsaliyeFis : CETSatisIrsaliyeFis);
+					case 'S': return alimmi ? (iademi ? null : CETAlimSiparisFis) : (iademi ? null : CETSatisSiparisFis);
 				}
 			}
 		}
-
-		static fisSinifDuzenlenmis(e) {
-			return this
-		}
-
+		static fisSinifDuzenlenmis(e) { return this }
 		static async fromRec(e) {
-			e = e || {};
-			const rec = e.rec || e;
-			let fisSinif = e.fisSinif || this.fisSinifFor(e);
-			if (!fisSinif)
-				return null;
-			
-			const idSaha = e.idSaha || this.idSaha;
-			const _rec = e.rec || {};
-			const id = e.id || _rec.id || (idSaha ? _rec[idSaha] : null) || _rec.kaysayac || _rec.sayac;
-			
-			let _e = $.extend({}, e, { id: id });
-			delete _e.rec;
-			let fis = new fisSinif(_e);
-			if (!await fis.yukle({ islem: _e.islem }))
-				return null;
-
-			return fis;
+			e = e || {}; const rec = e.rec || e; let fisSinif = e.fisSinif || this.fisSinifFor(e); if (!fisSinif) { return null }
+			const idSaha = e.idSaha || this.idSaha, _rec = e.rec || {}, id = e.id || _rec.id || (idSaha ? _rec[idSaha] : null) || _rec.kaysayac || _rec.sayac;
+			let _e = $.extend({}, e, { id }); delete _e.rec;
+			let fis = new fisSinif(_e); if (!await fis.yukle({ islem: _e.islem })) { return null } 
+			return fis
 		}
-
-		getTumAltDetaylar(e) {
-			return this.detaylar
-		}
-
+		getTumAltDetaylar(e) { return this.detaylar }
 		async numaratorOlustur(e) {
 			/*if (this.gecicimi)
 				return null;*/
