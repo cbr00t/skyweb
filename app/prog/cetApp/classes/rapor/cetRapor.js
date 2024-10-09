@@ -301,11 +301,11 @@
 					{ attr: 'ustBilgiSatirlari', pos: { x: 5, y: 3 }, genislik: maxX - 9 }
 				],*/
 				Detay: [
-					{ attr: 'stokAdi', pos: { x: 1, y: 1 }, genislik: 35 },
-					{ attr: 'orjMiktar', pos: { x: 28, y: 1 }, genislik: 10, alignment: 'r', tip: 'decimal' },
-					{ attr: 'kalanMiktar', pos: { x: 40, y: 1 }, genislik: 10, alignment: 'r', tip: 'decimal' },
-					{ attr: 'olasiMiktar', pos: { x: 52, y: 1 }, genislik: 10, alignment: 'r', tip: 'decimal' },
-					{ attr: 'brm', pos: { x: 63, y: 1 }, genislik: 4 }
+					{ attr: 'stokAdi', pos: { x: 1, y: 1 }, genislik: 22 },
+					{ attr: 'orjMiktar', pos: { x: 24, y: 1 }, genislik: 8, alignment: 'r', tip: 'decimal' },
+					{ attr: 'kalanMiktar', pos: { x: 34, y: 1 }, genislik: 8, alignment: 'r', tip: 'decimal' },
+					/*{ attr: 'olasiMiktar', pos: { x: 40, y: 1 }, genislik: 5, alignment: 'r', tip: 'decimal' },*/
+					{ attr: 'brm', pos: { x: 44, y: 1 }, genislik: 4 }
 				]
 			});
 			/*$.extend(matbuuFormArgs.digerSahalar, {
