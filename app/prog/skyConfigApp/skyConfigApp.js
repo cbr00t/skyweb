@@ -18,7 +18,7 @@
 				const {gelismisModmu, gelismisModDisabledFlag} = this;
 				result = this._servisTip2Aciklama = {
 					vioWS: `VIO WebServis`, cariEFatListeSorgula: `Cari e-Fat Sorgula`, cariEFatListeGuncelle: `Cari e-Fat Güncelle`, cariEFatListeSorgulaVeGuncelle: `Cari e-Fat Sorgula ve Güncelle`,
-					zamanlanmisGorev: `VIO (<i>Ticari Program</i>) Zamanlanmış Görevler`, maliyetDuzenle: `Maliyet Düzenleme İşlemi`,
+					zamanlanmisGorev: `VIO (<i>Ticari Program</i>) Zamanlanmış Görevler`, dovizKurGuncelle: 'Döviz Kur Güncelle', maliyetDuzenle: 'Maliyet Düzenleme İşlemi',
 					pdaIPC: `Eski ElTerminali (<i>PDA</i>) IPC Sunucusu`, pdaAktarici: `Eski ElTerminali (<i>PDA</i>) Ticariye Aktarıcı`, 'pdks-mukerrerSil': `PDKS Tekrarlayan Kayıtları Sil`,
 					'pdks-api': 'PDKS Veri Alımı (<i>API</i>)', 'pdks-db-zktime': `PDKS Veri Alımı (<i>ZKTime Veritabanından</i>)`, 'pdks-db-timeroll': `PDKS Veri Alımı (<i>TimeRoll Veritabanından</i>)`,
 					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`,
