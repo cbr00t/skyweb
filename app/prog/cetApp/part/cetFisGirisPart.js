@@ -1029,6 +1029,13 @@
 						}
 						else { iskOranParent.addClass('jqx-hidden') }
 
+						const kamOranParent = divSatir.find('.kamOranParent');
+						if (rec.kamOranVarmi) {
+							kamOranParent.find('.kamOranText').html((rec.kamOranListe || []).map(val => val.toLocaleString()).join('+'));
+							kamOranParent.removeClass('jqx-hidden')
+						}
+						else { kamOranParent.addClass('jqx-hidden') }
+
 						const ozelKampanyaKodParent = divSatir.find(`.ozelKampanyaKodParent`);
 						const ozelKampanyaOranParent = divSatir.find(`.ozelKampanyaOranParent`);
 						if (ozelKampanyaKullanilirmi && rec.ozelKampanyaKod) {

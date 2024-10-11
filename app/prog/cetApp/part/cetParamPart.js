@@ -1,7 +1,6 @@
 (function() {
 	window.CETParamPart = class extends window.CETSubPart {
-		static get partName() { return 'cetParam' }
-		get adimText() { return 'Ayarlar' }
+		static get partName() { return 'cetParam' } get adimText() { return 'Ayarlar' }
 		static get noResizeEventOnInputs() { return false }
 		constructor(e) {
 			e = e || {};

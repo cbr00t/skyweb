@@ -52,6 +52,7 @@
 					satisFiyatGormez: asBoolQ(qs.satisFiyatGormez),
 					iskonto: asBoolQ(qs.iskonto) == null ? asBoolQ(qs.isk) : asBoolQ(qs.iskonto),
 					iskSayi: qs.iskSayi == null ? null : asInteger(qs.iskSayi),
+					kamSayi: qs.kamSayi == null ? null : asInteger(qs.kamSayi),
 					satirIskOranSinir: qs.satirIskOranSinir ? asFloat(qs.satirIskOranSinir) || 0 : null,
 					menuAdimKisitIDListe: qs.menuAdimKisitIDListe ? qs.menuAdimKisitIDListe.split('|') : null,
 					fisAdimKisitIDListe: qs.fisAdimKisitIDListe ? qs.fisAdimKisitIDListe.split('|') : null,
@@ -521,13 +522,16 @@
 		}
 		get karmaPaletBarkodBaslangic() { let value = this.ozelYetkiler?.karmaPaletBarkodBaslangic; if (value == null) { value = this.param.karmaPaletBarkodBaslangic } return value }
 		get irsaliyeBakiyeyiEtkilermi() { let flag = this.ozelYetkiler?.irsaliyeBakiyeyiEtkiler; if (flag == null) { flag = asBool(this.param.irsaliyeBakiyeyiEtkilermi) ?? false } return flag }
-		get maxIskSayi() { return 6 } get maxKadIskSayi() { return 5 }
+		get maxIskSayi() { return 6 } get maxKamSayi() { return this.maxIskSayi } get maxKadIskSayi() { return 5 }
 		get iskSayi() {
-			const {maxIskSayi} = this;
-			let result = this.ozelYetkiler?.iskSayi;
-			if (result == null)
-				result = asFloat(this.param.iskSayi) || 1;
-			return Math.min(result, maxIskSayi);
+			const {maxIskSayi} = this; let result = this.ozelYetkiler?.iskSayi;
+			if (result == null) { result = asFloat(this.param.iskSayi) || 1 }
+			return Math.min(result, maxIskSayi)
+		}
+		get kamSayi() {
+			const {maxKamSayi} = this; let result = this.ozelYetkiler?.kamSayi;
+			if (result == null) { result = asFloat(this.param.kamSayi) || this.iskSayi }
+			return Math.min(result, maxKamSayi)
 		}
 		get kadIskSayi() {
 			const {maxKadIskSayi} = this;
@@ -4295,7 +4299,7 @@
 
 		async merkezdenBilgiYukleDevam_satisKosullari(e) {
 			const {dbMgr, wsFetches} = e;
-			const {tip2EkOzellik, iskSayi, kadIskSayi} = this;
+			const {tip2EkOzellik, iskSayi, kamSayi, kadIskSayi} = this;
 			
 			let islemAdi = 'Satış Koşulları';
 			// wsFetches. ...  = this.ws ... Liste();

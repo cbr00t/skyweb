@@ -3698,11 +3698,13 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent,
 	.part.cetApp.cetFisGiris #liste .listeSatir .proIskOranParent,
 	.part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent,
+	.part.cetApp.cetFisGiris #liste .listeSatir .kamOranParent,
 	.part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent,
 	.part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranParent { padding-left: 5px; color: #999 }
 .part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent .kadIskOranText { font-family: Conv_Roboto-Bold; color: purple }
 .part.cetApp.cetFisGiris #liste .listeSatir .proIskOranParent .proIskOranText { font-family: Conv_Roboto-Bold; color: forestgreen }
 .part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent .iskOranText { font-family: Conv_Roboto-Bold; color: firebrick }
+.part.cetApp.cetFisGiris #liste .listeSatir .kamOranParent .kamOranText { font-family: Conv_Roboto-Bold; color: #b24122 }
 .part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent .ozelKampanyaKod { font-family: Conv_Roboto-Bold; color: #c57825 }
 .part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranText { font-family: Conv_Roboto-Bold; color: #c57825 }
 .part.cetApp.cetFisGiris #liste .listeSatir .miktarParent .miktar {
@@ -3842,27 +3844,13 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 	line-height: 25px !important;
 	padding-bottom: 3px;
 }
-.part.cetApp.cetFisGiris.degistirEkrani #fiyatParent #fiyat {
-	text-align: right;
-	width: 155px;
-	margin-right: 8px;
-}
-.part.cetApp.cetFisGiris.degistirEkrani #iskOranParent .iskOran,
-.part.cetApp.cetFisGiris.degistirEkrani .ozelKampanyaOran {
-	font-size: 85%;
-}
-.part.cetApp.cetFisGiris.degistirEkrani #iskOranlarStrParent {
-	line-height: 45px;
-}
-.part.cetApp.cetFisGiris.degistirEkrani #iskOranlarStrParent #iskOranlarStr {
-	color: firebrick;
-}
-.part.cetApp.cetFisGiris.degistirEkrani .iskOran input,
-.part.cetApp.cetFisGiris.degistirEkrani .ozelKampanyaOran input {
-}
-.part.cetApp.cetFisGiris.degistirEkrani #bedelParent {
-	padding-top: 5px;
-}
+.part.cetApp.cetFisGiris.degistirEkrani #fiyatParent #fiyat { text-align: right; width: 155px; margin-right: 8px }
+.part.cetApp.cetFisGiris.degistirEkrani #iskOranParent .iskOran, .part.cetApp.cetFisGiris.degistirEkrani #kamOranParent .iskOran,
+	.part.cetApp.cetFisGiris.degistirEkrani .ozelKampanyaOran { font-size: 85% }
+.part.cetApp.cetFisGiris.degistirEkrani #iskOranlarStrParent, .part.cetApp.cetFisGiris.degistirEkrani #kamOranlarStrParent { line-height: 45px }
+.part.cetApp.cetFisGiris.degistirEkrani #iskOranlarStrParent #iskOranlarStr, .part.cetApp.cetFisGiris.degistirEkrani #iskOranlarStrParent #kamOranlarStr { color: firebrick }
+.part.cetApp.cetFisGiris.degistirEkrani .iskOran input, .part.cetApp.cetFisGiris.degistirEkrani .ozelKampanyaOran input { }
+.part.cetApp.cetFisGiris.degistirEkrani #bedelParent { padding-top: 5px }
 .part.cetApp.cetFisGiris.degistirEkrani #bedel {
 	color: steelblue;
 	font-size: 130%;
@@ -3871,11 +3859,7 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 	padding-bottom: 10px;
 	padding-right: 30px;
 }
-@media (max-width: 350px) {
-	.part.cetApp.cetFisGiris.degistirEkrani #bedel {
-		font-size: 125%;
-	}
-}
+@media (max-width: 350px) { .part.cetApp.cetFisGiris.degistirEkrani #bedel { font-size: 125% } }
 
 /*.part.cetApp.cetFisGiris .adimText {
 	font-size: 90%;
@@ -3887,8 +3871,7 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 }*/
 
 
-.part.cetApp.cetBekleyenXFisGiris {
-}
+.part.cetApp.cetBekleyenXFisGiris { }
 .part.cetApp.cetBekleyenXFisGiris .detay .jqx-navigationbar .header {
 	/* margin-bottom: 5px; */
 }
@@ -4443,14 +4426,10 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .kdvOraniText {
 	padding-left: 10px;
 }
-.part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .iskOranParent {
-	padding-left: 5px;
-	color: #777;
-}
-.part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .iskOranText {
-	font-family: Conv_Roboto-Bold;
-	color: firebrick;
-}
+.part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .iskOranParent,
+	.part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .kamOranParent { padding-left: 5px; color: #777 }
+.part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .iskOranText,
+	.part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .kamOranText { font-family: Conv_Roboto-Bold; color: firebrick }
 .part.cetApp.cetForkliftFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranParent {
 	padding-left: 5px;
 	color: #777;

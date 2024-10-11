@@ -42,20 +42,15 @@
 		}
 		static get fisSinif() { return CETTicariFis }
 		static get iskOranKeys() {
-			const {iskSayi} = sky.app;
-			const result = super.iskOranKeys || [];
-			for (let i = 1; i <= iskSayi; i++)
-				result.push(`iskOran${i}`);
+			const {iskSayi} = sky.app, result = super.iskOranKeys || [];
+			for (let i = 1; i <= iskSayi; i++) { result.push(`iskOran${i}`) }
 			return result;
 		}
-
-		/*static get kamOranKeys() {
-			return $.merge(
-				super.kamOranKeys || [],
-				['kamOran1', 'kamOran2', 'kamOran3']
-			)
-		}*/
-
+		static get kamOranKeys() {
+			const {kamSayi} = sky.app, result = super.kamOranKeys || [];
+			for (let i = 1; i <= kamSayi; i++) { result.push(`kamOran${i}`) }
+			return result;
+		}
 		static get ozelKamOranKeys() {
 			const {app} = sky;
 			const ozelKamOranSayi = app.ozelKampanyaOranSayisi || 0;

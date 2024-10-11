@@ -53,7 +53,7 @@
 				'bakiyeyeEtkilenirmi', 'irsaliyeBakiyeyiEtkilermi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'detaylardaFiyatDegistirilirmi', 'iskontoArttirilirmi',
 				'menuAdimKisitIDListe', 'fisAdimKisitIDListe', 'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'silerekBilgiAlYapilirmi',
 				'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi', 'stokPaketKodlari', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis', 'alimNetFiyatGosterilirmi',
-				'iskSayi', 'kadIskSayi', 'satirIskOranSinir', 'musteriDegistirilirmi', 'musteriRotaZorunlumu', 'rotaDevreDisiGosterilirmi',
+				'iskSayi', 'kamSayi', 'kadIskSayi', 'satirIskOranSinir', 'musteriDegistirilirmi', 'musteriRotaZorunlumu', 'rotaDevreDisiGosterilirmi',
 				'riskKontrolDurum', 'eIslemKullanilirmi', 'eIrsaliyeKullanilirmi', 'eBelgeAltSinir', 'sicakTeslimFisimi',
 				'depoSiparisRefKontrolEdilirmi', 'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi',
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
@@ -164,7 +164,7 @@
 					this[key] = value;
 			});
 
-			[	'version', 'dokumDeviceSP_baudRate', 'iskSayi', 'kadIskSayi', 'fiyatFra', 'ozelKampanyaOranSayisi' ].forEach(key => {
+			[	'version', 'dokumDeviceSP_baudRate', 'iskSayi', 'kamSayi', 'kadIskSayi', 'fiyatFra', 'ozelKampanyaOranSayisi' ].forEach(key => {
 				let value = this[key];
 				if (/*value != null &&*/ typeof value != 'number')
 					this[key] = asInteger(value) || 0;
