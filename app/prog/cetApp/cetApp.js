@@ -2940,9 +2940,9 @@
 				// displayMessage(`UYARI: <b>Kapanış yapıldı!</b>`, this.appText);
 				const _e = { /*silent: true*/ otoGondermi: true };
 				try {
-					await this.merkezeBilgiGonderOnKontrol(_e); _param = this.param; _param.kapandimi = true; await _param.kaydet();
-					const _result = await this.merkezeBilgiGonder(_e);
-					if (_result?.isError) { throw _result }
+					/*await this.merkezeBilgiGonderOnKontrol(_e);*/ _param = this.param; _param.kapandimi = true; await _param.kaydet();
+					_param.ilkKM = _param.sonKM = null;
+					const _result = await this.merkezeBilgiGonder(_e); if (_result?.isError) { throw _result }
 					const hataliTable2FisIDListe = (_result || {}).hataliTable2FisIDListe || {};
 					if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
 					await _param.kaydet()
@@ -2964,28 +2964,14 @@
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
 			const param = this.param = new this.param.class();
-			for (const key of param.class.sabitAttrListe) {
-				let value = _param[key];
-				if (value != null)
-					param[key] = value
-			}
-			for (const key in _rec) {
-				const value = _rec[key];
-				if (value != null)
-					param[key] = value
-			}
-
-			for (const key of ['ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi'])
-				param[key] = false;
-			
-			await param.kaydet();
-			await this.ortakReset(e);
-			/*delete this._fisAdimKisitIDSet;
-			delete this._menuAdimKisitIDSet;*/
-			delete this._ekOzellikKullanim;
+			for (const key of param.class.sabitAttrListe) { let value = _param[key]; if (value != null) { param[key] = value } }
+			for (const key in _rec) { const value = _rec[key]; if (value != null) { param[key] = value } }
+			param.ilkKM = null; for (const key of ['ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi']) { param[key] = false }
+			await param.kaydet(); await this.ortakReset(e);
+			/*delete this._fisAdimKisitIDSet; delete this._menuAdimKisitIDSet;*/ delete this._ekOzellikKullanim;
 
 			let {tx} = e;
-			const _e = $.extend({}, e, { tx: tx, dbMgrKeys: dbMgrKeys, verilerSilinmesinFlag: verilerSilinmesinFlag, temps: {} });
+			const _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} });
 			await this.tablolariTemizle(_e);
 			delete _e.verilerSilinmesinFlag;
 			await this.tablolariOlustur(_e);
