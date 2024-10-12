@@ -873,6 +873,10 @@
 												type: 'boolean', /* format: 'checkbox' */ title: `Mükellef Listesi yeniden indirilmez`,
 												description: `** Sadece test amaçlı kullanılmalıdır`
 											},
+											noAutoReset: {
+												type: 'boolean', /* format: 'checkbox' */ title: `Geçici e-Fata Tabi Liste Tablosunu SİLME`,
+												description: `SkyWS Görev ile yapılan sorgulamada Geçici e-Fata Tabi Liste tablo içeriği silinmez. Sadece e-Faturaya geçen mükellefler sorgulanabilir, e-Faturadan çıkanlar sorgulanmamış olur`
+											},
 											gibAlias2Donusum: { type: 'object', title: 'GIB Alias için Dönüşüm', items: { type: 'object' } }
 										}
 									},
