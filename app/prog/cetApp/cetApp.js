@@ -5726,6 +5726,8 @@
 		}
 		konumFarki(e) { const {konum1, konum2} = e; const result = Utils.konumFarki(konum1, konum2); console.info('konumFarki', result, 'mt'); return result }
 		kisitlamalariUygula(e) {
+			let {kisitlamalariUygulaOncesi} = this; if (kisitlamalariUygulaOncesi) {
+				const _e = { ...e, silent: true }; if (kisitlamalariUygulaOncesi.run) { kisitlamalariUygulaOncesi.run(_e) } else getFuncValue.call(this, kisitlamalariUygulaOncesi) }
 			this._fisTipleri = this._fisAdimKisitIDSet = this._menuAdimKisitIDSet = undefined;
 			setTimeout(() => {
 				const menuItems = this.divAnaMenu.find(`.item`);
@@ -5733,8 +5735,7 @@
 				if (!$.isEmptyObject(menuAdimKisitIDSet)) {
 					menuAdimKisitIDSet.bekleyenXFislerGuncelle = true;
 					const removeItems = menuItems.filter((index, item) => !menuAdimKisitIDSet[item.id]);
-					if (!$.isEmptyObject(removeItems))
-						removeItems.remove();
+					if (!$.isEmptyObject(removeItems)) { removeItems.remove() }
 				}
 			}, 100);
 			const {fisAdimKisitIDSet} = this;
