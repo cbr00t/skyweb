@@ -361,8 +361,8 @@
 				},
 				toplamIskontoBedel(e) { return this.toplamIskontoBedel },
 				iskOranlariText(e) {
-					const {iskOranListe, kadIskOran, proIskOran} = this, liste = [];
-					for (const iskOran of [...iskOranListe, kadIskOran, proIskOran]) { if (iskOran) { liste.push(iskOran) } }
+					const {iskOranListe, kamOranListe, kadIskOran, proIskOran} = this, liste = [];
+					for (const oran of [...iskOranListe, kamOranListe, kadIskOran, proIskOran]) { if (oran) { liste.push(oran) } }
 					return $.isEmptyObject(liste) ? '' : '%' + ((liste || []).map(val => val.toLocaleString()).join(`+`))
 				},
 				ozelKampanyaOranlariText(e) {
