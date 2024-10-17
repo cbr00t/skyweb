@@ -520,188 +520,83 @@
 	};
 
 	window.CETSubelerArasiTransferSiparisFis = class extends window.CETTransferFis {
-		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			$.extend(this, {
-				subeKod: this.subeKod || sky.app.defaultSubeKod || '',			// (subeKod) üst seviyesinden atanmış idi .. super(e) .. ile
-				refSubeKod: e.refSubeKod || ''
-			});
+		static get aciklama() { return 'Şube Transfer Siparişi' } static get numaratorTip() { return `TRSA` }
+		constructor(e) {		/* (subeKod) üst seviyesinden atanmış idi .. super(e) .. ile */
+			e = e || {}; super(e); $.extend(this, { subeKod: this.subeKod || sky.app.defaultSubeKod || '', refSubeKod: e.refSubeKod || '' })
 		}
-		
-		static get aciklama() { return 'Şube Transfer Siparişi' }
-		// static get sonStoktanSecimYapilirmi() { return true }
-		// static get sonStokKontrolEdilirmi() { return !(this.alimmi || this.iademi) }
-		static get numaratorTip() { return `TRSA` }
-
-		hostVars(e) {
-			e = e || {};
-			let hv = super.hostVars();
-			$.extend(hv, {
-				refsubekod: this.refSubeKod || ''
-			});
-
-			return hv;
-		}
-
-		async setValues(e) {
-			e = e || {};
-			await super.setValues(e);
-
-			const {rec} = e;
-			$.extend(this, {
-				refSubeKod: rec.refsubekod || ''
-			});
-		}
-
+		hostVars(e) { e = e || {}; let hv = super.hostVars(); $.extend(hv, { refsubekod: this.refSubeKod || '' }); return hv }
+		async setValues(e) { e = e || {}; await super.setValues(e); const {rec} = e; $.extend(this, { refSubeKod: rec.refsubekod || '' }) }
 		hostVarsDuzenlenmis(e) {
 			let hv = super.hostVarsDuzenlenmis(e);
-			if (sky.app.transferOncelikKullanilirmi) {
-				const {transferOncelikKod} = this;
-				if (transferOncelikKod)
-					hv.fisaciklama = `${hv.fisaciklama || ''} - ${transferOncelikKod}`;
-			}
-
-			return hv;
+			if (sky.app.transferOncelikKullanilirmi) { const {transferOncelikKod} = this; if (transferOncelikKod) { hv.fisaciklama = `${hv.fisaciklama || ''} - ${transferOncelikKod}` } }
+			return hv
 		}
-
 		async initBaslikUI_ara(e) {
-			await super.initBaslikUI_ara(e);
-
-			const parentPart = e.parentPart;
-			const param = parentPart.param;
-			const userSettings = param.userSettings = param.userSettings || {};
-			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {};
-
-			const layout = e.layout;
-			let savedParentWidth;
+			await super.initBaslikUI_ara(e); const {parentPart, layout} = e, {param} = parentPart, userSettings = param.userSettings = param.userSettings || {};
+			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {}; let savedParentWidth;
 			if (true) {
-				let kod = this.subeKod;
-				let sonDeger = sonDegerler.subeKod;
-
-				const divSaha = layout.find(`#subeKod`);
-				const sahaContainer = divSaha.parents(`.parent`);
-				const divEtiket = sahaContainer.find(`.etiket`);
+				let kod = this.subeKod, sonDeger = sonDegerler.subeKod;
+				const divSaha = layout.find(`#subeKod`), sahaContainer = divSaha.parents(`.parent`), divEtiket = sahaContainer.find(`.etiket`);
 				let part = new CETMstComboBoxPart({
-					parentPart: parentPart,
-					content: divSaha,
-					// layout: layout.find('.hizliStok'),
-					placeHolder: `Çıkış Şubesi`,
-					listeSinif: CETKAListePart, table: 'mst_Sube',
-					idSaha: 'kod', adiSaha: 'aciklama',
-					selectedId: kod || sonDeger,
+					parentPart, content: divSaha, placeHolder: `Çıkış Şubesi`, listeSinif: CETKAListePart, table: 'mst_Sube',
+					idSaha: 'kod', adiSaha: 'aciklama', selectedId: kod || sonDeger,
 					widgetDuzenleyici: e => {
-						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
-							e.widgetArgs.width - (divEtiket.width() ||  0) );
-						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (e.widgetArgs.width - (divEtiket.width() || 0));
+						e.widgetArgs.dropDownWidth = e.widgetArgs.width
 					},
 					events: {
-						comboBox_loadServerData: e => {
-							return (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.subeKod2Rec)
-						},
+						comboBox_loadServerData: e => e.wsArgs?.searchText ? null : Object.values(sky.app.caches.subeKod2Rec),
 						comboBox_itemSelected: e => {
-							kod = this.subeKod = (e.rec || {}).kod || e.value || '';
-							if (sonDeger != kod) {
-								sonDeger = sonDegerler.subeKod = kod;
-								parentPart.paramDegistimi = true;
-							}
+							kod = this.subeKod = e.rec?.kod || e.value || '';
+							if (sonDeger != kod) { sonDeger = sonDegerler.subeKod = kod; parentPart.paramDegistimi = true }
 						}
 					}
 				});
-				sahaContainer.removeClass(`jqx-hidden`);
-				await part.run();
+				sahaContainer.removeClass(`jqx-hidden`); await part.run()
 			}
-
 			if (true) {
-				let kod = this.refSubeKod;
-				let sonDeger = sonDegerler.refSubeKod;
-
-				const divSaha = layout.find(`#refSubeKod`);
-				const sahaContainer = divSaha.parents(`.parent`);
-				const divEtiket = sahaContainer.find(`.etiket`);
+				let kod = this.refSubeKod, sonDeger = sonDegerler.refSubeKod;
+				const divSaha = layout.find(`#refSubeKod`), sahaContainer = divSaha.parents(`.parent`), divEtiket = sahaContainer.find(`.etiket`);
 				let part = new CETMstComboBoxPart({
-					parentPart: parentPart,
-					content: divSaha,
-					// layout: layout.find('.hizliStok'),
-					placeHolder: `Giriş Şubesi`,
-					listeSinif: CETKAListePart, table: 'mst_Sube',
-					idSaha: 'kod', adiSaha: 'aciklama',
-					selectedId: kod || sonDeger,
+					parentPart, content: divSaha, placeHolder: `Giriş Şubesi`, listeSinif: CETKAListePart, table: 'mst_Sube',
+					idSaha: 'kod', adiSaha: 'aciklama', selectedId: kod || sonDeger,
 					widgetDuzenleyici: e => {
-						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
-							e.widgetArgs.width - (divEtiket.width() ||  0) );
-						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (e.widgetArgs.width - (divEtiket.width() ||  0) );
+						e.widgetArgs.dropDownWidth = e.widgetArgs.width
 					},
 					events: {
 						comboBox_itemSelected: e => {
-							kod = this.refSubeKod = (e.rec || {}).kod || e.value || '';
-							if (sonDeger != kod) {
-								sonDeger = sonDegerler.refSubeKod = kod;
-								parentPart.paramDegistimi = true;
-							}
+							kod = this.refSubeKod = e.rec?.kod || e.value || '';
+							if (sonDeger != kod) { sonDeger = sonDegerler.refSubeKod = kod; parentPart.paramDegistimi = true }
 						}
 					}
 				});
-				sahaContainer.removeClass(`jqx-hidden`);
-				await part.run();
+				sahaContainer.removeClass(`jqx-hidden`); await part.run()
 			}
 		}
-
 		async initBaslikUI_son(e) {
-			await super.initBaslikUI_son(e);
-
-			const parentPart = e.parentPart;
-			const param = parentPart.param;
-			const userSettings = param.userSettings = param.userSettings || {};
-			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {};
-
-			const layout = e.layout;
-			let savedParentWidth;
-			if (sky.app.transferOncelikKullanilirmi) {
-				const items = sky.app.transferOncelikKAListe;
-				let divSaha = layout.find(`#transferOncelikKod`);
+			await super.initBaslikUI_son(e); const {parentPart, layout} = e, {param} = parentPart;
+			const userSettings = param.userSettings = param.userSettings || {}, sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {};
+			let savedParentWidth; if (sky.app.transferOncelikKullanilirmi) {
+				const {transferOncelikKAListe: items} = sky.app; let divSaha = layout.find(`#transferOncelikKod`);
 				if (!divSaha.length) {
-					let divParent = $(
-						`<div class="yerKodParent parent flex-row jqx-hidden">` +
-						`	<div class="veri"><div id="transferOncelikKod"/></div>` +
-						`</div>`
-					).appendTo(layout);
-					divSaha = divParent.find(`.veri > div`);
+					let divParent = $(`<div class="yerKodParent parent flex-row jqx-hidden"><div class="veri"><div id="transferOncelikKod"/></div></div>`).appendTo(layout);
+					divSaha = divParent.find(`.veri > div`)
 				}
-
-				let kod = this.transferOncelikKod;
-				let sonDeger = sonDegerler.transferOncelikKod;
-
-				const sahaContainer = divSaha.parents(`.parent`);
-				const divEtiket = sahaContainer.find(`.etiket`);
+				let kod = this.transferOncelikKod, sonDeger = sonDegerler.transferOncelikKod;
+				const sahaContainer = divSaha.parents(`.parent`), divEtiket = sahaContainer.find(`.etiket`);
 				let part = new CETMstComboBoxPart({
-					parentPart: parentPart,
-					content: divSaha,
-					// layout: layout.find('.hizliStok'),
-					placeHolder: `Transfer Öncelik`,
-					listeSinif: CETKAListePart,
-					idSaha: 'kod', adiSaha: 'aciklama',
-					selectedId: kod || sonDeger,
-					kodsuzmu: true,
+					parentPart, content: divSaha, placeHolder: `Transfer Öncelik`, listeSinif: CETKAListePart,
+					idSaha: 'kod', adiSaha: 'aciklama', selectedId: kod || sonDeger, kodsuzmu: true,
 					widgetDuzenleyici: e => {
-						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
-							e.widgetArgs.width - (divEtiket.width() ||  0) );
-						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (e.widgetArgs.width - (divEtiket.width() || 0));
+						e.widgetArgs.dropDownWidth = e.widgetArgs.width
 					},
 					events: {
-						comboBox_loadServerData: e => {
-							return items
-						},
-						liste_loadServerData: e => {
-							return items
-						},
+						comboBox_loadServerData: e => items, liste_loadServerData: e => items,
 						comboBox_itemSelected: e => {
 							kod = this.transferOncelikKod = (e.rec || {}).kod || e.value || '';
-							if (sonDeger != kod) {
-								sonDeger = sonDegerler.transferOncelikKod = kod;
-								parentPart.paramDegistimi = true;
-							}
+							if (sonDeger != kod) { sonDeger = sonDegerler.transferOncelikKod = kod; parentPart.paramDegistimi = true }
 						}
 					}
 				});
@@ -709,8 +604,7 @@
 			}
 		}
 		async onKontrol(e) {
-			e = e || {};
-			if (!this.subeKod) { return this.error_onKontrol(`(Çıkış Şubesi) belirtilmelidir`, 'emptyValue') }
+			e = e || {}; if (!this.subeKod) { return this.error_onKontrol(`(Çıkış Şubesi) belirtilmelidir`, 'emptyValue') }
 			if (!this.refSubeKod) { return this.error_onKontrol(`(Giriş Şubesi) belirtilmelidir`, 'emptyValue') }
 			let result = sky.app.caches.subeKod2Rec[this.subeKod];
 			if (result == null) { result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_Sube WHERE kod = ?`, params: [this.subeKod] })) }

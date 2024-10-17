@@ -4757,31 +4757,12 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 }
 
 .part.cetApp.cetRaporGridli .ustAltBilgi {
-	width: 100%;
-	height: 100%;
-	font-family: Courier New;
-	font-size: 11.8pt;
-	font-weight: bold;
-	white-space: pre;
-	color: #555;
-	/* background-color: #ddeeee; */
-	background: radial-gradient(white 10%, #ddeeeeaa 90%);
-	overflow: auto;
+	width: 100%; height: 100%; font-family: Courier New; font-size: 11.8pt; font-weight: bold; height: 70px; line-height: 20px;
+	white-space: pre; color: #555; /* background-color: #ddeeee; */ background: radial-gradient(white 10%, #ddeeeeaa 90%); overflow: auto
 }
-.part.cetApp.cetRaporGridli #ustBilgi {
-	/* height: 70px; */
-	padding-bottom: 10px;
-}
-.part.cetApp.cetRaporGridli #altBilgi {
-	height: 80px;
-}
-
-
-.part.cetApp.cetMusteriDurumu #mustBilgi {
-	/*min-height: 85px;*/
-	min-height: 50px;
-	max-height: 130px;
-}
+.part.cetApp.cetRaporGridli #ustBilgi { /* height: 70px; */ }
+.part.cetApp.cetRaporGridli #altBilgi { height: 80px }
+.part.cetApp.cetMusteriDurumu #mustBilgi { /*min-height: 85px;*/ min-height: 50px; max-height: 130px }
 @media (max-height: 700px) {
 	.part.cetApp.cetMusteriDurumu #liste .jqx-grid-cell {
 		font-size: 95% !important;

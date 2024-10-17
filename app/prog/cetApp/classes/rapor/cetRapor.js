@@ -1,19 +1,15 @@
 (function() {
 	window.CETRapor_IlkIrsaliye = class extends window.CETRaporGridli {
-		static get kod() { return 'ILK_IRSALIYE' }
-		static get aciklama() { return 'İlk İrsaliye' }
+		static get kod() { return 'ILK_IRSALIYE' } static get aciklama() { return 'İlk İrsaliye' }
 		static get defaultUstBilgiSatirlari() {
-			return $.merge(super.defaultUstBilgiSatirlari || [], [
-				`MUHTELİF MÜŞTERİLERDEN`,
-				`SEVK EDİLMEK ÜZERE`
-			])
+			const {isyeri} = sky.app; return [...super.defaultUstBilgiSatirlari || [],
+				'MUHTELİF MÜŞTERİLERDEN', 'SEVK EDİLMEK ÜZERE',
+				`VKN:${isyeri.tckimlikno || isyeri.vergino}  VD:${isyeri.vergidaire}`
+			]
 		}
 		async run(e) {
-			let result = await super.run(e);
-			if (!result)
-				return false
-			sky.app.param.ilkIrsaliyeRaporuAlindimi = true;
-			return result
+			let result = await super.run(e); if (!result) { return false }
+			sky.app.param.ilkIrsaliyeRaporuAlindimi = true; return result
 		}
 		async liste_columnsDuzenle(e) {
 			$.merge(e.listeColumns, [
@@ -70,20 +66,10 @@
 		}
 		async matbuuFormArgsDuzenle(e) {
 			await super.matbuuFormArgsDuzenle(e);
-			const {matbuuFormArgs} = e;
-			matbuuFormArgs.dipPos = { x: 2 };
-			$.extend(matbuuFormArgs.formBilgi, {
-				dipYazdirilirmi: true
-				// tekDetaySatirSayisi: 1,
-				// sayfaBoyutlari: { x: 41 }
-				// otoYBasiSonu: { basi: 9 }
-			})
-			const maxX = matbuuFormArgs.formBilgi.sayfaBoyutlari.x;
-			matbuuFormArgs.normalSahalar = matbuuFormArgs.normalSahalar || {};
+			const {matbuuFormArgs} = e; matbuuFormArgs.dipPos = { x: 2 }; $.extend(matbuuFormArgs.formBilgi, { dipYazdirilirmi: true });
+			const maxX = matbuuFormArgs.formBilgi.sayfaBoyutlari.x; matbuuFormArgs.normalSahalar = matbuuFormArgs.normalSahalar || {};
 			$.extend(matbuuFormArgs.normalSahalar, {
-				Tekil: [
-					{ attr: 'ustBilgiSatirlari', pos: { x: 5, y: 3 }, genislik: maxX - 9 }
-				],
+				Tekil: [ { attr: 'ustBilgiSatirlari', pos: { x: 1, y: 3 }, genislik: maxX - 2 } ],
 				Detay: [
 					{ attr: 'stokAdi', pos: { x: 1, y: 1 }, genislik: 26 },
 					{ attr: 'orjMiktar', pos: { x: 28, y: 1 }, genislik: 7, alignment: 'r', tip: 'decimal' },
