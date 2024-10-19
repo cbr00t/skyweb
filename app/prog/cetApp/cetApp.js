@@ -2936,15 +2936,12 @@
 			e = e || {}; this.prefetchAbortedFlag = true;
 			const {appMagazaVeyaSDMmi} = this.class, {isDevMode} = this, {dbMgrKeys, dbMgr, verilerSilinmesinFlag} = e, dbMgr_param = this.dbMgrs.param;
 			let wsFetches = e.wsFetches = {}, _param = this.param, islemAdi, _rec, recs, subCount, hvListe;
-			if (this.kmTakibiYapilirmi /*&& !_param.kapandimi*/) {
-				// displayMessage(`UYARI: <b>Kapanış yapıldı!</b>`, this.appText);
-				const _e = { /*silent: true*/ otoGondermi: true };
+			if (this.kmTakibiYapilirmi) {
+				const _e = { otoGondermi: true, bilgiGonderTableYapilari: [] };
 				try {
 					/*await this.merkezeBilgiGonderOnKontrol(_e);*/ _param = this.param; _param.kapandimi = true; await _param.kaydet();
-					_param.ilkKM = _param.sonKM = null;
-					const _result = await this.merkezeBilgiGonder(_e); if (_result?.isError) { throw _result }
-					const hataliTable2FisIDListe = (_result || {}).hataliTable2FisIDListe || {};
-					if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
+					_param.ilkKM = _param.sonKM = null; const _result = await this.merkezeBilgiGonder(_e); if (_result?.isError) { throw _result }
+					const hataliTable2FisIDListe = _result?.hataliTable2FisIDListe || {}; if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
 					await _param.kaydet()
 				}
 				catch (ex) { console.error(ex); _param.kapandimi = false }
@@ -4773,24 +4770,13 @@
 		}
 
 		async merkezeBilgiGonderDevam2(e) {
-			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
-			const {silent, otoGondermi, timer} = e;
-			
-			let {bilgiGonderTableYapilari} = e;
-			if (!bilgiGonderTableYapilari)
-				bilgiGonderTableYapilari = this.bilgiGonderTableYapilari
-			
+			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf, {silent, otoGondermi, timer} = e;
+			let {bilgiGonderTableYapilari} = e; if (!bilgiGonderTableYapilari) { bilgiGonderTableYapilari = this.bilgiGonderTableYapilari }
 			let totalRecords = 0, kontroleEsasToplamSayi = 0;
-			const {param} = this;
-			let _param = e.param = e.param = {};
-			if (this.kmTakibiYapilirmi /*param.kapandimi*/)
-				_param.kapandimi = true
-			if (param.ilkKM)
-				_param.ilkKM = param.ilkKM
-			if (param.sonKM)
-				_param.sonKM = param.sonKM
-
+			const {param} = this; let _param = e.param = e.param = {};
+			if (this.kmTakibiYapilirmi /*param.kapandimi*/) { _param.kapandimi = true }
+			if (param.ilkKM) { _param.ilkKM = param.ilkKM }
+			if (param.sonKM) { _param.sonKM = param.sonKM }
 			if (param.mustKod2Bilgi) {
 				for (const mustKod in param.mustKod2Bilgi) {
 					const bilgi = param.mustKod2Bilgi[mustKod];
@@ -4800,32 +4786,20 @@
 					}
 				}
 			}
-
 			let paramGonderilsinmi = false;
 			if (_param) {
-				if (!paramGonderilsinmi && (param.ilkKM || param.sonKM || param.kapandimi))
-					paramGonderilsinmi = true;
-				
+				if (!paramGonderilsinmi && (param.ilkKM || param.sonKM || param.kapandimi)) { paramGonderilsinmi = true }
 				if (!paramGonderilsinmi && _param.mustKod2Bilgi) {
 					for (const mustKod in param.mustKod2Bilgi) {
-						const bilgi = param.mustKod2Bilgi[mustKod];
-						if (!$.isEmptyObject(bilgi)) {
-							paramGonderilsinmi = true;
-							break
-						}
-					}
+						const bilgi = param.mustKod2Bilgi[mustKod]; if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break } }
 				}
 			}
 
 			if (!paramGonderilsinmi && $.isEmptyObject(bilgiGonderTableYapilari)) {
-				if (!silent)
-					displayMessage('Gönderilecek belge bulunamadı!', this.appText);
-				await this.merkezeBilgiGonderSonrasi(e);
-				return false
+				if (!silent) { displayMessage('Gönderilecek belge bulunamadı!', this.appText); }
+				await this.merkezeBilgiGonderSonrasi(e); return false
 			}
-			
-			if (paramGonderilsinmi)
-				totalRecords++
+			if (paramGonderilsinmi) { totalRecords++ }
 
 			// await this.knobProgressSetLabel(`Belgeler taranıyor...`);
 			const fetchBlock = async e => {
@@ -4842,13 +4816,10 @@
 					await this.knobProgressStep(3)
 			};
 			
-			const table2Recs = {};
-			for (const tableYapi of bilgiGonderTableYapilari) {
-				const {fisIDListe} = tableYapi;
-				const baslikTable = tableYapi.baslik;
+			const table2Recs = {}; for (const tableYapi of bilgiGonderTableYapilari) {
+				const {fisIDListe} = tableYapi, baslikTable = tableYapi.baslik;
 				let sent = new MQSent({
-					from: baslikTable,
-					where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`, `degismedi = ''`],
+					from: baslikTable, where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`, `degismedi = ''`],
 					sahalar: [`'${baslikTable}' _table`, `'fis' _tip`, `rowid`, `*`]
 				});
 				if (timer) {

@@ -3,7 +3,7 @@
 		static get kod() { return 'ILK_IRSALIYE' } static get aciklama() { return 'İlk İrsaliye' }
 		static get defaultUstBilgiSatirlari() {
 			const {isyeri} = sky.app; return [...super.defaultUstBilgiSatirlari || [],
-				'MUHTELİF MÜŞTERİLERDEN', 'SEVK EDİLMEK ÜZERE',
+				'MUHTELİF MÜŞTERİLERE', 'SEVK EDİLMEK ÜZERE',
 				`VKN:${isyeri.tckimlikno || isyeri.vergino}  VD:${isyeri.vergidaire}`
 			]
 		}

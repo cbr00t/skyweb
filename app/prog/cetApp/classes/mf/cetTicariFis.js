@@ -571,14 +571,13 @@
 				if (tarih && sevkTarih && asDate(tarih).clearTime() > asDate(sevkTarih).clearTime())
 					throw { isError: true, rc: 'invalidValue', errorText: `<b>${this.class.sevkTarihEtiket} Tarihi</b> , Fiş Tarihi'nden <u>geri olamaz</u>` }
 			}
-			if (this.class.siparisKontrolEdilirmi)
-				await this.kaydetOncesiKontrol_bekleyenSiparis(e);
+			if (this.class.siparisKontrolEdilirmi) { await this.kaydetOncesiKontrol_bekleyenSiparis(e) }
 			await this.kaydetOncesiKontrol_iskOran(e);
-			if (sky.app.ozelKampanyaKullanilirmi)
-				await this.kaydetOncesiKontrol_ozelKamOran(e);
-			await this.kaydetOncesiKontrol_promosyon(e);
-			await this.kaydetOncesiKontrol_nakitUstLimit(e);
+			if (sky.app.ozelKampanyaKullanilirmi) { await this.kaydetOncesiKontrol_ozelKamOran(e) }
+			await this.kaydetOncesiKontrol_promosyon(e); await this.kaydetOncesiKontrol_nakitUstLimit(e);
+			await this.kaydetOncesiKontrol_fiyat(e)
 		}
+		kaydetOncesiKontrol_fiyat(e) { }
 		async kaydetOncesiKontrol_bekleyenSiparis(e) {
 			const {siparisRefKontrolEdilirmi, siparisMiktarKontrolEdilirmi} = this.class, {dbMgr, mustKod} = this, {gecicimi, islem, tx} = e;
 			const eskiFis = !asBool(gecicimi) && (islem == 'degistir') ? e.eskiFis : null, detaylar = this.sonStokIcinAltDetaylar;
@@ -1209,7 +1208,10 @@
 			}
 			return result
 		}
-
+		kaydetOncesiKontrol_fiyat(e) {
+			super.kaydetOncesiKontrol_fiyat(e); if (!this.class.fiiliCikismi) { return }
+			const {detaylar} = this; if (detaylar.find(det => !(det.class.promosyonmu || det.fiyat))) { throw { isError: true, errorText: 'Fiyatsız ürün satışı yapılamaz' } }
+		}
 		static getOzelForm_eIslem(e) {
 			const {tip} = e, width = 47, sayfaWidth = width + 1, dipUzunluk = { etiket: 36, veri: 12 };
 			return new CETMatbuuForm({
