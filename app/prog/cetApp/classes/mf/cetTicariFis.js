@@ -1210,7 +1210,7 @@
 		}
 		kaydetOncesiKontrol_fiyat(e) {
 			super.kaydetOncesiKontrol_fiyat(e); if (!this.class.fiiliCikismi) { return }
-			const {detaylar} = this; if (detaylar.find(det => !(det.class.promosyonmu || det.fiyat))) { throw { isError: true, errorText: 'Fiyatsız ürün satışı yapılamaz' } }
+			/*const {detaylar} = this; if (detaylar.find(det => !(det.class.promosyonmu || det.fiyat))) { throw { isError: true, errorText: 'Fiyatsız ürün satışı yapılamaz' } }*/
 		}
 		static getOzelForm_eIslem(e) {
 			const {tip} = e, width = 47, sayfaWidth = width + 1, dipUzunluk = { etiket: 36, veri: 12 };
