@@ -135,7 +135,7 @@
 		musteriDegisti(e) { this.initMustBilgi(e) }
 		async initBaslikPanel(e) {
 			const {fis} = this, {ozelIsaret} = fis, num = fis.numarator;
-			let numaratorTip = fis.numaratorTip; if (ozelIsaret) { numaratorTip += `-${ozelIsaret}` }
+			let {numaratorTip} = fis; if (ozelIsaret) { numaratorTip += `-${ozelIsaret}` }
 			const {content} = e, subContent = this.baslik_content = content.find('.baslik .header');
 			const navBar = this.baslik_navBar = content.find('.baslik .navBar');
 			navBar.jqxNavigationBar({ theme, animationType, expandMode: 'toggle', width: false, toggleMode: 'none', expandAnimationDuration: 50, collapseAnimationDuration: 50, expandedIndexes: fis.aciklama ? [0] : [] });
@@ -309,26 +309,23 @@
 				let promise = dbMgr.executeSqlReturnRows(queryYapi), tahSekliNo2Detay = this.tahSekliNo2Detay = {};
 				for (const det of fis.detaylar) { tahSekliNo2Detay[det.tahSekliNo] = det }
 				let _recs = await promise; for (const _rec of _recs) {
-					let kodNo = _rec.kodNo, rec = tahSekliNo2Detay[kodNo] || new detaySinif({ tahSekliNo: kodNo, tahSekliAdi: '??', bedel: 0 });
+					let {kodNo} = _rec, rec = tahSekliNo2Detay[kodNo] || new detaySinif({ tahSekliNo: kodNo, tahSekliAdi: '??', bedel: 0 });
 					rec.tahSekliAdi = _rec.aciklama; recs.push(rec)
 				}
 			}
 			e.callback({ totalrecords: recs.length, records: recs })
 		}
 		tahsilSekliStm(e) {
+			let or; if (!(this.hedefToplamBedel && sky.app.tahsilattaAcikHesapKullanilirmi)) {
+				or = new MQOrClause(); or.inDizi(['NK', 'PS'], 'tsek.tahsilTipi');
+				or.add(new MQSubWhereClause([
+					{ degerAta: '', saha: 'tsek.tahsilTipi' },
+					{ inDizi: ['CK', 'SN', 'C', 'S'], saha: 'tsek.tahsilAltTipi' }
+				]))
+			}
 			return new MQStm({
 				sent: new MQSent({
-					from: 'mst_TahsilSekli tsek',
-					where: [
-						'tsek.kodNo > 0',
-						new MQOrClause([
-							{ inDizi: ['NK', 'PS'], saha: `tsek.tahsilTipi` },
-							new MQSubWhereClause([
-								{ degerAta: '', saha: `tsek.tahsilTipi` },
-								{ inDizi: ['CK', 'SN', 'C', 'S'], saha: `tsek.tahsilAltTipi` }
-							])
-						])
-					],
+					from: 'mst_TahsilSekli tsek', where: ['tsek.kodNo > 0', or].filter(x => !!x),
 					sahalar: ['tsek.kodNo', 'tsek.aciklama', 'tsek.tahsilTipi', 'tsek.tahsilAltTipi DESC']
 				})
 			})

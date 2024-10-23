@@ -371,8 +371,7 @@
 			}
 			if (satismi && !iademi && app.param.faturadaTahsilatYapilirmi) {
 				let kodNo = asInteger(this.tahSekliKodNo), sonDeger = sonDegerler.tahSekliKodNo;
-				const divSaha = layout.find('#tahSekliKodNo'), sahaContainer = divSaha.parents('.parent');
-				const divEtiket = sahaContainer.find('.etiket');
+				const divSaha = layout.find('#tahSekliKodNo'), sahaContainer = divSaha.parents('.parent'), divEtiket = sahaContainer.find('.etiket');
 				let part = new CETMstComboBoxPart({
 					parentPart, content: divSaha, placeHolder: 'Tahsil Şekli', listeSinif: CETKAListePart, table: 'mst_TahsilSekli',
 					idSaha: 'kodNo', adiSaha: 'aciklama', selectedId: kodNo || null,
@@ -381,7 +380,7 @@
 						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
 					},
 					events: {
-						comboBox_loadServerData: e => (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.tahsilSekliKodNo2Rec),
+						comboBox_loadServerData: e => e.wsArgs?.searchText ? null : Object.values(sky.app.caches.tahsilSekliKodNo2Rec),
 						comboBox_itemSelected: e => {
 							const rec = e.rec || {}; kodNo = this.tahSekliKodNo = asInteger(rec.kod || rec.kodNo) || null;
 							if (sonDeger != kodNo) { sonDeger = sonDegerler.tahSekliKodNo = kodNo; parentPart.paramDegistimi = true }
@@ -1051,12 +1050,11 @@
 				const {caches} = sky.app, cache = caches.tahsilSekliKodNo2Rec = caches.tahsilSekliKodNo2Rec || {}, rec = cache[tahSekliKodNo] || {};
 				result = rec.tahSekliAdi || rec.aciklama;
 				if (result == null) {
-					let stm = new MQStm({
-						sent: new MQSent({
-							from: `${this.class.table} fis`, fromIliskiler: [{ from: `mst_TahsilSekli tsek`, iliski: `fis.tahseklikodno = tsek.kodNo` }],
-							sahalar: [`fis.tahseklikodno tahSekliKodNo`, `tsek.aciklama tahSekliAdi`]
-						})
-					})
+					let sent = new MQSent({
+						from: `${this.class.table} fis`, fromIliskiler: [{ from: `mst_TahsilSekli tsek`, iliski: `fis.tahseklikodno = tsek.kodNo` }],
+						sahalar: [`fis.tahseklikodno tahSekliKodNo`, `tsek.aciklama tahSekliAdi`]
+					});
+					let stm = new MQStm({ sent });
 					const rec = await this.dbMgr.tekilExecuteSelect({ tx: e.tx, query: stm }); result = this.tahSekliAdi = (rec || {}).tahSekliAdi
 				}
 			}

@@ -1,172 +1,76 @@
 (function() {
 	window.CETTahsilatFis = class extends window.CETFis {
-		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			$.extend(this, {
-				mustKod: e.mustKod || ''
-			});
-		}
-
-		static get table() { return 'data_TahsilatFis' }
-		static get detaySinif() { return CETTahsilatDetay }
-		static get dokumcuSinif() { return CETDokumcu_Matbuu }
-		static get fisGirisUISinif() { return CETTahsilatGirisPart }
-		static get numaratorTip() { return `BT` }
-		static get aciklama() { return 'Tahsilat' }
-
-		static get tahsilatmi() { return true }
-		static get iptalDesteklenirmi() { return true }
-		static get tarihKontrolYapilirmi() { return true }
-		static get seriNoDesteklermi() { return true }
-		static get bedelKullanilirmi() { return true }
-		static get bakiyeRiskEtkilenirmi() { return true }
-		static get ozelIsaretKullanilirmi() { return true }
-
-		get sonucBedel() {
-			this.gerekirseDipHesapla();
-			return bedel(this.toplamBedel);
-		}
-
-		get hesaplanmisBakiyeArtisi() {
-			return -this.sonucBedel;
-		}
-
-		get hesaplanmisRiskArtisi() {
-			return -this.sonucBedel;
-		}
-
-		get hesaplanmisTakipBorcArtisi() {
-			return this.hesaplanmisRiskArtisi;
-		}
-
-
+		static get table() { return 'data_TahsilatFis' } static get detaySinif() { return CETTahsilatDetay }
+		static get dokumcuSinif() { return CETDokumcu_Matbuu } static get fisGirisUISinif() { return CETTahsilatGirisPart } static get numaratorTip() { return `BT` }
+		static get aciklama() { return 'Tahsilat' } static get tahsilatmi() { return true }
+		static get iptalDesteklenirmi() { return true } static get tarihKontrolYapilirmi() { return true }
+		static get seriNoDesteklermi() { return true } static get bedelKullanilirmi() { return true }
+		static get bakiyeRiskEtkilenirmi() { return true } static get ozelIsaretKullanilirmi() { return true }
+		get sonucBedel() { this.gerekirseDipHesapla(); return bedel(this.toplamBedel) }
+		get hesaplanmisBakiyeArtisi() { return -this.sonucBedel }
+		get hesaplanmisRiskArtisi() { return -this.sonucBedel }
+		get hesaplanmisTakipBorcArtisi() { return this.hesaplanmisRiskArtisi }
+		constructor(e) { e = e || {}; super(e); $.extend(this, { mustKod: e.mustKod || '' }) }
 		static detaylarQueryStm(e) {
-			e = e || {};
-			const detayTable = e.detayTable || this.detayTable;
-			const fisIDSaha = e.fisIDSaha || (e.detaySinif || this.detaySinif).fisIDSaha;
-			const id = e.id || this.id;
-			
+			e = e || {}; const detayTable = e.detayTable || this.detayTable, fisIDSaha = e.fisIDSaha || (e.detaySinif || this.detaySinif).fisIDSaha, id = e.id || this.id;
 			let stm = new MQStm({
 				sent: new MQSent({
 					from: `${detayTable} har`,
-					fromIliskiler: [
-						{ alias: 'har', leftJoin: 'mst_TahsilSekli tsek', on: 'har.tahSekliNo = tsek.kodNo' }
-					],
+					fromIliskiler: [ { alias: 'har', leftJoin: 'mst_TahsilSekli tsek', on: 'har.tahSekliNo = tsek.kodNo' } ],
 					sahalar: [ 'har.rowid', 'har.*', 'tsek.aciklama tahSekliAdi' ]
 				}),
 				orderBy: [fisIDSaha, 'seq']
 			});
-			stm.sentDo(sent =>
-				sent.where.degerAta(id, `har.${fisIDSaha}`));
-			
-			return stm;
+			stm.sentDo(sent => sent.where.degerAta(id, `har.${fisIDSaha}`)); return stm
 		}
-
 		hostVars(e) {
-			e = e || {};
-			let hv = super.hostVars();
-			$.extend(hv, {
-				// fistipi: 'BT',
-				mustkod: this.mustKod,
-				toplambedel: bedel(this.toplamBedel) || 0
-			});
-
-			return hv;
+			e = e || {}; let hv = super.hostVars();
+			$.extend(hv, { mustkod: this.mustKod, toplambedel: bedel(this.toplamBedel) || 0 });
+			return hv
 		}
-
 		async setValues(e) {
-			e = e || {};
-			await super.setValues(e);
-
-			const {rec} = e;
-			$.extend(this, {
-				mustKod: rec.mustkod || '',
-				toplamBedel: bedel(rec.toplambedel) || null
-			});
+			e = e || {}; await super.setValues(e); const {rec} = e;
+			$.extend(this, { mustKod: rec.mustkod || '', toplamBedel: bedel(rec.toplambedel) || null })
 		}
-
 		async onKontrol(e) {
-			e = e || {};
-			if (!this.mustKod)
-				return this.error_onKontrol(`(Müşteri) belirtilmelidir`, 'bos_mustKod');
-			
+			e = e || {}; if (!this.mustKod) { return this.error_onKontrol(`(Müşteri) belirtilmelidir`, 'bos_mustKod') }
 			let result = sky.app.caches.mustKod2EkBilgi[this.mustKod] || (parseInt(await this.dbMgr.tekilDegerExecuteSelect({
-				tx: e.tx,
-				query: `SELECT COUNT(*) sayi FROM mst_Cari WHERE kod = ?`,
-				params: [this.mustKod]
-			})));
-			if (!result)
-				return this.error_onKontrol(`(${this.mustKod} kodlu Müşteri) hatalıdır`, 'hatali_mustKod');
-			
-			result = await this.onKontrol_detaylar(e);
-			if (!result || result.isError)
-				return result;
-			
-			return await super.onKontrol(e);
+				tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_Cari WHERE kod = ?`, params: [this.mustKod] })));
+			if (!result) { return this.error_onKontrol(`(${this.mustKod} kodlu Müşteri) hatalıdır`, 'hatali_mustKod') }
+			result = await this.onKontrol_detaylar(e); if (!result || result.isError) { return result }
+			return await super.onKontrol(e)
 		}
-
 		async onKontrol_detaylar(e) {
-			e = e || {};
-			const detaylar = this.detaylar.filter(det => asInteger(det.tahSekliNo) && asFloat(det.bedel));
-			if ($.isEmptyObject(detaylar))
-				return { isError: true, rc: `emptyRecords`, errorText: `Belge içeriği girilmelidir` };
-			
-			return true;
+			e = e || {}; const detaylar = this.detaylar.filter(det => asInteger(det.tahSekliNo) && asFloat(det.bedel));
+			if ($.isEmptyObject(detaylar)) { return { isError: true, rc: `emptyRecords`, errorText: `Belge içeriği girilmelidir` } }
+			return true
 		}
-
-		async kaydetOncesiKontrol_ara(e) {
-			await super.kaydetOncesiKontrol_ara(e);
-
-			await this.kaydetOncesiKontrol_nakitUstLimit(e);
-		}
-
+		async kaydetOncesiKontrol_ara(e) { await super.kaydetOncesiKontrol_ara(e); await this.kaydetOncesiKontrol_nakitUstLimit(e) }
 		async degistirOncesiIslemler(e) {
-			await super.degistirOncesiIslemler(e);
-			
-			const {app} = sky;
-			const {param} = app;
-			if (app.tahsilatIptalEdilemezmi && !app.serbestModmu) {
-				e.islem = 'izle';
-				/*throw {
-					isError: true, rc: 'noPermission',
-					errorText: `<span class="bold">Merkez Parametresi kuralı gereği, <u>TAHSİLAT DEĞİŞTİRME</u> yetkiniz yok</span>`
-				}*/
-			}
-			if (app.yazdirilanTahsilatDegistirilmezmi && this.yazdirildimi) {
-				e.islem = 'izle';
-			}
+			await super.degistirOncesiIslemler(e); const {app} = sky, {param} = app;
+			if (app.tahsilatIptalEdilemezmi && !app.serbestModmu) { e.islem = 'izle' }
+			if (app.yazdirilanTahsilatDegistirilmezmi && this.yazdirildimi) { e.islem = 'izle' }
 		}
 		async silmeOncesiKontrol(e) {
 			e = e || {}; await super.silmeOncesiKontrol(e); const {app} = sky, forceFlag = e.force ?? e.forceFlag;
 			if (!forceFlag && app.tahsilatIptalEdilemezmi && !app.serbestModmu) { throw { isError: true, rc: 'noPermission', errorText: `<span class="bold">Merkez Parametresi kuralı gereği, <u>TAHSİLAT İPTAL</u> yetkiniz yok</span>` } }
 		}
 		async kaydetDevam(e) {
-			const {detaylar} = this;
-			this.detaylar = detaylar.filter(det => (bedel(det.bedel) || 0) > 0);
+			const {detaylar} = this; this.detaylar = detaylar.filter(det => (bedel(det.bedel) || 0) > 0);
 			try { return await super.kaydetDevam(e) }
 			finally { this.detaylar = detaylar }
 		}
-
 		kaydetOncesiKontrol_nakitUstLimit(e) {
-			e = e || {};
-			const {app} = sky;
-			const {tahsilSekliKodNo2Rec} = app.caches;
-			let toplamNakitBedel = 0;
-			const {detaylar} = this;
-			for (const i in detaylar) {
-				const det = detaylar[i];
+			e = e || {}; const {app} = sky, {tahsilSekliKodNo2Rec} = app.caches;
+			let toplamNakitBedel = 0; const {detaylar} = this;
+			for (const det of detaylar) {
 				const _rec = tahsilSekliKodNo2Rec[det.tahSekliNo];
 				if (_rec) {
-					const {tahsilTipi} = _rec;
-					const nakitmi = tahsilTipi == 'NK' || tahsilTipi == 'N' || tahsilTipi == 'K';
-					if (nakitmi)
-						toplamNakitBedel += det.bedel;
+					const {tahsilTipi} = _rec, nakitmi = tahsilTipi == 'NK' || tahsilTipi == 'N' || tahsilTipi == 'K';
+					if (nakitmi) { toplamNakitBedel += det.bedel }
 				}
 			}
 			toplamNakitBedel = bedel(toplamNakitBedel);
-
 			const {nakitUstLimit} = app;
 			if (nakitUstLimit && toplamNakitBedel > nakitUstLimit) {
 				throw {
@@ -175,16 +79,8 @@
 				}
 			}
 		}
-
-		async bakiyeRiskDuzenle(e) {
-			await super.bakiyeRiskDuzenle(e);
-		}
-
-		gerekirseDipHesapla(e) {
-			if (!this.hesaplandimi)
-				this.dipHesapla(e);
-		}
-		
+		async bakiyeRiskDuzenle(e) { await super.bakiyeRiskDuzenle(e) }
+		gerekirseDipHesapla(e) { if (!this.hesaplandimi) { this.dipHesapla(e) } }
 		dipHesapla(e) {
 			this.toplamBedel = 0;
 			const {detaylar} = this;
@@ -198,35 +94,19 @@
 
 		static musteriDurumu_initRowDetails(e) {
 			super.musteriDurumu_initRowDetails(e);
-
-			const {rec} = e;
-			if (!rec)
-				return false;
-
-			const {app} = sky;
-			const dbMgr = this.dbMgr || app.dbMgr_mf;
-			const {rowid} = rec;
-
-			const stm = this.detaylarQueryStm({ id: rowid });
-			if (!stm)
-				return false;
-
-			const {parent, grid, getDataAdapter, buildGrid} = e;
-			if (!(grid && grid.length))
-				return false;
-
+			const {rec} = e; if (!rec) { return false }
+			const {app} = sky, dbMgr = this.dbMgr || app.dbMgr_mf, {rowid} = rec;
+			const stm = this.detaylarQueryStm({ id: rowid }); if (!stm) { return false }
+			const {parent, grid, getDataAdapter, buildGrid} = e; if (!grid?.length) { return false }
 			$.extend(e, {
 				columns: [
 					{
 						dataField: 'tahSekliAdi', text: 'Tahsil Şekli', width: 190,
 						cellsRenderer: (rowIndex, columnIndex, value, rec) => {
-							rec = rec.originalRecord || rec;
-							const {tahSekliNo, tahSekliAdi} = rec;
-							if (!tahSekliNo)
-								return tahSekliAdi;
-							if (!tahSekliAdi)
-								return `<b>(${tahSekliNo})</b>`;
-							return `<b>(${tahSekliNo})</b>-${tahSekliAdi}`;
+							rec = rec.originalRecord || rec; const {tahSekliNo, tahSekliAdi} = rec;
+							if (!tahSekliNo) { return tahSekliAdi }
+							if (!tahSekliAdi) { return `<b>(${tahSekliNo})</b>` }
+							return `<b>(${tahSekliNo})</b>-${tahSekliAdi}`
 						}
 					},
 					{ dataField: 'bedel', text: 'Bedel', width: 110, cellsFormat: 'd2', cellsAlign: 'right' }

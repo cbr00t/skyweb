@@ -50,7 +50,7 @@
 				'ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi', 'bakiyeRiskGosterilmezmi', 'oncekiFislerGosterilmezmi', 'nakitUstLimit',
 				'dokumEkranami', 'dokumDeviceTip', 'dokumDeviceSP_baudRate', 'barkodDeviceTip', 'dokumTurkceHarfYontemKod', 'dokumEncoding', 'dokumDataPrefix', 'dokumDataPostfix', 'darDokummu',
 				'serbestModmu', 'gridAltMultiSelectFlag', 'brm2Fra', 'tip2Renk', 'tarihAralik', 'fisTarihDegistirilirmi', 'kmTakibiYapilirmi', 'ilkIrsaliyeDokumuZorunlumu', 'dokumNettenmi', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'isaretliBelgeKDVDurumu',
-				'bakiyeyeEtkilenirmi', 'irsaliyeBakiyeyiEtkilermi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'detaylardaFiyatDegistirilirmi', 'iskontoArttirilirmi',
+				'bakiyeyeEtkilenirmi', 'irsaliyeBakiyeyiEtkilermi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'tahsilattaAcikHesapKullanilirmi', 'detaylardaFiyatDegistirilirmi', 'iskontoArttirilirmi',
 				'menuAdimKisitIDListe', 'fisAdimKisitIDListe', 'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'silerekBilgiAlYapilirmi',
 				'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi', 'stokPaketKodlari', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis', 'alimNetFiyatGosterilirmi',
 				'iskSayi', 'kamSayi', 'kadIskSayi', 'satirIskOranSinir', 'musteriDegistirilirmi', 'musteriRotaZorunlumu', 'rotaDevreDisiGosterilirmi',
@@ -176,7 +176,7 @@
 			});
 			[	'serbestModmu', 'gridAltMultiSelectFlag', 'dokumEkranami', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'darDokummu', 'dokumNettenmi', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis',
 				'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi' ,'silerekBilgiAlYapilirmi',
-				'alimNetFiyatGosterilirmi', 'musteriDegistirilirmi', 'bakiyeRiskGosterilmezmi', 'musteriRotaZorunlumu', 'ilkIrsaliyeDokumuZorunlumu', 'kmTakibiYapilirmi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi',
+				'alimNetFiyatGosterilirmi', 'musteriDegistirilirmi', 'bakiyeRiskGosterilmezmi', 'musteriRotaZorunlumu', 'ilkIrsaliyeDokumuZorunlumu', 'kmTakibiYapilirmi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'tahsilattaAcikHesapKullanilirmi',
 				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',
 				'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi', 'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'ozelKampanyaKullanilirmi', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi',

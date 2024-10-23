@@ -47,6 +47,7 @@
 					oncekiFislerGosterilmez: asBoolQ(qs.oncekiFislerGosterilmez),
 					fiyat: asBoolQ(qs.fiyat),
 					tahsilatIptal: asBoolQ(qs.tahsilatIptal) == null ? asBoolQ(qs.tahIptal) : asBoolQ(qs.tahsilatIptal),
+					tahsilattaAcikHesap: asBoolQ(qs.tahsilattaAcikHesap),
 					alimNetFiyat: asBoolQ(qs.alimNetFiyat),
 					alimFiyatGormez: asBoolQ(qs.alimFiyatGormez),
 					satisFiyatGormez: asBoolQ(qs.satisFiyatGormez),
@@ -571,17 +572,13 @@
 				flag = this.param.detaylardaFiyatDegistirilirmi;
 			return flag;
 		}
-		get yazdirilanTahsilatDegistirilmezmi() {
-			let flag = this.ozelYetkiler?.yazdirilanTahsilatDegistirilmez;
-			if (flag == null)
-				flag = this.param.yazdirilanTahsilatDegistirilmezmi || false;
-			return flag;
-		}
+		get yazdirilanTahsilatDegistirilmezmi() { return this.ozelYetkiler?.yazdirilanTahsilatDegistirilmez ?? this.param.yazdirilanTahsilatDegistirilmezmi ?? false }
 		get tahsilatIptalEdilemezmi() {
 			let flag = this.ozelYetkiler?.tahsilatIptal;
 			flag = flag == null ? this.param.tahsilatIptalEdilemezmi : !flag;
-			return flag;
+			return flag
 		}
+		get tahsilattaAcikHesapKullanilirmi() { return this.ozelYetkiler?.tahsilattaAcikHesap ?? this.param.tahsilattaAcikHesapKullanilirmi ?? false }
 		get alimNetFiyatGosterilirmi() {
 			let flag = this.ozelYetkiler?.alimNetFiyat;
 			if (flag == null)
@@ -2275,12 +2272,15 @@
 			}
 
 			stm = new MQStm({
-				sent: new MQSent({
-					from: `mst_TahsilSekli tsek`,
-					where: [`tsek.kodNo > 0`],
-					sahalar: [`tsek.*`]
-				})
+				sent: new MQSent({ from: `mst_TahsilSekli tsek`, where: [`tsek.kodNo > 0`], sahalar: [`tsek.*`] })
 			});
+			if (!this.tahsilattaAcikHesapKullanilirmi) {
+				let or = new MQOrClause(); or.inDizi(['NK', 'PS'], 'tsek.tahsilTipi');
+				or.add(new MQSubWhereClause([
+					{ degerAta: '', saha: 'tsek.tahsilTipi' },
+					{ inDizi: ['CK', 'SN', 'C', 'S'], saha: 'tsek.tahsilAltTipi' }
+				])); for (const sent of stm.getSentListe()) { sent.where.add(or) }
+			}
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.tahsilSekliKodNo2Rec;
 			for (let i in recs) {
@@ -3348,8 +3348,7 @@
 
 			islemAdi = 'Tahsil Şekli listesi';
 			$.extend(wsFetches, {														// next prefetch
-				cariRiskVeBakiyeListe: this.wsCariRiskVeBakiyeListe()
-			});
+				cariRiskVeBakiyeListe: this.wsCariRiskVeBakiyeListe() });
 			recs = await this.fetchWSRecs({ source: wsFetches.tahsilSekli, islemAdi: islemAdi, step: 2 });
 			// subCount = asInteger(recs.length / 3);
 			subCount = 6;
@@ -3358,19 +3357,11 @@
 			hvListe = [];
 			recs.forEach(rec => {
 				let uygunmu = asBool(rec.elterkullan) && !((rec.tahsiltipi == 'PS' || rec.tahsiltipi == 'P') && asBool(rec.posisaret));
-				if(uygunmu) {
-					hvListe.push({
-						kodNo: asInteger(rec.kodno), aciklama: rec.aciklama || '',
-						tahsilTipi: rec.tahsiltipi, tahsilAltTipi: rec.ahalttipi || ''
-					});
-				}
+				if(uygunmu) { hvListe.push({ kodNo: asInteger(rec.kodno), aciklama: rec.aciklama || '', tahsilTipi: rec.tahsiltipi, tahsilAltTipi: rec.ahalttipi || '' }); }
 			});
 			await dbMgr.insertOrReplaceTable({
-				table: 'mst_TahsilSekli', mode: 'insertIgnore', hvListe: hvListe,
-				parcaCallback: e => {
-					if (e.index % subCount == 0)
-						this.knobProgressStep();
-				}
+				table: 'mst_TahsilSekli', mode: 'insertIgnore', hvListe,
+				parcaCallback: e => { if (e.index % subCount == 0) { this.knobProgressStep() } }
 			});
 
 
@@ -5924,106 +5915,57 @@
 		async merkezeBilgiGonderOnKontrol(e) { await this.gerekirseKMGirisYap({ sonmu: true }) }
 		async veriYonetimi_cloud_import(e) {
 			const {param, dbTablePrefixes} = this, dbMgr = this.dbMgr_mf, {sender, cloudURL} = e, {alinacaklar} = sender; let {tx} = e; const hasTx = !!tx;
-			lastAjaxObj = $.ajax({
-				cache: false, async: true, method: 'GET',
-				// contentType: 'application/json',
-				url: `${cloudURL}?${$.param(this.buildAjaxArgs({ input: defaultInput }))}`
-			});
-			let data = null;
-			try {
-				let result = await lastAjaxObj;
-				if (result && typeof result != 'object')
-					result = { isError: true, rc: 'invalidResponse', errorText: 'Yükleme Verisi hatalıdır' };
-				if (result && result.isError)
-					throw result;
-				if (!result)
-					throw { isError: true, rc: 'emptyResponse', errorText: `Yüklenecek veri bulunamadı` };
-				data = result;
+			lastAjaxObj = $.ajax({ cache: false, async: true, method: 'GET', url: `${cloudURL}?${$.param(this.buildAjaxArgs({ input: defaultInput }))}` });
+			let data = null, result = await lastAjaxObj; if (result && typeof result != 'object') { result = { isError: true, rc: 'invalidResponse', errorText: 'Yükleme Verisi hatalıdır' } }
+			if (result && result.isError) { throw result } if (!result) { throw { isError: true, rc: 'emptyResponse', errorText: `Yüklenecek veri bulunamadı` } }
+			data = result; if (alinacaklar.param && !$.isEmptyObject(data.param)) {
+				$.extend(param, data.param); await param.kaydet();
+				delete this._ekOzellikKullanim; this.ortakReset(); await this.ekOzellikler_tabloDuzenlemeleriYap();
 			}
-			catch (ex) {
-				// defFailBlock(ex);
-				throw ex;
-			}
-
-			if (alinacaklar.param && !$.isEmptyObject(data.param)) {
-				$.extend(param, data.param);
-				await param.kaydet();
-				delete this._ekOzellikKullanim;
-				this.ortakReset();
-				await this.ekOzellikler_tabloDuzenlemeleriYap();
-			}
-
-			let tables = asSet(await dbMgr.tables().filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))));
-			const tableNames = {};
-			for (let i = 0; i < rs.rows.length; i++) {
-				const rec = rs.rows[i];
-				const table = rec.name;
+			let tables = asSet((await dbMgr.tables()).filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))));
+			const tableNames = {}; for (const table in tables) {
 				let uygunmu =
 					( alinacaklar.belgeler && !(table.startsWith(dbTablePrefixes.master) || table.startsWith(dbTablePrefixes.const)) ) ||
 					( alinacaklar.sabitTanimlar && table.startsWith(dbTablePrefixes.master) );
-				if (uygunmu)
-					tableNames[table] = true
+				if (uygunmu) { tableNames[table] = true }
 			}
-			const ignoreColSet = asSet(['olasiMiktar']);
-			const {table2Recs} = data;
+			const ignoreColSet = asSet(['_parentTable', '_table', '_tip', 'olasiMiktar']), {table2Recs} = data;
 			if (!$.isEmptyObject(table2Recs)) {
 				for (const table in table2Recs) {
-					if (!tableNames[table])
-						continue
-					const recs = table2Recs[table];
-					if ($.isEmptyObject(recs))
-						continue
-					const del = new MQIliskiliDelete({ from: table });
-					const hvListe = [];
-					for (const rec of recs) {
-						for (const key in ignoreColSet)
-							delete rec[key]
-						hvListe.push(rec)
-					}
-					if (!hasTx)
-						tx = e.tx = await dbMgr.getTx()
-					await dbMgr.executeSql({ tx: tx, query: del });
-					await dbMgr.insertOrReplaceTable({
-						tx: tx, table: table,
-						mode: 'insertIgnore', hvListe: hvListe
-					})
+					if (!tableNames[table]) { continue }
+					const recs = table2Recs[table]; if ($.isEmptyObject(recs)) { continue }
+					const del = new MQIliskiliDelete({ from: table }), hvListe = [];
+					for (const rec of recs) { for (const key in ignoreColSet) { delete rec[key] } hvListe.push(rec) }
+					if (!hasTx) { tx = e.tx = await dbMgr.getTx() }
+					await dbMgr.executeSql({ tx, query: del });
+					await dbMgr.insertOrReplaceTable({ tx, table, mode: 'insertIgnore', hvListe })
 				}
-				if (!hasTx)
-					tx = e.tx = await dbMgr.getTx();
+				if (!hasTx) { tx = e.tx = await dbMgr.getTx() }
 			}
-
-			this.onbellekOlustur(e);
-			
-			return true;
+			this.onbellekOlustur(e); return true
 		}
 		async veriYonetimi_cloud_export(e) {
 			const {param, dbTablePrefixes} = this, dbMgr = this.dbMgr_mf, {sender, cloudURL} = e, {alinacaklar} = sender; let {tx} = e;
-			let tables = await dbMgr.tables().filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))); const tableNames = [];
+			let tables = (await dbMgr.tables()).filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))); const tableNames = [];
 			for (const table of tables) {
 				let uygunmu = (
 					( alinacaklar.belgeler && !(table.startsWith(dbTablePrefixes.master) || table.startsWith(dbTablePrefixes.const)) ) ||
 					( alinacaklar.sabitTanimlar && table.startsWith(dbTablePrefixes.master) )
 				);
-				if (uygunmu) tableNames.push(table)
+				if (uygunmu) { tableNames.push(table) }
 			}
 			const table2Recs = {}, data = { param: null, table2Recs };
 			for (const table of tableNames) {
 				const recs = table2Recs[table] = table2Recs[table] || [];
-				let sent = new MQSent({ from: table, sahalar: ['rowid', '*'] }), stm = new MQStm({ sent: sent });
-				let rs = await dbMgr.executeSql({ tx: tx, query: stm });
-				for (let j = 0; j < rs.rows.length; j++) { const rec = rs.rows[j]; recs.push(rec) }
+				let sent = new MQSent({ from: table, sahalar: ['rowid', '*'] }), stm = new MQStm({ sent });
+				let rs = await dbMgr.executeSql({ tx, query: stm }); for (let j = 0; j < rs.rows.length; j++) { const rec = rs.rows[j]; recs.push(rec) }
 			}
-			if (alinacaklar.param) data.param = param.reduce();
+			if (alinacaklar.param) { data.param = param.reduce() }
 			lastAjaxObj = $.ajax({
 				cache: false, async: true, method: 'POST', contentType: 'application/json',
 				url: `${cloudURL}?${$.param(this.buildAjaxArgs({ input: defaultInput }))}`, data: toJSONStr(data)
 			});
-			try {
-				const result = await lastAjaxObj;
-				if (result && result.isError) throw result
-				return result || true
-			}
-			catch (ex) { throw ex }
+			const result = await lastAjaxObj; if (result && result.isError) { throw result } return result || true
 		}
 		veriYonetimiIstendi(e) {
 			this.prefetchAbortedFlag = true;
