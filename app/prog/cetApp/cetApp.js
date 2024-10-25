@@ -2968,7 +2968,7 @@
 			/*delete this._fisAdimKisitIDSet; delete this._menuAdimKisitIDSet;*/ delete this._ekOzellikKullanim;
 
 			let {tx} = e;
-			const _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} });
+			const _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} }); this._bilgiYukleYapiliyorFlag = true;
 			await this.tablolariTemizle(_e);
 			delete _e.verilerSilinmesinFlag;
 			await this.tablolariOlustur(_e);
@@ -4629,7 +4629,7 @@
 			await this.merkezdenBilgiYukleSonrasiDevam(e);
 			await this.knobProgressStep(8);
 			
-			await this.ortakReset(e);
+			await this.ortakReset(e); this._bilgiYukleYapiliyorFlag = false;
 			await this.onbellekOlustur(e);
 			await this.knobProgressStep(3);
 
@@ -5124,6 +5124,10 @@
 		}
 
 		rotaVeFisListeOncesiIslemler(e) {
+			if (this._bilgiYukleYapiliyorFlag) {
+				displayMessage('Merkezden Bilgi Yükleme işlemi henüz tamamlanmamış, bu adıma giriş yapılamaz', `@ ${this.appText} @`);
+				throw { isError: true, rc: 'accessDenied' }
+			}
 			return new $.Deferred(async p => {
 				await this.gerekirseKMGirisYap({ sonmu: false });
 				setTimeout(async () => {
@@ -5132,13 +5136,10 @@
 				}, 100)
 			})
 		}
-
 		async gerekirseKMGirisYap(e) {
-			if (!this.kmTakibiYapilirmi || asBool(this.param[`${e.sonmu ? 'son' : 'ilk'}KMGirildimi`]))
-				return
+			if (!this.kmTakibiYapilirmi || asBool(this.param[`${e.sonmu ? 'son' : 'ilk'}KMGirildimi`])) { return }
 			await this.kmGirisIstendi(e)
 		}
-
 		async ilkIrsaliyeRaporuKontrol(e) {
 			if (this.ilkIrsaliyeDokumuZorunlumu && !this.param.ilkIrsaliyeRaporuAlindimi) {
 				/*const message = `Bu adıma girmeden önce <b>İlk İrsaliye Raporu</b> alınmalıdır!`;
