@@ -199,94 +199,39 @@
 			return {}
 		}
 		async executeSql(e, _params, isRetry) {
-			e = e || {};
-			if (!this.isOpen)
-				await this.open(e)
-			if (!e.query)
-				e = { query: e }
-			if (_params !== undefined)
-				e.params = _params
-			const savedParams = e.params;
-			let _query = e.query;
-			const isDBWrite = this.isDBWrite(_query);
-			if (_query && _query.getQueryYapi)
-				$.extend(e, _query.getQueryYapi())
-			else if (_query.query)
-				$.extend(e, _query)
-			else
-				e.query = (_query || '').toString()
-			if (!e.query)
-				return null
+			e = e || {}; if (!this.isOpen) { await this.open(e) }
+			if (!e.query) { e = { query: e } } if (_params !== undefined) { e.params = _params }
+			let savedParams = e.params, _query = e.query, isDBWrite = this.isDBWrite(_query);
+			if (_query?.getQueryYapi) { $.extend(e, _query.getQueryYapi()) } else if (_query?.query) { $.extend(e, _query) } else { e.query = _query?.toString() ?? '' }
+			if (!e.query) { return null }
 			if (!$.isEmptyObject(savedParams)) {
-				let {params} = e;
-				if ($.isEmptyObject(params))
-					params = e.params = savedParams
-				else if (params != savedParams) {
-					if ($.isArray(params))
-						params.push(...savedParams)
-					else
-						$.extend(params, savedParams)
-				}
+				let {params} = e; if ($.isEmptyObject(params)) { params = e.params = savedParams }
+				else if (params != savedParams) { if ($.isArray(params)) { params.push(...savedParams) } else { $.extend(params, savedParams) } }
 			}
-
-			if (typeof e.query == 'string') {
-				if (e.query.toUpperCase().includes('NOT NULL AUTO')) {
-					e.query = e.query.replaceAll('rowid\t', '--rowid\t')
-									.replaceAll('rowid ', '--rowid ')
-				}
-			}
-
-			let {dbOpCallback} = this;
-			if (!$.isFunction(dbOpCallback))
-				dbOpCallback = null
-			if (dbOpCallback)
-				await dbOpCallback.call(this, { operation: 'executeSql', state: true }, e)
-
-			let _result;
-			this.dbLastExec = e;
-			try { console.debug('db exec', e) }
-			catch (ex) { }
+			if (typeof e.query == 'string') { if (e.query.toUpperCase().includes('NOT NULL AUTO')) { e.query = e.query.replaceAll('rowid\t', '--rowid\t').replaceAll('rowid ', '--rowid ') } }
+			let {dbOpCallback} = this; if (!$.isFunction(dbOpCallback)) { dbOpCallback = null }
+			if (dbOpCallback) { await dbOpCallback.call(this, { operation: 'executeSql', state: true }, e) }
+			let _result; this.dbLastExec = e; try { console.debug('db exec', e) } catch (ex) { }
 			try { _result = await this.db.exec(e.query, e.params) }
 			catch (ex) {
 				if (!isRetry) {
-					const message = ex.message || '';
-					if (message.includes('no such column')) {
+					const message = ex.message || ''; if (message.includes('no such column')) {
 						const {app} = this;
-						if (app?.tabloEksikleriTamamla) {
-							await app.tabloEksikleriTamamla($.extend({}, e, { noCacheReset: true }));
-							return await this.executeSql(e, _params, true)
-						}
+						if (app?.tabloEksikleriTamamla) { await app.tabloEksikleriTamamla({ ...e, noCacheReset: true }); return await this.executeSql(e, _params, true) }
 					}
 				}
-				if (dbOpCallback)
-					await dbOpCallback.call(this, { operation: 'executeSql', state: null, error: ex }, e)
+				if (dbOpCallback) { await dbOpCallback.call(this, { operation: 'executeSql', state: null, error: ex }, e) }
 				throw ex
 			}
-			if (!_result)
-				return _result
+			if (!_result) { return _result }
 			_result = $.isArray(_result) ? _result[0] : null;
-			if ($.isEmptyObject(_result) && ( isDBWrite || (typeof _result == 'number' && result) ))
-				this.hasChanges = true
+			if ($.isEmptyObject(_result) && ( isDBWrite || (typeof _result == 'number' && result) )) { this.hasChanges = true }
 			this.dbSaveProc(e);
-			let result = { rows: [] };
-			const {columns, values} = _result || {};
-			if (values) {
-				for (const _rec of values) {
-					const rec = {};
-					for (let i = 0; i < columns.length; i++)
-						rec[columns[i]] = _rec[i]
-					result.rows.push(rec)
-				}
-			}
+			let result = { rows: [] }, {columns, values} = _result || {};
+			if (values) { for (const _rec of values) { const rec = {}; for (let i = 0; i < columns.length; i++) { rec[columns[i]] = _rec[i] } result.rows.push(rec) } }
 			const returnType = e.return;
-			switch (returnType) {
-				case 'rows':
-				case 'rowsBasic':
-					result = result.rows;
-					break
-			}
-			if (dbOpCallback)
-				setTimeout(() => dbOpCallback.call(this, { operation: 'executeSql', state: false }, e), 20)
+			switch (returnType) { case 'rows': case 'rowsBasic': result = result.rows; break }
+			if (dbOpCallback) { setTimeout(() => dbOpCallback.call(this, { operation: 'executeSql', state: false }, e), 20) }
 			return result
 		}
 	}

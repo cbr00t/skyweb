@@ -465,14 +465,10 @@
 				throw ex
 		}
 		isDBWrite(e) {
-			const query = e?.query ?? e;
-			if (query) {
-				const query = e.query ?? e;
-				if (query.isDBWriteClause)
-					return true
+			const query = e?.query ?? e; if (query) {
+				const query = e.query ?? e; if (query.isDBWriteClause) { return true }
 				if (typeof query == 'string') {
-					const queryUpper = query.toUpperCase();
-					const {DBWriteClauses} = this.class;
+					const queryUpper = query.toUpperCase(), {DBWriteClauses} = this.class;
 					return DBWriteClauses.some(clause => queryUpper.includes(clause))
 				}
 			}
