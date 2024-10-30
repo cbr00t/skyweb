@@ -2966,14 +2966,8 @@
 			param.ilkKM = null; for (const key of ['ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi']) { param[key] = false }
 			await param.kaydet(); await this.ortakReset(e);
 			/*delete this._fisAdimKisitIDSet; delete this._menuAdimKisitIDSet;*/ delete this._ekOzellikKullanim;
-
-			let {tx} = e;
-			const _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} }); this._bilgiYukleYapiliyorFlag = true;
-			await this.tablolariTemizle(_e);
-			delete _e.verilerSilinmesinFlag;
-			await this.tablolariOlustur(_e);
-			tx = e.tx = _e.tx;
-
+			let {tx} = e; const _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} }); this._bilgiYukleYapiliyorFlag = true;
+			await this.tablolariTemizle(_e); delete _e.verilerSilinmesinFlag; await this.tablolariOlustur(_e); tx = e.tx = _e.tx;
 			const {sicakTeslimFisimi, tip2EkOzellik, ozelKampanyaKullanilirmi} = this;
 			islemAdi = 'Numaratör listesi';
 			$.extend(wsFetches, {															// next prefetch
@@ -4711,102 +4705,65 @@
 				}
 			}
 		}
-
 		async merkezeBilgiGonder(e) {
-			e = $.extend({}, e);
-			this.prefetchAbortedFlag = true;
-
-			await this.knobProgressShow();
-			await this.knobProgressReset();
-
-			// e.dbMgr = this.dbMgr_mf;
-			let result;
-			try {
+			e = $.extend({}, e); this.prefetchAbortedFlag = true;
+			await this.knobProgressShow(); await this.knobProgressReset();
+			let result; try {
 				result = await this.merkezeBilgiGonderDevam(e);
 				setTimeout(() => {
-					this.aktarimProgressCompleted({
-						defer: true,
-						delaySecs: 15,
-						text: `<span style="font-weight: bold; color: forestgreen;">Merkeze Bilgi Gönderimi tamamlandı</span>`
-					})
+					this.aktarimProgressCompleted({ defer: true, delaySecs: 15, text: `<span style="font-weight: bold; color: forestgreen;">Merkeze Bilgi Gönderimi tamamlandı</span>` })
 				}, 1000);
 			}
 			catch (ex) {
-				hideProgress();
-				((window.savedProcs || {}).hideProgress || hideProgress)();
-				if (!ex || ex.statusText)
-					displayServerResponse(ex)
-				else
-					displayMessage(ex.message || ex.errorText || ex.message || (ex.responseJSON || {}).errorText || '', `${ex.isError ? '@' : '!'} Merkeze Bilgi Gönderimi ${ex.isError ? '@' : '!'}`)
-				throw ex;
+				hideProgress(); ((window.savedProcs || {}).hideProgress || hideProgress)();
+				if (!ex || ex.statusText) { displayServerResponse(ex) }
+				else { displayMessage(ex.message || ex.errorText || ex.message || (ex.responseJSON || {}).errorText || '', `${ex.isError ? '@' : '!'} Merkeze Bilgi Gönderimi ${ex.isError ? '@' : '!'}`) }
+				throw ex
 			}
 			return result
 		}
-
 		async merkezeBilgiGonderDevam(e) {
-			let {promise_merkezeBilgiGonder} = this;
-			if (promise_merkezeBilgiGonder) {
-				try { await promise_merkezeBilgiGonder }
-				catch (ex) { }
-			}
-			
+			let {promise_merkezeBilgiGonder} = this; if (promise_merkezeBilgiGonder) { try { await promise_merkezeBilgiGonder } catch (ex) { } }
 			promise_merkezeBilgiGonder = this.promise_merkezeBilgiGonder = new $.Deferred(p => {
 				this.merkezeBilgiGonderDevam2(e)
-					.then(result => p.resolve(result))
-					.catch(err => p.reject(err))
+					.then(result => p.resolve(result)).catch(err => p.reject(err))
 					.finally(() => this.promise_merkezeBilgiGonder = null);
 			});
-			
 			return await promise_merkezeBilgiGonder
 		}
-
 		async merkezeBilgiGonderDevam2(e) {
 			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf, {silent, otoGondermi, timer} = e;
 			let {bilgiGonderTableYapilari} = e; if (!bilgiGonderTableYapilari) { bilgiGonderTableYapilari = this.bilgiGonderTableYapilari }
-			let totalRecords = 0, kontroleEsasToplamSayi = 0;
-			const {param} = this; let _param = e.param = e.param = {};
+			let totalRecords = 0, kontroleEsasToplamSayi = 0; const {param} = this; let _param = e.param = e.param = {};
 			if (this.kmTakibiYapilirmi /*param.kapandimi*/) { _param.kapandimi = true }
-			if (param.ilkKM) { _param.ilkKM = param.ilkKM }
-			if (param.sonKM) { _param.sonKM = param.sonKM }
+			if (param.ilkKM) { _param.ilkKM = param.ilkKM } if (param.sonKM) { _param.sonKM = param.sonKM }
 			if (param.mustKod2Bilgi) {
 				for (const mustKod in param.mustKod2Bilgi) {
 					const bilgi = param.mustKod2Bilgi[mustKod];
-					if (!$.isEmptyObject(bilgi)) {
-						const _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {};
-						_mustKod2Bilgi[mustKod] = bilgi;
-					}
+					if (!$.isEmptyObject(bilgi)) { const _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi; }
 				}
 			}
 			let paramGonderilsinmi = false;
 			if (_param) {
 				if (!paramGonderilsinmi && (param.ilkKM || param.sonKM || param.kapandimi)) { paramGonderilsinmi = true }
 				if (!paramGonderilsinmi && _param.mustKod2Bilgi) {
-					for (const mustKod in param.mustKod2Bilgi) {
-						const bilgi = param.mustKod2Bilgi[mustKod]; if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break } }
-				}
+					for (const mustKod in param.mustKod2Bilgi) { const bilgi = param.mustKod2Bilgi[mustKod]; if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break } } }
 			}
-
 			if (!paramGonderilsinmi && $.isEmptyObject(bilgiGonderTableYapilari)) {
 				if (!silent) { displayMessage('Gönderilecek belge bulunamadı!', this.appText); }
 				await this.merkezeBilgiGonderSonrasi(e); return false
 			}
 			if (paramGonderilsinmi) { totalRecords++ }
-
 			// await this.knobProgressSetLabel(`Belgeler taranıyor...`);
 			const fetchBlock = async e => {
 				let rs = await dbMgr.executeSql({ query: e.query });
 				for (let i = 0; i < rs.rows.length; i++) {
-					const table = e.table || rec._table;
-					const rec = rs.rows[i];
-					const recs = table2Recs[table] = table2Recs[table] || [];
-					recs.push(rec);
-					totalRecords++;
-					e.toplamSayi = recs.length
+					const table = e.table || rec._table, rec = rs.rows[i];
+					const recs = table2Recs[table] = table2Recs[table] || []; recs.push(rec);
+					totalRecords++; e.toplamSayi = recs.length
 				}
-				if (!silent)
-					await this.knobProgressStep(3)
+				if (!silent) { await this.knobProgressStep(3) }
 			};
-			
 			const table2Recs = {}; for (const tableYapi of bilgiGonderTableYapilari) {
 				const {fisIDListe} = tableYapi, baslikTable = tableYapi.baslik;
 				let sent = new MQSent({
@@ -4825,127 +4782,63 @@
 						)
 					}
 				}
-				if (fisIDListe)
-					sent.where.inDizi(fisIDListe, `rowid`)
-
-				const _e = { table: baslikTable, query: new MQStm({ sent: sent }) };
-				await fetchBlock(_e);
-				kontroleEsasToplamSayi += (_e.toplamSayi || 0);
-
+				if (fisIDListe) { sent.where.inDizi(fisIDListe, `rowid`) }
+				const _e = { table: baslikTable, query: new MQStm({ sent }) }; await fetchBlock(_e); kontroleEsasToplamSayi += (_e.toplamSayi || 0);
 				const digerTablolar = tableYapi.diger;
 				if (!$.isEmptyObject(digerTablolar)) {
 					for (const table of digerTablolar) {
 						let sent = new MQSent({
 							from: `${table} har`,
-							fromIliskiler: [
-								{ from: `${baslikTable} fis`, iliski: `har.fissayac = fis.rowid` }
-							],
+							fromIliskiler: [ { from: `${baslikTable} fis`, iliski: `har.fissayac = fis.rowid` } ],
 							where: [`fis.gonderildi = ''`, `fis.gecici = ''`, `fis.rapor = ''`, `fis.degismedi = ''`],
 							sahalar: [`'${baslikTable}' _parentTable`, `'${table}' _table`, `'diger' _tip`, `har.rowid`, `har.*`]
 						});
-						if (fisIDListe)
-							sent.where.inDizi(fisIDListe, `har.fissayac`)
-						await fetchBlock({ table: table, query: new MQStm({ sent: sent }) })
+						if (fisIDListe) { sent.where.inDizi(fisIDListe, `har.fissayac`) }
+						await fetchBlock({ table: table, query: new MQStm({ sent }) })
 					}
 				}
-
 				const tanimTablolar = tableYapi.tanim;
 				if (!$.isEmptyObject(tanimTablolar)) {
 					for (const table of tanimTablolar) {
-						let sent = new MQSent({
-							from: table,
-							where: [`gonderildi = ''`],
-							sahalar: [`'${table}' _table`, `'tanim' _tip`, `rowid`, `*`]
-						});
-						await fetchBlock({ table: table, query: new MQStm({ sent: sent }) })
+						let sent = new MQSent({ from: table, where: [`gonderildi = ''`], sahalar: [`'${table}' _table`, `'tanim' _tip`, `rowid`, `*`] });
+						await fetchBlock({ table: table, query: new MQStm({ sent }) })
 					}
 				}
 			}
-
-			if (!totalRecords)
-				throw { isError: false, rc: 'noRecords', errorText: `Gönderilmeyi bekleyen hiç belge bulunamadı` }
-			
+			if (!totalRecords) { throw { isError: false, rc: 'noRecords', errorText: `Gönderilmeyi bekleyen hiç belge bulunamadı` } }
 			await this.knobProgressSetLabel(`Belgeler gönderiliyor...`);
-			let result = await this.wsCETSaveTables({
-				silent: true,
-				data: {
-					param: _param,
-					table2Recs: table2Recs
-				}
-			});
-			if (!result)
-				result = { isError: true, rc: 'unknownError', errorText: '' };
-			if (result.isError)
-				throw result
-
-			result = result || {};
-			$.extend(e, {
-				toplamSayi: kontroleEsasToplamSayi,
-				hataSayi: 0
-			});
+			let result = await this.wsCETSaveTables({ silent: true, data: { param: _param, table2Recs } });
+			if (!result) { result = { isError: true, rc: 'unknownError', errorText: '' } } if (result.isError) { throw result }
+			result = result || {}; $.extend(e, { toplamSayi: kontroleEsasToplamSayi, hataSayi: 0 });
 			const hataliTable2FisIDListe = result.hataliTable2FisIDListe || {};
-			for (const fisIDListe of Object.values(hataliTable2FisIDListe)) {
-				if (fisIDListe && fisIDListe.length)
-					e.hataSayi += fisIDListe.length
-			}
+			for (const fisIDListe of Object.values(hataliTable2FisIDListe)) { if (fisIDListe && fisIDListe.length) { e.hataSayi += fisIDListe.length } }
 			await this.knobProgressStep(50);
-			
 			let mesaj = result.message || result.mesaj;
 			if (mesaj) {
-				if (silent) {
-					await this.knobProgressHideWithReset({
-						update: {
-							labelTemplate: 'error',
-							label: `<u>Sunucu Yanıtı</u>: ${mesaj}`
-						}, delayMS: 8000
-				   })
-				}
-				else
-					await displayMessage(mesaj, 'Sunucu Yanıtı')
+				if (silent) { await this.knobProgressHideWithReset({ update: { labelTemplate: 'error', label: `<u>Sunucu Yanıtı</u>: ${mesaj}` }, delayMS: 8000 }) }
+				else { await displayMessage(mesaj, 'Sunucu Yanıtı') }
 			}
-
-			$.extend(e, { result: result, mesaj: mesaj });
-			await this.merkezeBilgiGonderSonrasi(e);
-
+			$.extend(e, { result, mesaj }); await this.merkezeBilgiGonderSonrasi(e);
 			return result
 		}
-
 		async merkezeBilgiGonderSonrasi(e) {
-			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
-			const bilgiGonderTableYapilari = e.bilgiGonderTableYapilari || this.bilgiGonderTableYapilari || [];
-			if ($.isEmptyObject(e.param) && $.isEmptyObject(bilgiGonderTableYapilari))
-				return
-
+			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf, bilgiGonderTableYapilari = e.bilgiGonderTableYapilari || this.bilgiGonderTableYapilari || [];
+			if ($.isEmptyObject(e.param) && $.isEmptyObject(bilgiGonderTableYapilari)) { return }
 			const minProgVersion = '4.14.5.7.1'.split('.').map(x => asInteger(x));
-			let {progVersion} = (await this.wsGetSessionInfo() || {});
-			if (progVersion)
-				progVersion = progVersion.split('.').map(x => asInteger(x))
-			const uygunSurummu = progVersion >= minProgVersion;
-			
-			const {silent, otoGondermi, timer} = e;
-			const result = e.result || {};
+			let {progVersion} = (await this.wsGetSessionInfo() || {}); if (progVersion) { progVersion = progVersion.split('.').map(x => asInteger(x)) }
+			const uygunSurummu = progVersion >= minProgVersion, {silent, otoGondermi, timer} = e, result = e.result || {};
 			const basariliTable2FisIDListe = uygunSurummu ? result.basariliTable2FisIDListe : null;
 			const hataliTable2FisIDListe = uygunSurummu ? null : result.hataliTable2FisIDListe;
-			const {toplamSayi} = e;
-			let basariliSayi;
+			const {toplamSayi} = e; let basariliSayi;
 			for (const tableYapi of bilgiGonderTableYapilari) {
 				let table = tableYapi.baslik;
 				if (table) {
-					const {fisIDListe} = tableYapi;
-					let basariliFisIDListe = basariliTable2FisIDListe ? asSet(basariliTable2FisIDListe[table]) : null;
+					const {fisIDListe} = tableYapi; let basariliFisIDListe = basariliTable2FisIDListe ? asSet(basariliTable2FisIDListe[table]) : null;
 					basariliFisIDListe = basariliFisIDListe ? Object.keys(basariliFisIDListe).map(x => asInteger(x)) : null;
 					let hataliFisIDListe = hataliTable2FisIDListe ? asSet(hataliTable2FisIDListe[table]) : null;
 					hataliFisIDListe = hataliFisIDListe ? Object.keys(hataliFisIDListe).map(x => asInteger(x)) : null;
-					
-					let upd = new MQIliskiliUpdate({
-						from: table,
-						where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`],
-						set: `gonderildi = '*'`
-					});
-					if (!$.isEmptyObject(fisIDListe))
-						upd.where.inDizi(fisIDListe, 'rowid');
-					
+					let upd = new MQIliskiliUpdate({ from: table, where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`], set: `gonderildi = '*'` });
+					if (!$.isEmptyObject(fisIDListe)) { upd.where.inDizi(fisIDListe, 'rowid') }
 					if (basariliFisIDListe) {
 						if (!$.isEmptyObject(basariliFisIDListe)) {
 							basariliSayi = (basariliSayi || 0) + basariliFisIDListe.length;
@@ -4955,174 +4848,81 @@
 					}
 					else {
 						if (hataliFisIDListe) {
-							if (!$.isEmptyObject(hataliFisIDListe))
-								upd.where.notInDizi(hataliFisIDListe, 'rowid')
+							if (!$.isEmptyObject(hataliFisIDListe)) { upd.where.notInDizi(hataliFisIDListe, 'rowid') }
 							await dbMgr.executeSql({ query: upd })
 						}
 					}
 				}
-
 				table = tableYapi.tanim;
 				if (table) {
 					let basariliFisIDListe = basariliTable2FisIDListe ? asSet(basariliTable2FisIDListe[table]) : null;
 					basariliFisIDListe = basariliFisIDListe ? Object.keys(basariliFisIDListe) : null;
 					if (basariliFisIDListe) {
 						if (!$.isEmptyObject(basariliFisIDListe)) {
-							let upd = new MQIliskiliUpdate({
-								from: table,
-								where: [`gonderildi = ''`],
-								set: `gonderildi = '*'`
-							});
-							upd.where.inDizi(basariliFisIDListe, 'kod');
-							await dbMgr.executeSql({ query: upd })
+							let upd = new MQIliskiliUpdate({ from: table, where: [`gonderildi = ''`], set: `gonderildi = '*'` });
+							upd.where.inDizi(basariliFisIDListe, 'kod'); await dbMgr.executeSql({ query: upd })
 						}
 					}
 				}
 			}
-
 			const {param} = this;
 			if (!(silent || otoGondermi || timer) && !e.hataSayi && this.kmTakibiYapilirmi && !e.bilgiGonderTableYapilari
 						&& !param.kapandimi && (basariliSayi == null || basariliSayi >= toplamSayi)) {
-				param.kapandimi = true;
-				await param.kaydet();
+				param.kapandimi = true; await param.kaydet();
 				displayMessage(`UYARI: <b>Kapanış yapıldı!</b>`, this.appText)
 			}
 		}
-
 		async afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e) {
-			e = e || {};
-			await this.kisitlamalariUygula();
-			
-			if (this.dogrudanFisListeyeGirilirmi && (!this.activePart || this.activePart == this)) {
-				/*try { await this.promise_prefetchUI }
-				catch (ex) { }*/
-				await this.fisListesiIstendi(e)
-			}
-
-			if (this.konumTakibiYapilirmi)
-				this.gpsTimer_start(e)
-			this.merkezeBilgiGonderTimer_start(e)
-
-			const {dbMgrs} = this;
-			for (const dbMgr of Object.values(dbMgrs)) {
-				if (dbMgr.dbSave)
-					await dbMgr.dbSave()
-			}
+			e = e || {}; await this.kisitlamalariUygula();
+			if (this.dogrudanFisListeyeGirilirmi && (!this.activePart || this.activePart == this)) { await this.fisListesiIstendi(e) }
+			if (this.konumTakibiYapilirmi) { this.gpsTimer_start(e) } this.merkezeBilgiGonderTimer_start(e)
+			const {dbMgrs} = this; for (const dbMgr of Object.values(dbMgrs)) { if (dbMgr.dbSave) { await dbMgr.dbSave() } }
 		}
-
 		async fetchWSRecs(e) {
 			e = e || {}; let recs; await this.knobProgressSetLabel(`Merkezden ${e.islemAdi} alınıyor...`);
 			try {
 				this.indicatorPart.ajaxCallback({ state: true });
-				recs = e.source ? await e.source : null;
-				if ($.isFunction(recs)) { recs = await recs.call(this, e) }
+				recs = e.source ? await e.source : null; if ($.isFunction(recs)) { recs = await recs.call(this, e) }
 				recs = e.recs = recs?.rows || recs || []
 			}
-			catch (ex) {
-				// defFailBlock(ex);
-				const code = ex?.responseJSON?.rc ?? ex?.responseJSON?.code;
-				if (code == 'islemHatali') { recs = e.recs = [] } else { throw ex }
-			}
+			catch (ex) { const code = ex?.responseJSON?.rc ?? ex?.responseJSON?.code; if (code == 'islemHatali') { recs = e.recs = [] } else { throw ex } }
 			await this.knobProgressStep(e.step); return recs
 		}
-		async tablolariOlusturIslemi(e) {
-			await this.tablolariOlustur(e);
-			await this.tabloEksikleriTamamla(e)
-		}
+		async tablolariOlusturIslemi(e) { await this.tablolariOlustur(e); await this.tabloEksikleriTamamla(e) }
 		async loginOncesiKontrol(e) {
 			await this.knobProgressSetLabel(`Ön Kontroller yapılıyor...`);
-			let result = await this.vtYapisiUygunmu(e);
-			if (!result)
-				return false
-			let {param} = this;
-			let degistimi = false;
-			let hasQSArgs = qs.hostname || qs.port;
-			$.extend(qs, {
-				hostname: qs.hostname || param.wsHostNameUyarlanmis,
-				port: qs.port || param.wsPort
-			});
-			qs._port = qs.port;
-			await sky.config.load();
-			this.updateWSUrlBase();
-			if (!hasQSArgs) {
-				delete qs.hostname;
-				delete qs.port
-			}
-			/*if (degistimi) {
-				await sky.config.load();
-			}*/
-			await this.knobProgressStep(5);
-			if (!param.wsHostNameUyarlanmis)
-				return false
+			let result = await this.vtYapisiUygunmu(e); if (!result) { return false }
+			let {param} = this, degistimi = false, hasQSArgs = qs.hostname || qs.port;
+			$.extend(qs, { hostname: qs.hostname || param.wsHostNameUyarlanmis, port: qs.port || param.wsPort }); qs._port = qs.port;
+			await sky.config.load(); this.updateWSUrlBase();
+			if (!hasQSArgs) { delete qs.hostname; delete qs.port }
+			await this.knobProgressStep(5); if (!param.wsHostNameUyarlanmis) { return false }
 			return result
 		}
-		async vtYapisiUygunmu(e) {
-			e = e || {};
-			let dbMgr = this.dbMgrs.param;
-			let result = await dbMgr.hasTables(['mst_Login']);
-			return !!result
-		}
-		async paramYukle(e) {
-			await this.knobProgressSetLabel(`Parametreler okunuyor...`);
-			await this.param.yukle();
-			await this.paramYukleSonrasi(e);
-			this.knobProgressStep(2)
-		}
-
-		paramYukleSonrasi(e) {
-		}
-
+		async vtYapisiUygunmu(e) { e = e || {}; let dbMgr = this.dbMgrs.param; let result = await dbMgr.hasTables(['mst_Login']); return !!result }
+		async paramYukle(e) { await this.knobProgressSetLabel(`Parametreler okunuyor...`); await this.param.yukle(); await this.paramYukleSonrasi(e); this.knobProgressStep(2) }
+		paramYukleSonrasi(e) { }
 		async paramKaydet(e) {
 			await this.knobProgressSetLabel(`Parametreler kaydediliyor...`);
-			
-			const eskiParam = this.param || {};
-			let {param} = e;
-			param.version = param.version || eskiParam.version || param.class.version;
-			await param.kaydet({
-				parcaCallback: e =>
-					this.knobProgressStep(2)
-			});
-			this.param = param;
-			let degistimi = 
-				eskiParam.wsHostNameUyarlanmis && eskiParam.wsPort &&
-				!(eskiParam.wsHostNameUyarlanmis == param.wsHostNameUyarlanmis && eskiParam.wsPort == param.wsPort);
-
-			const hasQSArgs = qs.hostname || qs.port;
-			$.extend(qs, {
-				hostname: qs.hostname || param.wsHostNameUyarlanmis,
-				port: qs.port || param.wsPort
-			});
-			
+			const eskiParam = this.param || {}; let {param} = e; param.version = param.version || eskiParam.version || param.class.version;
+			await param.kaydet({ parcaCallback: e => this.knobProgressStep(2) }); this.param = param;
+			let degistimi = eskiParam.wsHostNameUyarlanmis && eskiParam.wsPort && !(eskiParam.wsHostNameUyarlanmis == param.wsHostNameUyarlanmis && eskiParam.wsPort == param.wsPort);
+			const hasQSArgs = qs.hostname || qs.port; $.extend(qs, { hostname: qs.hostname || param.wsHostNameUyarlanmis, port: qs.port || param.wsPort });
 			if (degistimi) {
-				const {config} = sky;
-				const savedSessionInfo = config.sessionInfo;
-				await config.load();
-				this.updateWSUrlBase();
-				if (!hasQSArgs) {
-					delete qs.hostname;
-					delete qs.port
-				}
-				config.sessionInfo = savedSessionInfo;
-				this.loginIstendiDevam(e)
+				const {config} = sky, savedSessionInfo = config.sessionInfo; await config.load(); this.updateWSUrlBase();
+				if (!hasQSArgs) { delete qs.hostname; delete qs.port }
+				config.sessionInfo = savedSessionInfo; this.loginIstendiDevam(e)
 			}
-
-			setTimeout(() =>
-				this.aktarimProgressCompleted({ defer: true, delaySecs: 2, text: `Parametreler kaydedildi!` }),
-				100);
+			setTimeout(() => this.aktarimProgressCompleted({ defer: true, delaySecs: 2, text: `Parametreler kaydedildi!` }), 100)
 		}
-
 		async getMatbuuFormYapilari(e) {
 			let result = this._matbuuFormYapilari;
 			if (!result) {
-				result = new CETMatbuuFormYapilari();
-				if (!await result.yukle(e))
-					result = null
+				result = new CETMatbuuFormYapilari(); if (!await result.yukle(e)) { result = null }
 				this._matbuuFormYapilari = result
 			}
-			
 			return result
 		}
-
 		rotaVeFisListeOncesiIslemler(e) {
 			if (this._bilgiYukleYapiliyorFlag) {
 				displayMessage('Merkezden Bilgi Yükleme işlemi henüz tamamlanmamış, bu adıma giriş yapılamaz', `@ ${this.appText} @`);
@@ -5130,10 +4930,7 @@
 			}
 			return new $.Deferred(async p => {
 				await this.gerekirseKMGirisYap({ sonmu: false });
-				setTimeout(async () => {
-					await this.ilkIrsaliyeRaporuKontrol(e);
-					setTimeout(() => p.resolve({ result: true }), 100)
-				}, 100)
+				setTimeout(async () => { await this.ilkIrsaliyeRaporuKontrol(e); setTimeout(() => p.resolve({ result: true }), 100) }, 100)
 			})
 		}
 		async gerekirseKMGirisYap(e) {
@@ -5142,117 +4939,39 @@
 		}
 		async ilkIrsaliyeRaporuKontrol(e) {
 			if (this.ilkIrsaliyeDokumuZorunlumu && !this.param.ilkIrsaliyeRaporuAlindimi) {
-				/*const message = `Bu adıma girmeden önce <b>İlk İrsaliye Raporu</b> alınmalıdır!`;
-				displayMessage(message, this.appText);
-				throw { isError: true, rc: 'invalidState', errorText: message };*/
-
-				/*await new CETRapor_IlkIrsaliye().run();
-				throw { isError: true, rc: 'runtimeInterrupt', errorText: message };*/
-
-				const result = await new CETRapor_IlkIrsaliye().run();
-				if (!result || result.isError || !result.part)
-					return
-				
+				const result = await new CETRapor_IlkIrsaliye().run(); if (!result || result.isError || !result.part) { return }
 				return new Promise(resolve => {
-					result.part.geriCallback = e =>
-						resolve(e);
-					const message = `Bu adıma girmeden önce <b>İlk İrsaliye Raporu</b> alınmalıdır!`;
-					displayMessage(message, this.appText)
+					result.part.geriCallback = e => { resolve(e) };
+					const message = `Bu adıma girmeden önce <b>İlk İrsaliye Raporu</b> alınmalıdır!`; displayMessage(message, this.appText)
 				})
 			}
 		}
-
 		aktarimProgressCompleted(e) {
-			e = e || {};
-			e.delayMS = e.delaySecs ? e.delaySecs * 1000 : e.delayMS;
-			if (!e.defer)
-				delete e.delayMS
-			
+			e = e || {}; e.delayMS = e.delaySecs ? e.delaySecs * 1000 : e.delayMS;
+			if (!e.defer) { delete e.delayMS }
 			return this.aktarimProgressKapat(e)
 		}
-
 		aktarimProgressKapat(e) {
-			e = e || {}
-			this.knobProgressHideWithReset({
+			e = e || {}; this.knobProgressHideWithReset({
 				delayMS: e.delayMS || 1000,
-				update: {
-					showLoading: false, progress: 100,
-					label: `<span style="font-weight: bold; color: forestgreen;">${e.text || e.label || ''}</span>`
-				}
+				update: { showLoading: false, progress: 100, label: `<span style="font-weight: bold; color: forestgreen;">${e.text || e.label || ''}</span>` }
 			})
 		}
-		
-
-		wsETParam(e) {
-			return lastAjaxObj = $.get({
-				url: `${this.wsURLBase}etParam`,
-				data: this.buildAjaxArgs(e)
-				/*dataType: defaultOutput*/
-			})
-		}
-
-		wsNumaratorListe(e) {
-			return lastAjaxObj = $.get({
-				url: `${this.wsURLBase}numaratorListe`,
-				data: this.buildAjaxArgs(e),
-				/*dataType: defaultOutput*/
-			})
-		}
-
-		wsETMatbuuTanimlar(e) {
-			return lastAjaxObj = $.get({
-				url: `${this.wsURLBase}etMatbuuTanimlar`,
-				data: this.buildAjaxArgs(e)
-				/*dataType: defaultOutput*/
-			})
-		}
-
+		wsETParam(e) { return lastAjaxObj = $.get({ url: `${this.wsURLBase}etParam`, data: this.buildAjaxArgs(e) /*dataType: defaultOutput*/ }) }
+		wsNumaratorListe(e) { return lastAjaxObj = $.get({ url: `${this.wsURLBase}numaratorListe`, data: this.buildAjaxArgs(e), /*dataType: defaultOutput*/ }) }
+		wsETMatbuuTanimlar(e) { return lastAjaxObj = $.get({ url: `${this.wsURLBase}etMatbuuTanimlar`, data: this.buildAjaxArgs(e) /*dataType: defaultOutput*/ }) }
 		wsSevkAdresListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}tahsilSekliListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}sevkAdresListe`,
-					data: this.buildAjaxArgs(e),
-					timeout: sky.config.ajaxTimeout
-					/*dataType: defaultOutput*/
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}tahsilSekliListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}sevkAdresListe`, data: this.buildAjaxArgs(e), timeout: sky.config.ajaxTimeout /*dataType: defaultOutput*/ }))
 		}
-
 		wsNakliyeSekliListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}tahsilSekliListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}nakliyeSekliListe`,
-					data: this.buildAjaxArgs(e),
-					timeout: sky.config.ajaxTimeout
-					/*dataType: defaultOutput*/
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}tahsilSekliListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}nakliyeSekliListe`, data: this.buildAjaxArgs(e), timeout: sky.config.ajaxTimeout /*dataType: defaultOutput*/ }))
 		}
-
 		wsTahsilSekliListe(e) {
-			/*return lastAjaxObj = $.get({
-				url: `${this.wsURLBase}tahsilSekliListe`,
-				data: this.buildAjaxArgs(e)
-			})*/
-			
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}tahsilSekliListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}tahsilSekliListe`,
-					data: this.buildAjaxArgs(e),
-					
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}tahsilSekliListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}tahsilSekliListe`, data: this.buildAjaxArgs(e) }))
 		}
-
 		wsUgramaSebepListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}ugramaSebepListe`,
@@ -5260,12 +4979,10 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}ugramaSebepListe`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
-
 		wsFisSablonListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}fisSablonListe`,
@@ -5273,12 +4990,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}fisSablonListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsSablonFisTipiListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}sablonFisTipiListe`,
@@ -5286,12 +5002,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}sablonFisTipiListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsStokGrupListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}stokGrupListe`,
@@ -5299,12 +5014,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}stokGrupListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsOzelKampanyaListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}ozelKampanyaListe`,
@@ -5312,12 +5026,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}ozelKampanyaListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsStokMarkaListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}stokMarkaListe`,
@@ -5325,12 +5038,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}stokMarkaListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsStokYerListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}stokYerListe`,
@@ -5338,12 +5050,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}stokYerListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsYerRafListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}yerRafListe`,
@@ -5355,7 +5066,6 @@
 				})
 			)
 		}
-
 		wsTransferYontemiListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}transferYontemiListe`,
@@ -5363,12 +5073,10 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}transferYontemiListe`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
-
 		wsDovizListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}dovizListe`,
@@ -5380,7 +5088,6 @@
 				})
 			)
 		}
-
 		wsDvKurListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}dvKurListe`,
@@ -5388,12 +5095,11 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}dvKurListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsSubeListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}subeListe`,
@@ -5405,7 +5111,6 @@
 				})
 			)
 		}
-
 		wsPlasiyerListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}plasiyerListe`,
@@ -5417,7 +5122,6 @@
 				})
 			)
 		}
-
 		wsStokListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}stokListe`,
@@ -5425,64 +5129,27 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}stokListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
 		}
-
 		wsCariTipListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}cariTipListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}cariTipListe`,
-					data: this.buildAjaxArgs(e),
-					timeout: 100000
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}cariTipListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}cariTipListe`, data: this.buildAjaxArgs(e), timeout: 100000 }))
 		}
-
 		wsCariListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}cariListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}cariListe`,
-					data: this.buildAjaxArgs(e),
-					
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}cariListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}cariListe`, data: this.buildAjaxArgs(e) }))
 		}
-
 		wsCariRiskVeBakiyeListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}cariRiskVeBakiyeListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}cariRiskVeBakiyeListe`,
-					data: this.buildAjaxArgs(e),
-					
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}cariRiskVeBakiyeListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}cariRiskVeBakiyeListe`, data: this.buildAjaxArgs(e) }))
 		}
-
 		wsModelListe(e) {
-			return this.wsCallWithSkyWS({
-				url: `${this.wsURLBase}modelListe`,
-				data: this.buildAjaxArgs(e)
-			}).catch(() =>
-				lastAjaxObj = $.get({
-					url: `${this.wsURLBase}modelListe`,
-					data: this.buildAjaxArgs(e),
-					
-				})
-			)
+			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}modelListe`, data: this.buildAjaxArgs(e) }).catch(() =>
+				lastAjaxObj = $.get({ url: `${this.wsURLBase}modelListe`, data: this.buildAjaxArgs(e) }))
 		}
-
 		wsRenkListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}renkListe`,
@@ -5490,12 +5157,10 @@
 			}).catch(() =>
 					lastAjaxObj = $.get({
 					url: `${this.wsURLBase}renkListe`,
-					data: this.buildAjaxArgs(e),
-						
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
-
 		wsDesenListe(e) {
 			return this.wsCallWithSkyWS({
 				url: `${this.wsURLBase}desenListe`,
@@ -5503,8 +5168,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}desenListe`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
@@ -5515,7 +5179,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}ozellikListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
@@ -5527,7 +5191,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}sonStokListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
@@ -5539,7 +5203,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}urunPaketListe`,
-					data: this.buildAjaxArgs(e),
+					data: this.buildAjaxArgs(e)
 					
 				})
 			)
@@ -5559,8 +5223,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}tartiFormatListe`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
@@ -5582,8 +5245,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}rbk2ABListe`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
@@ -5594,8 +5256,7 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}stokRBKListe`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
@@ -5606,30 +5267,26 @@
 			}).catch(() =>
 				lastAjaxObj = $.get({
 					url: `${this.wsURLBase}bedenKategoriAsortiCarpanlari`,
-					data: this.buildAjaxArgs(e),
-					
+					data: this.buildAjaxArgs(e)
 				})
 			)
 		}
 		wsSatisKosullari(e) {
 			return lastAjaxObj = $.get({
 				url: `${this.wsURLBase}satisKosullari`,
-				data: this.buildAjaxArgs(e),
-				
+				data: this.buildAjaxArgs(e)
 			})
 		}
 		wsPromosyonListe(e) {
 			return lastAjaxObj = $.get({
 				url: `${this.wsURLBase}promosyonListe`,
-				data: this.buildAjaxArgs(e),
-				
+				data: this.buildAjaxArgs(e)
 			})
 		}
 		wsBekleyenSayimFisler(e) {
 			return lastAjaxObj = $.get({
 				url: `${this.wsURLBase}bekleyenSayimFisler`,
-				data: this.buildAjaxArgs(e),
-				
+				data: this.buildAjaxArgs(e)
 			})
 		}
 		wsBekleyenUgramaFisler(e) {
@@ -5655,261 +5312,131 @@
 			e = e || {}; const {data} = e; delete e.data;
 			return lastAjaxObj = $.post({
 				url: `${this.wsURLBase}cetSaveTables?${$.param(this.buildAjaxArgs($.extend({}, e, { input: defaultInput })))}`,
-				contentType: 'application/json',
-				data: toJSONStr(data)
-				/*dataType: defaultOutput*/
+				contentType: 'application/json', data: toJSONStr(data) /*, dataType: defaultOutput*/
 			}).fail(e.silent ? defFailBlockBasit : defFailBlock)
 		}
 		wsKonumKaydet(e) {
 			e = e || {}; const {data} = e; delete e.data;
-			const _wsURLBase = updateWSUrlBaseBasit($.extend({}, sky.config, {
-				path: `ws/elterm/`,
-				port: SkyConfigParam.DefaultWSPort
-			}));
+			const _wsURLBase = updateWSUrlBaseBasit($.extend({}, sky.config, { path: `ws/elterm/`, port: SkyConfigParam.DefaultWSPort }));
 			return lastAjaxObj = $.post({
-				url: `${_wsURLBase}konumKaydet?${$.param($.extend({}, e))}`,
-				contentType: 'application/json',
-				data: toJSONStr(data)
-				/*dataType: defaultOutput*/
+				url: `${_wsURLBase}konumKaydet?${$.param($.extend({}, e))}`, contentType: 'application/json', data: toJSONStr(data) /*, dataType: defaultOutput*/
 			}).fail(e.silent ? defFailBlockBasit : defFailBlock)
 		}
 		wsCallWithSkyWS(e) {
-			const skyWSURL = this.param.skyWSURLUyarlanmis;
-			if (!skyWSURL) return new $.Deferred(p => p.reject({ isError: true, rc: 'noSkyWSUrl' }))
-			let {api} = e;
-			if (!api) {
-				const url = new URL(e.url); api = url.pathname.trim('/');
-				if (api.startsWith('/')) api = api.substring(1)
-			}
+			const skyWSURL = this.param.skyWSURLUyarlanmis; if (!skyWSURL) { return new $.Deferred(p => p.reject({ isError: true, rc: 'noSkyWSUrl' })) }
+			let {api} = e; if (!api) { const url = new URL(e.url); api = url.pathname.trim('/'); if (api.startsWith('/')) { api = api.substring(1) } }
 			const wsArgs = $.extend({}, { exec: true, port: getArgsForRandomPort().port, api: api }, e.data || {});
-			return lastAjaxObj = $.post({
-				url: `${skyWSURL}ws/skyTablet/vioQueryYapi`, processData: false, contentType: 'application/json',
-				data: toJSONStr(wsArgs)
-			})
+			return lastAjaxObj = $.post({ url: `${skyWSURL}ws/skyTablet/vioQueryYapi`, processData: false, contentType: 'application/json', data: toJSONStr(wsArgs) })
 		}
 		konumFarki(e) { const {konum1, konum2} = e; const result = Utils.konumFarki(konum1, konum2); console.info('konumFarki', result, 'mt'); return result }
 		kisitlamalariUygula(e) {
 			let {kisitlamalariUygulaOncesi} = this; if (kisitlamalariUygulaOncesi) {
-				const _e = { ...e, silent: true }; if (kisitlamalariUygulaOncesi.run) { kisitlamalariUygulaOncesi.run(_e) } else getFuncValue.call(this, kisitlamalariUygulaOncesi) }
+				const _e = { ...e, silent: true };
+				if (kisitlamalariUygulaOncesi.run) { kisitlamalariUygulaOncesi.run(_e) } else { getFuncValue.call(this, kisitlamalariUygulaOncesi, _e) }
+			}
 			this._fisTipleri = this._fisAdimKisitIDSet = this._menuAdimKisitIDSet = undefined;
 			setTimeout(() => {
-				const menuItems = this.divAnaMenu.find(`.item`);
-				const {menuAdimKisitIDSet} = this;
+				const menuItems = this.divAnaMenu.find(`.item`); const {menuAdimKisitIDSet} = this;
 				if (!$.isEmptyObject(menuAdimKisitIDSet)) {
 					menuAdimKisitIDSet.bekleyenXFislerGuncelle = true;
 					const removeItems = menuItems.filter((index, item) => !menuAdimKisitIDSet[item.id]);
 					if (!$.isEmptyObject(removeItems)) { removeItems.remove() }
 				}
 			}, 100);
-			const {fisAdimKisitIDSet} = this;
-			if (fisAdimKisitIDSet) {
-				if (fisAdimKisitIDSet.SY && !fisAdimKisitIDSet.BS) fisAdimKisitIDSet.BS = true
-				if (!fisAdimKisitIDSet.UG) fisAdimKisitIDSet.UG = true
+			const {fisAdimKisitIDSet} = this; if (fisAdimKisitIDSet) {
+				if (fisAdimKisitIDSet.SY && !fisAdimKisitIDSet.BS) { fisAdimKisitIDSet.BS = true }
+				if (!fisAdimKisitIDSet.UG) { fisAdimKisitIDSet.UG = true }
 			}
-			const orjFisTipleri = this.fisTipleriDuzenlenmis;
-			if (!$.isEmptyObject(fisAdimKisitIDSet))
-				this._fisTipleri = orjFisTipleri.filter(rec => fisAdimKisitIDSet[rec.kod])
+			const orjFisTipleri = this.fisTipleriDuzenlenmis; if (!$.isEmptyObject(fisAdimKisitIDSet)) { this._fisTipleri = orjFisTipleri.filter(rec => fisAdimKisitIDSet[rec.kod]) }
 		}
-
-		get gpsTimer_key() { return 'gpsTimer' }
-		get merkezeBilgiGonderTimer_key() { return 'merkezeBilgiGonder' }
+		get gpsTimer_key() { return 'gpsTimer' } get merkezeBilgiGonderTimer_key() { return 'merkezeBilgiGonder' }
 		async gpsTimer_start(e) {
-			await this.gpsTimer_stop();
-			await this.setUniqueTimeout({
-				key: this.gpsTimer_key,
-				isInterval: true,
-				delayMS: (this.programcimi ? 10 : 60) * 1000,
-				block: () => {
-					const result = this.gpsTimer_proc(e);
-					if (result === false)
-						this.clearUniqueTimeout({ key: this.gpsTimer_key });
-				}
+			await this.gpsTimer_stop(); await this.setUniqueTimeout({
+				key: this.gpsTimer_key, isInterval: true, delayMS: (this.programcimi ? 10 : 60) * 1000,
+				block: () => { const result = this.gpsTimer_proc(e); if (result === false) { this.clearUniqueTimeout({ key: this.gpsTimer_key }) } }
 			})
 		}
 		async gpsTimer_stop(e) { await this.clearUniqueTimeout({ key: this.gpsTimer_key, isInterval: true }) }
 		async gpsTimer_proc(e) {
-			e = e || {};
-			const {geolocation} = navigator;
-			if (!geolocation) return true
-			const gpsInfo = await new $.Deferred(p => { geolocation.getCurrentPosition(_e => p.resolve(_e)) });
-			if (!gpsInfo) return true
-			const {timestamp} = gpsInfo;
-			const coords = $.extend({}, gpsInfo.coords);
-			if (asFloat(coords.latitude) <= 0 || asFloat(coords.longitude) <= 0) return true
-			const sonCoords = (this.sonKonumBilgi || {}).coords;
-			if (sonCoords && (sonCoords.latitude == coords.latitude && sonCoords.longitude == coords.longitude)) return true
+			e = e || {}; const {geolocation} = navigator; if (!geolocation) { return true }
+			const gpsInfo = await new $.Deferred(p => { geolocation.getCurrentPosition(_e => p.resolve(_e)) }); if (!gpsInfo) { return true }
+			const {timestamp} = gpsInfo, coords = $.extend({}, gpsInfo.coords);
+			if (asFloat(coords.latitude) <= 0 || asFloat(coords.longitude) <= 0) { return true }
+			const sonCoords = (this.sonKonumBilgi || {}).coords; if (sonCoords && (sonCoords.latitude == coords.latitude && sonCoords.longitude == coords.longitude)) { return true }
 			const kayitTS = dateTimeToString(timestamp ? new Date(timestamp) : now()),  {sessionInfo} = sky.config;
 			const userTip = (sessionInfo.loginTipi ? sessionInfo.loginTipi.replace('Login', '').replace('login', '') : null) || 'vio';
 			const table = 'data_KonumBilgi', dbMgr = e.dbMgr || this.dbMgr_mf, {tx} = e; let sent, stm, maxRowID, del, hv, upd, recs;
-
-			const KeepRecsCount = 20;
-			sent = new MQSent({
-				from: table,
-				where: [`gonderildi = '*'`],
-				sahalar: [`MAX(rowid)`]
-			});
-			stm = new MQStm({ sent: sent });
-			maxRowID = asInteger(await dbMgr.tekilDegerExecuteSelect({ tx: tx, query: stm }));
+			const KeepRecsCount = 20; sent = new MQSent({ from: table, where: [`gonderildi = '*'`], sahalar: [`MAX(rowid)`] }); stm = new MQStm({ sent });
+			maxRowID = asInteger(await dbMgr.tekilDegerExecuteSelect({ tx, query: stm }));
 			if (maxRowID && maxRowID > KeepRecsCount) {
-				del = new MQIliskiliDelete({
-					from: table,
-					where: [
-						`gonderildi = '*'`,
-						`rowid < ${MQSQLOrtak.sqlParamValue(maxRowID - KeepRecsCount)}`
-					]
-				});
-				await dbMgr.executeSql({ tx: tx, query: del });
+				del = new MQIliskiliDelete({ from: table, where: [`gonderildi = '*'`, `rowid < ${MQSQLOrtak.sqlParamValue(maxRowID - KeepRecsCount)}`] });
+				await dbMgr.executeSql({ tx, query: del });
 			}
-
-			hv = {
-				kayitTS: kayitTS,
-				userTip: userTip,
-				userKod: sessionInfo.user,
-				gonderildi: '',
-				latitude: coords.latitude,
-				longitude: coords.longitude,
-				speed: coords.speed || 0
-			};
-			await dbMgr.insertOrReplaceTable({ mode: 'insertIgnore', tx: tx, table: table, hv: hv });
-
-			const data = {};
-			const tables = data.tables = {};
-			const tblKonumBilgi = tables[table] = [];
-			sent = new MQSent({
-				from: table,
-				where: [`gonderildi = ''`],
-				sahalar: [`*`]
-			});
-			stm = new MQStm({ sent: sent });
-			recs = await dbMgr.executeSqlReturnRowsBasic({ tx: tx, query: stm });
-			for (let i = 0; i < recs.length; i++)
-				tblKonumBilgi.push(recs[i]);
-			await this.wsKonumKaydet({ silent: true, data: data });
-			
-			upd = new MQIliskiliUpdate({
-				from: table,
-				where: [`gonderildi = ''`],
-				set: [`gonderildi = '*'`]
-			});
-			await dbMgr.executeSql({ tx: tx, query: upd });
-			this.sonKonumBilgi = { timestamp: timestamp, coords: coords };
-			
-			return true;
+			hv = { kayitTS: kayitTS, userTip: userTip, userKod: sessionInfo.user, gonderildi: '', latitude: coords.latitude, longitude: coords.longitude, speed: coords.speed || 0 };
+			await dbMgr.insertOrReplaceTable({ mode: 'insertIgnore', tx, table, hv });
+			const data = {}, tables = data.tables = {}, tblKonumBilgi = tables[table] = [];
+			sent = new MQSent({ from: table, where: [`gonderildi = ''`], sahalar: [`*`] });
+			stm = new MQStm({ sent }); recs = await dbMgr.executeSqlReturnRowsBasic({ tx, query: stm });
+			for (let i = 0; i < recs.length; i++) { tblKonumBilgi.push(recs[i]); } await this.wsKonumKaydet({ silent: true, data });
+			upd = new MQIliskiliUpdate({ from: table, where: [`gonderildi = ''`], set: [`gonderildi = '*'`] });
+			await dbMgr.executeSql({ tx, query: upd }); this.sonKonumBilgi = { timestamp, coords };
+			return true
 		}
-
 		async merkezeBilgiGonderTimer_start(e) {
 			await this.merkezeBilgiGonderTimer_stop();
 			await this.setUniqueTimeout({
-				key: this.merkezeBilgiGonderTimer_key, isInterval: true,
-				delayMS: (this.programcimi ? 5 : 15) * 1000,
+				key: this.merkezeBilgiGonderTimer_key, isInterval: true, delayMS: (this.programcimi ? 5 : 15) * 1000,
 				block: async () => {
 					const result = await this.merkezeBilgiGonderTimer_proc(e);
-					if (result === false)
-						this.clearUniqueTimeout({ key: this.merkezeBilgiGonderTimer_key });
+					if (result === false) { this.clearUniqueTimeout({ key: this.merkezeBilgiGonderTimer_key }) }
 				}
 			})
 		}
 		async merkezeBilgiGonderTimer_stop(e) { await this.clearUniqueTimeout({ key: this.merkezeBilgiGonderTimer_key, isInterval: true }) }
 		async merkezeBilgiGonderTimer_proc(e) {
-			e = e || {};
-			if (!navigator.onLine || !this.otoAktarFlag || this.kmTakibiYapilirmi) return true
-			const {activePart} = sky.app;
-			if (activePart && activePart.fisGirisEkranimi) return true
-			const _e = { silent: true, timer: true };
-			let result = await this.merkezeBilgiGonderDevam(_e);
-			// await this.knobProgressHideWithReset();
-			if (result && !$.isEmptyObject(result.basariliTable2FisIDListe)) {
-				if (activePart && activePart.tazele && !activePart.fisGirisEkranimi) activePart.tazele()
-			}
+			e = e || {}; if (!navigator.onLine || !this.otoAktarFlag || this.kmTakibiYapilirmi) { return true }
+			const {activePart} = sky.app; if (activePart && activePart.fisGirisEkranimi) { return true }
+			const _e = { silent: true, timer: true }; let result = await this.merkezeBilgiGonderDevam(_e);
+			if (result && !$.isEmptyObject(result.basariliTable2FisIDListe)) { if (activePart?.tazele && !activePart.fisGirisEkranimi) { activePart.tazele() } }
 			return true
 		}
-
 		async menuItemClicked(e) {
-			let item = e.event.currentTarget, id = item.id;
-			if (!id) return
-			let {aktarimProgressPart} = this;
-			if (aktarimProgressPart) { aktarimProgressPart.destroyPart(); delete this.aktarimProgressPart; }
+			let item = e.event.currentTarget, id = item.id; if (!id) { return }
+			let {aktarimProgressPart} = this; if (aktarimProgressPart) { aktarimProgressPart.destroyPart(); delete this.aktarimProgressPart }
 			$(item).parent().children('li') .removeClass('active');
-			let block = eval(item.dataset.block);
-			if (block) {
-				if (asBool(item.dataset.selectable)) $(item).addClass('active');
-				return await block.call(this, e)
-			}
+			let block = eval(item.dataset.block); if (block) { if (asBool(item.dataset.selectable)) { $(item).addClass('active') } return await block.call(this, e) }
 			return null
 		}
 		merkezdenBilgiYukleIstendi(e) {
 			let layout = this.templates.merkezdenBilgiYukleMesaji.contents('div').clone(true);
-			layout.addClass(`part ${this.appName} ${this.rootAppName}`);
-			this.prefetchAbortedFlag = true;
-			createJQXWindow(
-				layout,
-				this.appText,
-				{
-					isModal: true, showCollapseButton: false, closeButtonAction: 'destroy',
-					width: 'auto', height: 280
-				},
+			layout.addClass(`part ${this.appName} ${this.rootAppName}`); this.prefetchAbortedFlag = true;
+			createJQXWindow(layout, this.appText,
+				{ isModal: true, showCollapseButton: false, closeButtonAction: 'destroy', width: 'auto', height: 280 },
 				{
 					EVET: (dlgUI, btnUI) => {
-						e = $.extend({}, e, {
-							verilerSilinmesinFlag: dlgUI.find('.jqx-window-content #verilerSilinmesinFlag').is(':checked')
-						});
-						dlgUI.jqxWindow('destroy');
-						this.merkezdenBilgiYukle(e);
+						e = $.extend({}, e, { verilerSilinmesinFlag: dlgUI.find('.jqx-window-content #verilerSilinmesinFlag').is(':checked') });
+						dlgUI.jqxWindow('destroy'); this.merkezdenBilgiYukle(e);
 					},
-					HAYIR: (dlgUI, btnUI) => {
-						dlgUI.jqxWindow('destroy')
-					}
+					HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy') }
 				}
 			)
 		}
 		async merkezeBilgiGonderIstendi(e) {
-			this.prefetchAbortedFlag = true;
-			
-			let layout = this.templates.merkezeBilgiGonderMesaji.contents('div').clone(true);
-			layout.addClass(`part ${this.appName} ${this.rootAppName}`);
-
+			this.prefetchAbortedFlag = true; let layout = this.templates.merkezeBilgiGonderMesaji.contents('div').clone(true); layout.addClass(`part ${this.appName} ${this.rootAppName}`);
 			const gonderilecekBilgiler = await this.gonderilecekBilgiler(e);
-			if (!(gonderilecekBilgiler && gonderilecekBilgiler.totalCount)) {
-				displayMessage(`Gönderilmeyi bekleyen hiç belge bulunamadı`, this.appText);
-				return false;
-			}
-			
-			let bilgiText = '';
-			const {table2TipAdi} = this;
-			const {table2Info} = gonderilecekBilgiler;
+			if (!(gonderilecekBilgiler && gonderilecekBilgiler.totalCount)) { displayMessage(`Gönderilmeyi bekleyen hiç belge bulunamadı`, this.appText); return false }
+			let bilgiText = ''; const {table2TipAdi} = this, {table2Info} = gonderilecekBilgiler;
 			for (const table in table2Info) {
-				if (!table2TipAdi[table])
-					continue;
-				
-				const info = table2Info[table];
-				const {count} = info;
-				if (count) {
-					const tipAdi = table2TipAdi[table] || table;
-					if (bilgiText)
-						bilgiText += ', ';
-					bilgiText += `${count.toLocaleString()} adet ${tipAdi}`;
-				}
+				if (!table2TipAdi[table]) { continue }
+				const info = table2Info[table], {count} = info;
+				if (count) { const tipAdi = table2TipAdi[table] || table; if (bilgiText) { bilgiText += ', ' } bilgiText += `${count.toLocaleString()} adet ${tipAdi}` }
 			}
-			if (bilgiText)
-				layout.find(`.belgelerText`).html(bilgiText);
-
-			createJQXWindow(
-				layout,
-				this.appText,
+			if (bilgiText) { layout.find(`.belgelerText`).html(bilgiText) }
+			createJQXWindow(layout, this.appText,
+				{ isModal: true, showCollapseButton: false, closeButtonAction: 'destroy', width: 'auto', height: 250 },
 				{
-					isModal: true, showCollapseButton: false, closeButtonAction: 'destroy',
-					width: 'auto', height: 250
-				},
-				{
-					EVET: async (dlgUI, btnUI) => {
-						e = $.extend({}, e);
-						dlgUI.jqxWindow('destroy');
-						await this.merkezeBilgiGonderOnKontrol(e);
-						await this.merkezeBilgiGonder(e);
-					},
-					HAYIR: (dlgUI, btnUI) => {
-						dlgUI.jqxWindow('destroy')
-					}
+					EVET: async (dlgUI, btnUI) => { e = $.extend({}, e); dlgUI.jqxWindow('destroy'); await this.merkezeBilgiGonderOnKontrol(e); await this.merkezeBilgiGonder(e) },
+					HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy') }
 				}
 			)
 		}
