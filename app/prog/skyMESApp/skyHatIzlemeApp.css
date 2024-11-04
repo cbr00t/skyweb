@@ -1,5 +1,4 @@
-.skyHatIzlemeApp #mainPart.part #disForm,
-.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent,
+.skyHatIzlemeApp #mainPart.part #disForm, .skyHatIzlemeApp #mainPart.part #disForm #hatListeParent,
 .skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item,
 .skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent { width: 100% }
 .skyHatIzlemeApp #mainPart.part { font-size: 65%; padding: 0 0 0 1px }
@@ -299,9 +298,7 @@ body.skyHatIzlemeApp .menu > ul > li:active { background-color: #c5dcfd }
 @media (max-width: 750px) {
 	body.skyHatIzlemeApp #menu > ul > li { font-size: 105%; padding: 8px 8px !important }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item {
-		font-size: 75%; /* width: 49% !important; */ padding-top: 2px; padding-left: 2px
-		/* margin: 1px 0 1px 0; padding: 1px */
-	}
+		font-size: 75%; /* width: 49% !important; */ padding-top: 2px; padding-left: 2px /* margin: 1px 0 1px 0; padding: 1px */ }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #subContent { line-height: 103% }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent { font-size: 85%; height: 50px }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px }
@@ -309,8 +306,7 @@ body.skyHatIzlemeApp .menu > ul > li:active { background-color: #c5dcfd }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari > *:not(:last-child) { margin-right: -10px }
 }
 @media (max-width: 720px) {
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px }
-}
+	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px } }
 @media (max-width: 710px) {
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item { padding-top: 1px; padding-left: 2px }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #subContent #tezgahText > #ipParent { margin-left: 20px }
@@ -320,11 +316,9 @@ body.skyHatIzlemeApp .menu > ul > li:active { background-color: #c5dcfd }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari > *:not(:last-child) { margin-right: -2px }
 }
 @media (max-width: 630px) {
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px }
-}
+	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px } }
 @media (max-width: 590px) {
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px }
-}
+	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #durumParent #islemTuslari { margin-top: 3px } }
 @media (max-height: 650px) {
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item { /* font-size: 75%;  line-height: 28px */ }
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item #subContent { height: 300px /* line-height: 100% */ }
@@ -344,22 +338,22 @@ body.skyHatIzlemeApp .menu > ul > li:active { background-color: #c5dcfd }
 }
 .skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(1) { width: 100% }
 .skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2),
-.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2) ~ .tezgah.item { width: 49.6% }
+	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2) ~ .tezgah.item { width: 49.6% }
 @media (max-width: 810px) {
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2),
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2) ~ .tezgah.item,
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3),
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3) ~ .tezgah.item { /* width: 33% */ }
+		.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2) ~ .tezgah.item,
+		.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3),
+		.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3) ~ .tezgah.item { /* width: 33% */ }
 }
 @media (max-width: 680px) {
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2),
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2) ~ .tezgah.item { }
+		.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(2) ~ .tezgah.item { }
 }
 .skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3),
-.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3) ~ .tezgah.item { }
+	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3) ~ .tezgah.item { }
 @media (max-width: 810px) {
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3),
-	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3) ~ .tezgah.item { }
+		.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3) ~ .tezgah.item { }
 }
 @media (max-width: 680px) {
 	.skyHatIzlemeApp #mainPart.part #disForm #hatListeParent .hat.item #tezgahListeParent .tezgah.item:first-child:nth-last-child(3),
@@ -481,200 +475,47 @@ body.skyHatIzlemeApp .menu > ul > li:active { background-color: #c5dcfd }
 .skyHatIzlemeApp.bekleyenIsEmirleri.part .jqx-window-content .gridParent #grid tr[data-role=row-details] .jqx-grid .jqx-grid-cell .oper.sure.etiket { color: #777 }
 .skyHatIzlemeApp.bekleyenIsEmirleri.part .jqx-window-content .gridParent #grid tr[data-role=row-details] .jqx-grid .jqx-grid-cell .oper.sure.veri { color: royalblue }
 .skyHatIzlemeApp.personelSec.part .jqx-window-content .gridParent #grid .jqx-grid-cell { padding: 13px 5px }
-
-.skyHatIzlemeApp.sureSayiDuzenle.part #header #islemTuslari,
-.skyHatIzlemeApp.sureSayiDuzenle.part #header #bilgiParent,
-.skyHatIzlemeApp.zamanEtudu.part #header #islemTuslari,
-.skyHatIzlemeApp.zamanEtudu.part #header #bilgiParent {
-	height: 75px;
-	/* margin-bottom: 13px; */
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part #header #bilgiParent,
-.skyHatIzlemeApp.zamanEtudu.part #header #bilgiParent {
-	position: absolute;
-	top: 55px;
-	width: 80%;
-}
+.skyHatIzlemeApp.sureSayiDuzenle.part #header #islemTuslari, .skyHatIzlemeApp.sureSayiDuzenle.part #header #bilgiParent,
+	.skyHatIzlemeApp.zamanEtudu.part #header #islemTuslari, .skyHatIzlemeApp.zamanEtudu.part #header #bilgiParent { height: 75px }
+.skyHatIzlemeApp.sureSayiDuzenle.part #header #bilgiParent, .skyHatIzlemeApp.zamanEtudu.part #header #bilgiParent { position: absolute; top: 55px; width: 80% }
 .skyHatIzlemeApp.sureSayiDuzenle.part #header #bilgiParent #bilgiText,
-.skyHatIzlemeApp.zamanEtudu.part #header #bilgiParent #bilgiText {
-	font-size: 75%;
-	font-weight: bold;
-	color: #555;
-	width: 100%;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item,
-.skyHatIzlemeApp.zamanEtudu.part .form-item {
-	line-height: 20px;
-	margin-block-end: 3px;
-	padding: 0 0;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item:not(:last-child),
-.skyHatIzlemeApp.zamanEtudu.part .form-item:not(:last-child) {
-	margin-inline-end: 40px;
-}
+	.skyHatIzlemeApp.zamanEtudu.part #header #bilgiParent #bilgiText { font-size: 75%; font-weight: bold; color: #555; width: 100% }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item, .skyHatIzlemeApp.zamanEtudu.part .form-item { line-height: 20px; margin-block-end: 3px; padding: 0 0 }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item:not(:last-child), .skyHatIzlemeApp.zamanEtudu.part .form-item:not(:last-child) { margin-inline-end: 40px }
 .skyHatIzlemeApp.sureSayiDuzenle.part .form-item .baslikText,
-.skyHatIzlemeApp.zamanEtudu.part .form-item .baslikText {
-	font-weight: bold;
-	font-size: 140%;
-	color: #aaa;
-	padding: 5px 0 15px 0;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item label,
-.skyHatIzlemeApp.zamanEtudu.part .form-item label {
-	font-size: 100%;
-	color: #aaa;
-	width: 130px;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item input,
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item button,
-.skyHatIzlemeApp.zamanEtudu.part .form-item input,
-.skyHatIzlemeApp.zamanEtudu.part .form-item button {
-	font-weight: bold;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item input,
-.skyHatIzlemeApp.zamanEtudu.part .form-item input {
-	font-size: 120%;
-	width: 130px;
-	height: 40px;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item input[type=number],
-.skyHatIzlemeApp.zamanEtudu.part .form-item input[type=number] {
-	text-align: right;
-	width: 80px;
-}
-.skyHatIzlemeApp.sureSayiDuzenle.part .form-item button,
-.skyHatIzlemeApp.zamanEtudu.part .form-item button {
-	font-size: 110%;
-	width: 150px;
-	height: 70px;
-}
-
-.skyHatIzlemeApp.sureSayiDuzenle.part {
-}
-
-
-.skyHatIzlemeApp.zamanEtudu.part {
-}
-.skyHatIzlemeApp.zamanEtudu.part #header {
-	height: 127px;
-	background-color: whitesmoke;
-	margin-bottom: 10px;
-}
-.skyHatIzlemeApp.zamanEtudu.part #durumParent {
-	font-weight: normal;
-	color: #aaa;
-	border: 1px solid #ddd;
-	padding: 10px;
-	
-}
-.skyHatIzlemeApp.zamanEtudu.part #durumParent #durum {
-	font-weight: bold;
-	color: #888;
-	margin-left: 10px;
-}
-.skyHatIzlemeApp.zamanEtudu.part #durumParent #durum.calisiyor {
-	color: forestgreen;
-}
-.skyHatIzlemeApp.zamanEtudu.part .ek-islemTuslari {
-	/* margin: 5px 0; */
-	padding: 3px 0;
-	margin-bottom: 8px;
-}
-.skyHatIzlemeApp.zamanEtudu.part #baslat {
-	font-weight: bold;
-	font-size: 130%;
-	position: relative;
-	left: 30%;
-	width: 250px;
-	height: 65px;
-}
-.skyHatIzlemeApp.zamanEtudu.part #baslat.jqx-fill-state-normal {
-	color: whitesmoke;
-	background-color: #0353ca;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme {
-	background-color: #fcfcfc;
-	border: 1px solid #ccc;
-	box-shadow: 1px 1px 20px #ccc;
-	padding: 15px;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-header {
-	margin-inline-end: 0;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .baslikText {
-	color: #aaa;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-header .baslikText {
-	width: 260px;
-	color: #999;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content {
-	padding: 0 20px;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content > div:first-child {
-	margin-bottom: 8px;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .sub-parent > div {
-	/* padding: 2px 0px; */
-	margin-block-end: 0;
-}
+	.skyHatIzlemeApp.zamanEtudu.part .form-item .baslikText { font-weight: bold; font-size: 140%; color: #aaa; padding: 5px 0 15px 0 }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item label, .skyHatIzlemeApp.zamanEtudu.part .form-item label { font-size: 100%; color: #aaa; width: 130px }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item input, .skyHatIzlemeApp.sureSayiDuzenle.part .form-item button,
+	.skyHatIzlemeApp.zamanEtudu.part .form-item input, .skyHatIzlemeApp.zamanEtudu.part .form-item button { font-weight: bold }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item input, .skyHatIzlemeApp.zamanEtudu.part .form-item input { font-size: 120%; width: 130px; height: 40px }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item input[type=number], .skyHatIzlemeApp.zamanEtudu.part .form-item input[type=number] { text-align: right; width: 80px }
+.skyHatIzlemeApp.sureSayiDuzenle.part .form-item button, .skyHatIzlemeApp.zamanEtudu.part .form-item button { font-size: 110%; width: 150px; height: 70px }
+.skyHatIzlemeApp.sureSayiDuzenle.part { }
+.skyHatIzlemeApp.zamanEtudu.part { }
+.skyHatIzlemeApp.zamanEtudu.part #header { height: 127px; background-color: whitesmoke; margin-bottom: 10px }
+.skyHatIzlemeApp.zamanEtudu.part #durumParent { font-weight: normal; color: #aaa; border: 1px solid #ddd; padding: 10px }
+.skyHatIzlemeApp.zamanEtudu.part #durumParent #durum { font-weight: bold; color: #888; margin-left: 10px }
+.skyHatIzlemeApp.zamanEtudu.part #durumParent #durum.calisiyor { color: forestgreen }
+.skyHatIzlemeApp.zamanEtudu.part .ek-islemTuslari { padding: 3px 0; margin-bottom: 8px }
+.skyHatIzlemeApp.zamanEtudu.part #baslat { font-weight: bold; font-size: 130%; position: relative; left: 30%; width: 250px; height: 65px }
+.skyHatIzlemeApp.zamanEtudu.part #baslat.jqx-fill-state-normal { color: whitesmoke; background-color: #0353ca }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme { background-color: #fcfcfc; border: 1px solid #ccc; box-shadow: 1px 1px 20px #ccc; padding: 15px }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-header { margin-inline-end: 0 }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .baslikText { color: #aaa }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-header .baslikText { width: 260px; color: #999 }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content { padding: 0 20px }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content > div:first-child { margin-bottom: 8px }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .sub-parent > div { margin-block-end: 0 }
 .skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .ek-islemTuslari {
-	margin: 0;
-	padding: 0;
-	width: 200px;
-	margin-top: -40px;
-	margin-block-end: 0;
-	padding-block-end: 0;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .ek-islemTuslari > div {
-	width: 100%;
-}
-.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .ek-islemTuslari button {
-	width: 100%;
-	/* margin-inline-end: 30px; */
-}
-
-.skyHatIzlemeApp.operSec.part #header {
-	position: relative;
-}
-.skyHatIzlemeApp.operSec.part #header #chkUrunAgacinaEkle_parent {
-	position: absolute;
-	left: 110px;
-	top: 13px;
-	padding-top: 8px;
-}
-.skyHatIzlemeApp.operSec.part #header #chkUrunAgacinaEkle_parent #chkUrunAgacinaEkle {
-	color: firebrick;
-}
-.skyHatIzlemeApp.operSec.part #header #chkUrunAgacinaEkle_parent.checked #chkUrunAgacinaEkle {
-	color: forestgreen;
-}
-
-
-.skyHatIzlemeApp .ekBilgiTable {
-}
-.skyHatIzlemeApp .ekBilgiTable * {
-	cursor: text;
-	user-select: text;
-}
-.skyHatIzlemeApp .ekBilgiTable tr {
-	line-height: 30px;
-}
-.skyHatIzlemeApp .ekBilgiTable tr th {
-	border-top: 1px solid #ccc;
-	border-bottom: 2px solid #ccc;
-}
-.skyHatIzlemeApp .ekBilgiTable tr .key {
-}
-.skyHatIzlemeApp .ekBilgiTable tr .value {
-	font-weight: bold;
-}
-.skyHatIzlemeApp .ekBilgiTable tr .value.align-right {
-	text-align: right;
-}
-.skyHatIzlemeApp .ekBilgiTable tr .value ul li {
-	font-size: 60%;
-	color: #596a85;
-	margin-left: -150px;
-	line-height: 20px;
-}
+	margin: 0; padding: 0; width: 200px; margin-top: -40px; margin-block-end: 0; padding-block-end: 0 }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .ek-islemTuslari > div { width: 100% }
+.skyHatIzlemeApp.zamanEtudu.part .container.ornekleme .ornekleme-content .ek-islemTuslari button { width: 100% }
+.skyHatIzlemeApp.operSec.part #header { position: relative }
+.skyHatIzlemeApp.operSec.part #header #chkUrunAgacinaEkle_parent { position: absolute; left: 110px; top: 13px; padding-top: 8px }
+.skyHatIzlemeApp.operSec.part #header #chkUrunAgacinaEkle_parent #chkUrunAgacinaEkle { color: firebrick }
+.skyHatIzlemeApp.operSec.part #header #chkUrunAgacinaEkle_parent.checked #chkUrunAgacinaEkle { color: forestgreen }
+.skyHatIzlemeApp .ekBilgiTable { } .skyHatIzlemeApp .ekBilgiTable * { cursor: text; user-select: text }
+.skyHatIzlemeApp .ekBilgiTable tr { line-height: 30px } .skyHatIzlemeApp .ekBilgiTable tr th { border-top: 1px solid #ccc; border-bottom: 2px solid #ccc }
+.skyHatIzlemeApp .ekBilgiTable tr .key { } .skyHatIzlemeApp .ekBilgiTable tr .value { font-weight: bold }
+.skyHatIzlemeApp .ekBilgiTable tr .value.align-right { text-align: right }
+.skyHatIzlemeApp .ekBilgiTable tr .value ul li { font-size: 60%; color: #596a85; margin-left: -150px; line-height: 20px }
