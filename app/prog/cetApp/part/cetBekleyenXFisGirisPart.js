@@ -1798,7 +1798,7 @@
 								const _e = { ...e, rec: det, barkodDetay, carpan: paketMiktar }; delete _e.barkod;
 								await this.degistirIstendi(_e)
 							}
-							/*const paketKod = '', _det = anah2Detaylar[uygunDetListe[0].getAnahtarStr({ with: [paketKod], hmrSet: depoSiparisKarsilamaZorunluHMRSet })]*/
+								/*const paketKod = '', _det = anah2Detaylar[uygunDetListe[0].getAnahtarStr({ with: [paketKod], hmrSet: depoSiparisKarsilamaZorunluHMRSet })]*/
 							setTimeout(async () => { await this.onResize(); this.focusToDefault() }, 50); return true
 						}
 						if (barkodBilgi.ayrisimAyiraclimi && barkodBilgi.zVarmi) {
