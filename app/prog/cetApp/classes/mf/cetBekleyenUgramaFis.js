@@ -4,35 +4,16 @@
 			const {pifTipi, almSat, iademi} = this;
 			return `<span>Bek.Yük.</span> <span style="color: ${this.renkFor({ tip: 'pifTipi' })};">${pifTipi == 'F' ? 'Fatura' : pifTipi == 'I' ? 'İrsaliye': pifTipi == 'S' ? 'Sipariş' : ''}</span>`
 		}
-		static get adimTipi() { return `UG` }
-		static get numaratorTip() { return null }
-		get matbuuFormTip() {
-			const {app} = sky; if (app.eIslemKullanilirmi && this.eIslemTip) { return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem' }
-			return null
-		}
+		static get adimTipi() { return `UG` } static get numaratorTip() { return null }
+		get matbuuFormTip() { const {app} = sky; if (app.eIslemKullanilirmi && this.eIslemTip) { return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem' } return null }
 		async eIslemTipDegeriFor(e) { return await super.eIslemTipDegeriFor(e) }
-		static get almSat() { return 'T' }
-		static get detaySinif() { return CETBekleyenUgramaDetay }
-		static get fisGirisUISinif() { return CETBekleyenUgramaFisGirisPart }
-		static get degistirFisGirisUISinif() { return this.fisGirisUISinif }
-		static get altDetayKullanilirmi() { return true }
-		static get altDetayGosterilirmi() { return true }
-		static get bekleyenXFismi() { return true }
-		static get bekleyenUgramaFismi() { return true }
-		static get barkodZorunlumu() { return true }
-		static get geciciFisKullanilmazmi() { return true }
-		static get degisiklikYapilmazmi() { return true }
-		static get miktarGirilmezmi() { return true }
-		static get hedefMiktarGosterilirmi() { return true }
-		static get tarihKontrolYapilirmi() { return false }
-		static get fisNoKontrolYapilirmi() { return false }
-		static get bedelKullanilirmi() { return false }
-		// static get dipIskBedelKullanilirmi() { return false }
-		static get rafKullanilirmi() { return true }
-		static get promosyonKullanilirmi() { return false }
-		static get siparisKontrolEdilirmi() { return false }
-		static get siparisMiktarKontrolEdilirmi() { return false }
-		static get siparisRefKontrolEdilirmi() { return false }
+		static get almSat() { return 'T' } static get detaySinif() { return CETBekleyenUgramaDetay } static get fisGirisUISinif() { return CETBekleyenUgramaFisGirisPart }
+		static get degistirFisGirisUISinif() { return this.fisGirisUISinif } static get altDetayKullanilirmi() { return true } static get altDetayGosterilirmi() { return true }
+		static get bekleyenXFismi() { return true } static get bekleyenUgramaFismi() { return true } static get barkodZorunlumu() { return true }
+		static get geciciFisKullanilmazmi() { return true } static get degisiklikYapilmazmi() { return true } static get miktarGirilmezmi() { return true }
+		static get hedefMiktarGosterilirmi() { return true } static get tarihKontrolYapilirmi() { return false } static get fisNoKontrolYapilirmi() { return false }
+		static get bedelKullanilirmi() { return false } static get rafKullanilirmi() { return true } static get promosyonKullanilirmi() { return false }
+		static get siparisKontrolEdilirmi() { return false } static get siparisMiktarKontrolEdilirmi() { return false } static get siparisRefKontrolEdilirmi() { return false }
 
 		constructor(e) { e = e || {}; super(e); $.extend(this, { soforAdi: e.soforAdi || '', plaka: e.plaka || '', ekBilgi: e.ekBilgi || '', containerNox: e.containerNox || '', planNo: e.planNo || 0 }) }
 		static fisSinifDuzenlenmis(e) {
@@ -53,19 +34,17 @@
 			return hv
 		}
 		hostVars(e) {
-			e = e || {}; let hv = super.hostVars();
-			$.extend(hv, {
+			e = e || {}; let hv = super.hostVars(); $.extend(hv, {
 				seferAdi: this.seferAdi || '', soforAdi: this.soforAdi || '', plaka: this.plaka || '',
 				ekBilgi: this.ekBilgi || '', containerNox: this.containerNox || ''  /* planNo kaydedilmez */
 			});
 			return hv
 		}
 		async setValues(e) {
-			e = e || {}; await super.setValues(e); const {rec} = e;
-			$.extend(this, {
+			e = e || {}; await super.setValues(e); const {rec} = e; $.extend(this, {
 				seferAdi: rec.seferAdi || '', soforAdi: rec.soforAdi || '', plaka: rec.plaka || '',
 				ekBilgi: rec.ekBilgi || '', containerNox: rec.containerNox || '', planNo: rec.planNo || 0
-			});
+			})
 		}
 		async onKontrol(e) {
 			e = e || {}; const mesajlar = [], {detaylar} = this;
@@ -74,8 +53,7 @@
 				if (miktar && hMiktar && miktar > hMiktar) { mesajlar.push(`<li><u>${seq}. satırdaki</u> <b>${shKod}-${shAdi} ürüne ait <b>Miktar(${miktar})</b>, <u>Hedef Miktar(${hMiktar})</u>'dan fazladır</li>`) }
 			}
 			if (!$.isEmptyObject(mesajlar)) {
-				const mesaj = `<ul>${mesajlar.join('')}</ul><p/>Devam edilsin mi?`;
-				const promise = new $.Deferred();
+				const mesaj = `<ul>${mesajlar.join('')}</ul><p/>Devam edilsin mi?`, promise = new $.Deferred();
 				createJQXWindow(
 					mesaj,
 					'! Hedef Miktar(lar) Aşıldı !',
@@ -110,7 +88,6 @@
 			
 			return await super.yeniTanimOncesiIslemler(e);
 		}
-
 		async silmeOncesiKontrol(e) {
 			const {islem} = e;
 			throw {
@@ -123,45 +100,25 @@
 			
 			return await super.silmeOncesiKontrol(e);
 		}
-
-		geciciFis_initTimer(e) {
-			return super.geciciFis_initTimer(e);
-		}
-
+		geciciFis_initTimer(e) { return super.geciciFis_initTimer(e) }
 		async initBaslikUI_ara(e) {
-			await super.initBaslikUI_ara(e);
-
-			const {parentPart} = e;
-			const param = parentPart.param;
-			const userSettings = param.userSettings = param.userSettings || {};
-			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {};
-
-			/*const layout = e.layout;
-			let savedParentWidth;*/
+			await super.initBaslikUI_ara(e); const {parentPart} = e, param = parentPart.param, userSettings = param.userSettings = param.userSettings || {};
+			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {}
+			/*const layout = e.layout; let savedParentWidth*/
 		}
 	};
-
 	window.CETBekleyenUgramaFaturaFis = class extends window.CETBekleyenUgramaFis {
-		static get pifTipi() { return 'F' }
-		static get numaratorTip() { return CETSatisFaturaFis.numaratorTip }
-		get matbuuFormTip() { return super.matbuuFormTip || 'Fatura' }
+		static get pifTipi() { return 'F' } static get numaratorTip() { return CETSatisFaturaFis.numaratorTip } get matbuuFormTip() { return super.matbuuFormTip || 'Fatura' }
 	};
-
 	window.CETBekleyenUgramaIrsaliyeFis = class extends window.CETBekleyenUgramaFis {
-		static get pifTipi() { return 'I' }
-		static get numaratorTip() { return CETSatisIrsaliyeFis.numaratorTip }
-		async eIslemTipDegeriFor(e) {
-			const {app} = sky;
-			return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : ''
-		}
+		static get pifTipi() { return 'I' } static get numaratorTip() { return CETSatisIrsaliyeFis.numaratorTip }
+		async eIslemTipDegeriFor(e) { const {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : '' }
 		get matbuuFormTip() {
 			const {app} = sky;
 			if (app.eIslemKullanilirmi && this.eIslemTip) {
 				if (app.eIrsaliyeKullanilirmi) {
-					const key = 'e-Irsaliye';
-					const tip2MatbuuForm = ((app._matbuuFormYapilari || {}).tip2MatbuuForm || {});
-					if (!tip2MatbuuForm || tip2MatbuuForm[key])
-						return key
+					const key = 'e-Irsaliye', tip2MatbuuForm = ((app._matbuuFormYapilari || {}).tip2MatbuuForm || {});
+					if (!tip2MatbuuForm || tip2MatbuuForm[key]) { return key }
 				}
 				return (app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem')
 			}

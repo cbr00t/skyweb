@@ -1618,82 +1618,40 @@
 					
 					promise.then(e => {
 						try {
-							let newKey = key;
-							const rafKod = e.rec.rafKod || '';
-							const _detay = detay.deepCopy();
-							_detay.ekOzelliklerYapi.tip2EkOzellik.raf.value = rafKod;
-							_detay.cacheReset();
+							let newKey = key, rafKod = e.rec.rafKod || '', _detay = detay.deepCopy();
+							_detay.ekOzelliklerYapi.tip2EkOzellik.raf.value = rafKod; _detay.cacheReset();
 							newKey = _detay.getAnahtarStr({ with: [altDetay.paketkod || '', altDetay.paketicadet || 0], hmrSet: null });
-
 							let _altDetay = altDetay.ekOzellikler.rafKod ? altDetay : detay.altDetaylar[newKey];
 							const degisiklikmi = altDetay == _altDetay && !detay.altDetaylar[newKey];
 							if (!_altDetay) {
 								detay.altDetaylar[newKey] = _altDetay = $.extend(true, {}, altDetay);
-								if (_altDetay.paketmiktar)
-									_altDetay.paketmiktar = 0;
+								if (_altDetay.paketmiktar) { _altDetay.paketmiktar = 0 }
 								_altDetay.miktar = 0
 							}
-							_altDetay.ekOzellikler.rafKod = rafKod;
-							detay.altDetaylar[newKey] = _altDetay;
-							
-							/*_detay.ekOzelliklerYapi.tip2EkOzellik.raf.value = '';
-							_detay.cacheReset();
-							const bosRafliKey = _detay.getAnahtarStr({ with: [altDetay.paketkod || '', altDetay.paketicadet || 0], hmrSet: null });
-							const bosRafliAltDetay = detay.altDetaylar[bosRafliKey];
-							if (bosRafliAltDetay) {
-								if (_altDetay.paketKod)
-									_altDetay.paketmiktar = (_altDetay.paketmiktar || 0) + (bosRafliAltDetay.paketmiktar || 0);
-								_altDetay.miktar = (_altDetay.miktar || 0) + (bosRafliAltDetay.miktar || 0);
-								delete detay.altDetaylar[bosRafliKey]
-							}*/
+							_altDetay.ekOzellikler.rafKod = rafKod; detay.altDetaylar[newKey] = _altDetay;
 							if (key != newKey) {
 								if (!degisiklikmi) {
-									if (_altDetay.paketKod)
-										_altDetay.paketmiktar = (_altDetay.paketmiktar || 0) + (altDetay.paketmiktar || 0);
+									if (_altDetay.paketkod) { _altDetay.paketmiktar = (_altDetay.paketmiktar || 0) + (altDetay.paketmiktar || 0) }
 									_altDetay.miktar = (_altDetay.miktar || 0) + (altDetay.miktar || 0)
 								}
 								delete detay.altDetaylar[key]
 							}
 							setTimeout(() => { listeWidget.refresh(); this.focusToDefault(); this.onResize() }, 50)
 						}
-						catch (ex) {
-							console.error(ex);
-							defFailBlock(ex, 'error')
-						}
+						catch (ex) { console.error(ex); defFailBlock(ex, 'error') }
 					})
 				};
-
 				const buttons = divAltDetaylar.find('.altDetay-islemTuslari button');
 				if (buttons.length) {
-					buttons.jqxButton({ theme: theme, height: false });
-					buttons.off('mouseup');
-					buttons.off('touchend');
-					
-					let button = buttons.filter('#paketBoz');
-					button.on('mouseup', handler_paketBoz);
-					button.on('touchend', handler_paketBoz);
-
-					button = buttons.filter('#yerSec');
-					button.on('mouseup', handler_yerSec);
-					button.on('touchend', handler_yerSec);
-
-					button = buttons.filter('#rafSec');
-					if (rafKullanilirmi) {
-						button.on('mouseup', handler_rafSec);
-						button.on('touchend', handler_rafSec)
-					}
-					else
-						button.addClass('jqx-hidden')
-
-					button = buttons.filter('#sil');
-					button.on('mouseup', handler_sil);
-					button.on('touchend', handler_sil);
+					buttons.jqxButton({ theme, height: false }); buttons.off('mouseup'); buttons.off('touchend');
+					let button = buttons.filter('#paketBoz'); button.on('mouseup', handler_paketBoz); button.on('touchend', handler_paketBoz);
+					button = buttons.filter('#yerSec'); button.on('mouseup', handler_yerSec); button.on('touchend', handler_yerSec);
+					button = buttons.filter('#rafSec'); if (rafKullanilirmi) {
+						button.on('mouseup', handler_rafSec); button.on('touchend', handler_rafSec) } else { button.addClass('jqx-hidden') }
+					button = buttons.filter('#sil'); button.on('mouseup', handler_sil); button.on('touchend', handler_sil);
 				}
-
-				if (divAltDetaylar && divAltDetaylar.length)
-					Utils.makeScrollable(divAltDetaylar)
-			}
-			
+				if (divAltDetaylar?.length) { Utils.makeScrollable(divAltDetaylar) }
+			}			
 			/*
 			   det = sky.app.activePart.fis.detaylar[0];
 				altDet = Object.values(det.altDetaylar)[0];
