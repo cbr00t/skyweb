@@ -1015,7 +1015,7 @@
 			
 			let query = await this.loadServerData_buildQuery($.extend(e, { rowCountOnly: true }));
 			let totalRecs = 0;
-			let rs = await dbMgr.executeSql({ query: query });
+			let rs = await dbMgr.executeSql({ query });
 			for (let i = 0; i < rs.rows.length; i++) {
 				const rec = rs.rows[i];
 				totalRecs += asInteger(rec[0] || rec.sayi);
@@ -1046,9 +1046,7 @@
 		}
 
 		loadServerData_buildQuery(e) {
-			e = e || {};
-			e.sender = this;
-
+			e = e || {}; e.sender = this;
 			const wsArgs = $.extend({}, e.wsArgs, { rowCountOnly: e.rowCountOnly });
 			wsArgs.filters = this.getFiltersFromListeWSArgs(wsArgs);
 			wsArgs.sortdatafield = wsArgs.sortdatafield || this.defaultSortField || [this.idSaha];	 		/* || ['tarih', 'seri', 'fisno'] */
@@ -1056,7 +1054,6 @@
 				['pagesize', 'pagenum', 'pageindex', 'pageSize', 'pageNum', 'pageIndex'].forEach(key =>
 					delete wsArgs[key]);
 			}
-
 			let stm;
 			let handler = this.liste_loadServerData_buildQuery;
 			if (handler) {

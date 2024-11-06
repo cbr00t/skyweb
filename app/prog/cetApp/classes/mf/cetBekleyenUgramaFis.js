@@ -15,7 +15,10 @@
 		static get bedelKullanilirmi() { return false } static get rafKullanilirmi() { return true } static get promosyonKullanilirmi() { return false }
 		static get siparisKontrolEdilirmi() { return false } static get siparisMiktarKontrolEdilirmi() { return false } static get siparisRefKontrolEdilirmi() { return false }
 
-		constructor(e) { e = e || {}; super(e); $.extend(this, { soforAdi: e.soforAdi || '', plaka: e.plaka || '', ekBilgi: e.ekBilgi || '', containerNox: e.containerNox || '', planNo: e.planNo || 0 }) }
+		constructor(e) {
+			e = e || {}; super(e); $.extend(this, {
+				soforAdi: e.soforAdi || '', plaka: e.plaka || '', ekBilgi: e.ekBilgi || '', containerNox: e.containerNox || '', planNo: e.planNo || null })
+		}
 		static fisSinifDuzenlenmis(e) {
 			e = e || {}; let result = super.fisSinifDuzenlenmis(e); if (result != CETBekleyenUgramaFis) { return result }
 			const rec = e.rec || e;
@@ -36,7 +39,7 @@
 		hostVars(e) {
 			e = e || {}; let hv = super.hostVars(); $.extend(hv, {
 				seferAdi: this.seferAdi || '', soforAdi: this.soforAdi || '', plaka: this.plaka || '',
-				ekBilgi: this.ekBilgi || '', containerNox: this.containerNox || ''  /* planNo kaydedilmez */
+				ekBilgi: this.ekBilgi || '', containerNox: this.containerNox || '', planNo: this.planNo
 			});
 			return hv
 		}

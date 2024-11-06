@@ -25,9 +25,7 @@
 		static get siparisRefKontrolEdilirmi() { return false }
 		
 		constructor(e) {
-			e = e || {};
-			super(e);
-
+			e = e || {}; super(e);
 			$.extend(this, {
 				soforAdi: e.soforAdi || '',
 				plaka: e.plaka || '',

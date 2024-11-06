@@ -1,24 +1,16 @@
 (function() {
 	window.CETSDMApp = class extends window.CETApp {
+		static get appName() { return 'cetSDMApp' } get appText() { return 'Sky SDM' } static get wsURLBase_postfix() { return '/depo' }
+		static get appSDMmi() { return true } static get rotaKullanilirmi() { return false }
 		constructor(e) {
-			super(e);
-
-			const extLogin = this.extensions.login;
+			e = e ?? {}; super(e); const extLogin = this.extensions.login;
 			$.extend(extLogin.options, {
-				// isLoginRequired: true,
 				loginTypes: [
 					{ kod: 'login', aciklama: 'VIO Kullanıcısı' },
 					{ kod: 'plasiyerLogin', aciklama: '<span style="color: steelblue;">Plasiyer</span>' }
 				]
-			});
+			})
 		}
-
-		static get appName() { return 'cetSDMApp' }
-		get appText() { return 'Sky SDM' }
-		static get wsURLBase_postfix() { return '/depo' }
-		static get appSDMmi() { return true }
-		static get rotaKullanilirmi() { return false }
-
 		get fisTipleri() {
 			const ekOzellikKullanim = this.ekOzellikKullanim || {};
 			let liste = [];
@@ -49,7 +41,6 @@
 
 			return liste;
 		}
-
 		get raporlar() {
 			const raporlar = super.raporlar;
 			if (this.siparisKontrolEdilirmi) {
@@ -61,10 +52,16 @@
 			}
 			return raporlar
 		}
-
+		get tabloEksikIslemYapi() {
+			return [
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'urunToplama')),
+					queries: [`ALTER TABLE data_PIFStok ADD urunToplama TEXT NOT NULL`]
+				}
+			]
+		}
 		async merkezdenBilgiYukleDevam_bekleyenSayimFisler(e) {
-			e = e || {};
-			this.prefetchAbortedFlag = true;
+			e = e || {}; this.prefetchAbortedFlag = true;
 			const hataGosterFlag = e.hataGoster || e.hataGosterFlag;
 			const dbMgr = e.dbMgr = e.dbMgr || this.dbMgr_mf;
 			const wsFetches = e.wsFetches = e.wsFetches || {};
@@ -72,38 +69,26 @@
 				wsFetches.bekleyenSayimFisler = this.wsBekleyenSayimFisler()
 			const islemAdi = 'Bekleyen Sayım Fişleri';
 			let result;
-			try {
-				result = await this.fetchWSRecs({ source: wsFetches.bekleyenSayimFisler, islemAdi: islemAdi, step: 3 })
-			}
+			try { result = await this.fetchWSRecs({ source: wsFetches.bekleyenSayimFisler, islemAdi: islemAdi, step: 3 }) }
 			catch (ex) {
 				console.warn({ isError: true, rc: `wsIletisim`, locus: `bekleyenSayimFisler`, errorText: ex.responseJSON || ex });
-				if (hataGosterFlag)
-					defFailBlock(ex)
+				if (hataGosterFlag) { defFailBlock(ex) }
 			}
-			const basliklar = (result || {}).baslik;
-			if (!basliklar)
-				return false
+			const basliklar = (result || {}).baslik; if (!basliklar) { return false }
 			const subCount = asInteger(basliklar.length / 8);
 
 			const mustKodSet = {}, stokKodSet = {};
 			for (const rec of basliklar) {
-				const vioID = asInteger(rec.vioID || rec.vioid || rec.fissayac || rec.fisSayac || rec.kaySayac || rec.kaysayac) || 0;
-				if (!vioID)
-					continue
+				const vioID = asInteger(rec.vioID || rec.vioid || rec.fissayac || rec.fisSayac || rec.kaySayac || rec.kaysayac) || 0; if (!vioID) { continue }
 				const mustKod = rec.mustKod || rec.mustkod || rec.must;
 				const ticMustKod = rec.ticMustKod || rec.ticmustkod || mustKod;
-				for (const kod of [mustKod, ticMustKod]) {
-					if (kod)
-						mustKodSet[kod.trimEnd()] = true
-				}
+				for (const kod of [mustKod, ticMustKod]) { if (kod) { mustKodSet[kod.trimEnd()] = true } }
 			}
 			const detaylar = result.detay || [];
 			for (const rec of detaylar) {
 				const kod = rec.shKod || rec.shkod || rec.stokKod || rec.stokkod;
-				if (kod)
-					stokKodSet[kod.trimEnd()] = true
+				if (kod) { stokKodSet[kod.trimEnd()] = true }
 			}
-			
 			if (!$.isEmptyObject(mustKodSet)) {
 				let sent = new MQSent({
 					distinct: true,
@@ -274,7 +259,8 @@
 					paketkod: rec.paketKod || rec.paketkod || '',
 					paketmiktar: asFloat(rec.paketMiktar || rec.paketmiktar) || 0,
 					paketicadet: asFloat(rec.paketIcAdet || rec.paketicadet || rec.paketIci || rec.paketIci) || 0,
-					karmaPaletNo: asInteger(rec.karmaPaletNo) || 0
+					karmaPaletNo: asInteger(rec.karmaPaletNo) || 0,
+					urunToplama: rec.urunToplama ? toJSONStr(rec.urunToplama) : ''
 				};
 				if (!$.isEmptyObject(ekOzelliklerIDSahalar)) {
 					const Prefix_EkOz = 'ekoz_';
@@ -548,6 +534,7 @@
 						paketmiktar: asFloat(rec.paketMiktar || rec.paketmiktar) || 0,
 						paketicadet: asFloat(rec.paketIcAdet || rec.paketicadet || rec.paketIci || rec.paketIci) || 0,
 						karmaPaletNo: asInteger(rec.karmaPaletNo),
+						urunToplama: rec.urunToplama ? toJSONStr(rec.urunToplama) : '',
 						sevkSipHarSayac: rec.sevkSipHarSayac || rec.sevksipharsayac || null
 					}, updHV);
 					if (!$.isEmptyObject(ekOzelliklerIDSahalar)) {

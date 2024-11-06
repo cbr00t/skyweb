@@ -806,6 +806,7 @@ CREATE TABLE IF NOT EXISTS data_PIFStok (
 	paketmiktar					REAL NOT NULL DEFAULT 0,
 	paketicadet					REAL NOT NULL DEFAULT 0,
 	karmaPaletNo				INTEGER NOT NULL DEFAULT 0,
+	urunToplama					TEXT NOT NULL DEFAULT '',
 	
 	--paketkod					TEXT NOT NULL DEFAULT '',
 	--koli						REAL NOT NULL DEFAULT 0,

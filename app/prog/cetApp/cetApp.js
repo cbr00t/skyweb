@@ -5292,8 +5292,7 @@
 		wsBekleyenUgramaFisler(e) {
 			return lastAjaxObj = $.get({
 				url: `${this.wsURLBase}bekleyenUgramaFisler`,
-				data: this.buildAjaxArgs(e),
-				
+				data: this.buildAjaxArgs(e)
 			})
 		}
 		wsBekleyenSiparisler(e) {

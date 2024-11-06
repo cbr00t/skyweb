@@ -1,58 +1,29 @@
 (function() {
 	window.CETBekleyenXFisGirisPart = class extends window.CETListeOrtakPart {
-		constructor(e) {
-			e = e || {}; super(e);
-			const {app} = this, param = app.param.deepCopy(), {fis} = e;
-			$.extend(this, {
-				islem: e.islem || 'degistir',
-				param: param,
-				eskiFis: e.eskiFis,
-				fis: fis,
-				kaydetOncesi: e.kaydetOncesi,
-				kaydetIslemi: e.kaydetIslemi,
-				kaydedince: e.kaydedince,
-				degistimi: false,
-				idSaha: '',
-				anah2Detaylar: {},
-				ayrisimAyiracli_barkod2Detay: {}
-			});
-			if (!(this.layout || this.template))
-				this.template = app.templates.bekleyenXFisGiris;
-		}
-
 		static get partName() { return 'cetBekleyenXFisGirisPart' }
-
 		get fisGirisEkranimi() { return true }
-
 		get adimText() {
-			const {fis} = this;
-			let prefix = '';
-			const {ayrimTipAdi} = fis;
-			if (ayrimTipAdi)
-				prefix += `<span style="margin-right: 8px;"><u>${ayrimTipAdi}</u></span>`;
-			
+			const {fis} = this; let prefix = '';
+			const {ayrimTipAdi} = fis; if (ayrimTipAdi) { prefix += `<span style="margin-right: 8px;"><u>${ayrimTipAdi}</u></span>` }
 			return `<div class="fisTipText">${prefix}${fis.class.aciklama}</div>`
 		}
-
-		get yeniKayitmi() {
-			const islem = this.islem;
-			return islem == 'yeni' || islem == 'kopya'
+		get yeniKayitmi() { const {islem} = this; return islem == 'yeni' || islem == 'kopya' }
+		constructor(e) {
+			e = e || {}; super(e); const {app} = this, param = app.param.deepCopy(), {fis} = e;
+			$.extend(this, {
+				islem: e.islem || 'degistir', param, eskiFis: e.eskiFis, fis, kaydetOncesi: e.kaydetOncesi, kaydetIslemi: e.kaydetIslemi, kaydedince: e.kaydedince,
+				degistimi: false, idSaha: '', anah2Detaylar: {}, ayrisimAyiracli_barkod2Detay: {}
+			});
+			if (!(this.layout || this.template)) { this.template = app.templates.bekleyenXFisGiris }
 		}
-
-
 		async activatePart(e) {
 			await super.activatePart(e);
-			
 			setTimeout(() => {
 				const {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla, btnLogout} = sky.app;
-				if (btnToggleFullScreen && btnToggleFullScreen.length)
-					btnToggleFullScreen.addClass('jqx-hidden')
-				if (chkOtoAktar && chkOtoAktar.length)
-					chkOtoAktar.addClass('jqx-hidden')
-				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length)
-					btnGonderimIsaretSifirla.addClass('jqx-hidden')
-				if (btnLogout && btnLogout.length)
-					btnLogout.addClass('jqx-hidden')
+				if (btnToggleFullScreen && btnToggleFullScreen.length) btnToggleFullScreen.addClass('jqx-hidden')
+				if (chkOtoAktar && chkOtoAktar.length) chkOtoAktar.addClass('jqx-hidden')
+				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length) btnGonderimIsaretSifirla.addClass('jqx-hidden')
+				if (btnLogout && btnLogout.length) btnLogout.addClass('jqx-hidden')
 			}, 150);
 		}
 
@@ -1158,7 +1129,6 @@
 							ayrisimAyiracli_barkod2Detay[barkod] = ayrisimAyiracli_barkod2Detay[barkod] || altDetay;
 					}
 				}
-				
 				const anahStr = det.getAnahtarStr({ with: [''], hmrSet: depoSiparisKarsilamaZorunluHMRSet });
 				(anah2Detaylar[anahStr] = anah2Detaylar[anahStr] || []).push(det);
 				fis.detaylar = []
@@ -1756,8 +1726,11 @@
 								stokSet[det.shKod] = true
 							}
 							/* uygunDetListe için barkodOkutuldu işlemi */
-							const {ekOzellikBelirtecSet_stokMstVeDiger, tip2EkOzellik} = app;
-							const stokMstBelirtecSet = ekOzellikBelirtecSet_stokMstVeDiger.stokMst, digerBelirtecSet = ekOzellikBelirtecSet_stokMstVeDiger.diger, {yerKod} = fis; let barkodDetayYapilar = [];
+							const {ekOzellikBelirtecSet_stokMstVeDiger: _ekOzellikBelirtecSet_stokMstVeDiger, tip2EkOzellik} = app;
+							const ekOzellikBelirtecSet_stokMstVeDiger = {}; for (const [key, value] of Object.entries(_ekOzellikBelirtecSet_stokMstVeDiger)) { ekOzellikBelirtecSet_stokMstVeDiger[key] = value }
+							const stokMstBelirtecSet = { ...ekOzellikBelirtecSet_stokMstVeDiger.stokMst };
+							const digerBelirtecSet = ekOzellikBelirtecSet_stokMstVeDiger.diger; if (tip2EkOzellik.raf) { digerBelirtecSet.raf = true }
+							const {yerKod} = fis; let barkodDetayYapilar = [];
 							for (const det of uygunDetListe) {
 								const {paketBilgi, paketKod2IcAdet} = det; let paketKod2Miktar = {}, parts = paketBilgi ? paketBilgi.split(',') : null;
 								if (parts?.length) {
@@ -1774,23 +1747,31 @@
 									barkodDetayYapilar.push({ det, barkodDetay, paketMiktar })
 								}
 							}
-							let sent = new MQSent({
-								from: 'mst_SonStok', where: [{ degerAta: yerKod, saha: 'yerKod' }, { inDizi: Object.keys(stokSet), saha: 'stokKod' }],
-								sahalar: ['stokKod', 'SUM(miktar) miktar'], groupBy: ['stokKod']
-							});
-							let stm = new MQStm({ sent, orderBy: ['stokKod'] });
-							const ekOzSiraliKodSahalar = { stokMst: [], diger: [] }; for (const key in ekOzSiraliKodSahalar) {
+							const ekOzSiraliKodSahalar = { stokMst: [], diger: [] }; for (const key in ekOzellikBelirtecSet_stokMstVeDiger) {
 								ekOzSiraliKodSahalar[key].push(...Object.keys(ekOzellikBelirtecSet_stokMstVeDiger[key]).map(belirtec => tip2EkOzellik[belirtec].idSaha)) }
-							for (const belirtec in { ...stokMstBelirtecSet, ...digerBelirtecSet }) {
-								const {idSaha} = tip2EkOzellik[belirtec]; sent.sahalar.add(idSaha);
-								sent.groupBy.add(idSaha); stm.orderBy.add(idSaha)
+							const anah2SonStokBilgiler = {}; for (const {det} of barkodDetayYapilar) {
+								const {shKod: stokKod, urunToplama, ekOzelliklerYapi} = det; for (const urunTopBilgi of urunToplama) {
+									for (const key of ['miktar', 'koli']) { if (typeof urunTopBilgi[key] == 'string') { urunTopBilgi[key] = asFloat(urunTopBilgi[key]) } }
+									const {miktar} = urunTopBilgi, {tip2EkOzellik} = ekOzelliklerYapi;
+									const anahStr = [stokKod, ...ekOzSiraliKodSahalar.stokMst.map(attr => tip2EkOzellik[attr]?.value || '')].join(delimWS);
+									const sonStokBilgi = { miktar }; for (const attr of ekOzSiraliKodSahalar.diger) { sonStokBilgi[attr] = urunTopBilgi[attr] || '' };
+									(anah2SonStokBilgiler[anahStr] = anah2SonStokBilgiler[anahStr] || []).push(sonStokBilgi)
+								}
 							}
-							sent.groupBy.add(); const anah2SonStokBilgiler = {};
-							let recs = await app.dbMgr_mf.executeSqlReturnRows(stm); for (let i = 0; i < recs.length; i++) {
+							/* let sent = new MQSent({
+									from: 'mst_SonStok', where: [{ degerAta: yerKod, saha: 'yerKod' }, { inDizi: Object.keys(stokSet), saha: 'stokKod' }],
+									sahalar: ['stokKod', 'SUM(miktar) miktar'], groupBy: ['stokKod']
+								});
+								let stm = new MQStm({ sent, orderBy: ['stokKod'] });
+								for (const belirtec in { ...stokMstBelirtecSet, ...digerBelirtecSet }) {
+									const {idSaha} = tip2EkOzellik[belirtec]; sent.sahalar.add(idSaha);
+									sent.groupBy.add(idSaha); stm.orderBy.add(idSaha)
+								}
+								const anah2SonStokBilgiler = {}; let recs = await app.dbMgr_mf.executeSqlReturnRows(stm); for (let i = 0; i < recs.length; i++) {
 								const rec = recs[i], {stokKod, miktar} = rec, anahStr = [stokKod, ...ekOzSiraliKodSahalar.stokMst.map(attr => rec[attr] || '')].join(delimWS);
 								const sonStokBilgi = { miktar }; for (const attr of ekOzSiraliKodSahalar.diger) { sonStokBilgi[attr] = rec[attr] || '' }
 								(anah2SonStokBilgiler[anahStr] = anah2SonStokBilgiler[anahStr] || []).push(sonStokBilgi)
-							}
+							}*/
 							const _barkodDetayYapilar = barkodDetayYapilar; barkodDetayYapilar = []; let yetersizStokKodSet = {};
 							for (const barkodDetayYapi of _barkodDetayYapilar) {
 								const {det, barkodDetay, paketMiktar} = barkodDetayYapi, {hMiktar} = det;
@@ -1915,14 +1896,12 @@
 				};
 				const ekOzellikler = altDetay.ekOzellikler = {};
 				await barkodDetay.ekOzelliklerDo({ callback: async _e => {
-					const rafmi = _e.tip == 'raf';
-					const refRafmi = _e.tip == 'refRaf';
-					if (rafmi && !fis.class.rafKullanilirmi) return true;			// continue loop
-					if (refRafmi && !fis.class.refRafKullanilirmi) return true;			// continue loop
-					const ekOzellik = _e.item, {idSaha, value} = ekOzellik;
-					ekOzellikler[idSaha] = (value == null ? '' : value);
+					const rafmi = _e.tip == 'raf', refRafmi = _e.tip == 'refRaf';
+					if (rafmi && !fis.class.rafKullanilirmi) { return true }				// continue loop
+					if (refRafmi && !fis.class.refRafKullanilirmi) { return true }			// continue loop
+					const ekOzellik = _e.item, {idSaha, value} = ekOzellik; ekOzellikler[idSaha] = (value == null ? '' : value)
 				} });
-				altDetaylar[detAnahStr] = altDetay;
+				altDetaylar[detAnahStr] = altDetay
 			}
 			altDetay.okunanTumBarkodlar[barkod] = true;
 			altDetay.miktar += miktar; altDetay.paketmiktar += paketMiktar;

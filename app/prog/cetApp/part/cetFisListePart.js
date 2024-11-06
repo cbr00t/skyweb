@@ -424,9 +424,7 @@
 		}
 
 		async liste_columnsDuzenle(e) {
-			await super.liste_columnsDuzenle(e);
-			
-			$.merge(e.listeColumns, [
+			await super.liste_columnsDuzenle(e); $.merge(e.listeColumns, [
 				{ text: 'Belge No', dataField: 'fisno', hidden: true },
 				{ text: 'Belge Seri', dataField: 'seri', hidden: true },
 				{ text: 'Belge Tarih', dataField: 'tarih', cellsformat: 'd', hidden: true },
@@ -574,6 +572,7 @@
 						return divSatir[0].outerHTML.trim();
 					}
 				}
+				/*{ text: 'Plan No', dataField: 'planNo', hidden: true }*/
 			]);
 		}
 
@@ -587,6 +586,7 @@
 					switch (filter.field) {
 						case 'mustkod': filter.field = 'fis.mustkod'; break;
 						case 'mustunvan': filter.field = 'car.unvan'; break;
+						// case 'planNo': filter.field = 'fis.planNo'; break;
 					}
 				}
 			}
