@@ -26,16 +26,15 @@
 		}
 		constructor(e) {
 			e = e || {}; super(e); $.extend(this, {
-				dvKod: e.dvKod || sky.app.defaultDovizKod || '', dvKur: e.dvKur || 0,
+				tahsilatRowId: e.tahsilatRowId || null, dvKod: e.dvKod || sky.app.defaultDovizKod || '', dvKur: e.dvKur || 0,
 				nakSekliKod: e.nakSekliKod == null ? e.nakseklikod : e.nakSekliKod.trimEnd(),
 				tahSekliKodNo: asInteger(e.tahSekliKodNo == null ? e.tahseklikodno : e.tahseklikodno) || null,
 				dipIskOran: asFloat(e.dipIskOran == null ? e.dipiskoran : e.dipIskOran),
 				dipIskBedel: asFloat(e.dipIskBedel == null ? e.dipiskbedel : e.dipIskBedel),
-				icmal: e.icmal || this.icmal,
-				_otoDipIskHesaplandimi: false
+				icmal: e.icmal || this.icmal, _otoDipIskHesaplandimi: false
 			});
-			if (this.dvKod && !this.dvKur)
-				this.dvKurBelirle(e)
+			this.karmaTahsilatmi = !!this.tahsilatRowId;
+			if (this.dvKod && !this.dvKur) { this.dvKurBelirle(e) }
 		}
 		static async getCariStdDipIskOran(e) {
 			e = e || {}; const mustKod = e.mustKod; let result = null;
@@ -76,26 +75,22 @@
 		
 		static varsayilanKeyHostVars(e) { return $.extend(super.varsayilanKeyHostVars(), { piftipi: this.pifTipi, almsat: this.almSat, iade: this.iade }) }
 		hostVars(e) {
-			e = e || {}; let hv = super.hostVars();
-			$.extend(hv, {
-				dvkod: this.dvKod || '', dvkur: roundToFra(this.dvKur, 6) || 0,
+			e = e || {}; let hv = super.hostVars(); $.extend(hv, {
+				tahsilatRowId: this.tahsilatRowId || null, dvkod: this.dvKod || '', dvkur: roundToFra(this.dvKur, 6) || 0,
 				nakseklikod: this.nakSekliKod || '', tahseklikodno: asInteger(this.tahSekliKodNo) || 0,
 				dipiskoran: roundToFra(this.dipIskOran, 2) || 0, dipiskbedel: bedel(this.dipIskBedel) || 0
 			});
-			let {icmal} = this;
-			if (icmal)
-				$.extend(hv, icmal.hostVars(e))
+			let {icmal} = this; if (icmal) { $.extend(hv, icmal.hostVars(e)) }
 			return hv
 		}
 		async setValues(e) {
-			e = e || {}; await super.setValues(e); const {rec} = e;
-			$.extend(this, {
-				dvKod: rec.dvkod || '', dvKur: roundToFra(rec.dvkur, 6) || 0,
+			e = e || {}; await super.setValues(e); const {rec} = e; $.extend(this, {
+				tahsilatRowId: rec.tahsilatRowId || null, dvKod: rec.dvkod || '', dvKur: roundToFra(rec.dvkur, 6) || 0,
 				nakSekliKod: rec.nakseklikod || '', tahSekliKodNo: asInteger(rec.tahseklikodno) || null,
 				dipIskOran: roundToFra(rec.dipiskoran, 2) || 0, dipIskBedel: bedel(rec.dipiskbedel) || 0
-			})
-			let icmal = this.icmal = new this.class.icmalSinif();
-			icmal.setValues(e)
+			});
+			this.karmaTahsilatmi = !!this.tahsilatRowId;
+			let icmal = this.icmal = new this.class.icmalSinif(); icmal.setValues(e)
 		}
 		async yeniTanimOncesiIslemler(e) {
 			e = e || {}; await super.yeniTanimOncesiIslemler(e);
@@ -359,6 +354,7 @@
 				const divSaha_tahSekliKodNo = layout.find('#tahSekliKodNo'), sahaContainer_tahSekliKodNo = divSaha_tahSekliKodNo?.parents('.parent');
 				let hasTahSekliNoLayout; const divSaha = layout.find('#karmaTahsilat'), sahaContainer = divSaha.parents('.parent');
 				let value = this.karmaTahsilatmi; divSaha.prop('checked', value);
+				if (!!this.tahsilatRowId) { divSaha.attr('disabled', '') }
 				const changeHandler = evt => {
 					value = this.karmaTahsilatmi = $(evt.currentTarget).is(':checked');
 					setTimeout(() => {
@@ -974,11 +970,15 @@
 		}
 		async kaydetSonrasiIslemler(e) {
 			await super.kaydetSonrasiIslemler(e);
-			if (this.class.siparisKontrolEdilirmi) await this.kaydetSonrasiIslemler_bekleyenSiparis(e);
+			if (this.class.siparisKontrolEdilirmi) { await this.kaydetSonrasiIslemler_bekleyenSiparis(e) }
 		}
 		async silmeSonrasiIslemler(e) {
 			await super.silmeSonrasiIslemler(e);
-			if (this.class.siparisKontrolEdilirmi) await this.kaydetSonrasiIslemler_bekleyenSiparis(e)
+			let {tahsilatRowId} = this; if (tahsilatRowId) {
+				let tahFis = new CETTahsilatFis({ id: tahsilatRowId });
+				if (await tahFis.yukle()) { await tahFis.silForce(); tahsilatRowId = this.tahsilatRowId = null }
+			}
+			if (this.class.siparisKontrolEdilirmi) { await this.kaydetSonrasiIslemler_bekleyenSiparis(e) }
 		}
 		async kaydetSonrasiIslemler_bekleyenSiparis(e) {
 			e = e || {}; const islem = e.islem || (e.sender || {}).islem;

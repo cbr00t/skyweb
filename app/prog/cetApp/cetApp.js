@@ -303,6 +303,10 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'tahsilatRowId')),
+					queries: [ `ALTER TABLE data_PIFFis ADD tahsilatRowId INTEGER` ]
+				}
+				/*{
 					kosul: async e => !(await e.dbMgr.hasTables('mst_ProGrup2Stok')),
 					queries: [
 						`CREATE TABLE IF NOT EXISTS mst_ProGrup2Stok (
@@ -339,7 +343,7 @@
 				{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'karmaPaletNo')),
 					queries: [`ALTER TABLE data_PIFStok ADD karmaPaletNo INTEGER NOT NULL DEFAULT 0`]
-				}
+				}*/
 			]
 		}
 

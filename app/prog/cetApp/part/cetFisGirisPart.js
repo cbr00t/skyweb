@@ -853,13 +853,14 @@
 				/*let _result = await fis.kaydetOncesiKontrol(e); if (_result === false) { return false }*/
 				let tahFisSinif = CETTahsilatFis, tahUISinif = tahFisSinif.fisGirisUISinif, {mustKod} = fis, hedefToplamBedel = fis.sonucBedel;
 				let tsn = [fis.seri, fis.noYil, fis.fisNo], aciklama = `SkyTabFis:${tsn.filter(x => !!x).join(' ')}`;
-				let tahFis = new tahFisSinif({ mustKod, aciklama }); await tahFis.numaratorOlustur();
+				let tahFis = new tahFisSinif({ id: fis.tahsilatRowId, mustKod, aciklama });
+				let islem = fis.tahsilatRowId && await tahFis.yukle() ? 'degistir' : 'yeni'; await tahFis.numaratorOlustur();
 				let kaydetOncesi = e => {
 					let {fis} = e; if (fis.toplamBedel <= hedefToplamBedel) { return true }
 					displayMessage(`Tahsilat Bedel Toplamı, Fiş Bedeli'nden DAHA YÜKSEK OLAMAZ`, '! Karma Tahsilat Girişi !'); return false
 				};
-				let promise = new $.Deferred(), kaydedince = e => { fis._karmaTahsilatFis = e.fis; promise.resolve(true) };
-				await new tahUISinif({ fis: tahFis, hedefToplamBedel, kaydetOncesi, kaydedince }).run(); return await promise
+				let promise = new $.Deferred(), kaydedince = e => { $.extend(fis, { _karmaTahsilatFis: e.fis, tahsilatRowId: e.fis.id }); promise.resolve(true) };
+				await new tahUISinif({ islem, fis: tahFis, hedefToplamBedel, kaydetOncesi, kaydedince }).run(); return await promise
 			}
 			return true
 		}
