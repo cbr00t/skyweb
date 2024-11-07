@@ -100,22 +100,27 @@
 		get secimeEsasHedefGrupKod() { return this.hGrupKod }	/* hedef grup esas alinir */
 	};
 	window.CETPromosyon_OGRP1 = class extends window.CETPromosyon {
-		static get proTip() { return 'OGRP1' }
+		static get proTip() { return 'OGRP1' } static get maxSayi() { return 5 }
 		constructor(e) {
-			e = e || {}; super(e);
-			for (const key of ['voGrup1Kod', 'voGrup2Kod']) { this[key] = e[key] || '' }
-			for (const key of ['voGrup1Miktar', 'voGrup2Miktar', 'hIskOran']) { this[key] = asFloat(e[key]) || 0 }
-			for (const key of ['voGrup2Varmi']) { this[key] = asBool(e[key]) }
+			e = e || {}; super(e); const {maxSayi} = this.class;
+			for (let i = 1; i <= maxSayi; i++) {
+				this[`voGrup${i}Kod`] = e[`voGrup${i}Kod`] || '';
+				this[`voGrup${i}Miktar`] = asFloat(e[`voGrup${i}Miktar`]) || 0;
+				if (i > 1) { this[`voGrup${i}Varmi`] = asBool(e[`voGrup${i}Varmi`]) }
+			}
+			this.hIskOran = asFloat(e.hIskOran) || 0
 		}
 		async setValues(e) {
 			await super.setValues(e); let rec = e.rec ?? e;
-			for (const key of ['voGrup1Kod', 'voGrup2Kod']) { this[key] = rec[key] || '' }
-			for (const key of ['voGrup1Miktar', 'voGrup2Miktar', 'hIskOran']) { this[key] = asFloat(rec[key]) || 0 }
-			for (const key of ['voGrup2Varmi']) { this[key] = asBool(rec[key]) }
+			const {maxSayi} = this.class; for (let i = 1; i <= maxSayi; i++) {
+				this[`voGrup${i}Kod`] = rec[`voGrup${i}Kod`] || '';
+				this[`voGrup${i}Miktar`] = asFloat(rec[`voGrup${i}Miktar`]) || 0;
+				if (i > 1) { this[`voGrup${i}Varmi`] = asBool(rec[`voGrup${i}Varmi`]) }
+			}
+			this.hIskOran = asFloat(rec.hIskOran) || 0
 		}
 		async _promosyonSonucu(e) {
-			await super._promosyonSonucu(e); const {voGrup1Kod, voGrup1Miktar} = this;
-			if (!(voGrup1Kod && voGrup1Miktar)) { return null }
+			await super._promosyonSonucu(e); const {voGrup1Kod, voGrup1Miktar} = this; if (!(voGrup1Kod && voGrup1Miktar)) { return null }
 			const {app} = sky, {ekBilgiDict} = e; let proGrup2Stoklar = ekBilgiDict.proGrup2Stoklar || app.caches.proGrup2Stoklar;
 			if ($.isEmptyObject(proGrup2Stoklar)) {
 				let sent = new MQSent({ from: 'mst_ProGrup2Stok', sahalar: ['proGrupKod', 'stokKod'] });
@@ -126,14 +131,17 @@
 				}
 			}
 			for (const target of [ekBilgiDict, app.caches]) { target.proGrup2Stoklar = proGrup2Stoklar }
-			const {voGrup2Varmi, voGrup2Kod, voGrup2Miktar, hIskOran} = this, {shKod2Bilgi} = e, tumUygunStokKodSet = {};
-			let uygunStokKodlari = proGrup2Stoklar[voGrup1Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null } if (typeof uygunStokKodlari == 'object' && !$.isArray(uygunStokKodlari)) { uygunStokKodlari = Object.keys(uygunStokKodlari) }
-			let kaynakMiktar = 0; for (let shKod of uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
-			if (!kaynakMiktar || kaynakMiktar < voGrup1Miktar) { return null }
-			if (voGrup2Varmi) {
-				uygunStokKodlari = proGrup2Stoklar[voGrup2Kod]; if ($.isEmptyObject(uygunStokKodlari)) { return null } if (typeof uygunStokKodlari == 'object' && !$.isArray(uygunStokKodlari)) { uygunStokKodlari = Object.keys(uygunStokKodlari) }
-				kaynakMiktar = 0; for (let shKod of uygunStokKodlari) { let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) { tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar } }
-				if (!kaynakMiktar || kaynakMiktar < voGrup2Miktar) { return null }
+			const {hIskOran} = this, {shKod2Bilgi} = e, tumUygunStokKodSet = {};
+			const {maxSayi} = this.class; for (let i = 1; i <= maxSayi; i++) {
+				let varmi = i > 1 ? this[`voGrup${i}Varmi`] : true; if (!varmi) { continue }
+				let uygunStokKodlari = proGrup2Stoklar[this[`voGrup${i}Kod`]]; if ($.isEmptyObject(uygunStokKodlari)) { return null }
+				if (typeof uygunStokKodlari == 'object' && !$.isArray(uygunStokKodlari)) { uygunStokKodlari = Object.keys(uygunStokKodlari) }
+				let kaynakMiktar = 0; for (let shKod of uygunStokKodlari) {
+					let hesapBilgi = shKod2Bilgi[shKod]; if (hesapBilgi) {
+						tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar }
+				}
+				const hedefMiktar = this[`voGrup${i}Miktar`]; if (!hedefMiktar) { continue }
+				if (!kaynakMiktar || kaynakMiktar < hedefMiktar) { return null }
 			}
 			for (const shKod in tumUygunStokKodSet) { for (const det of shKod2Bilgi[shKod]?.detaylar) { det.proIskOran = hIskOran } }
 			return { uygulananStoklar: Object.keys(tumUygunStokKodSet) }

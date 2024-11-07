@@ -305,6 +305,20 @@
 				{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'tahsilatRowId')),
 					queries: [ `ALTER TABLE data_PIFFis ADD tahsilatRowId INTEGER` ]
+				},
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup3Varmi')),
+					queries: [
+						`ALTER TABLE mst_Promosyon ADD voGrup3Varmi		INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup3Kod		TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup3Miktar	REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup4Varmi		INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup4Kod		TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup4Miktar	REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup5Varmi		INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup5Kod		TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup5Miktar	REAL NOT NULL DEFAULT 0`
+					]
 				}
 				/*{
 					kosul: async e => !(await e.dbMgr.hasTables('mst_ProGrup2Stok')),
@@ -317,17 +331,7 @@
 						)`
 					]
 				},
-				{
-					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup1Miktar')),
-					queries: [
-						`ALTER TABLE mst_Promosyon ADD voGrup1Kod		TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD voGrup1Miktar	REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup2Varmi		INTEGER NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup2Kod		TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD voGrup2Miktar	REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD hIskOran			REAL NOT NULL DEFAULT 0`
-					]
-				},
+				
 				{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'proIskOran')),
 					queries: [`ALTER TABLE data_PIFStok ADD proIskOran	REAL NOT NULL DEFAULT 0`]
@@ -346,7 +350,6 @@
 				}*/
 			]
 		}
-
 		get gridFiltreKodSahalari() {
 			let result = this._gridFiltreKodSahalari;
 			if (result == null) {
@@ -359,7 +362,6 @@
 			}
 			return result;
 		}
-
 		get gridFiltreAdiSahalari() {
 			let result = this._gridFiltreAdiSahalari;
 			if (result == null) {
@@ -371,7 +373,6 @@
 			}
 			return result;
 		}
-
 		get defaultDovizKod() { return qs.dovizKod == null ? (this.param.dovizKod == null ? null : (this.param.dovizKod || '')) : qs.dovizKod }
 		get defaultYerKod() { return qs.yerKod == null ? (this.param.yerKod == null ? null : (this.param.yerKod || '')) : qs.yerKod }
 		get defaultSubeKod() { return this.param.subeKod == null ? (sky.config.sessionInfo || {}).subeKod : (this.param.subeKod || '') }
@@ -379,7 +380,6 @@
 			const sessionInfo = sky.config.sessionInfo || {};
 			return sessionInfo.loginTipi == 'plasiyerLogin' ? sessionInfo.user : null;
 		}
-
 		static get appSicakmi() { return false }
 		static get appSogukmu() { return false }
 		static get appMagazami() { return false }
@@ -4539,17 +4539,18 @@
 			let recs = recsYapi.Baslik;
 			if (!$.isEmptyObject(recs)) {
 				for (const i in recs) {
-					const rec = recs[i];
-					let hv = ({
+					const rec = recs[i]; let hv = ({
 						proTip: rec.tipkod, kod: rec.kod, vioID: asInteger(rec.kaysayac) || null, aciklama: rec.aciklama || '',
 						veriTipi: rec.veritipi || '', vGrupKod: rec.vgrupkod || '', vStokKod: rec.vstokkod || '', vMiktar: asFloat(rec.vmiktar) || 0,
 						vBrm: rec.vbrm || '', vCiro: asFloat(rec.vciro) || 0, vCiroKdvlimi: bool2Int(rec.vcirokdvlimi),
 						hedefTipi: rec.hedeftipi || '', hGrupKod: rec.hgrupkod || '', hStokKod: rec.hstokkod || '', hMiktar: asFloat(rec.hmiktar) || 0,
 						hBrm: rec.hbrm || '', hDipIsk: asFloat(rec.hdipisk) || 0, hMFVarsaSatirIskKapat: bool2Int(rec.hmfvarsasatiriskkapat),
-						detayliMusterimi: bool2Int(rec.detaylimust), kademelimi: bool2Int(rec.kademelimi),
-						voGrup1Kod: rec.vogrup1kod || '', voGrup1Miktar: rec.vogrup1miktar || 0, voGrup2Varmi: bool2Int(rec.vogrup2varmi ?? rec.bvogrup2varmi),
-						voGrup2Kod: rec.vogrup2kod || '', voGrup2Miktar: rec.vogrup2miktar || 0, hIskOran: rec.hproiskoran || 0
+						detayliMusterimi: bool2Int(rec.detaylimust), kademelimi: bool2Int(rec.kademelimi), hIskOran: rec.hproiskoran || 0
 					});
+					const {maxSayi} = CETPromosyon_OGRP1; for (let j = 1; j <= maxSayi; j++) {
+						hv[`voGrup${j}Kod`] = rec[`vogrup${j}kod`] || ''; hv[`voGrup${j}Miktar`] = rec[`vogrup${j}miktar`] || 0;
+						if (j > 1) { hv[`voGrup${j}Varmi`] = bool2Int(rec[`vogrup${j}varmi`] ?? rec[`bvogrup${j}varmi`]) }
+					}
 					bsEkle({ hv, rec, rowAttr: 'tarih', ioAttr: 'tarih', converter: value => value ? asReverseDateString(value) : value });
 					bsEkle({ hv, rec, rowAttr: 'cariTip', ioAttr: 'ctip' });
 					bsEkle({ hv, rec, rowAttr: 'cariBolge', ioAttr: 'bolge' });
