@@ -188,10 +188,9 @@
 						}
 					}
 				}
-				for (const shKod of uygulananStoklar) {
-					const _detaylar = shKod2Bilgi[shKod]?.detaylar;
-					if (_detaylar) { for (const det of _detaylar) { await det.bedelHesapla(e) } }
-					delete shKod2Bilgi[shKod]
+				const {proTip} = this.class; for (const shKod of uygulananStoklar) {
+					const _detaylar = shKod2Bilgi[shKod]?.detaylar; if (_detaylar) { for (const det of _detaylar) { await det.bedelHesapla(e) } }
+					if (proTip != 'OGRP1') { delete shKod2Bilgi[shKod] }
 				}
 			}
 			return result ?? null
