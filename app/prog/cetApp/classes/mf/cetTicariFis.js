@@ -968,6 +968,10 @@
 				}
 			}
 		}
+		async degistirOncesiIslemler(e) {
+			await super.degistirOncesiIslemler(e); const {app} = sky, {param} = app;
+			if (app.yazdirilanTahsilatDegistirilmezmi && this.yazdirildimi) { e.islem = 'izle' }
+		}
 		async kaydetSonrasiIslemler(e) {
 			await super.kaydetSonrasiIslemler(e);
 			if (this.class.siparisKontrolEdilirmi) { await this.kaydetSonrasiIslemler_bekleyenSiparis(e) }
