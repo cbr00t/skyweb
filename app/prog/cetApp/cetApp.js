@@ -983,26 +983,16 @@
 			spanLoginText.html(sky.config.sessionInfo.userBilgiCizgiliOzet({ styled: true }));
 			this.postInitLayout_ara(e);
 
-			const {loadScriptsResultsPromise} = this;
-			if (loadScriptsResultsPromise && loadScriptsResultsPromise.then) {
+			const {loadScriptsResultsPromise} = this; if (loadScriptsResultsPromise?.then) {
 				loadScriptsResultsPromise.then(async result => {
 					const {initCallbacks} = this;
 					if (!$.isEmptyObject(initCallbacks)) {
-						if (!$.isEmptyObject(this.promisesWait)) {
-							try { await Promise.all(this.promisesWait) }
-							finally { delete this.promisesWait }
-						}
-						
+						if (!$.isEmptyObject(this.promisesWait)) { try { await Promise.all(this.promisesWait) } finally { delete this.promisesWait } }
 						for (let i in initCallbacks) {
 							const _result = await initCallbacks[i];
-							try {
-								if (_result && $.isFunction(_result.run))
-									await _result.run(e);
-							}
-							catch (ex) { defFailBlock(ex) }
+							try { if (_result && $.isFunction(_result.run)) { await _result.run(e) } } catch (ex) { defFailBlock(ex) }
 						}
-
-						this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);
+						this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e)
 					}
 				})
 			}
@@ -2489,33 +2479,23 @@
 			return lastResult
 		}
 		async loadInitialScripts() {
-			if (!navigator.onLine) return null
-			const {param} = this, hostName = param.wsHostNameUyarlanmis;
-			if (!hostName) return null
+			if (!navigator.onLine) { return null }
+			const {param} = this, hostName = param.wsHostNameUyarlanmis; if (!hostName) { return null }
 			const promises = [], ports = [8200, 81, 80, 82];
 			for (const port of ports) {
 				const urls = [], hostNameSet = {};
 				if (location.hostname != 'localhost' && location.hostname != '127.0.0.1') {
-					urls.push(`http://${location.hostname}:${port}/cetapp.override.js`);
-					hostNameSet[location.hostname] = true
-				}
+					urls.push(`http://${location.hostname}:${port}/cetapp.override.js`); hostNameSet[location.hostname] = true }
 				if (!(hostNameSet.localhost || hostNameSet['127.0.0.1'])) {
-					urls.push(`http://localhost:${port}/cetapp.override.js`);
-					hostNameSet.localhost = hostNameSet['127.0.0.1'] = true
-				}
+					urls.push(`http://localhost:${port}/cetapp.override.js`); hostNameSet.localhost = hostNameSet['127.0.0.1'] = true }
 				if (!hostNameSet[hostName] && (hostName != 'localhost' && hostName != '127.0.0.1')) {
-					urls.push(`http://${hostName}:${port}/cetapp.override.js`);
-					hostNameSet[hostName] = true
-				}
+					urls.push(`http://${hostName}:${port}/cetapp.override.js`); hostNameSet[hostName] = true }
 				let timeout = 2500;
 				for (const url of urls) {
-					lastAjaxObj = $.get({ async: true, timeout: timeout, dataType: 'script', url: `${url}` });
-					promises.push(lastAjaxObj); timeout += 200
-				}
+					lastAjaxObj = $.get({ async: true, timeout: timeout, dataType: 'script', url: `${url}` }); promises.push(lastAjaxObj); timeout += 200 }
 			}
 			if (navigator.onLine) {
-				const results = [];
-				for (const promise in promises) {
+				const results = []; for (const promise in promises) {
 					try { let result = await promise; if (result) results.push(result) }
 					catch (ex) { if (this.showLoadErrorsFlag) console.error(ex) }
 				}
@@ -2524,8 +2504,7 @@
 			return null
 		}
 		async tablolariTemizle(e) {
-			e = e || {};
-			const temps = e.temps = e.temps || {};
+			e = e || {}; const temps = e.temps = e.temps || {};
 			const {verilerSilinmesinFlag} = e;
 			if (verilerSilinmesinFlag) {
 				await (async () => {
@@ -4616,25 +4595,29 @@
 		async merkezdenBilgiYukleDevam_bekleyenSayimFisler(e) { return null }
 		async merkezdenBilgiYukleDevam_bekleyenUgramaFisler(e) { return null }
 		async merkezdenBilgiYukleSonrasi(e) {
-			e = e || {};
-			const {sessionInfo} = sky.config;
+			e = e || {}; const {sessionInfo} = sky.config;
 			if (!sky.config.test && (sessionInfo && sessionInfo.hasSessionOrUser)) {
 				await this.knobProgressSetLabel('Oturum Bilgileri kaydediliyor...');
 				await this.extensions.login.dbSaveLogin({ clear: true });
 				await this.knobProgressStep(1);
 			}
-
-			await this.knobProgressSetLabel('Son işlemler...');
-			await this.merkezdenBilgiYukleSonrasiDevam(e);
-			await this.knobProgressStep(8);
-			
-			await this.ortakReset(e); this._bilgiYukleYapiliyorFlag = false;
-			await this.onbellekOlustur(e);
-			await this.knobProgressStep(3);
-
-			// setTimeout(() => this.aktarimProgressKapat(), 1000);
-
-			this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);
+			await this.knobProgressSetLabel('Son işlemler...'); await this.merkezdenBilgiYukleSonrasiDevam(e); await this.knobProgressStep(8);
+			await this.ortakReset(e); this._bilgiYukleYapiliyorFlag = this.ozelKonfYuklendimi = false;
+			await this.onbellekOlustur(e); await this.knobProgressStep(3);
+			const {loadScriptsResultsPromise} = this; if (loadScriptsResultsPromise?.then) {
+				loadScriptsResultsPromise.then(async result => {
+					const {initCallbacks} = this;
+					if (!$.isEmptyObject(initCallbacks)) {
+						if (!$.isEmptyObject(this.promisesWait)) { try { await Promise.all(this.promisesWait) } finally { delete this.promisesWait } }
+						for (let i in initCallbacks) {
+							const _result = await initCallbacks[i];
+							try { if (_result && $.isFunction(_result.run)) { await _result.run(e) } } catch (ex) { defFailBlock(ex) }
+						}
+						this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e)
+					}
+				})
+			}
+			else { this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e) }
 			
 			setTimeout(() => {
 				this.aktarimProgressCompleted({
