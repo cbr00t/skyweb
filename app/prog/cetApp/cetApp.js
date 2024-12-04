@@ -9,8 +9,7 @@
 			return cls ?? ( window.openDatabase ? DBMgr_WebSQL : DBMgr_SqlJS )
 		}
 		constructor(e) {
-			super(e);
-			const {dbMgrSinif} = this.class;
+			e = e ?? {}; super(e); const {dbMgrSinif} = this.class;
 			$.extend(this, {
 				mainPart: this,
 				// wsURLBase: updateWSUrlBaseBasit($.extend({}, sky.config, { path: sky.config.wsPath })),
@@ -66,7 +65,8 @@
 					ozelKampanyaOranSayisi: qs.ozelKampanyaOranSayisi ? asInteger(qs.ozelKampanyaOranSayisi) : null,
 					rbk: asBoolQ(qs.rbk) == null ? null : asBool(qs.rbk),
 					doviz: asBoolQ(qs.doviz) == null ? null : asBool(qs.doviz),
-					resimBaseURL: qs.resimBaseURL
+					resimBaseURL: qs.resimBaseURL,
+					barkodReferansAlinmaz: qs.barkodReferansAlinmaz
 				},
 				initCallbacks: [],
 				table2TipAdi: {
@@ -525,6 +525,7 @@
 		}
 		get karmaPaletBarkodBaslangic() { let value = this.ozelYetkiler?.karmaPaletBarkodBaslangic; if (value == null) { value = this.param.karmaPaletBarkodBaslangic } return value }
 		get irsaliyeBakiyeyiEtkilermi() { let flag = this.ozelYetkiler?.irsaliyeBakiyeyiEtkiler; if (flag == null) { flag = asBool(this.param.irsaliyeBakiyeyiEtkilermi) ?? false } return flag }
+		get barkodReferansAlinmazmi() { let flag = this.ozelYetkiler?.barkodReferansAlinmaz; if (flag == null) { flag = asBool(this.param.barkodReferansAlinmazmi) ?? false } return flag }
 		get maxIskSayi() { return 6 } get maxKamSayi() { return this.maxIskSayi } get maxKadIskSayi() { return 5 }
 		get iskSayi() {
 			const {maxIskSayi} = this; let result = this.ozelYetkiler?.iskSayi;
@@ -5195,6 +5196,7 @@
 			)
 		}
 		wsBarkodReferansListe(e) {
+			if (this.barkodReferansAlinmazmi) { return new Promise(resolve => resolve([])) }
 			return this.wsCallWithSkyWS({ url: `${this.wsURLBase}barkodReferansListe`, data: this.buildAjaxArgs(e) }).catch(() =>
 				lastAjaxObj = $.get({ url: `${this.wsURLBase}barkodReferansListe`, data: this.buildAjaxArgs(e) }))
 		}

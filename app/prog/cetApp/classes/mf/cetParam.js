@@ -1,11 +1,8 @@
 (function() {
 	window.CETParam = class extends window.MQTekil {
 		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			this.class.sabitAttrListe.forEach(key =>
-				this[key] = e[key] === undefined ? this[key] : e[key]);
+			e = e || {}; super(e);
+			this.class.sabitAttrListe.forEach(key => this[key] = e[key] === undefined ? this[key] : e[key]);
 			$.extend(this, {
 				version: this.version || this.class.version,
 				fisTip2SonSeri: this.fisTip2SonSeri || {},
@@ -59,7 +56,7 @@
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
 				'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe',
-				'nakliyeSekliKullanilmazmi', 'dovizKullanilirmi', 'resimBaseURL', 'karmaPaletBarkodBaslangic',
+				'nakliyeSekliKullanilmazmi', 'dovizKullanilirmi', 'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi',
 				'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime',
 				'ekOzellikKullanim', 'tip2EkOzellikYapi', 'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings'
 			]
@@ -82,97 +79,42 @@
 		}
 
 		get wsPortsUyarlanmis() {
-			const wsPorts = [];
-			const wsPortsDizi = (this.wsPort ? this.wsPort.toString().trim().split(`|`) : []);
+			const wsPorts = [], wsPortsDizi = (this.wsPort ? this.wsPort.toString().trim().split(`|`) : []);
 			for (let i in wsPortsDizi) {
-				const subText = wsPortsDizi[i].trim();
-				if (subText) {
-					const subParts = subText.split(`-`);
-					let basi = asInteger(subParts[0]) || 0;
-					let sonu = asInteger(subParts[1]) || 0;
-					basi = sonu ? Math.min(basi, sonu) : basi;
-					sonu = basi ? Math.max(basi, sonu) : sonu;
-					if (basi) {
-						for (let wsPort = basi; wsPort <= sonu; wsPort++)
-							wsPorts.push(wsPort);
-					}
+				const subText = wsPortsDizi[i].trim(); if (subText) {
+					let subParts = subText.split(`-`), basi = asInteger(subParts[0]) || 0;
+					let sonu = asInteger(subParts[1]) || 0; basi = sonu ? Math.min(basi, sonu) : basi; sonu = basi ? Math.max(basi, sonu) : sonu;
+					if (basi) { for (let wsPort = basi; wsPort <= sonu; wsPort++) { wsPorts.push(wsPort) } }
 				}
-				else {
-					const wsPort = asInteger(subText) || 0;
-					if (wsPort)
-						wsPorts.push(wsPort);
-				}
+				else { const wsPort = asInteger(subText) || 0; if (wsPort) { wsPorts.push(wsPort) } }
 			}
-
-			return wsPorts;
+			return wsPorts
 		}
-
 		get browserFlags() {
-			const {wsHostNameUyarlanmis, wsPortsUyarlanmis} = this;
-			if (!wsHostNameUyarlanmis)
-				return null;
-			
-			const ports = ['', 81, 8200, 9200];
-			ports.push(...wsPortsUyarlanmis);
-			const liste = [];
-			liste.push(`https://cdnjs.cloudflare.com`);
-			for (let i in ports) {
-				const prefixVePort = ports[i] ? `:${ports[i]}` : ``;
-				liste.push(`http://${wsHostNameUyarlanmis}${prefixVePort}`);
-			}
-
-			return liste.join(`,`);
+			const {wsHostNameUyarlanmis, wsPortsUyarlanmis} = this; if (!wsHostNameUyarlanmis) { return null }
+			const ports = ['', 81, 8200, 9200]; ports.push(...wsPortsUyarlanmis);
+			const liste = ['https://cdnjs.cloudflare.com'];
+			for (let port of ports) { const prefixVePort = port ? `:${port}` : ``; liste.push(`http://${wsHostNameUyarlanmis}${prefixVePort}`) }
+			return liste.join(`,`)
 		}
-
 		static get defaultDokumEncoding() { return 'ISO-8859-1' }
-
-		get dokumEncodingUyarlanmis() {
-			return this.dokumEncoding || this.class.defaultDokumEncoding
-		}
-
-		get turkceHarfYontem_normalmi() {
-			return !this.dokumTurkceHarfYontemKod
-		}
-		get turkceHarfYontem_turkcesizmi() {
-			return this.dokumTurkceHarfYontemKod == 'TRS'
-		}
-		get turkceHarfYontem_karakterKodlamasiDegistirmi() {
-			return this.dokumTurkceHarfYontemKod == 'ENC'
-		}
-
+		get dokumEncodingUyarlanmis() { return this.dokumEncoding || this.class.defaultDokumEncoding }
+		get turkceHarfYontem_normalmi() { return !this.dokumTurkceHarfYontemKod }
+		get turkceHarfYontem_turkcesizmi() { return this.dokumTurkceHarfYontemKod == 'TRS' }
+		get turkceHarfYontem_karakterKodlamasiDegistirmi() { return this.dokumTurkceHarfYontemKod == 'ENC' }
 
 		hostVars() {
-			let hv = super.hostVars() || {};
-			this.class.sabitAttrListe.forEach(key =>
-				hv[key] = this[key] || '');
-			hv.subeKod = this.subeKod;
-			
-			return hv;
+			let hv = super.hostVars() || {}; this.class.sabitAttrListe.forEach(key => { hv[key] = this[key] || '' });
+			hv.subeKod = this.subeKod; return hv
 		}
-		
 		setValues(e) {
-			e = e || {};
-			super.setValues(e);
-			
-			let rec = e.rec || {};
-			if ($.isEmptyObject(rec))
-				return;
-			
-			this.class.sabitAttrListe.forEach(key => {
-				let value = rec[key];
-				if (value !== undefined)
-					this[key] = value;
-			});
-
+			e = e || {}; super.setValues(e); let rec = e.rec || {}; if ($.isEmptyObject(rec)) { return }
+			this.class.sabitAttrListe.forEach(key => { let value = rec[key]; if (value !== undefined) { this[key] = value } });
 			[	'version', 'dokumDeviceSP_baudRate', 'iskSayi', 'kamSayi', 'kadIskSayi', 'fiyatFra', 'ozelKampanyaOranSayisi' ].forEach(key => {
-				let value = this[key];
-				if (/*value != null &&*/ typeof value != 'number')
-					this[key] = asInteger(value) || 0;
+				let value = this[key]; if (/*value != null &&*/ typeof value != 'number') { this[key] = asInteger(value) || 0 }
 			});
 			[	'ilkKM', 'sonKM', 'satirIskOranSinir' ].forEach(key => {
-				let value = this[key];
-				if (/*value != null &&*/ typeof value != 'number')
-					this[key] = asFloat(value) || 0;
+				let value = this[key]; if (/*value != null &&*/ typeof value != 'number') { this[key] = asFloat(value) || 0 }
 			});
 			[	'serbestModmu', 'gridAltMultiSelectFlag', 'dokumEkranami', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'darDokummu', 'dokumNettenmi', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis',
 				'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi' ,'silerekBilgiAlYapilirmi',
@@ -180,14 +122,9 @@
 				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',
 				'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi', 'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'ozelKampanyaKullanilirmi', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi',
-				'nakliyeSekliKullanilmazmi', /*'dovizKullanilirmi',*/ 'dokumRuloDuzmu', 'kapandimi'
-			].forEach(key => {
-				let value = this[key];
-				// if (value != null)
-				this[key] = asBool(value);
-			});
+				'nakliyeSekliKullanilmazmi', /*'dovizKullanilirmi',*/ 'barkodReferansAlinmazmi', 'dokumRuloDuzmu', 'kapandimi'
+			].forEach(key => { let value = this[key]; this[key] = asBool(value) });
 		}
-
 		reduce() {
 			const inst = super.reduce();
 			[	'userSettings', 'varsayilanWSHostName', 'fisTip2SonSeri', 'ekOzellikKullanim', 'tip2EkOzellikYapi', 'isyeri',
