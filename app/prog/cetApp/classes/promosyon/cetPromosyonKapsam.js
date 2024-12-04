@@ -1,6 +1,6 @@
 (function() {
 	window.CETPromosyonKapsam = class extends window.CObject {
-		static get sabitAttrListe() { if (!this._sabitAttrListe) { this._sabitAttrListe = [ 'tarih', 'cari', 'cariTip', 'cariBolge', 'plasiyer' ] } return this._sabitAttrListe }
+		static get sabitAttrListe() { if (!this._sabitAttrListe) { this._sabitAttrListe = [ 'tarih', 'cari', 'cariTip', 'cariBolge', 'cariKosulGrup', 'plasiyer' ] } return this._sabitAttrListe }
 		static get sabitAttrSet() { if (!this._sabitAttrSet) this._sabitAttrSet = asSet(this.sabitAttrListe); return this._sabitAttrSet }
 		constructor(e) {
 			e = e || {}; super(e);

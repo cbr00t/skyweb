@@ -570,6 +570,8 @@ CREATE TABLE IF NOT EXISTS mst_Promosyon (
 	cariTipSonu					TEXT NOT NULL DEFAULT '',
 	cariBolgeBasi				TEXT NOT NULL DEFAULT '',
 	cariBolgeSonu				TEXT NOT NULL DEFAULT '',
+	cariKosulGrupBasi			TEXT NOT NULL DEFAULT '',
+	cariKosulGrupSonu			TEXT NOT NULL DEFAULT '',
 	cariBasi					TEXT NOT NULL DEFAULT '',
 	cariSonu					TEXT NOT NULL DEFAULT '',
 	plasiyerBasi				TEXT NOT NULL DEFAULT '',

@@ -303,6 +303,13 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'cariKosulGrupBasi')),
+					queries: [
+						`ALTER TABLE mst_Promosyon ADD cariKosulGrupBasi	TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD cariKosulGrupSonu	TEXT NOT NULL DEFAULT ''`
+					]
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup6Varmi')),
 					queries: [
 						`ALTER TABLE mst_Promosyon ADD voGrup6Varmi			INTEGER NOT NULL DEFAULT 0`,
@@ -4522,10 +4529,8 @@
 				e.hv[`${e.rowAttr}Basi`] = convertedValue({ converter: e.converter, value: e.rec[`${e.ioAttr}b`] }) || '';
 				e.hv[`${e.rowAttr}Sonu`] = convertedValue({ converter: e.converter, value: e.rec[`${e.ioAttr}s`] }) || '';
 			};
-
 			const hvListeYapi = { baslik: [], musteri: [], kademe: [] };
-			let recs = recsYapi.Baslik;
-			if (!$.isEmptyObject(recs)) {
+			let recs = recsYapi.Baslik; if (!$.isEmptyObject(recs)) {
 				for (const i in recs) {
 					const rec = recs[i]; let hv = ({
 						proTip: rec.tipkod, kod: rec.kod, vioID: asInteger(rec.kaysayac) || null, aciklama: rec.aciklama || '',
@@ -4542,20 +4547,16 @@
 					bsEkle({ hv, rec, rowAttr: 'tarih', ioAttr: 'tarih', converter: value => value ? asReverseDateString(value) : value });
 					bsEkle({ hv, rec, rowAttr: 'cariTip', ioAttr: 'ctip' });
 					bsEkle({ hv, rec, rowAttr: 'cariBolge', ioAttr: 'bolge' });
+					bsEkle({ hv, rec, rowAttr: 'cariKosulGrup', ioAttr: 'ckgrup' });
 					bsEkle({ hv, rec, rowAttr: 'cari', ioAttr: 'must' });
 					bsEkle({ hv, rec, rowAttr: 'plasiyer', ioAttr: 'plas' });
 					hvListeYapi.baslik.push(hv);
 				}
 				await dbMgr.insertOrReplaceTable({
-					table: 'mst_Promosyon', mode: 'insertIgnore',
-					hvListe: hvListeYapi.baslik,
-					parcaCallback: e => {
-						if (e.index % subCount == 0)
-							this.knobProgressStep();
-					}
+					table: 'mst_Promosyon', mode: 'insertIgnore', hvListe: hvListeYapi.baslik,
+					parcaCallback: e => { if (e.index % subCount == 0) { this.knobProgressStep() } }
 				});
 			}
-			
 			recs = recsYapi.Musteri;
 			if (!$.isEmptyObject(recs)) {
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor (Müşteriler)...`);

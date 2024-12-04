@@ -125,6 +125,11 @@
 						const kodClause = MQSQLOrtak.sqlDegeri(value);
 						sent.where.addAll([`(pro.cariBolgeBasi = '' OR pro.cariBolgeBasi <= ${kodClause})`, `(pro.cariBolgeSonu = '' OR ${kodClause} <= pro.cariBolgeSonu)`])
 					}
+					value = istenenKapsam.cariKosulGrup ?? cariRec.kosulGrupKod;
+					if (value) {
+						const kodClause = MQSQLOrtak.sqlDegeri(value);
+						sent.where.addAll([`(pro.cariKosulGrupBasi = '' OR pro.cariKosulGrupBasi <= ${kodClause})`, `(pro.cariKosulGrupSonu = '' OR ${kodClause} <= pro.cariKosulGrupSonu)`])
+					}
 				}
 			}
 			return new MQStm({ sent: sent, orderBy: ['oncelik', 'tarihBasi', 'kod', 'tarihSonu DESC'] })
@@ -133,7 +138,7 @@
 			const dbMgr = e.dbMgr ?? this.dbMgr, istenenKapsam = e.kapsam; if ($.isEmptyObject(istenenKapsam)) return null
 			const cariKod = istenenKapsam.cari; if (!cariKod) return null;
 			const cariKod2EkBilgi = this.cariKod2EkBilgi = this.cariKod2EkBilgi || {}; let rec = cariKod2EkBilgi[cariKod]; if (rec !== undefined) return rec
-			let sent = new MQSent({ from: `mst_Cari car`, where: [ { degerAta: cariKod, saha: `car.kod` } ], sahalar: [ `car.kod`, `car.tipKod`, `car.bolgeKod` ] });
+			let sent = new MQSent({ from: `mst_Cari car`, where: [ { degerAta: cariKod, saha: `car.kod` } ], sahalar: [ `car.kod`, `car.tipKod`, `car.bolgeKod`, 'car.kosulGrupKod' ] });
 			rec = await dbMgr.tekilExecuteSelect({ tx: e.tx, query: new MQStm({ sent }) }); cariKod2EkBilgi[cariKod] = rec;
 			return rec
 		}
@@ -151,7 +156,8 @@
 				return item
 			};
 			bsEkle({ key: 'tarih', converter: value => value ? asDate(value) : value });
-			bsEkle({ key: 'cari' }); bsEkle({ key: 'cariTip' }); bsEkle({ key: 'cariBolge' }); bsEkle({ key: 'plasiyer' })
+			bsEkle({ key: 'cari' }); bsEkle({ key: 'cariTip' }); bsEkle({ key: 'cariBolge' });
+			bsEkle({ key: 'cariKosulGrup' }); bsEkle({ key: 'plasiyer' })
 		}
 		async uygunmu(e) {
 			e = $.extend({}, e); let cariKod = e.cari, kapsam = this.kapsam || {}; const {dbMgr, detayliMusterimi} = this;
