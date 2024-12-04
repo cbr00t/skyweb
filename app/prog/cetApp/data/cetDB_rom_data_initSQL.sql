@@ -574,7 +574,7 @@ CREATE TABLE IF NOT EXISTS mst_Promosyon (
 	cariSonu					TEXT NOT NULL DEFAULT '',
 	plasiyerBasi				TEXT NOT NULL DEFAULT '',
 	plasiyerSonu				TEXT NOT NULL DEFAULT '',
-	
+	hIskOran					REAL NOT NULL DEFAULT 0,
 	voGrup1Kod					TEXT NOT NULL DEFAULT '',
 	voGrup1Miktar				REAL NOT NULL DEFAULT 0,
 	voGrup2Varmi				INTEGER NOT NULL DEFAULT 0,	
@@ -589,8 +589,16 @@ CREATE TABLE IF NOT EXISTS mst_Promosyon (
 	voGrup5Varmi				INTEGER NOT NULL DEFAULT 0,	
 	voGrup5Kod					TEXT NOT NULL DEFAULT '',
 	voGrup5Miktar				REAL NOT NULL DEFAULT 0,
-	hIskOran					REAL NOT NULL DEFAULT 0,
-
+	voGrup6Kod					TEXT NOT NULL DEFAULT '',
+	voGrup6Miktar				REAL NOT NULL DEFAULT 0,
+	voGrup7Kod					TEXT NOT NULL DEFAULT '',
+	voGrup7Miktar				REAL NOT NULL DEFAULT 0,
+	voGrup8Kod					TEXT NOT NULL DEFAULT '',
+	voGrup8Miktar				REAL NOT NULL DEFAULT 0,
+	voGrup9Kod					TEXT NOT NULL DEFAULT '',
+	voGrup9Miktar				REAL NOT NULL DEFAULT 0,
+	voGrup10Kod					TEXT NOT NULL DEFAULT '',
+	voGrup10Miktar				REAL NOT NULL DEFAULT 0,
 	PRIMARY KEY (proTip, kod)
 );
 CREATE INDEX IF NOT EXISTS idx_mstPromosyon2TarihVeCari ON mst_Promosyon (tarihBasi, tarihSonu, cariBasi, cariSonu);

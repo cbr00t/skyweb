@@ -100,7 +100,7 @@
 		get secimeEsasHedefGrupKod() { return this.hGrupKod }	/* hedef grup esas alinir */
 	};
 	window.CETPromosyon_OGRP1 = class extends window.CETPromosyon {
-		static get proTip() { return 'OGRP1' } static get maxSayi() { return 5 }
+		static get proTip() { return 'OGRP1' } static get maxSayi() { return 10 }
 		constructor(e) {
 			e = e || {}; super(e); const {maxSayi} = this.class;
 			for (let i = 1; i <= maxSayi; i++) {

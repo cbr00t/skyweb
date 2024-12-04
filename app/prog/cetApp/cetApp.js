@@ -303,6 +303,21 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup6Kod')),
+					queries: [
+						`ALTER TABLE mst_Promosyon ADD voGrup6Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup6Miktar		REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup7Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup7Miktar		REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD 	voGrup8Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD 	voGrup8Miktar		REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD 	voGrup9Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD 	voGrup9Miktar		REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD 	voGrup10Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD  voGrup10Miktar		REAL NOT NULL DEFAULT 0`
+					]
+				}
+				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'tahsilatRowId')),
 					queries: [ `ALTER TABLE data_PIFFis ADD tahsilatRowId INTEGER` ]
 				},
@@ -319,8 +334,8 @@
 						`ALTER TABLE mst_Promosyon ADD voGrup5Kod		TEXT NOT NULL DEFAULT ''`,
 						`ALTER TABLE mst_Promosyon ADD voGrup5Miktar	REAL NOT NULL DEFAULT 0`
 					]
-				}
-				/*{
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasTables('mst_ProGrup2Stok')),
 					queries: [
 						`CREATE TABLE IF NOT EXISTS mst_ProGrup2Stok (
@@ -330,23 +345,6 @@
 							PRIMARY KEY (proGrupKod, stokKod)
 						)`
 					]
-				},
-				
-				{
-					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'proIskOran')),
-					queries: [`ALTER TABLE data_PIFStok ADD proIskOran	REAL NOT NULL DEFAULT 0`]
-				},
-				{
-					kosul: async e => !(await e.dbMgr.hasColumns('mst_BarkodReferans', 'beden')),
-					queries: [`ALTER TABLE mst_BarkodReferans ADD beden TEXT NOT NULL DEFAULT ''`]
-				},
-				{
-					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'planNo')),
-					queries: [`ALTER TABLE data_PIFFis ADD planNo INTEGER NOT NULL DEFAULT 0`]
-				},
-				{
-					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'karmaPaletNo')),
-					queries: [`ALTER TABLE data_PIFStok ADD karmaPaletNo INTEGER NOT NULL DEFAULT 0`]
 				}*/
 			]
 		}
