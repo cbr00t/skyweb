@@ -303,18 +303,28 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup6Varmi')),
+					queries: [
+						`ALTER TABLE mst_Promosyon ADD voGrup6Varmi			INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup7Varmi			INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup8Varmi			INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup9Varmi			INTEGER NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup10Varmi		INTEGER NOT NULL DEFAULT 0`
+					]
+				},
+				{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup6Kod')),
 					queries: [
 						`ALTER TABLE mst_Promosyon ADD voGrup6Kod			TEXT NOT NULL DEFAULT ''`,
 						`ALTER TABLE mst_Promosyon ADD voGrup6Miktar		REAL NOT NULL DEFAULT 0`,
 						`ALTER TABLE mst_Promosyon ADD voGrup7Kod			TEXT NOT NULL DEFAULT ''`,
 						`ALTER TABLE mst_Promosyon ADD voGrup7Miktar		REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD 	voGrup8Kod			TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD 	voGrup8Miktar		REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD 	voGrup9Kod			TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD 	voGrup9Miktar		REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD 	voGrup10Kod			TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD  voGrup10Miktar		REAL NOT NULL DEFAULT 0`
+						`ALTER TABLE mst_Promosyon ADD voGrup8Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup8Miktar		REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup9Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup9Miktar		REAL NOT NULL DEFAULT 0`,
+						`ALTER TABLE mst_Promosyon ADD voGrup10Kod			TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Promosyon ADD voGrup10Miktar		REAL NOT NULL DEFAULT 0`
 					]
 				}
 				/*{
