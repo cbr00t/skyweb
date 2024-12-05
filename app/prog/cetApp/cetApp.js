@@ -797,6 +797,16 @@
 				flag = this.param.dokumNettenmi;
 			return flag;
 		}
+		get dokumDataPrefix() { let value = this.ozelYetkiler?.dokumDataPrefix; if (value == null) { value = this.param.dokumDataPrefix } return value }
+		get dokumDataPostfix() { let value = this.ozelYetkiler?.dokumDataPostfix; if (value == null) { value = this.param.dokumDataPostfix } return value }
+		get darDokummu() { let flag = this.ozelYetkiler?.darDokum; if (flag == null) { flag = this.param.darDokummu } return flag }
+		get dokumZPLmi() { let flag = this.ozelYetkiler?.dokumZPL; if (flag == null) { flag = this.param.dokumZPLmi } return flag }
+		get dokumNettenmi() {
+			let flag = this.ozelYetkiler?.dokumNetten;
+			if (flag == null)
+				flag = this.param.dokumNettenmi;
+			return flag;
+		}
 		get depoSiparisKarsilamaZorunluHMRListe() {
 			let result = this.ozelYetkiler?.depoSiparisKarsilamaZorunluHMRListe;
 			if (result == null)

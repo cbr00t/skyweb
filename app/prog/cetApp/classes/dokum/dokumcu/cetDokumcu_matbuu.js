@@ -33,8 +33,7 @@
 		}
 
 		sayfaEkle(e) {
-			const matbuuForm = e.matbuuForm;
-			const matbuuFormBilgi = matbuuForm.formBilgi;
+			const {matbuuForm} = e, {formBilgi: matbuuFormBilgi} = matbuuForm;
 			let sayfa = new CETDokumSayfa({
 				maxX: matbuuFormBilgi.sayfaBoyutlari.x,
 				sinir: matbuuFormBilgi.surekliFormmu ? null : matbuuFormBilgi.sayfaBoyutlari.y

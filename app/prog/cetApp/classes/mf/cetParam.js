@@ -45,7 +45,7 @@
 			return [
 				'version', 'wsHostName', 'wsHostName2', 'varsayilanWSHostName', 'wsPort', 'skyWSURL', 'fiyatFra', 'uygunAyrimTipleri', 'subeKod', 'yerKod', 'ilkKM', 'sonKM', 'fisTip2SonSeri',
 				'ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi', 'bakiyeRiskGosterilmezmi', 'oncekiFislerGosterilmezmi', 'nakitUstLimit',
-				'dokumEkranami', 'dokumDeviceTip', 'dokumDeviceSP_baudRate', 'barkodDeviceTip', 'dokumTurkceHarfYontemKod', 'dokumEncoding', 'dokumDataPrefix', 'dokumDataPostfix', 'darDokummu',
+				'dokumEkranami', 'dokumDeviceTip', 'dokumDeviceSP_baudRate', 'barkodDeviceTip', 'dokumTurkceHarfYontemKod', 'dokumEncoding', 'dokumDataPrefix', 'dokumDataPostfix', 'darDokummu', 'dokumZPLmi',
 				'serbestModmu', 'gridAltMultiSelectFlag', 'brm2Fra', 'tip2Renk', 'tarihAralik', 'fisTarihDegistirilirmi', 'kmTakibiYapilirmi', 'ilkIrsaliyeDokumuZorunlumu', 'dokumNettenmi', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'isaretliBelgeKDVDurumu',
 				'bakiyeyeEtkilenirmi', 'irsaliyeBakiyeyiEtkilermi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'tahsilattaAcikHesapKullanilirmi', 'detaylardaFiyatDegistirilirmi', 'iskontoArttirilirmi',
 				'menuAdimKisitIDListe', 'fisAdimKisitIDListe', 'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'silerekBilgiAlYapilirmi',
@@ -116,7 +116,7 @@
 			[	'ilkKM', 'sonKM', 'satirIskOranSinir' ].forEach(key => {
 				let value = this[key]; if (/*value != null &&*/ typeof value != 'number') { this[key] = asFloat(value) || 0 }
 			});
-			[	'serbestModmu', 'gridAltMultiSelectFlag', 'dokumEkranami', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'darDokummu', 'dokumNettenmi', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis',
+			[	'serbestModmu', 'gridAltMultiSelectFlag', 'dokumEkranami', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'darDokummu', 'dokumZPLmi', 'dokumNettenmi', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis',
 				'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi' ,'silerekBilgiAlYapilirmi',
 				'alimNetFiyatGosterilirmi', 'musteriDegistirilirmi', 'bakiyeRiskGosterilmezmi', 'musteriRotaZorunlumu', 'ilkIrsaliyeDokumuZorunlumu', 'kmTakibiYapilirmi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'tahsilattaAcikHesapKullanilirmi',
 				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',

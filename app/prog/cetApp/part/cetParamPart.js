@@ -290,21 +290,13 @@
 				return rec.kod
 			});
 			ddDokumDataPostfix.val(param.dokumDataPostfix);
-			ddDokumDataPostfix.find(`input`).off(`focus`).on(`focus`, evt =>
-				evt.target.select());
-			let chkDarDokummu = subContent.find(`#chkDarDokummu`);
-			chkDarDokummu.prop('checked', param.darDokummu);
-			subContent.find(`#chkDarDokummu_label`)
-				.off('mouseup, touchend')
-				.on('mouseup, touchend', evt =>
-					chkDarDokummu.prop('checked', !chkDarDokummu.prop('checked')));
-			
-			let chkDokumEkranami = subContent.find(`#chkDokumEkranami`);
-			chkDokumEkranami.prop('checked', param.dokumEkranami);
-			subContent.find(`#chkDokumEkranami_label`)
-				.off('mouseup, touchend')
-				.on('mouseup, touchend', evt =>
-					chkDokumEkranami.prop('checked', !chkDokumEkranami.prop('checked')));
+			ddDokumDataPostfix.find(`input`).off(`focus`).on(`focus`, evt => evt.target.select());
+			let chkDarDokummu = subContent.find(`#chkDarDokummu`); chkDarDokummu.prop('checked', param.darDokummu);
+			subContent.find(`#chkDarDokummu_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkDarDokummu.prop('checked', !chkDarDokummu.prop('checked')));
+			let chkDokumZPLmi = subContent.find(`#chkDokumZPLmi`); chkDokumZPLmi.prop('checked', param.dokumZPLmi);
+			subContent.find(`#chkDokumZPLmi_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkDokumZPLmi.prop('checked', !chkDokumZPLmi.prop('checked')));
+			let chkDokumEkranami = subContent.find(`#chkDokumEkranami`);chkDokumEkranami.prop('checked', param.dokumEkranami);
+			subContent.find(`#chkDokumEkranami_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkDokumEkranami.prop('checked', !chkDokumEkranami.prop('checked')));
 			
 			let ddBarkodDevice = subContent.find(`#ddBarkodDevice`);
 			ddBarkodDevice.jqxDropDownList({
@@ -384,6 +376,7 @@
 				dokumDataPrefix: subContent.find(`#ddDokumDataPrefix`).jqxComboBox('input').val(),
 				dokumDataPostfix: subContent.find(`#ddDokumDataPostfix`).jqxComboBox('input').val(),
 				darDokummu: subContent.find('#chkDarDokummu').is(':checked'),
+				dokumZPLmi: subContent.find('#chkDokumZPLmi').is(':checked'),
 				dokumEkranami: subContent.find('#chkDokumEkranami').is(':checked'),
 				barkodDeviceTip: subContent.find('#ddBarkodDevice').val()
 			});

@@ -148,10 +148,10 @@
 						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 18) + 5, 1) : 1) || 1;
 						y = ozelDipPos.y || y; genislik = text.length
 					}
-					await sayfa.yazdir({ pos: { x, y }, genislik, value: text });
+					await sayfa.yazdir({ pos: { x, y }, genislik, value: text })
 				}
 			}
-			this.sayfaBitti({ sayfa });
+			this.sayfaBitti({ sayfa })
 		}
 		sayfaBitti(e) {
 			const sayfa = e.sayfa; if (!sayfa.sinir) { for (let i = 0; i < 5; i++) { sayfa.satirlar.push(new CETDokumSatir()) } }
