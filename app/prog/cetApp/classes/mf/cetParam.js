@@ -3,6 +3,7 @@
 		constructor(e) {
 			e = e || {}; super(e);
 			this.class.sabitAttrListe.forEach(key => this[key] = e[key] === undefined ? this[key] : e[key]);
+			this._defaultZPLSatirYukseklik = 30;
 			$.extend(this, {
 				version: this.version || this.class.version,
 				fisTip2SonSeri: this.fisTip2SonSeri || {},
@@ -13,6 +14,7 @@
 				dokumTurkceHarfYontemKod: (this.dokumTurkceHarfYontemKod == null ? '' : this.dokumTurkceHarfYontemKod),
 				dokumEncoding: this.dokumEncoding || this.class.defaultDokumEncoding,
 				dokumDeviceSP_baudRate: this.dokumDeviceSP_baudRate || 9600,
+				zplSatirYukseklik: this.zplSatirYukseklik || this._defaultZPLSatirYukseklik,
 				varsayilanWSHostName: this.varsayilanWSHostName || 'wsHostName',
 				brm2Fra: $.extend({
 					'': 0, AD: 0, ADET: 0,
@@ -54,7 +56,7 @@
 				'riskKontrolDurum', 'eIslemKullanilirmi', 'eIrsaliyeKullanilirmi', 'eBelgeAltSinir', 'sicakTeslimFisimi',
 				'depoSiparisRefKontrolEdilirmi', 'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi',
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
-				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
+				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi', 'zplSatirYukseklik',
 				'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe',
 				'nakliyeSekliKullanilmazmi', 'dovizKullanilirmi', 'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi',
 				'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime',

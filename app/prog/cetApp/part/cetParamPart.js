@@ -229,27 +229,21 @@
 			ddDokumTurkceHarfYontemi.val(dokumTurkceHarfYontemKod);
 			this.dokumTurkceHarfYontemiDegisti({ kod: dokumTurkceHarfYontemKod });
 
-			let txtDokumEncoding = subContent.find(`#dokumEncoding`)
-					.jqxInput({ theme: theme, width: isMiniDevice ? 240 : 320, height: false });
-			txtDokumEncoding.val(param.dokumEncoding);
-			txtDokumEncoding.off('focus').on('focus', evt =>
-				evt.currentTarget.select());
-
-			let txtDokumNushaSayi = subContent.find(`#dokumNushaSayi`);
-			txtDokumNushaSayi.val(param.dokumNushaSayi || null);
-			txtDokumNushaSayi.off('focus').on('focus', evt =>
-				evt.currentTarget.select());
+			let txtDokumEncoding = subContent.find(`#dokumEncoding`).jqxInput({ theme, width: isMiniDevice ? 240 : 320, height: false }); txtDokumEncoding.val(param.dokumEncoding);
+			txtDokumEncoding.off('focus').on('focus', evt => evt.currentTarget.select());
+			let txtDokumNushaSayi = subContent.find(`#dokumNushaSayi`); txtDokumNushaSayi.val(param.dokumNushaSayi || null);
+			txtDokumNushaSayi.off('focus').on('focus', evt => evt.currentTarget.select());
 			txtDokumNushaSayi.off('change').on('change', evt => {
-				const {currentTarget} = evt;
-				const min = asInteger(currentTarget.min);
-				const max = asInteger(currentTarget.max);
-				const val = asInteger(currentTarget.value);
-				if (val <= min)
-					currentTarget.value = min || null
-				else if (val > max)
-					currentTarget.value = max || null
+				const {currentTarget} = evt, min = asInteger(currentTarget.min), max = asInteger(currentTarget.max), val = asInteger(currentTarget.value);
+				if (val <= min) { currentTarget.value = min || null } else if (val > max) { currentTarget.value = max || null }
 			});
-			
+			let txtZplSatirYukseklik = subContent.find('#zplSatirYukseklik'); txtZplSatirYukseklik.val(param.zplSatirYukseklik || null);
+			txtZplSatirYukseklik.attr('placeholder', param._defaultZPLSatirYukseklik);
+			txtZplSatirYukseklik.off('focus').on('focus', evt => evt.currentTarget.select());
+			txtZplSatirYukseklik.off('change').on('change', evt => {
+				const {currentTarget} = evt, min = asInteger(currentTarget.min), max = asInteger(currentTarget.max), val = asInteger(currentTarget.value);
+				if (val <= min) { currentTarget.value = min || null } else if (val > max) { currentTarget.value = max || null }
+			});
 			let ddDokumDataPrefix = subContent.find(`#ddDokumDataPrefix`).jqxComboBox({
 				theme: theme, width: isMiniDevice ? 300 : 380, height: false,
 				valueMember: 'kod', displayMember: 'aciklama', multiSelect: false,
@@ -373,6 +367,7 @@
 				dokumTurkceHarfYontemKod: subContent.find('#ddDokumTurkceHarfYontemi').val(),
 				dokumEncoding: subContent.find('#dokumEncoding').val(),
 				dokumNushaSayi: asInteger(subContent.find('#dokumNushaSayi').val()),
+				zplSatirYukseklik: asInteger(subContent.find('#zplSatirYukseklik').val()),
 				dokumDataPrefix: subContent.find(`#ddDokumDataPrefix`).jqxComboBox('input').val(),
 				dokumDataPostfix: subContent.find(`#ddDokumDataPostfix`).jqxComboBox('input').val(),
 				darDokummu: subContent.find('#chkDarDokummu').is(':checked'),

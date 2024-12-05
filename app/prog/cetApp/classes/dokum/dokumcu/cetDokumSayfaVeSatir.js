@@ -27,7 +27,7 @@
 		async writeToDevice(e) {
 			let {debug: isDebug, stream: srm} = e, {satirlar, sinir} = this, {dokumZPLmi: zplmi} = sky.app;
 			let zpl_sayfaMaxY = zplmi ? Math.max(sinir, satirlar.length) - 1 : null;
-			if (zplmi) { srm.write(`^XA${CrLf}`) }
+			if (zplmi) { srm.write(`^XA${CrLf}^A0N`) }
 			if (zplmi && zpl_sayfaMaxY) { srm.write(`^LL${(2 + zpl_sayfaMaxY) * 30}${CrLf}`) }
 			for (let i = 0; i < satirlar.length; i++) {
 				if (isDebug) { srm.write(`|${(i + 1).toString().padStart(2, '0')}| `) }
@@ -54,7 +54,7 @@
 			for (let i = 0; i < size; i++) { chars[x - 1 + i] = value[i] }
 		}
 		async writeToDevice(e) {
-			let {dokumZPLmi: zplmi} = sky.app, {stream: srm} = e, {y, chars} = this;
+			let {dokumZPLmi: zplmi, zplSatirYukseklik} = sky.app, {stream: srm} = e, {y, chars} = this;
 			if ($.isEmptyObject(chars)) { if (!zplmi) { srm.write(` ${CrLf}`) } return }
 			let {dokumDevice} = e, x = 10, {harfDonusumDict} = dokumDevice || CETDokumDevice;
 			if (harfDonusumDict) {
@@ -65,7 +65,7 @@
 				}
 			}
 			let text = `${(chars.join('') || ' ').trimEnd()}${CrLf}`, isPOSCommand = CETDokumSayfa.isPOSCommand(text);
-			if (zplmi) { y = 10 + (y * 30); if (!isPOSCommand) { text = `^FO${x},${y}^FD${text.trimEnd()}^FS${CrLf}` } }
+			if (zplmi) { y = 10 + (y * zplSatirYukseklik); if (!isPOSCommand) { text = `^FO${x},${y}^FD${text.trimEnd()}^FS${CrLf}` } }
 			await srm.write(text)
 		}
 	}
