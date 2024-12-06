@@ -340,10 +340,8 @@
 			})
 		}
 		async dokumSahaDegeri(e) {
-			let value = await super.dokumSahaDegeri(e);
-			if (value == null) { return value }
-			const {saha} = e;
-			if (saha?.tip == 'bedel') { return bedelStr(value) + ' TL' }
+			let value = await super.dokumSahaDegeri(e); if (value == null) { return value }
+			const {fis, saha} = e; if (saha?.tip == 'bedel') { return `${bedelStr(value)} ${fis?.dvKod || 'TL'}` }
 			return value
 		}
 		async getDokumDegeriDict(e) {

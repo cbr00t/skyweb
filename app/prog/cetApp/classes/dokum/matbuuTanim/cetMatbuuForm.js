@@ -145,7 +145,7 @@
 					}
 					let x = saha.pos.x, y = otoInd, {genislik} = saha; if (attr == 'Dip') {
 						const ozelDipPos = this.dipPos || CPoint.empty, {bedelSaha} = e;
-						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 18) + 5, 1) : 1) || 1;
+						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 18) + 6, 1) : 1) || 1;
 						y = ozelDipPos.y || y; genislik = text.length
 					}
 					await sayfa.yazdir({ pos: { x, y }, genislik, value: text })
@@ -174,7 +174,7 @@
 		}
 		bedelSahaBul(e) {
 			const bedelSahaAttrSet = asSet(['bedel', 'brutBedel', 'netBedel']), sahaYapilari = e.gecerliSahaYapilari; let bedelSaha = null;
-			for (const [tip, attr2Saha] in Object.entries(sahaYapilari)) {
+			for (const [tip, attr2Saha] of Object.entries(sahaYapilari)) {
 				for (let attr in attr2Saha) {
 					const saha = attr2Saha[attr]; if (saha) { attr = saha.attr || attr }
 					if (bedelSahaAttrSet[attr]) { bedelSaha = attr2Saha[attr]; break }
