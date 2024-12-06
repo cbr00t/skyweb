@@ -35,7 +35,7 @@
 			e.matbuuForm = this; const {dokumcu} = e, {tip} = this, fis = e.fis = $.isFunction(e.fis) ? e.fis.call(this, e) : e.fis?.run ? e.fis.run(this, e) : e.fis;
 			if (!await this.class.matbuuFormDuzenleRuntime({ tip, fis, matbuuForm: this, dokumcu })) { return false }
 			const {formBilgi} = this; e.gecerliSahaYapilari = this.getGecerliSahaYapilari(e); const bedelSaha = e.bedelSaha = (formBilgi.bedelSaha || this.bedelSahaBul(e));
-			$.extend(e, { bedelEtiketUzunluk: formBilgi.bedelEtiketUzunluk || 12, bedelVeriUzunluk: formBilgi.bedelVeriUzunluk || bedelSaha?.genislik || 13 });
+			$.extend(e, { bedelEtiketUzunluk: formBilgi.bedelEtiketUzunluk || 21, bedelVeriUzunluk: formBilgi.bedelVeriUzunluk || bedelSaha?.genislik || 13});
 			await this.yeniSayfaOlustur(e); await this.yazdir_otomatikSahalar(e)
 		}
 		async yeniSayfaOlustur(e) {
@@ -72,7 +72,7 @@
 			return e.sayfa = sayfa
 		}
 		async yazdir_otomatikSahalar(e) {
-			const {fis, gecerliSahaYapilari} = e, {formBilgi} = this; let {sayfa} = e;
+			const {fis, gecerliSahaYapilari} = e, {formBilgi} = this; let {sayfa} = e, {dokumZPLmi: zplmi} = sky.app;
 			const {sayfaBoyutlari, otoYBasiSonu, tekDetaySatirSayisi, nakilYapilirmi, kolonBaslikGosterilirmi} = formBilgi;
 			let sahalar = gecerliSahaYapilari.detay; const detRelY2Sahalar = {};
 			for (const [attr, saha] of Object.entries(sahalar)) {
@@ -145,7 +145,8 @@
 					}
 					let x = saha.pos.x, y = otoInd, {genislik} = saha; if (attr == 'Dip') {
 						const ozelDipPos = this.dipPos || CPoint.empty, {bedelSaha} = e;
-						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 18) + 6, 1) : 1) || 1;
+						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 15) + 8, 1) : 1) || 1;
+						/*if (zplmi) { x += 12 }*/
 						y = ozelDipPos.y || y; genislik = text.length
 					}
 					await sayfa.yazdir({ pos: { x, y }, genislik, value: text })

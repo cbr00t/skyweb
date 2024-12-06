@@ -238,9 +238,16 @@
 				if (val <= min) { currentTarget.value = min || null } else if (val > max) { currentTarget.value = max || null }
 			});
 			let txtZplSatirYukseklik = subContent.find('#zplSatirYukseklik'); txtZplSatirYukseklik.val(param.zplSatirYukseklik || null);
-			txtZplSatirYukseklik.attr('placeholder', param._defaultZPLSatirYukseklik);
+			txtZplSatirYukseklik.attr('placeholder', CETParam._defaultZPLSatirYukseklik);
 			txtZplSatirYukseklik.off('focus').on('focus', evt => evt.currentTarget.select());
 			txtZplSatirYukseklik.off('change').on('change', evt => {
+				const {currentTarget} = evt, min = asInteger(currentTarget.min), max = asInteger(currentTarget.max), val = asInteger(currentTarget.value);
+				if (val <= min) { currentTarget.value = min || null } else if (val > max) { currentTarget.value = max || null }
+			});
+			let txtZplFontSize = subContent.find('#zplFontSize'); txtZplFontSize.val(param.zplFontSize || null);
+			txtZplFontSize.attr('placeholder', CETParam._defaultZPLFontSize);
+			txtZplFontSize.off('focus').on('focus', evt => evt.currentTarget.select());
+			txtZplFontSize.off('change').on('change', evt => {
 				const {currentTarget} = evt, min = asInteger(currentTarget.min), max = asInteger(currentTarget.max), val = asInteger(currentTarget.value);
 				if (val <= min) { currentTarget.value = min || null } else if (val > max) { currentTarget.value = max || null }
 			});
@@ -368,6 +375,7 @@
 				dokumEncoding: subContent.find('#dokumEncoding').val(),
 				dokumNushaSayi: asInteger(subContent.find('#dokumNushaSayi').val()),
 				zplSatirYukseklik: asInteger(subContent.find('#zplSatirYukseklik').val()),
+				zplFontSize: asInteger(subContent.find('#zplFontSize').val()),
 				dokumDataPrefix: subContent.find(`#ddDokumDataPrefix`).jqxComboBox('input').val(),
 				dokumDataPostfix: subContent.find(`#ddDokumDataPostfix`).jqxComboBox('input').val(),
 				darDokummu: subContent.find('#chkDarDokummu').is(':checked'),

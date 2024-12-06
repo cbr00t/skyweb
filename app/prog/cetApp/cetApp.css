@@ -1829,7 +1829,9 @@ body.cetApp {
 	margin-top: -13px;
 	margin-bottom: 5px;
 }
-.part.cetApp.cetParam #dokumNushaSayi, .part.cetApp.cetParam #zplSatirYukseklik { width: 50px; text-align: right; margin-left: 30px }
+.part.cetApp.cetParam #dokumNushaSayi,
+	.part.cetApp.cetParam #zplSatirYukseklik,
+	.part.cetApp.cetParam #zplFontSize { width: 50px !important; text-align: right; margin-left: 30px }
 .part.cetApp.cetParam .jqx-dropdownlist .jqx-dropdownlist-content,
 .part.cetApp.cetParam .jqx-combobox .jqx-dropdownlist-content {
 	margin-top: 7px !important;

@@ -1069,7 +1069,7 @@
 			return this.dokumDipSatirlar_normal(e)
 		}
 		dokumDipSatirlar_normal(e) {
-			const {fis} = e, etiketSize = e.bedelEtiketUzunluk + 2, veriSize = e.bedelVeriUzunluk;
+			const {fis} = e, etiketSize = e.bedelEtiketUzunluk + 1, veriSize = e.bedelVeriUzunluk;
 			const tekCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '-'), ciftCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '=');
 			this.gerekirseDipHesapla(); const {detaylar, icmal} = this, {cokluKdvmi} = icmal, {brut} = icmal;
 			let yuruyenBakiye = brut,  toplamSatirIskBedel = 0;
@@ -1098,7 +1098,7 @@
 			}
 			if (yuvarlamaFarki) { yuruyenBakiye += yuvarlamaFarki; satirlar.push('HESAP. KDV'.padStart(etiketSize) +': ' + bedelStr(yuvarlamaFarki).padStart(veriSize)) }
 			satirlar.push(ciftCizgi);
-			satirlar.push('SONUÇ'.padStart(etiketSize) + ': ' + bedelStr(icmal.sonuc).padStart(veriSize) + ` ${fis?.dvKod || 'TL'}`);
+			satirlar.push('SONUÇ'.padStart(etiketSize) + ': ' + bedelStr(icmal.sonuc).padStart(veriSize) /*+ ` ${fis?.dvKod || 'TL'}`*/);
 			return satirlar
 		}
 		dokumDipSatirlar_ozelEIslem(e) {
