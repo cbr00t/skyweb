@@ -124,8 +124,7 @@
 			if (matbuuForm)
 				return matbuuForm;
 
-			const maxX = 41, tekilPosX = 2, otoYBas = 18;
-			const otoYSon = otoYBas + 4;
+			const maxX = 41, tekilPosX = 2, otoYBas = 20, otoYSon = otoYBas + 4;
 			matbuuForm = new CETMatbuuForm({
 				tip: 'Tahsilat',
 				dipPos: { x: 8 },
@@ -154,8 +153,12 @@
 						{ attr: 'tarih', pos: { x: 28, y: 4 }, genislik: 13, alignment: 'r' },
 						{ attr: 'saat', pos: { x: 28, y: 5 }, genislik: 13, alignment: 'r' },
 						{ attr: 'fisNox', pos: { x: 28, y: 6 }, genislik: 13, alignment: 'r' },
-						{ attr: 'isyeriUnvanYoreIlVeAdres', pos: { x: tekilPosX, y: 7 }, genislik: maxX - tekilPosX },
-						{ attr: 'mustUnvanYoreIlVeAdres', pos: { x: tekilPosX, y: 12 }, genislik: maxX - tekilPosX }
+						{ attr: 'isyeriUnvan', pos: { x: tekilPosX, y: 7 }, genislik: maxX - tekilPosX },
+						{ attr: 'isyeriAdres', pos: { x: tekilPosX, y: 8 }, genislik: maxX - tekilPosX },
+						{ attr: 'isyeriYoreVeIl', pos: { x: tekilPosX, y: 9 }, genislik: maxX - tekilPosX },
+						{ attr: 'mustUnvan', pos: { x: tekilPosX, y: 11 }, genislik: maxX - tekilPosX },
+						{ attr: 'mustAdres', pos: { x: tekilPosX, y: 12 }, genislik: maxX - tekilPosX },
+						{ attr: 'mustYoreVeIl', pos: { x: tekilPosX, y: 13 }, genislik: maxX - tekilPosX }
 					],
 					Detay: [
 						{ attr: 'tahSekliNo', pos: { x: 1, y: 1 }, genislik: 2, alignment: 'r' },
@@ -164,50 +167,30 @@
 					]
 				}
 			});
-
-			return matbuuForm;
+			return matbuuForm
 		}
-		async getDokumDetaylar(e) {
-			const detaylar = await super.getDokumDetaylar(e) || [];
-			return detaylar.filter(det => !!det.bedel)
-		}
+		async getDokumDetaylar(e) { const detaylar = await super.getDokumDetaylar(e) || []; return detaylar.filter(det => !!det.bedel) }
 		async getDokumDegeriDict(e) {
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
 				fisTipText: '** TAHSİLAT MAKBUZU **',
-				async tahSekliAdi(e) {
-					return this.tahSekliAdi || await this.dokum_getTahSekliAdi(e)
-				},
-				Yalniz(e) {
-					return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : ''
-				},
+				async tahSekliAdi(e) { return this.tahSekliAdi || await this.dokum_getTahSekliAdi(e) },
+				Yalniz(e) { return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : '' },
 				async Dip(e) {
 					const {bakiyeRiskGosterilmezmi} = sky.app;
-					const etiketSize = 15;
-					const veriSize = 13;
+					const etiketSize = 15, veriSize = 13;
 					const tekCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize + 3, '-');
 					const ciftCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize + 3, '=');
 					await this.gerekirseDipHesapla();
-
-					const mustKod = await this.getRiskCariKod(e);
-					if (!mustKod)
-						return null;
-
+					const mustKod = await this.getRiskCariKod(e); if (!mustKod) { return null }
 					let bakiye, oncekiBakiye;
 					if (!bakiyeRiskGosterilmezmi) {
-						let sent = new MQSent({
-							from: `mst_Cari`,
-							where: [{ degerAta: mustKod, saha: `kod` }],
-							sahalar: [`bakiye`]
-						});
-						let stm = new MQStm({ sent: sent });
-						let rec = await this.dbMgr.tekilExecuteSelect({ query: stm });
+						let sent = new MQSent({ from: `mst_Cari`, where: [{ degerAta: mustKod, saha: `kod` }], sahalar: [`bakiye`] });
+						let stm = new MQStm({ sent }), rec = await this.dbMgr.tekilExecuteSelect({ query: stm });
 						if (rec) {
 							bakiye = bedel(rec.bakiye);
-							const {hesaplanmisBakiyeArtisi} = this;
-							oncekiBakiye = hesaplanmisBakiyeArtisi == null ? null : bedel(bakiye - hesaplanmisBakiyeArtisi);
+							const {hesaplanmisBakiyeArtisi} = this; oncekiBakiye = hesaplanmisBakiyeArtisi == null ? null : bedel(bakiye - hesaplanmisBakiyeArtisi)
 						}
 					}
-					
 					const satirlar = [];
 					satirlar.push(ciftCizgi);
 					if (oncekiBakiye != null) {
@@ -236,30 +219,16 @@
 		}
 
 		async dokum_getTahSekliRec(e) {
-			const {dokumTemps} = sky.app;
-			const tahSekli2DokumTemps = dokumTemps.tahSekli2DokumTemps = dokumTemps.tahSekli2DokumTemps || {};
-			const {tahSekliNo} = this;
-			if (!tahSekliNo)
-				return null;
-			
+			const {dokumTemps} = sky.app, tahSekli2DokumTemps = dokumTemps.tahSekli2DokumTemps = dokumTemps.tahSekli2DokumTemps || {};
+			const {tahSekliNo} = this; if (!tahSekliNo) { return null }
 			const tahSekliIcinDokumTemps = tahSekli2DokumTemps[mustKod] = tahSekli2DokumTemps[mustKod] || {}
 			let rec = tahSekliIcinDokumTemps.tahSekliRec;
 			if (rec == null) {
-				let sent = new MQSent({
-					from: 'mst_TahsilSekli',
-					sahalar: [
-						'aciklama'
-					]
-				});
-				sent.where.degerAta(tahSekliNo, 'kodNo');
+				let sent = new MQSent({ from: 'mst_TahsilSekli', sahalar: ['aciklama'] }); sent.where.degerAta(tahSekliNo, 'kodNo');
 				rec = tahSekliIcinDokumTemps.tahSekliRec = await this.dbMgr.tekilDegerExecuteSelect(sent);
 			}
-
-			return rec;
+			return rec
 		}
-		async dokum_getTahSekliAdi(e) {
-			const rec = await this.dokum_getTahSekliRec(e) || {};
-			return rec.aciklama;
-		}
+		async dokum_getTahSekliAdi(e) { const rec = await this.dokum_getTahSekliRec(e) || {}; return rec.aciklama }
 	};
 })()
