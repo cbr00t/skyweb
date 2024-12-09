@@ -1,6 +1,6 @@
 (function() {
 	window.CETParam = class extends window.MQTekil {
-		static { this._defaultZPLSatirYukseklik = 18; this._defaultZPLFontSize = 9 }
+		static { this._defaultZPLSatirYukseklik = 18; this._defaultZPLFontSize = 9; this._defaultZPLFontKod = 'A' }
 		constructor(e) {
 			e = e || {}; super(e); this.class.sabitAttrListe.forEach(key => this[key] = e[key] === undefined ? this[key] : e[key]);
 			$.extend(this, {
@@ -14,7 +14,7 @@
 				dokumEncoding: this.dokumEncoding || this.class.defaultDokumEncoding,
 				dokumDeviceSP_baudRate: this.dokumDeviceSP_baudRate || 9600,
 				zplSatirYukseklik: this.zplSatirYukseklik || null,
-				zplFontSize: this.zplFontSize || null,
+				zplFontSize: this.zplFontSize || null, zplFontKod: this.zplFontKod || null,
 				varsayilanWSHostName: this.varsayilanWSHostName || 'wsHostName',
 				brm2Fra: $.extend({
 					'': 0, AD: 0, ADET: 0,
@@ -56,11 +56,11 @@
 				'riskKontrolDurum', 'eIslemKullanilirmi', 'eIrsaliyeKullanilirmi', 'eBelgeAltSinir', 'sicakTeslimFisimi',
 				'depoSiparisRefKontrolEdilirmi', 'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi',
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
-				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi', 'zplSatirYukseklik', 'zplFontSize',
-				'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe',
-				'nakliyeSekliKullanilmazmi', 'dovizKullanilirmi', 'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi',
-				'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime',
-				'ekOzellikKullanim', 'tip2EkOzellikYapi', 'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings'
+				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
+				'zplSatirYukseklik', 'zplFontSize', 'zplFontKod', 'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi',
+				'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe', 'nakliyeSekliKullanilmazmi', 'dovizKullanilirmi', 'resimBaseURL',
+				'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi', 'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime', 'ekOzellikKullanim', 'tip2EkOzellikYapi',
+				'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings'
 			]
 		}
 		static get version() { return 2 }

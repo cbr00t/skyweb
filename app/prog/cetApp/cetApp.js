@@ -803,6 +803,7 @@
 		get dokumZPLmi() { let flag = this.ozelYetkiler?.dokumZPL; if (flag == null) { flag = this.param.dokumZPLmi } return flag }
 		get zplSatirYukseklik() { let value = this.ozelYetkiler?.zplSatirYukseklik; if (value == null) { value = this.param.zplSatirYukseklik || CETParam._defaultZPLSatirYukseklik } return value }
 		get zplFontSize() { let value = this.ozelYetkiler?.zplFontSize; if (value == null) { value = this.param.zplFontSize || CETParam._defaultZPLFontSize } return value }
+		get zplFontKod() { let value = this.ozelYetkiler?.zplFontKod; if (value == null) { value = this.param.zplFontKod || CETParam._defaultZPLFontKod } return value }
 		get dokumNettenmi() {
 			let flag = this.ozelYetkiler?.dokumNetten;
 			if (flag == null)

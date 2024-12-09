@@ -251,6 +251,13 @@
 				const {currentTarget} = evt, min = asInteger(currentTarget.min), max = asInteger(currentTarget.max), val = asInteger(currentTarget.value);
 				if (val <= min) { currentTarget.value = min || null } else if (val > max) { currentTarget.value = max || null }
 			});
+			let txtZplFontKod = subContent.find('#zplFontKod'); txtZplFontKod.val(param.zplFontKod || null);
+			txtZplFontKod.attr('placeholder', CETParam._defaultZPLFontKod);
+			txtZplFontKod.off('focus').on('focus', evt => evt.currentTarget.select());
+			txtZplFontKod.off('change').on('change', evt => {
+				const {currentTarget} = evt, _val = currentTarget.value, val = _val?.trim()?.toUpperCase();
+				if (val != _val) { currentTarget.value = val }
+			});
 			let ddDokumDataPrefix = subContent.find(`#ddDokumDataPrefix`).jqxComboBox({
 				theme: theme, width: isMiniDevice ? 300 : 380, height: false,
 				valueMember: 'kod', displayMember: 'aciklama', multiSelect: false,
@@ -376,6 +383,7 @@
 				dokumNushaSayi: asInteger(subContent.find('#dokumNushaSayi').val()),
 				zplSatirYukseklik: asInteger(subContent.find('#zplSatirYukseklik').val()),
 				zplFontSize: asInteger(subContent.find('#zplFontSize').val()),
+				zplFontKod: subContent.find('#zplFontKod').val(),
 				dokumDataPrefix: subContent.find(`#ddDokumDataPrefix`).jqxComboBox('input').val(),
 				dokumDataPostfix: subContent.find(`#ddDokumDataPostfix`).jqxComboBox('input').val(),
 				darDokummu: subContent.find('#chkDarDokummu').is(':checked'),

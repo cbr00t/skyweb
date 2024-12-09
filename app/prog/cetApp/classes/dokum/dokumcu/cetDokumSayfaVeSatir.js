@@ -54,7 +54,7 @@
 			for (let i = 0; i < size; i++) { chars[x - 1 + i] = value[i] }
 		}
 		async writeToDevice(e) {
-			let {dokumZPLmi: zplmi, zplSatirYukseklik, zplFontSize} = sky.app, {stream: srm} = e, {y, chars} = this;
+			let {dokumZPLmi: zplmi, zplSatirYukseklik, zplFontSize, zplFontKod} = sky.app, {stream: srm} = e, {y, chars} = this;
 			if ($.isEmptyObject(chars)) { if (!zplmi) { srm.write(` ${CrLf}`) } return }
 			let {dokumDevice} = e, x = 10, {harfDonusumDict} = dokumDevice || CETDokumDevice;
 			if (harfDonusumDict) {
@@ -66,7 +66,7 @@
 			}
 			let text = `${(chars.join('') || ' ').trimEnd()}${CrLf}`, isPOSCommand = CETDokumSayfa.isPOSCommand(text);
 			if (zplmi) {
-				y = 10 + (y * zplSatirYukseklik); if (!isPOSCommand) { text = `^FO${x},${y}^ABN,${zplFontSize},${zplFontSize}^FD${text.trimEnd()}^FS${CrLf}` }
+				y = 10 + (y * zplSatirYukseklik); if (!isPOSCommand) { text = `^FO${x},${y}^A${zplFontKod}N,${zplFontSize},${zplFontSize}^FD${text.trimEnd()}^FS${CrLf}` }
 				/* if (!isPOSCommand) { text = `^FO${x},${y}^A@N,1,1,FONT001^FD${text.trimEnd()}^FS${CrLf}` } */
 				/*if (!isPOSCommand) { text = text.replaceAll(' ', '.') } */ /* if (!isPOSCommand) { text = text.replaceAll(' ', '\u2003') } */
 			}

@@ -1831,7 +1831,8 @@ body.cetApp {
 }
 .part.cetApp.cetParam #dokumNushaSayi,
 	.part.cetApp.cetParam #zplSatirYukseklik,
-	.part.cetApp.cetParam #zplFontSize { width: 50px !important; text-align: right; margin-left: 30px }
+	.part.cetApp.cetParam #zplFontSize,
+	.part.cetApp.cetParam #zplFontKod { width: 50px !important; text-align: right; margin-left: 30px }
 .part.cetApp.cetParam .jqx-dropdownlist .jqx-dropdownlist-content,
 .part.cetApp.cetParam .jqx-combobox .jqx-dropdownlist-content {
 	margin-top: 7px !important;
