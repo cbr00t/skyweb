@@ -241,7 +241,7 @@
 								kaydederkenYazdirFlag: sender.kaydederkenYazdirFlag, kaydederkenAktarFlag: sender.kaydederkenAktarFlag
 							});
 							await fis.geciciFisleriTemizle({ tx: e.tx }); p.resolve(_e);
-							setTimeout(_e => this.kaydetSonrasi($.extend({}, e, { result: _e, basTS: basTS, mevcutKonumBilgi })), 1, _e)
+							setTimeout(_e => this.kaydetSonrasi($.extend({}, e, { result: _e, basTS: basTS, mevcutKonumBilgi })), 10, _e)
 						},
 						geriCallback: async e => {
 							fisGirisIslemiBittimi = true;
@@ -318,51 +318,23 @@
 		}
 
 		async kaydetSonrasi(e) {
-			const {app, layout, divListe, islemTuslariPart, ozelIslemTuslariPart} = this;
-			const {param} = app;
-			const {result} = e;
-			const fis = result ? result.fis : null;
-			if (!(result && fis) || (result.isCancelled || result.isError))
-				return false;
-
-			const {mustKod} = fis;
-			if (mustKod) {
-				const {basTS} = e;
-				const sonTS = e.sonTS = now();
-				const mustKod2Bilgi = param.mustKod2Bilgi = param.mustKod2Bilgi || {};
+			const {app, layout, divListe, islemTuslariPart, ozelIslemTuslariPart} = this, {param} = app;
+			const {result} = e, fis = result?.fis;
+			if (!(result && fis) || (result.isCancelled || result.isError)) { return false }
+			const {mustKod} = fis; if (mustKod) {
+				const {basTS} = e, sonTS = e.sonTS = now(), mustKod2Bilgi = param.mustKod2Bilgi = param.mustKod2Bilgi || {};
 				const rec = mustKod2Bilgi[mustKod] = mustKod2Bilgi[mustKod] || {};
-				$.extend(rec, {
-					ilkTS: rec.ilkTS || dateTimeToString(basTS),
-					sonTS: dateTimeToString(sonTS)
-				});
+				$.extend(rec, { ilkTS: rec.ilkTS || dateTimeToString(basTS), sonTS: dateTimeToString(sonTS) });
 				// .. aslında konumBilgi param yüklemede alınır ve webde fiş giriş öncesi takibi yapılır ..
-				param.kaydet();
+				param.kaydet()
 			}
-
-			const parentMenu = ozelIslemTuslariPart.parentMenu;
-			const {kaydederkenAktarFlag, kaydederkenYazdirFlag} = result;
-			
-			let promises = [];
-			let yazdirildimi = false;
-			if (kaydederkenAktarFlag)
-				promises.push(this.merkezeBilgiGonder({ fis: fis }));
-			if (kaydederkenYazdirFlag) {
-				await this.yazdir({ fis: fis });
-				yazdirildimi = true;
-			}
-			try {
-				if (!$.isEmptyObject(promises))
-					await Promise.all(promises);
-			}
-			catch (ex) {
-				defFailBlockBasit(ex, 'error')
-			}
-			
-			setTimeout(() => { this.tazele() }, yazdirildimi ? 500 : 200);
-			setTimeout(() => { this.onResize() }, yazdirildimi ? 1500 : 500);
+			const parentMenu = ozelIslemTuslariPart.parentMenu, {kaydederkenAktarFlag, kaydederkenYazdirFlag} = result; let promises = [], yazdirildimi = false;
+			if (kaydederkenAktarFlag) { promises.push(this.merkezeBilgiGonder({ fis })) }
+			if (kaydederkenYazdirFlag) { await this.yazdir({ fis }); yazdirildimi = true; }
+			try { if (!$.isEmptyObject(promises)) { await Promise.all(promises) } } catch (ex) { defFailBlockBasit(ex, 'error') }
+			setTimeout(() => { this.tazele() }, yazdirildimi ? 500 : 200); setTimeout(() => { this.onResize() }, yazdirildimi ? 1500 : 500);
 			return true;
 		}
-
 		fisIslemTipiSec() {
 			return new $.Deferred(p => {
 				new CETFisGirisIslemSecimPart({

@@ -1350,8 +1350,8 @@
 	window.CETFaturaFis = class extends window.CETSevkiyatFis {
 		static get pifTipi() { return 'F' } static get faturami() { return true }
 		get matbuuFormTip() {
-			const {app} = sky;
-			if (app.eIslemKullanilirmi && this.eIslemTip) return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem';
+			const {app} = sky, {yildizlimi} = this;
+			if (!yildizlimi && app.eIslemKullanilirmi && this.eIslemTip) { return app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem' }
 			return 'Fatura'
 		}
 		async eIslemTipDegeriFor(e) {
