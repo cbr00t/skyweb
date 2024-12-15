@@ -471,9 +471,9 @@
 		dipOlustur(e) { super.dipOlustur(e); return this.icmal = this.class.icmalSinif.fromFis({ fis: this }) }
 		async promosyonHesapla(e) {
 			await this.dipHesapla(e); const {sonucBedel} = this;
-			const tavsiyeProKod2Stok = {}, shKod2Bilgi = {}, grupKod2StokSet = {}, orjDetaylar = this.detaylar, detaylar = orjDetaylar.map(det => det.deepCopy());
-			let yDetaylar = []; /* normal satırlar ve bulunacak promosyonlar */
-			for (const det of detaylar) {
+			const tavsiyeProKod2Stok = {}, shKod2Bilgi = {}, grupKod2StokSet = {};
+			const {detaylar: orjDetaylar} = this, detaylar = orjDetaylar.map(det => { let yDet = det.deepCopy(); yDet.proIskOran = 0; return yDet });
+			let yDetaylar = []; /* normal satırlar ve bulunacak promosyonlar */ for (const det of detaylar) {
 				const {shKod} = det;
 				if (det.class.promosyonmu) { const proKod = det.promoKod; tavsiyeProKod2Stok[proKod] = shKod }
 				else {

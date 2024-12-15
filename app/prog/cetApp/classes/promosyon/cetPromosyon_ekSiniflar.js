@@ -141,11 +141,12 @@
 						tumUygunStokKodSet[shKod] = true; kaynakMiktar += hesapBilgi.topMiktar }
 				}
 				const hedefMiktar = this[`voGrup${i}Miktar`]; if (!hedefMiktar) { continue }
-				if (!kaynakMiktar || kaynakMiktar < hedefMiktar) { return null }
+				if (!kaynakMiktar || kaynakMiktar < hedefMiktar) {
+					for (const shKod in tumUygunStokKodSet) { for (const det of shKod2Bilgi[shKod]?.detaylar) { if (det.proIskOran) { det.proIskOran = 0 } } }
+					return null
+				}
 			}
-			for (const shKod in tumUygunStokKodSet) {
-				for (const det of shKod2Bilgi[shKod]?.detaylar) { if (!det.proIskOran) { det.proIskOran = hIskOran } }
-			}
+			for (const shKod in tumUygunStokKodSet) { for (const det of shKod2Bilgi[shKod]?.detaylar) { if (!det.proIskOran) { det.proIskOran = hIskOran } } }
 			return { uygulananStoklar: Object.keys(tumUygunStokKodSet) }
 		}
 	};
