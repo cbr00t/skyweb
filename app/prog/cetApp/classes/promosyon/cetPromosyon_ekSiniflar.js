@@ -143,7 +143,9 @@
 				const hedefMiktar = this[`voGrup${i}Miktar`]; if (!hedefMiktar) { continue }
 				if (!kaynakMiktar || kaynakMiktar < hedefMiktar) { return null }
 			}
-			for (const shKod in tumUygunStokKodSet) { for (const det of shKod2Bilgi[shKod]?.detaylar) { det.proIskOran = hIskOran } }
+			for (const shKod in tumUygunStokKodSet) {
+				for (const det of shKod2Bilgi[shKod]?.detaylar) { if (!det.proIskOran) { det.proIskOran = hIskOran } }
+			}
 			return { uygulananStoklar: Object.keys(tumUygunStokKodSet) }
 		}
 	};

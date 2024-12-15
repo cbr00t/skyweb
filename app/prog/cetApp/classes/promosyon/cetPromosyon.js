@@ -184,13 +184,10 @@
 			const {shKod2Bilgi} = e; let uygulananStoklar = result?.uygulananStoklar;
 			if (typeof uygulananStoklar == 'object' && !$.isArray(uygulananStoklar)) { uygulananStoklar = Object.keys(uygulananStoklar) }
 			if (uygulananStoklar) {
-				if (this.hMFVarsaSatirIskKapatmi) {
-					for (let shKod of uygulananStoklar) {
-						const bilgi = shKod2Bilgi[shKod] || {}; let _detaylar = bilgi.detaylar;
-						if (_detaylar) {
-							if (!$.isArray(_detaylar)) { _detaylar = bilgi.detaylar = Object.keys(_detaylar) }
-							for (const det of _detaylar) { det.iskontoKampanyaReset() }
-						}
+				const {hMFVarsaSatirIskKapatmi} = this; for (let shKod of uygulananStoklar) {
+					const bilgi = shKod2Bilgi[shKod] || {}; let {detaylar: _detaylar} = bilgi; if (_detaylar) {
+						if (!$.isArray(_detaylar)) { _detaylar = bilgi.detaylar = Object.keys(_detaylar) }
+						for (const det of _detaylar) { if (hMFVarsaSatirIskKapatmi) { det.iskontoKampanyaReset() } }
 					}
 				}
 				const {proTip} = this.class; for (const shKod of uygulananStoklar) {
