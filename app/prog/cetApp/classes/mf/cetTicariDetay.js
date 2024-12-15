@@ -264,7 +264,6 @@
 				kosulTip = 'SN'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
 				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe }, _e));
 				if (rec) { let value = rec.iskSinir; if (value) { this.iskSinir = value; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } } }
-				
 				kosulTip = 'KD'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
 				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe: kosulKodListe }, _e));
 				if (rec) {

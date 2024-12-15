@@ -472,9 +472,9 @@
 		async promosyonHesapla(e) {
 			await this.dipHesapla(e); const {sonucBedel} = this;
 			const tavsiyeProKod2Stok = {}, shKod2Bilgi = {}, grupKod2StokSet = {};
-			const {detaylar: orjDetaylar} = this, detaylar = orjDetaylar.map(det => { let yDet = det.deepCopy(); yDet.proIskOran = 0; return yDet });
+			const {detaylar: orjDetaylar} = this, detaylar = orjDetaylar.map(det => det.deepCopy());
 			let yDetaylar = []; /* normal satırlar ve bulunacak promosyonlar */ for (const det of detaylar) {
-				const {shKod} = det;
+				const {shKod} = det; $.extend(det, { proIskOran: 0, ozelIskontoVarmi: false }); await det.detayEkIslemler(e);
 				if (det.class.promosyonmu) { const proKod = det.promoKod; tavsiyeProKod2Stok[proKod] = shKod }
 				else {
 					yDetaylar.push(det); if (det.promosyonYapilmazmi) { continue }
