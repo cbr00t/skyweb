@@ -303,6 +303,10 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'oncelik')),
+					queries: [`ALTER TABLE mst_Promosyon ADD oncelik	INTEGER NOT NULL DEFAULT 0`]
+				}
+				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'cariKosulGrupBasi')),
 					queries: [
 						`ALTER TABLE mst_Promosyon ADD cariKosulGrupBasi	TEXT NOT NULL DEFAULT ''`,
@@ -332,35 +336,6 @@
 						`ALTER TABLE mst_Promosyon ADD voGrup9Miktar		REAL NOT NULL DEFAULT 0`,
 						`ALTER TABLE mst_Promosyon ADD voGrup10Kod			TEXT NOT NULL DEFAULT ''`,
 						`ALTER TABLE mst_Promosyon ADD voGrup10Miktar		REAL NOT NULL DEFAULT 0`
-					]
-				}
-				/*{
-					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'tahsilatRowId')),
-					queries: [ `ALTER TABLE data_PIFFis ADD tahsilatRowId INTEGER` ]
-				},
-				{
-					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'voGrup3Varmi')),
-					queries: [
-						`ALTER TABLE mst_Promosyon ADD voGrup3Varmi		INTEGER NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup3Kod		TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD voGrup3Miktar	REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup4Varmi		INTEGER NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup4Kod		TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD voGrup4Miktar	REAL NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup5Varmi		INTEGER NOT NULL DEFAULT 0`,
-						`ALTER TABLE mst_Promosyon ADD voGrup5Kod		TEXT NOT NULL DEFAULT ''`,
-						`ALTER TABLE mst_Promosyon ADD voGrup5Miktar	REAL NOT NULL DEFAULT 0`
-					]
-				},
-				{
-					kosul: async e => !(await e.dbMgr.hasTables('mst_ProGrup2Stok')),
-					queries: [
-						`CREATE TABLE IF NOT EXISTS mst_ProGrup2Stok (
-							rowid						INTEGER NOT NULL AUTOINCREMENT,
-							proGrupKod					TEXT NOT NULL,
-							stokKod						TEXT NOT NULL,
-							PRIMARY KEY (proGrupKod, stokKod)
-						)`
 					]
 				}*/
 			]
@@ -4546,7 +4521,7 @@
 			let recs = recsYapi.Baslik; if (!$.isEmptyObject(recs)) {
 				for (const i in recs) {
 					const rec = recs[i]; let hv = ({
-						proTip: rec.tipkod, kod: rec.kod, vioID: asInteger(rec.kaysayac) || null, aciklama: rec.aciklama || '',
+						proTip: rec.tipkod, kod: rec.kod, vioID: asInteger(rec.kaysayac) || null, aciklama: rec.aciklama || '', oncelik: rec.oncelik || 0,
 						veriTipi: rec.veritipi || '', vGrupKod: rec.vgrupkod || '', vStokKod: rec.vstokkod || '', vMiktar: asFloat(rec.vmiktar) || 0,
 						vBrm: rec.vbrm || '', vCiro: asFloat(rec.vciro) || 0, vCiroKdvlimi: bool2Int(rec.vcirokdvlimi),
 						hedefTipi: rec.hedeftipi || '', hGrupKod: rec.hgrupkod || '', hStokKod: rec.hstokkod || '', hMiktar: asFloat(rec.hmiktar) || 0,

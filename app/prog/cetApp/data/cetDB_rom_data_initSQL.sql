@@ -549,6 +549,7 @@ CREATE TABLE IF NOT EXISTS mst_Promosyon (
 	vioID						INTEGER,
 	aciklama					TEXT NOT NULL DEFAULT '',
 	veriTipi					TEXT NOT NULL DEFAULT '',
+	oncelik						INTEGER NOT NULL DEFAULT 0,
 	vGrupKod					TEXT NOT NULL DEFAULT '',
 	vStokKod					TEXT NOT NULL DEFAULT '',
 	vMiktar						REAL NOT NULL DEFAULT 0,

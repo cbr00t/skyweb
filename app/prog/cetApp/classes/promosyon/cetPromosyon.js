@@ -47,7 +47,7 @@
 		}
 		constructor(e) {
 			e = e || {}; super(e);
-			for (const key of ['id', 'aciklama', 'veriTipi', 'vGrupKod', 'vStokKod', 'vBrm', 'hedefTipi', 'hGrupKod', 'hStokKod', 'hBrm']) { this[key] = e[key] || '' }
+			for (const key of ['id', 'aciklama', 'veriTipi', 'oncelik', 'vGrupKod', 'vStokKod', 'vBrm', 'hedefTipi', 'hGrupKod', 'hStokKod', 'hBrm']) { this[key] = e[key] || '' }
 			for (const key of ['vioID', 'vMiktar', 'vCiro', 'hMiktar', 'hDipIsk']) { this[key] = asFloat(e[key]) || 0 }
 			for (const key of ['vCiroKdvlimi', 'detayliMusterimi', 'kademelimi']) { this[key] = asBool(e[key]) }
 			$.extend(this, { hMFVarsaSatirIskKapatmi: asBool(e.hMFVarsaSatirIskKapatmi || e.hMFVarsaSatirIskKapat), kapsam: e.kapsam || {} });
@@ -91,13 +91,12 @@
 			e = e || {}; const istenenKapsam = e.kapsam;
 			let sent = new MQSent({
 				from: `${this.table} pro`,
-				sahalar: [
-						/* .. GRUP3, GRUP1, GRUP2 sırası doğrudur .. */
+				sahalar: [ /* .. GRUP3, GRUP1, GRUP2 sırası doğrudur .. */
 					`(case
 							when pro.proTip = 'CIRO1' then 1 when pro.proTip = 'CIRO2' then 2 when pro.proTip = 'STOK1' then 3
 							when pro.proTip = 'STOK2' then 4 when pro.proTip = 'STOK3' then 5 when pro.proTip = 'GRUP3' then 6
 							when pro.proTip = 'GRUP1' then 7 when pro.proTip = 'GRUP2' then 8 else 99
-						end) oncelik`,
+						end) tipOncelik`,
 					'pro.*'
 				]
 			});
@@ -132,7 +131,7 @@
 					}
 				}
 			}
-			return new MQStm({ sent: sent, orderBy: ['oncelik', 'tarihBasi', 'kod', 'tarihSonu DESC'] })
+			return new MQStm({ sent: sent, orderBy: ['tarihBasi DESC', 'oncelik', 'tarihSonu', 'kod'] })
 		}
 		static async tip2ProYapilari_gerekirseCariEkBilgiler(e) {
 			const dbMgr = e.dbMgr ?? this.dbMgr, istenenKapsam = e.kapsam; if ($.isEmptyObject(istenenKapsam)) return null
@@ -146,13 +145,13 @@
 			await super.setValues(e); let rec = e.rec ?? e;
 			this.id = rec.kod ?? rec.id ?? '';
 			for (const key of ['aciklama', 'veriTipi', 'vGrupKod', 'vStokKod', 'vBrm', 'hedefTipi', 'hGrupKod', 'hStokKod', 'hBrm']) { this[key] = rec[key] || '' }
-			for (const key of ['vioID', 'vMiktar', 'vCiro', 'hMiktar', 'hDipIsk']) { this[key] = asFloat(rec[key]) || 0 }
+			for (const key of ['vioID', 'oncelik']) { this[key] = asInteger(rec[key]) || 0 }
+			for (const key of ['vMiktar', 'vCiro', 'hMiktar', 'hDipIsk']) { this[key] = asFloat(rec[key]) || 0 }
 			for (const key of ['vCiroKdvlimi', 'detayliMusterimi', 'kademelimi']) { this[key] = asBool(rec[key]) }
 			$.extend(this, { hMFVarsaSatirIskKapatmi: asBool(rec.hMFVarsaSatirIskKapat) }); let kapsam = this.kapsam = new CETPromosyonKapsam();
 			const convertedValue = e => { const {value} = e; return e.converter ? e.converter.call(this, value, e) : value };
-			const bsEkle = e => {
-				const {key} = e;
-				let item = kapsam[key] = { basi: convertedValue({ value: rec[`${key}Basi`], converter: e.converter }), sonu: convertedValue({ value: rec[`${key}Sonu`], converter: e.converter }), };
+			const bsEkle = ({ key, converter }) => {
+				let item = kapsam[key] = { basi: convertedValue({ value: rec[`${key}Basi`], converter: e.converter }), sonu: convertedValue({ value: rec[`${key}Sonu`], converter }), };
 				return item
 			};
 			bsEkle({ key: 'tarih', converter: value => value ? asDate(value) : value });
@@ -162,7 +161,7 @@
 		async uygunmu(e) {
 			e = $.extend({}, e); let cariKod = e.cari, kapsam = this.kapsam || {}; const {dbMgr, detayliMusterimi} = this;
 			if (detayliMusterimi) { if (!cariKod) { return false } delete e.cari }
-			let result = kapsam.uygunmu ? kapsam.uygunmu(e) : true; if (!result) return result
+			let result = kapsam.uygunmu ? kapsam.uygunmu(e) : true; if (!result) { return result }
 			if (detayliMusterimi) {
 				if (!cariKod) { return false }
 				let sent = new MQSent({ from: 'mst_PromosyonMusteri', sahalar: 'COUNT(*) sayi' });
