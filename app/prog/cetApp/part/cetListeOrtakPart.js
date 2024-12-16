@@ -1357,62 +1357,31 @@
 			if (y != null)
 				this.mouseMoveY = y;
 		}
-		
-		liste_onMouseUp(e) {
-			const {event} = e;
-			const y = event.clientY;
-			if (y != null)
-				this.mouseMoveY = y;
-		}
-
-		liste_degisti(e) {
-			// this.listeWidget.refresh(false);
-		}
-
+		liste_onMouseUp(e) { const {event} = e; const y = event.clientY; if (y != null) { this.mouseMoveY = y } }
+		liste_degisti(e) { }
 		async liste_veriYuklendi(e) {
-			if ((this.listeReadyFlag || 0) == 1)
-				this.listeInitEkIslemler(e);
-			
+			if ((this.listeReadyFlag || 0) == 1) { this.listeInitEkIslemler(e) }
 			this.listeReadyFlag = (this.listeReadyFlag || 0) + 1;
-
-			// this.listeInitEkIslemler(e);
-			
 			const {afterRefreshOnce, divListe} = this;
 			if (afterRefreshOnce) {
-				if ($.isFunction(afterRefreshOnce))
-					afterRefreshOnce.call(this, e);
-				else if (afterRefreshOnce.run)
-					afterRefreshOnce.run(e);
+				if ($.isFunction(afterRefreshOnce)) { afterRefreshOnce.call(this, e) } else if (afterRefreshOnce.run) { afterRefreshOnce.run(e) }
 				delete this.afterRefreshOnce;
 			}
 			else {
 				const {targetRecUid} = this;
-				if (targetRecUid && !this.targetRecSelectedFlag) {
-					await this.selectRec({ uid: targetRecUid });
-					this.targetRecSelectedFlag = true;
-				}
-				else {
-					const noAutoSelectFlag = asBool(e.noAutoSelect || e.noAutoSelectFlag);
-					if (!noAutoSelectFlag)
-						await this.liste_selectSavedIndex(e);
-				}
+				if (targetRecUid && !this.targetRecSelectedFlag) { await this.selectRec({ uid: targetRecUid }); this.targetRecSelectedFlag = true; }
+				else { const noAutoSelectFlag = asBool(e.noAutoSelect || e.noAutoSelectFlag); if (!noAutoSelectFlag) { await this.liste_selectSavedIndex(e) } }
 			}
-
 			const textInputs = divListe.find(`input[type=textbox], input[type=text]`);
 			if (textInputs.length) {
-				textInputs.attr('autocomplete', 'false');
-				textInputs.attr('readonly', '');
+				textInputs.attr('autocomplete', 'false'); textInputs.attr('readonly', '');
 				textInputs.attr('onfocus', `this.removeAttribute('readonly'); this.select()`);
 				textInputs.attr('onkeyup', `if (event.key.toLowerCase() == 'enter' || event.key.toLowerCase() == 'linefeed') { this.blur() }`);
 			}
 		}
-
 		async liste_selectSavedIndex(e) {
-			let index = this.lastSelectedIndex;
-			if (index == null || index < 0)
-				index = 0;
-			
-			return await this.selectRec({ index: index })
+			let index = this.lastSelectedIndex; if (index == null || index < 0) { index = 0 }
+			return await this.selectRec({ index })
 		}
 	}
 

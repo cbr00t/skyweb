@@ -40,6 +40,7 @@
 					finally { delete this.promise_ilkIslemler }
 				}, 500)
 			});
+			const divSonucBedel = this.divSonucBedel = layout.find('#sonucBedel-parent > #sonucBedel')
 			const divDiger = this.divDiger = layout.find('.diger'), chkSonStoktaOlanlarmi = this.chkSonStoktaOlanlarmi = divDiger.find('#chkSonStoktaOlanlarmi');
 			let handler = evt => { this.sonStokKontrolEdilirmi = this.savedValue_sonStokKontrolEdilirmi = chkSonStoktaOlanlarmi.is(':checked'); this.tazele(e) };
 			chkSonStoktaOlanlarmi.parent().find('#chkSonStoktaOlanlarmi_label').off('mouseup, touchend')
@@ -116,21 +117,14 @@
 				children.removeClass(disabledAttr);	
 			}
 		}
-		
 		async listeArgsDuzenle(e) {
-			await super.listeArgsDuzenle(e);
-			
-			$.extend(e.listeArgs, {
-				pageable: true, showToolbar: false, filterable: true,
-				serverProcessing: true, filterMode: 'default', toolbarHeight: 28,
-				pageSize: this.userSettings_liste.pageSize || 8,
-				height: ($(window).height() < 550 ? 200 : $(window).height() / 2.5)
-			});
+			await super.listeArgsDuzenle(e); $.extend(e.listeArgs, {
+				pageable: true, showToolbar: false, filterable: true, serverProcessing: true, filterMode: 'default', toolbarHeight: 28,
+				pageSize: this.userSettings_liste.pageSize || 8, height: ($(window).height() < 550 ? 200 : $(window).height() / 2.5)
+			})
 		}
-
 		async liste_columnsDuzenle(e) {
-			await super.liste_columnsDuzenle(e);
-			$.merge(e.listeColumns, [
+			await super.liste_columnsDuzenle(e); $.merge(e.listeColumns, [
 				{
 					text: 'Ürün Adı', align: 'left', dataField: 'aciklama',
 					cellsRenderer: (rowIndex, dataField, value, rec) => {
@@ -149,56 +143,28 @@
 							const fiyatParent = divSatir.find(`.brmFiyatParent`); if (!(fiyatGorurmu && bedelKullanilirmi && rec.brmFiyat)) { fiyatParent.addClass(`jqx-hidden`) }
 							if (rec.ozelFiyatVarmi) { fiyatParent.addClass('ozelFiyat'); fiyatParent.find('.etiket').html('Koş:') }
 						}
-						return divSatir[0].outerHTML.trim();
+						return divSatir[0].outerHTML.trim()
 					}
 				},
-				/*{
-					text: 'Son Stok', align: 'right', dataField: ' ',
-					cellsRenderer: (rowIndex, dataField, value, rec) => {
-						const divSatir = this.altListePart.newListeSatirDiv($.extend({}, e));
-						divSatir.attr('data-index', rowIndex);
-						$.each(rec, (key, value) => {
-							key = (key || '').trim()
-							if (!key)
-								return true;
-							const item = divSatir.find(`.${key}`);
-							if (item.length)
-								item.html(value);
-						});
-					}
-				},*/
 				{ text: 'Ürün Kodu', align: 'left', dataField: 'kod', hidden: true },
 				{ text: 'Grup Kodu', align: 'left', dataField: 'grupKod', hidden: true },
 				{ text: 'Grup Adı', align: 'left', dataField: 'grupAdi', hidden: true }
 			])
 		}
-		
 		loadServerData_buildQuery(e) {
-			const wsArgs = $.extend({}, e.wsArgs, { rowCountOnly: e.rowCountOnly });
-			wsArgs.alias = e => {
+			const wsArgs = $.extend({}, e.wsArgs, { rowCountOnly: e.rowCountOnly }); wsArgs.alias = e => {
 				if (e.saha == 'grupAdi') {
 					e.saha = 'aciklama';
 					return 'grp'
 				}
-				return 'stk';
+				return 'stk'
 			};
 			wsArgs.sortDataField = wsArgs.sortDataField || wsArgs.sortdatafield || `aciklama`;
 			const filters = wsArgs.filters = this.getFiltersFromListeWSArgs(wsArgs) || [];
-
-			const {app, fis} = this;
-			const fisSinif = (fis || {}).class || {};
-			const {fiiliCikismi, stokKdvSaha, stokKdvDegiskenmiSaha} = fisSinif;
-			const yerKod = (fis ||{}).yerKod || app.defaultYerKod;
-
+			const {app, fis} = this, fisSinif = (fis || {}).class || {};
+			const {fiiliCikismi, stokKdvSaha, stokKdvDegiskenmiSaha} = fisSinif, yerKod = (fis ||{}).yerKod || app.defaultYerKod;
 			let sent = new MQSent({
-				from: `mst_Stok stk`,
-				fromIliskiler: [
-					// { alias: 'stk', leftJoin: `mst_StokGrup grp`, on: `stk.grupKod = grp.kod` }
-					{ from: `mst_StokGrup grp`, iliski: `stk.grupKod = grp.kod` }
-				],
-				/*where: [
-					`stk.brmFiyat > 0`
-				],*/
+				from: `mst_Stok stk`, fromIliskiler: [ { from: `mst_StokGrup grp`, iliski: `stk.grupKod = grp.kod` } ],
 				sahalar: (e.rowCountOnly
 					? `COUNT(*) sayi`
 					: [
@@ -211,82 +177,32 @@
 				groupBy: e.rowCountOnly ? [] : [`stk.kod`]
 			});
 			const {sonStokKontrolEdilirmi, aktifGrupKod} = this;
-			let stm = new MQStm({ sent: sent });
-			stm.fromGridWSArgs(wsArgs);
+			let stm = new MQStm({ sent }); stm.fromGridWSArgs(wsArgs);
 			app.stmSentDuzenle_sonStokBagla({
-				stm: stm, alias: 'stk', shKodClause: `stk.kod`,
-				leftJoin: !sonStokKontrolEdilirmi,
+				stm, alias: 'stk', shKodClause: `stk.kod`, leftJoin: !sonStokKontrolEdilirmi,
 				yerKod: app.class.appMagazaVeyaSDMmi ? null : (fis ||{}).yerKod || app.defaultYerKod
 			});
-			sent.groupBy.addAll([
-				`stk.kod`, `son.yerKod`
-			]);
-			if (aktifGrupKod)
-				sent.where.degerAta(aktifGrupKod, 'stk.grupKod');
-
-			/*let alinanlarKodListe = null;
-			const altListePart = this.altListePart;
-			if (altListePart && altListePart.listeWidget) {
-				const alinanlar = altListePart.listeRecs;
-				alinanlarKodListe = alinanlar.map(rec => rec.kod);
-			}*/
-			//if (!$.isEmptyObject(alinanlarKodListe))
-			//	sent.where.notInDizi(alinanlarKodListe, 'stk.kod');
-			
-			return stm;
+			sent.groupBy.add(`stk.kod`, `son.yerKod`);
+			if (aktifGrupKod) { sent.where.degerAta(aktifGrupKod, 'stk.grupKod') }
+			return stm
 		}
-
 		async loadServerData_ekIslemler(e) {
-			await super.loadServerData_ekIslemler(e);
-
-			const {fis} = this;
-			let {satisKosulYapilari} = this;
-			if (!satisKosulYapilari)
-				satisKosulYapilari = this.satisKosulYapilari = await fis.getSatisKosulYapilari();
-
-			const {recs} = e;
+			await super.loadServerData_ekIslemler(e); const {fis} = this, {recs} = e;
+			let {satisKosulYapilari} = this; if (!satisKosulYapilari) { satisKosulYapilari = this.satisKosulYapilari = await fis.getSatisKosulYapilari() }
 			if (recs) {
-				const promises = [];
-				const {detaySinif} = fis.class;
-				const _e = { fis: fis, satisKosulYapilari: satisKosulYapilari };
+				const promises = [], {detaySinif} = fis.class, _e = { fis, satisKosulYapilari };
 				for (const rec of recs) {
 					promises.push(new $.Deferred(async p => {
 						const det = new detaySinif($.extend({}, rec, { shKod: rec.kod, shAdi: rec.aciklama }));
 						await det.detayEkIslemler_ekle(_e);
-						for (const key of ['orjFiyat', 'netFiyat', 'ozelFiyatVarmi', 'brutBedel', 'netBedel']) {
-							const value = det[key];
-							if (value != null)
-								rec[key] = value;
-						}
-						if (det.fiyat != null)
-							rec.brmFiyat = det.fiyat;
-						p.resolve({ detay: det, rec: rec })
+						for (const key of ['orjFiyat', 'netFiyat', 'ozelFiyatVarmi', 'brutBedel', 'netBedel']) { const value = det[key]; if (value != null) { rec[key] = value } }
+						if (det.fiyat != null) { rec.brmFiyat = det.fiyat }
+						p.resolve({ detay: det, rec })
 					}))
 				}
 				await Promise.all(promises)
 			}
-			
-			/*const recs = e.recs;
-			const grupListePart = this.grupListePart;
-			if (grupListePart) {
-				const grupListeWidget = grupListePart.listeWidget;
-				if ($.isEmptyObject(grupListePart.listeRecs)) {
-					let grupKey2Rec = {};
-					recs.forEach(rec => {
-						let key = rec.grupKod;
-						if (!grupKey2Rec[key])
-							grupKey2Rec[key] = { kod: rec.grupKod, aciklama: rec.grupAdi || '', anaGrupKod: rec.anaGrupKod || '' };
-					});
-					let grupRecs = Object.values(grupKey2Rec)
-						.sort((a, b) => (a.aciklama || '') > (b.aciklama || '') ? 1 : -1);
-					this.grupListe = $.merge([
-						{ kod: null, aciklama: `<span class="bold">&lt; HEPSİ &gt;</span>`, hepsimi: true }
-					], grupRecs);
-					await grupListePart.tazele();
-				}
-			}*/
 		}
-
 		grupListe_columnsDuzenle(e) {
 			$.merge(e.listeColumns, [
 				{	datafield: 'aciklama', text: 'Gruplar', align: 'left',
@@ -307,344 +223,157 @@
 				}
 			])
 		}
-
-		/*getDataAdapter_grupListe(e) {
-			e = e || {};
-			return new $.jqx.dataAdapter({
-				id: 'kod', datatype: defaultOutput, datafields: [],
-				url: this.app.wsURLBase, data: {}
-			}, {
-				loadServerData: (wsArgs, source, callback) => {
-					try {
-						const recs = this.grupListe || [];
-						callback({ totalrecords: recs.length, records: recs });
-					}
-					catch (ex) {
-						defFailBlock(ex);
-						callback({ totalrecords: 0, records: [] });
-						throw ex;
-					}
-				}
-			});
-		}*/
-
 		grupListe_loadServerData_buildQuery(e) {
-			const wsArgs = $.extend({}, e.wsArgs, { rowCountOnly: e.rowCountOnly });
-			wsArgs.alias = `grp`;
+			const wsArgs = $.extend({}, e.wsArgs, { rowCountOnly: e.rowCountOnly }); wsArgs.alias = `grp`;
 			wsArgs.sortdatafield = wsArgs.sortDataField || wsArgs.sortdatafield || 'aciklama';
 			const filters = wsArgs.filters = this.getFiltersFromListeWSArgs(wsArgs) || [];
-			const {app, fis} = this;
-			const yerKod = (fis ||{}).yerKod || app.defaultYerKod;
+			const {app, fis} = this, yerKod = (fis ||{}).yerKod || app.defaultYerKod;
 			let sent = new MQSent({
 				from: `mst_StokGrup grp`,
-				fromIliskiler: [
-					// { alias: 'stk', leftJoin: `mst_StokGrup grp`, on: `stk.grupKod = grp.kod` }
-					{ from: `mst_Stok stk`, iliski: `grp.kod = stk.grupKod` }
-				],
-				/*where: [
-					/`stk.brmFiyat > 0`
-				],*/
-				distinct: true,
-				sahalar: (e.rowCountOnly
-					? `COUNT(*) sayi`
-					: [`grp.kod`, `grp.aciklama`])
+				fromIliskiler: [ { from: `mst_Stok stk`, iliski: `grp.kod = stk.grupKod` } ],
+				distinct: true, sahalar: (e.rowCountOnly ? `COUNT(*) sayi` : [`grp.kod`, `grp.aciklama`])
 			});
 			const {sonStokKontrolEdilirmi, aktifGrupKod} = this;
-			let stm = new MQStm({ sent: sent });
-			stm.fromGridWSArgs(wsArgs);
+			let stm = new MQStm({ sent }); stm.fromGridWSArgs(wsArgs);
 			app.stmSentDuzenle_sonStokBagla({
-				stm: stm, alias: 'stk', shKodClause: `stk.kod`,
-				leftJoin: !sonStokKontrolEdilirmi,
-				yerKod: app.class.appMagazaVeyaSDMmi ? null : (fis ||{}).yerKod || app.defaultYerKod
+				stm, alias: 'stk', shKodClause: `stk.kod`, leftJoin: !sonStokKontrolEdilirmi,
+				yerKod: app.class.appMagazaVeyaSDMmi ? null : fis?.yerKod || app.defaultYerKod
 			});
-			sent.groupBy.add('grp.kod');
-			/*if (aktifGrupKod)
-				sent.where.degerAta(aktifGrupKod, 'stk.grupKod');*/
-			e.stm = stm;
+			sent.groupBy.add('grp.kod'); e.stm = stm;
 			return true
 		}
-		grupListe_loadServerData_ekIslemler(e) {
-			const recs = e.recs;
-			recs.unshift({ kod: '', aciklama: `<span class="bold">&lt; HEPSİ &gt;</span>`, hepsimi: true });
-		}
-
+		grupListe_loadServerData_ekIslemler({ recs }) { recs.unshift({ kod: '', aciklama: `<span class="bold">&lt; HEPSİ &gt;</span>`, hepsimi: true }) }
 		altListe_columnsDuzenle(e) {
 			$.merge(e.listeColumns, [
 				{	datafield: ' ', text: 'Seçilenler', align: 'left',
 					cellsRenderer: (rowIndex, dataField, value, rec) => {
 						const {altListe_rowHeight, fiyatGorurmu, bedelKullanilirmi} = this, {stokFiyatKdvlimi, kdvDahilFiyatGosterim, fiyatFra} = sky.app;
 						rec = rec.originalRecord || rec;
-
-						const divSatir = this.altListePart.newListeSatirDiv($.extend({}, e));
-						divSatir.attr('data-index', rowIndex);
-						divSatir.height(altListe_rowHeight);
-						
+						const divSatir = this.altListePart.newListeSatirDiv($.extend({}, e)); divSatir.attr('data-index', rowIndex); divSatir.height(altListe_rowHeight);
 						$.each(rec, (key, value) => {
-							key = (key || '').trim()
-							if (!key)
-								return true;
-
+							key = key?.trim(); if (!key) { return true }
 							switch (key) {
 								case 'brmFiyat':
 									value = asFloat(value) || 0;
 									if (!stokFiyatKdvlimi && kdvDahilFiyatGosterim) { value = roundToFra(rec.brmFiyat + (rec.brmFiyat * bedel(rec.kdvOrani / 100)), fiyatFra) }
 									value = `<span class="orangered">KD:</span>${value.toLocaleString()}`; break
 							}
-							if (!value) {
-								switch (key) {
-									case 'sonStok':
-									case 'sonStok2':
-									case 'miktar':
-									case 'miktar2':
-										value = 0;
-										break;
-								}
-							}
-							
-							const item = divSatir.find(`.${key}`);
-							if (item.length)
-								item.html(value);
-							
-							const fiyatParent = divSatir.find(`.brmFiyatParent`);
-							if (!(fiyatGorurmu && bedelKullanilirmi && rec.brmFiyat))
-								fiyatParent.addClass(`jqx-hidden`);
-
-							if (rec.ozelFiyatVarmi) {
-								fiyatParent.addClass('ozelFiyat');
-								fiyatParent.find('.etiket').html('Koş:');
-							}
+							if (!value) { switch (key) { case 'sonStok': case 'sonStok2': case 'miktar': case 'miktar2': value = 0; break } }
+							const item = divSatir.find(`.${key}`); if (item.length) { item.html(value) }
+							const fiyatParent = divSatir.find(`.brmFiyatParent`); if (!(fiyatGorurmu && bedelKullanilirmi && rec.brmFiyat)) { fiyatParent.addClass(`jqx-hidden`) }
+							if (rec.ozelFiyatVarmi) { fiyatParent.addClass('ozelFiyat'); fiyatParent.find('.etiket').html('Koş:') }
 						});
-						
-						let div = divSatir.find('.miktar');
-						let miktar = rec.miktar;
-						if (div.length)
-							div.html(miktar || 1);
-
-						return divSatir[0].outerHTML.trim();
+						let div = divSatir.find('.miktar'), {miktar} = rec; if (div.length) { div.html(miktar || 1) }
+						return divSatir[0].outerHTML.trim()
 					}
 				}
 			])
 		}
-
-
+		toplamTazele(e) {
+			const {divSonucBedel, fis} = this; if (!divSonucBedel?.length) { return }
+			let brut = 0, kdv = 0; for (const {miktar, netFiyat, kdvOrani} of this.altListePart.listeRecs) {
+				let netBedel = miktar * netFiyat;
+				brut += netBedel; kdv += (netBedel * kdvOrani / 100)
+			}
+			brut = bedel(brut); kdv = bedel(kdv); let net = bedel(brut + kdv);
+			divSonucBedel.html(`<span class="etiket item">T:</span> <span class="veri toplam item">${bedelStr(brut)}</span> <span class="etiket item">K.D:</span> <span class="veri kdvDahilToplam item">${bedelStr(net)}</span>`)
+		}
 		islemTusuTiklandi(e) {
-			e = e || {};
-			const evt = e.event || {};
-			const elm = evt.currentTarget || e;
+			e = e || {}; const evt = e.event || {}, elm = evt.currentTarget || e;
 			switch (elm.id) {
-				case 'asagi':
-					this.asagiAlIstendi();
-					break;
-				case 'yukari':
-					this.yukariAlIstendi();
-					break;
+				case 'asagi': this.asagiAlIstendi(); break
+				case 'yukari': this.yukariAlIstendi(); break
 			}
 		}
-
 		async asagiAlIstendi(e) {
-			e = e || {};
-			let rec = e.rec = e.rec || this.selectedBoundRec;
-			if (!rec)
-				return;
-
-			/*const focusElm = document.activeElement;
-			if (focusElm && focusElm.classList.contains(`miktar`))
-				return;*/
-
-			const {altListePart} = this;
-			const widget = altListePart.listeWidget;
-			let {uid} = rec;
-			// let _rec = altListePart.listeRecs.find(_rec => _rec.uid == uid);
-			let _rec = widget.rowsByKey[uid];
+			e = e || {}; let rec = e.rec = e.rec || this.selectedBoundRec; if (!rec) { return }
+			const {altListePart} = this, widget = altListePart.listeWidget;
+			let {uid} = rec, _rec = widget.rowsByKey[uid];
 			if (_rec) {
-				let artis = (_rec == rec ? null : asFloat(rec.miktar)) || 1;
-				_rec.miktar = (asFloat(_rec.miktar) || 0) + artis;
-				widget.selectrowbykey(uid);
-				return;
+				let artis = (_rec == rec ? null : asFloat(rec.miktar)) || 1; _rec.miktar = (asFloat(_rec.miktar) || 0) + artis;
+				widget.selectrowbykey(uid); return
 			}
-
-			e.rec = rec = rec.deepCopy ? rec.deepCopy() : $.extend({}, rec);
-			rec.miktar = rec.miktar || 1;
-			await altListePart.ekle(e);
-			// this.tazele(e);
-
-			uid = rec.uid;
-			setTimeout(() => {
-				altListePart.selectLastRec();
-				this.disableEventsDo(() => {
-					widget.selectrowbykey(uid);
-					widget.ensurerowvisiblebykey(uid);
-				});
-				this.liste_satirSecildiBasit({ rec: rec });
+			e.rec = rec = rec.deepCopy ? rec.deepCopy() : $.extend({}, rec); rec.miktar = rec.miktar || 1; await altListePart.ekle(e);
+			uid = rec.uid; setTimeout(() => {
+				altListePart.selectLastRec(); this.disableEventsDo(() => { widget.selectrowbykey(uid); widget.ensurerowvisiblebykey(uid) });
+				this.liste_satirSecildiBasit({ rec }); this.toplamTazele(e)
 			}, 0);
 		}
-		
 		yukariAlIstendi(e) {
-			e = e || {};
-			let rec = e.rec = e.rec || this.altListePart.selectedBoundRec;
-			if (!rec)
-				return;
-
-			/*const focusElm = document.activeElement;
-			if (focusElm && focusElm.classList.contains(`miktar`))
-				return;*/
-
+			e = e || {}; let rec = e.rec = e.rec || this.altListePart.selectedBoundRec; if (!rec) { return }
 			const {altListePart} = this;
-			let lastSelectedIndex = altListePart.selectedIndex;
-			if (!lastSelectedIndex || lastSelectedIndex < 0)
-				lastSelectedIndex = null;
-
-			altListePart.sil(e);
-			this.tazele(e);
-
+			let lastSelectedIndex = altListePart.selectedIndex; if (!lastSelectedIndex || lastSelectedIndex < 0) { lastSelectedIndex = null }
+			altListePart.sil(e); this.tazele(e);
 			if (!altListePart.selectedBoundRec) {
-				let widget = altListePart.listeWidget;
-				const rowCount = altListePart.listeRecs.length;
-				let index = lastSelectedIndex == null ? rowCount - 1 : lastSelectedIndex;
-				if (index < 0)
-					index = 0;
-				else if (index >= rowCount)
-					index = rowCount - 1;
-				
+				let widget = altListePart.listeWidget; const rowCount = altListePart.listeRecs.length;
+				let index = lastSelectedIndex == null ? rowCount - 1 : lastSelectedIndex; if (index < 0) { index = 0 } else if (index >= rowCount) { index = rowCount - 1 }
 				setTimeout(() => {
 					this.disableEventsDo(() => {
-						if (lastSelectedIndex == null) {
-							if (widget.pageable) {
-								while (widget.goToNextPage())
-									;
-							}
-						}
-						widget.selectRow(index);
-						widget.ensureRowVisible(index);
+						if (lastSelectedIndex == null) { if (widget.pageable) { while (widget.goToNextPage()) { } } }
+						widget.selectRow(index); widget.ensureRowVisible(index); this.toplamTazele(e)
 					});
-				}, 100);
+				}, 100)
 			}
 		}
-		
-		liste_satirTiklandi(e) {
-			super.liste_satirTiklandi(e);
-			
-			setButonEnabled(this.genelIslemTuslari, true);
-		}
-		
+		liste_satirTiklandi(e) { super.liste_satirTiklandi(e); setButonEnabled(this.genelIslemTuslari, true) }
 		liste_satirCiftTiklandi(e) {
-			if (!this.isEventFired_satirCifTiklandi) {
-				this.isEventFired_satirCifTiklandi = true;
-				return;
-			}
-
-			// super.liste_satirCiftTiklandi(e);
-			
-			this.asagiAlIstendi();
+			if (!this.isEventFired_satirCifTiklandi) { this.isEventFired_satirCifTiklandi = true; return }
+			this.asagiAlIstendi()
 		}
-
-		altListe_satirCiftTiklandi(e) {
-			// this.yukariAlIstendi();
-		}
-
-		liste_satirSecimDegisti(e) {
-			super.liste_satirSecimDegisti(e);
-
-			/*let rec = this.selectedBoundRec;
-			let islemTuslari = this.divListe.find('.toolbar.islemTuslari');
-			setButonEnabled(
-				islemTuslari.find('li:not(#yeni)'),
-				!!rec);*/
-		}
-
+		altListe_satirCiftTiklandi(e) { }
+		liste_satirSecimDegisti(e) { super.liste_satirSecimDegisti(e) }
 		liste_renderToolbar(e) {
-			const layout = e.layout || this.layout;
-			let toolbar = e.listeToolbar;
-			let islemTuslari = toolbar.find('.toolbar.islemTuslari');
-			if (!islemTuslari.length) {
-				islemTuslari = this.newListeSubPart({ selector: '.toolbar.islemTuslari' });
-				islemTuslari.appendTo(toolbar);
-			}
+			const layout = e.layout || this.layout; let toolbar = e.listeToolbar; let islemTuslari = toolbar.find('.toolbar.islemTuslari');
+			if (!islemTuslari.length) { islemTuslari = this.newListeSubPart({ selector: '.toolbar.islemTuslari' }); islemTuslari.appendTo(toolbar) }
 		}
-
-		async liste_islemTusuTiklandi(e) {
-			let rec = this.selectedBoundRec;
-			let elm = e.event.currentTarget;
-			/*switch (elm.id) {
-				case '...':
-					break;
-			}*/
-		}
-
+		async liste_islemTusuTiklandi(e) { }
 		liste_satirSecimDegisti(e) {
-			e = e || {};
-			super.liste_satirSecimDegisti(e);
-
-			const rec = this.selectedBoundRec;
-			const index = this.selectedIndex;
-			const lastSelectedIndex = e.lastSelectedIndex;
+			e = e || {}; super.liste_satirSecimDegisti(e);
+			const rec = this.selectedBoundRec, index = this.selectedIndex, lastSelectedIndex = e.lastSelectedIndex;
 			if (rec && index != null && index == lastSelectedIndex) {
-				// this.listeWidget.beginRowEdit(index);
 				let elm = this.divListe.find(`.jqx-grid-table .listeSatir[data-index=${index}] .miktar`);
 				if (elm.length) {
-					if (e.event)
-						e.event.stopPropagation();
-					
+					if (e.event) { e.event.stopPropagation() }
 					setTimeout(e => {
-						let elm = e.elm;
-						let parent = elm.parent();
-						if (!parent.length)
-							return;
-						
-						const rec = e.rec.deepCopy ? e.rec.deepCopy() : $.extend(true, {}, e.rec);
-						rec.miktar = 0;
-
+						let {elm} = e, parent = elm.parent(); if (!parent.length) { return }
+						const rec = e.rec.deepCopy ? e.rec.deepCopy() : $.extend(true, {}, e.rec); rec.miktar = 0;
 						let fra = this.app.brm2Fra[rec.brm || 'AD'] || 0;
-						
-						parent.removeClass('jqx-hidden');
-						elm = e.elm[0];
-						let savedHTML = elm.outerHTML;
-						elm.outerHTML = (
+						parent.removeClass('jqx-hidden'); elm = e.elm[0];
+						let savedHTML = elm.outerHTML; elm.outerHTML = (
 							`<form action="" autocomplete="false" readonly onfocus="this.removeAttribute('readonly')" onsubmit="javascript:return false">` +
 							`	<input class="miktar" type="number" maxlength="9" autocomplete="off" value="${roundToFra(asFloat(rec.miktar), fra) || 0}"></input>` +
 							`</form>`
 						);
-						elm = parent.find('.miktar');
-						elm.off('keyup').on('keyup', evt => {
+						elm = parent.find('.miktar'); elm.off('keyup').on('keyup', evt => {
 							const key = (evt.key || '').toLowerCase();
-							if (key == 'enter' || key == 'linefeed')
-								setTimeout(() => elm.blur(), 50);
+							if (key == 'enter' || key == 'linefeed') { setTimeout(() => elm.blur(), 50) }
 						});
 						elm.off('change').on('change', evt => {
 							rec.miktar = roundToFra(asFloat(evt.currentTarget.value.replaceAll(',', '.')), fra) || 1;
-							if (rec.miktar > 0)
-								this.asagiAlIstendi({ rec });
-							// this.listeWidget.refresh();
+							if (rec.miktar > 0) { this.asagiAlIstendi({ rec }) } this.toplamTazele(e)
 						});
 						elm.off('blur').on('blur', evt => {
-							parent.addClass('jqx-hidden');
-							this.listeWidget.refresh();
+							parent.addClass('jqx-hidden'); this.listeWidget.refresh(); this.toplamTazele(e);
 							setTimeout(() => setButonEnabled(this.genelIslemTuslari, true), 1);
 						});
 						setButonEnabled(this.genelIslemTuslari, false);
-						elm.focus();
-						elm.select();
-					}, 10, { elm, rec, index });
+						elm.focus(); elm.select();
+					}, 10, { elm, rec, index })
 				}
 			}
 		}
-
 		async grupListe_satirSecildi(e) {
-			e = e || {};
-			let rec = e.rec || this.grupListePart.selectedRec;
+			e = e || {}; let rec = e.rec || this.grupListePart.selectedRec;
 			this.aktifGrupKod = (rec || {}).kod || null;
 			await this.tazele(e);
 		}
-
 		altListe_satirTiklandi(e) {
-			e = e || {};
-			const part = this.altListePart;
+			e = e || {}; const part = this.altListePart;
 			const eArgs = e.event ? e.event.args : null;
 			let index = eArgs ? eArgs.boundIndex : null;
 			index = index == null ? part.selectedIndex : index;
 			const rec = part.listeRecs[index] || part.selectedBoundRec;
 			const lastSelectedIndex = e.lastSelectedIndex == null ? part.lastSelectedIndex : e.lastSelectedIndex;
-			
 			if (rec && index != null && index == lastSelectedIndex) {
 				// part.listeWidget.beginRowEdit(index);
 				let elm = part.divListe.find(`.jqx-grid-table .listeSatir[data-index=${index}] .miktar`);
@@ -672,8 +401,7 @@
 						elm = parent.find('.miktar');
 						elm.off('keyup').on('keyup', evt => {
 							const key = (evt.key || '').toLowerCase();
-							if (key == 'enter' || key == 'linefeed')
-								setTimeout(() => elm.blur(), 50);
+							if (key == 'enter' || key == 'linefeed') { setTimeout(() => elm.blur(), 50) }
 						});
 						elm.off('change').on('change', evt => {
 							rec.miktar = roundToFra(asFloat(evt.currentTarget.value), fra) || 1;
@@ -682,11 +410,10 @@
 						elm.off('blur').on('blur', evt => {
 							parent.addClass('jqx-hidden');
 							setTimeout(() => setButonEnabled(this.genelIslemTuslari, true), 1)
-							this.altListePart.listeWidget.refresh();
+							this.altListePart.listeWidget.refresh(); this.toplamTazele(e)
 						});
 						setButonEnabled(this.genelIslemTuslari, false);
-						elm.focus();
-						elm.select();
+						elm.focus(); elm.select();
 					}, 10, { elm, rec, index });
 				}
 			}
