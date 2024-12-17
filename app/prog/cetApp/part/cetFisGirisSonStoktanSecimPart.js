@@ -276,7 +276,7 @@
 				brut += netBedel; kdv += (netBedel * kdvOrani / 100)
 			}
 			brut = bedel(brut); kdv = bedel(kdv); let net = bedel(brut + kdv);
-			divSonucBedel.html(`<span class="etiket item">T:</span> <span class="veri toplam item">${bedelStr(brut)}</span> <span class="etiket item">K.D:</span> <span class="veri kdvDahilToplam item">${bedelStr(net)}</span>`)
+			divSonucBedel.html(`<div><span class="etiket item">T:</span> <span class="veri toplam item">${bedelStr(brut)}</span></div> <div><span class="etiket item">K.D:</span> <span class="veri kdvDahilToplam item">${bedelStr(net)}</span></div>`)
 		}
 		islemTusuTiklandi(e) {
 			e = e || {}; const evt = e.event || {}, elm = evt.currentTarget || e;

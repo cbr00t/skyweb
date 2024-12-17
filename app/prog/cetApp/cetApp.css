@@ -3029,11 +3029,15 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 		right: 20px !important;
 	}
 }
-.part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent { font-size: 150%; font-weight: bold; color: whitesmoke; background-color: #333; text-align: right; position: absolute; top: 2px; width: 330px; height: 40px; right: 10px; z-index: 100 }
-.part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent #sonucBedel { position: relative; width: calc(100% - 10px); height: 100%; margin-top: 0; padding: 0 }
+.part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent {
+	font-size: 110%; font-weight: bold; color: whitesmoke; text-align: right;
+	position: fixed; top: 3px; width: 130px; height: 40px; left: 130px; z-index: 100; pointer-events: none
+}
+.part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent #sonucBedel {
+	position: relative; width: calc(100% - 3px); height: 100%; margin-top: 0; padding: 0; line-height: 19px }
 .part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent #sonucBedel .veri { margin-right: 10px }
 .part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent #sonucBedel .veri.toplam { color: lightgreen }
-.part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent #sonucBedel .veri.kdvDahilToplam { color: orangered }
+.part.cetApp.cetFisGirisSonStoktanSecim #sonucBedel-parent #sonucBedel .veri.kdvDahilToplam { color: darkorange }
 .part.cetApp.cetFisGirisSonStoktanSecim .genelIslemTuslari {
 	/*position: fixed;
 	right: 9px;
