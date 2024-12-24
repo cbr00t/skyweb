@@ -142,10 +142,12 @@
 				fisSayac: this.id,
 				fissayac: this.id,
 				ayiracDikCizgi: '|',
-				ayiracTire: '-',
-				ayiracSlash: '/',
-				ayiracVirgul: ',',
-				ayiracNoktaliVirgul: ';'
+				ayiracTekCizgi: '-'.repeat(1000),
+				ayiracCiftCizgi: '='.repeat(1000),
+				ayiracSlash: '/'.repeat(1000),
+				ayiracBackslash: '\\'.repeat(1000),
+				ayiracYildiz: '*'.repeat(1000),
+				ayiracNokta: '.'.repeat(1000)
 				
 				/*fiyat: e => toStringWithFra(this.fiyat, app.fiyatFra),
 				brutFiyat: e => toStringWithFra(this.brutFiyat, app.fiyatFra),
