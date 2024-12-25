@@ -141,7 +141,7 @@
 			return {
 				fisSayac: this.id,
 				fissayac: this.id,
-				ayiracDikCizgi: '|',
+				ayiracDikCizgi: '|'.repeat(1000),
 				ayiracTekCizgi: '-'.repeat(1000),
 				ayiracCiftCizgi: '='.repeat(1000),
 				ayiracSlash: '/'.repeat(1000),
