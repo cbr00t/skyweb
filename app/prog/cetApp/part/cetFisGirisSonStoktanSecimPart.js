@@ -159,7 +159,7 @@
 				}
 				return 'stk'
 			};
-			wsArgs.sortDataField = wsArgs.sortDataField || wsArgs.sortdatafield || `aciklama`;
+			wsArgs.sortDataField = wsArgs.sortDataField || wsArgs.sortdatafield;
 			const filters = wsArgs.filters = this.getFiltersFromListeWSArgs(wsArgs) || [];
 			const {app, fis} = this, fisSinif = (fis || {}).class || {};
 			const {fiiliCikismi, stokKdvSaha, stokKdvDegiskenmiSaha} = fisSinif, yerKod = (fis ||{}).yerKod || app.defaultYerKod;
@@ -177,7 +177,7 @@
 				groupBy: e.rowCountOnly ? [] : [`stk.kod`]
 			});
 			const {sonStokKontrolEdilirmi, aktifGrupKod} = this;
-			let stm = new MQStm({ sent }); stm.fromGridWSArgs(wsArgs);
+			let stm = new MQStm({ sent, orderBy: wsArgs.sortDataField == 'aciklama' ? `stk.aciklama ${wsArgs.sortorder}` : 'stk.kod' }); stm.fromGridWSArgs(wsArgs);
 			app.stmSentDuzenle_sonStokBagla({
 				stm, alias: 'stk', shKodClause: `stk.kod`, leftJoin: !sonStokKontrolEdilirmi,
 				yerKod: app.class.appMagazaVeyaSDMmi ? null : (fis ||{}).yerKod || app.defaultYerKod
