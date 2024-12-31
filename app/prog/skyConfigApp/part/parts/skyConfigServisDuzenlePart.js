@@ -184,7 +184,7 @@
 			});
 
 			const txtArgs = tabPage.find(`#args`);
-			txtArgs.val($.isEmptyObject(args.args) ? '' : args.args.join('\n'));
+			txtArgs.val($.isEmptyObject(args.args) ? '' : (args.args?.join?.('\n')) ?? args.args);
 			txtArgs.on('focus', evt =>
 				evt.target.select())
 			txtArgs.on('change', evt => {

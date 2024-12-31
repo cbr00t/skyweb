@@ -22,7 +22,7 @@
 					pdaIPC: `Eski ElTerminali (<i>PDA</i>) IPC Sunucusu`, pdaAktarici: `Eski ElTerminali (<i>PDA</i>) Ticariye Aktarıcı`, 'pdks-mukerrerSil': `PDKS Tekrarlayan Kayıtları Sil`,
 					'pdks-api': 'PDKS Veri Alımı (<i>ZK API</i>)', 'pdks-api-sbx': 'PDKS Veri Alımı (<i>SBX API</i>)', 'pdks-api-fpclock': 'PDKS Veri Alımı (<i>FPCLock API</i>)',
 					'pdks-db-zktime': `PDKS Veri Alımı (<i>ZKTime Veritabanından</i>)`, 'pdks-db-timeroll': `PDKS Veri Alımı (<i>TimeRoll Veritabanından</i>)`,
-					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`,
+					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, frp: 'FRP (Reverse Proxy)', 
 					eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
 					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, eMail: `e-Mail Gönderimi`, eMailQueue: `e-Mail Kuyruğu İşlet`, cvmRestart: `CVM Yeniden Başlat`, wsRestart: `SkyWS Yeniden Başlat`
 				};
@@ -43,7 +43,7 @@
 				const grup_vioServer = { id: 'vioServer', aciklama: 'VIO Sunucu' };
 				result = this._servisTip2Grup = {
 					appStart: grup_system, shell: grup_system, cvmCall: grup_system, sqlExec: grup_system, webRequest: grup_system,
-					skyWS: grup_system, hfs: grup_system, hamachi: grup_system, vioPortal: grup_vioServer, skyTurmob: grup_vioServer
+					skyWS: grup_system, hfs: grup_system, frp: grup_system, hamachi: grup_system, vioPortal: grup_vioServer, skyTurmob: grup_vioServer
 				}
 			}
 			return result
@@ -678,7 +678,7 @@
 				'genel', 'waitSignal', 'yonetim', 'cariEFatSorgu', 'skyMES/hatIzleme', 'skyMES/makineDurum',
 				'pdks', 'skyBulutYedekleme', 'b2b', 'b2b/fuhrer', 'b2b/atomedya', 'skyCafe/rest', 'skyCafe/pratik', /*'elterm',*/
 				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk', 'skyERP', 'skyTablet',
-				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest', 'hamachi', 'skyWS', 'hfs', 'vioPortal', 'skyTurmob'
+				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest', 'hamachi', 'skyWS', 'hfs', 'frp', 'vioPortal', 'skyTurmob'
 			];
 			const servisTipListe = Object.keys(this.servisTip2Aciklama);
 			return {
