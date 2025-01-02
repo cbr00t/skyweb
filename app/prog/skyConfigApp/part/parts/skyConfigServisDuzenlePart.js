@@ -150,6 +150,10 @@
 			txtCmd.on('focus', evt => evt.target.select())
 			txtCmd.on('change', evt => args.cmd = evt.target.value);
 
+			let txtConfigFile = tabPage.find('#configFile'); txtConfigFile.val(args.configFile);
+			txtConfigFile.on('focus', ({ currentTarget: target }) => target.select())
+			txtConfigFile.on('change', ({ currentTarget: target }) => args.configFile = target.value?.trim());
+
 			const txtQuery = tabPage.find(`#query`);
 			let _queries = null;
 			if (!$.isEmptyObject(args.query)) {
@@ -632,23 +636,27 @@
 		
 
 		tipDegisti(e) {
-			const {wndContent, args} = this;
-			const {tip} = args;
+			const {wndContent, args} = this, {tip} = args;
 			wndContent.find(`.panel #servis.jqx-tabs-content-element .ek-ayar`).addClass(`jqx-hidden`);
-			if (tip)
-				wndContent.find(`.panel #servis.jqx-tabs-content-element .ek-ayar.${tip}`).removeClass(`jqx-hidden`);
+			if (tip) { wndContent.find(`.panel #servis.jqx-tabs-content-element .ek-ayar.${tip}`).removeClass(`jqx-hidden`) }
 
 			switch (tip) {
-				case 'vioGuncelle':
-					const {paketlerPart} = this;
-					if (!this.isDestroyed && paketlerPart && !paketlerPart.widget) {
+				case 'vioGuncelle': {
+					const {paketlerPart} = this; if (!this.isDestroyed && paketlerPart && !paketlerPart.widget) {
 						const parent = paketlerPart.layout.parent()
 						paketlerPart.basicRun();
 						paketlerPart.layout
 							.detach()
 							.appendTo(parent);
 					}
-					break;
+					break
+				}
+				case 'frp': case 'frps': {
+					let txtConfigFile = wndContent.find('#configFile'), defaultConfigFile = `c:\\vio\\cmd\\frp${tip == 'frps' ? 's' : 'c'}.ini`;
+					txtConfigFile.attr('placeholder', defaultConfigFile);
+					txtConfigFile.val(args.configFile = args.configFile ?? (args.args || tip != 'frp' ? '' : defaultConfigFile));
+					break
+				}
 			}
 		}
 
