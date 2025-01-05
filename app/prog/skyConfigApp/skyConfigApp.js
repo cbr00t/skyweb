@@ -22,14 +22,14 @@
 					pdaIPC: `Eski ElTerminali (<i>PDA</i>) IPC Sunucusu`, pdaAktarici: `Eski ElTerminali (<i>PDA</i>) Ticariye Aktarıcı`, 'pdks-mukerrerSil': `PDKS Tekrarlayan Kayıtları Sil`,
 					'pdks-api': 'PDKS Veri Alımı (<i>ZK API</i>)', 'pdks-api-sbx': 'PDKS Veri Alımı (<i>SBX API</i>)', 'pdks-api-fpclock': 'PDKS Veri Alımı (<i>FPCLock API</i>)',
 					'pdks-db-zktime': `PDKS Veri Alımı (<i>ZKTime Veritabanından</i>)`, 'pdks-db-timeroll': `PDKS Veri Alımı (<i>TimeRoll Veritabanından</i>)`,
-					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, frp: 'FRP (Reverse Proxy)', 
+					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, frp: 'FRP', 
 					eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
 					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, eMail: `e-Mail Gönderimi`, eMailQueue: `e-Mail Kuyruğu İşlet`, cvmRestart: `CVM Yeniden Başlat`, wsRestart: `SkyWS Yeniden Başlat`
 				};
 				if (gelismisModmu && !gelismisModDisabledFlag && SkyConfigYetki.yetkilimi({ yetki: 'subServiceManager' })) {
 					$.extend(result, {
 						appStart: 'Uygulama Çalıştır', shell: 'Shell Komutu Çalıştır', cvmCall: 'CVM Komut Çalıştır', sqlExec: 'SQL Komutu Çalıştır',
-						webRequest: 'Web İsteği Gönder', hamachi: 'Hamachi VPN', skyWS: 'Sky WebServis (Alt İşlem)', hfs: 'HFS (Http File Server)', frps: 'FRP (Reverse Proxy) Server',
+						webRequest: 'Web İsteği Gönder', hamachi: 'Hamachi VPN', skyWS: 'Sky WebServis (Alt İşlem)', hfs: 'HFS (Http File Server)', frps: 'FRP Server',
 						vioPortal: 'VIO Portal', skyTurmob: 'Sky Turmob Sorgusu'
 					})
 				}
