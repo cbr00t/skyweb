@@ -44,16 +44,17 @@
 		}
 		async parseDevam(e) { let result = await super.parseDevam(e); if (result) { return result } return false }
 		async parseSonrasi(e) {
-			let result = await super.parseSonrasi(e); const {kural} = this;
-			const brm = kural == null ? null : (kural.miktarBrm ?? kural.miktarbrm ?? kural.brm);
-			if (brm) this.brm = brm
+			let result = await super.parseSonrasi(e); let {kural, brm} = this;
+			if (!brm) {
+				let _brm = kural == null ? null : (kural.miktarBrm ?? kural.miktarbrm ?? kural.brm);
+				if (_brm) { this.brm = brm = _brm }
+			}
 			return result
 		}
 		parcaAl(e) {
 			if (!e.bas || !e.hane) { return false }
-			let value = e.value || this.barkod; if (value.length < (e.bas + e.hane - 1)) { return false }
-			value = value.substr(e.bas - 1, e.hane).trim();
-			e.callback.call(this, value, { value });
+			let value = e.value || this.barkod; /*if (value.length < (e.bas + e.hane - 1)) { return false }*/
+			value = value.substr(e.bas - 1, e.hane).trim(); e.callback.call(this, value, { value });
 			return true
 		}
 	}

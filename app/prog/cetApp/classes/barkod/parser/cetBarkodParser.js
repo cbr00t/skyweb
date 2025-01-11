@@ -86,11 +86,8 @@
 				]
 			});
 			let stm = new MQStm(sent), rec = e.shRec = await dbMgr.tekilExecuteSelect(stm);
-			if (!rec) return false
-			for (const key in rec) {
-				const value = rec[key];
-				if (value != null) this[key] = value
-			}
+			if (!rec) { return false }
+			for (const key in rec) { const value = rec[key]; if (value != null) { this[key] = value } }
 			return true
 		}
 	}

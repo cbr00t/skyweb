@@ -2465,7 +2465,7 @@
 			let parser, barkod = (e.barkod || '').trim(); if (!barkod) { return null }
 			if (barkod.length > 2) {
 				let kural = await CETBarkodParser_Kuralli.kuralFor({ barkod, basKod: barkod.substring(0, 2) });
-				if (kural) { parser = await kural.parseSonucu(e); if (parser) return parser }
+				if (kural) { parser = await kural.parseSonucu(e); if (parser) { return parser } }
 			}
 			parser = new CETBarkodParser_Referans({ barkod });
 			return (await parser.parse(e)) ? parser : null

@@ -7,7 +7,7 @@
 			const {parserSinif} = this;
 			if (parserSinif) {
 				let parser = new parserSinif($.extend({ kural: this }, e));
-				if (await parser.parse(e)) return parser
+				if (await parser.parse(e)) { return parser }
 			}
 			return null
 		}

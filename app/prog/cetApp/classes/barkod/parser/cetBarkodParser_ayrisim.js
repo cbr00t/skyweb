@@ -15,76 +15,49 @@
 		}
 		
 		async parseDevam(e) {
-			let result = await super.parseDevam(e);
-			if (result)
-				return result;
-			
-			if (this.formatAyiraclimi)
-				return await this.parseDevam_ayiracli(e);
-			
-			const {kural, okunanBarkod} = this;
-			if (okunanBarkod) {
-				if (this.formatBaslangicmi && okunanBarkod.length > 2) {
-					this.barkod = okunanBarkod.slice(2);
-					if (this.shKod == okunanBarkod)
-						this.shKod = this.barkod;
+			let result = await super.parseDevam(e); if (result) { return result }
+			if (this.formatAyiraclimi) { return await this.parseDevam_ayiracli(e) }
+			let {kural, okunanBarkod} = this, barkodFix = value => {
+				if (value) {
+					if (this.formatBaslangicmi && value.length > 2) { this.barkod = value = value.slice(2) }
+					if (this.shKod == okunanBarkod) { this.shKod = this.barkod }
 				}
+				return value
 			}
-
-			result = this.parcaAl({ belirtec: 'S', bas: kural.stokBas, hane: kural.stokHane,
-							callback: value => this.shKod = value });
-			if (result) {
-				if (this.shKod) {
-					if (!await this.shEkBilgileriBelirle(e))
-						return false;
-				}
-			}
+			barkodFix(okunanBarkod); result = this.parcaAl({ belirtec: 'S', bas: kural.stokBas, hane: kural.stokHane, callback: value => this.shKod = value });
+			if (result) { if (this.shKod) { if (!await this.shEkBilgileriBelirle(e)) { return false } } }
 			else {
-				result = this.parcaAl({ belirtec: 'V', bas: kural.barkodBas, hane: kural.barkodHane,
-							callback: value => this.barkod = value });
+				result = this.parcaAl({ belirtec: 'V', bas: kural.barkodBas, hane: kural.barkodHane, callback: value => this.barkod = value });
 				if (result) {
-					let parser = new CETBarkodParser_Referans();
-					result = await parser.parse({ barkod: this.barkod });
-					if (result) {
-						this.barkod = parser.barkod;
-						this.shKod = parser.shKod;
+					let parser = new CETBarkodParser_Referans(); result = await parser.parse({ barkod: this.barkod });
+					if (result) { this.barkod = parser.barkod; this.shKod = parser.shKod }
+					else {
+						let {barkod: _barkod} = this; if (_barkod == okunanBarkod) { this.barkod = barkod.slice(2) }
+						parser = await sky.app.barkodBilgiBelirle({ barkod: this.barkod }); this.barkod = _barkod;
+						if (parser) {
+							result = true; for (let key of ['shKod', 'shAdi', 'grupKod', 'miktar', 'fiyat', 'fiyatGorFiyati', 'kdvOrani', 'kdvDegiskenmi', 'boyutTipi', 'bedenKategoriKod']) { delete this[key] }
+							for (let [key, value] of Object.entries(parser)) { if (value != null && !this[key]) { this[key] = value } }
+						}
 					}
 				}
-				if (!result)
-					return false;
+				if (!result) { return false } barkodFix(okunanBarkod)
 			}
-			
-			this.parcaAl({ belirtec: 'K', bas: kural.miktarBas, hane: kural.miktarHane,
-				callback: value => this.miktar = asFloat(value) || null });
-			
+			this.parcaAl({ belirtec: 'K', bas: kural.miktarBas, hane: kural.miktarHane, callback: value => this.miktar = asFloat(value) || null });
 			['paket', 'model', 'renk', 'desen', 'beden', 'lotNo', 'seriNo', 'raf'].forEach(key => {
-				this.parcaAl({ bas: kural[`${key}Bas`], hane: kural[`${key}Hane`],
-					callback: value => this[`${key}Kod`] = value });
-			});
+				let postfix = key == 'lotNo' || key == 'seriNo' ? '' : 'Kod';
+				this.parcaAl({ bas: kural[`${key}Bas`], hane: kural[`${key}Hane`], callback: value => this[`${key}${postfix}`] = value }) });
 			['en', 'boy', 'yukseklik'].forEach(key => {
-				this.parcaAl({ bas: kural[`${key}Bas`], hane: kural[`${key}Hane`],
-					callback: value => this[`${key}`] = asFloat(value) || null });
-			});
+				this.parcaAl({ bas: kural[`${key}Bas`], hane: kural[`${key}Hane`], callback: value => this[`${key}`] = asFloat(value) || null }) });
 			for (let i = 1; i <= 9; i++) {
-				const key = `ekOz${i}`;
-				const detKey = `ekOz_${i}Kod`;
-				this.parcaAl({ bas: kural[`${key}Bas`], hane: kural[`${key}Hane`],
-					callback: value =>
-						this[detKey] = asFloat(value) || null });
+				const key = `ekOz${i}`, detKey = `ekOz_${i}Kod`;
+				this.parcaAl({ bas: kural[`${key}Bas`], hane: kural[`${key}Hane`], callback: value => this[detKey] = asFloat(value) || null })
 			}
-
-			return true;
+			return true
 		}
-
 		async parseDevam_ayiracli(e) {
-			const {kural} = this;
-			let {barkod} = this;
-			const {belirtecler} = kural;
-			const barkodParcalar = this.barkodParcalar = barkod.split(kural.ayiracStr);
-			let result = false, miktarAtandimi = false;
-			for (let i in barkodParcalar) {
-				const belirtec = belirtecler[i];
-				const deger = (barkodParcalar[i] || '').trimEnd();
+			let {kural} = this, {barkod} = this, {belirtecler} = kural, barkodParcalar = this.barkodParcalar = barkod.split(kural.ayiracStr);
+			let result = false, miktarAtandimi = false; for (let i in barkodParcalar) {
+				const belirtec = belirtecler[i], deger = (barkodParcalar[i] || '').trimEnd();
 				if (belirtec && deger) {
 					switch (belirtec) {
 						case "S":
