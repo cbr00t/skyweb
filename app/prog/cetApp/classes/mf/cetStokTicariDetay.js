@@ -202,39 +202,24 @@
 			e = e || {};
 			return this.ekOzelliklerYapi.getAnahtarStr($.extend({}, e, { delim: e.delim || e.anahtarDelim, hmrSet: e.hmrSet, anahtarDegeri: this.getAnahtarDegeri(e) }))
 		}
-
 		getBirlestirIcinAnahtarDegeri(e) {
 			e = e || {};
-			let {barkod} = this;
-			const {barkodParser} = this;
+			/*let {barkod} = this, {barkodParser} = this;
+			if (barkodParser?.tartimi) { barkod = barkodParser = null }
 			if (barkod && barkodParser && barkodParser.ayrisimAyiraclimi && barkodParser.zVarmi) {
-				const {kural} = barkodParser;
-				const ayiracStr = kural ? kural.ayiracStr : null;
-				if (ayiracStr) {
-					let parts = barkodParser.barkodParcalar || barkod.split(ayiracStr);
-					parts.pop();
-					barkod = parts.join(ayiracStr);
-				}
-			}
-			
+				const {kural} = barkodParser, ayiracStr = kural ? kural.ayiracStr : null;
+				if (ayiracStr) { let parts = barkodParser.barkodParcalar || barkod.split(ayiracStr); parts.pop(); barkod = parts.join(ayiracStr); }
+			}*/
 			return [
-				this.getAnahtarStr(e),
-				barkod || '',
-				this.fiyat || 0,
-				this.kdvOrani || 0,
-				this.paketKod || '',
-				this.paketIcAdet || '',
-				(this.iskOranListe || []).map(oran => roundToFra(oran, 2).toString()).join('+'),
-				(this.kamOranListe || []).map(oran => roundToFra(oran, 2).toString()).join('+'),
+				this.getAnahtarStr(e), /*barkod || '',*/ this.fiyat || 0, this.kdvOrani || 0, this.paketKod || '', this.paketIcAdet || '',
+				(this.iskOranListe || []).map(oran => roundToFra(oran, 2).toString()).join('+'), (this.kamOranListe || []).map(oran => roundToFra(oran, 2).toString()).join('+'),
 				(this.ozelKamOranListe || []).map(oran => roundToFra(oran, 2).toString()).join('+')
 			]
 		}
-
 		getBirlestirIcinAnahtarStr(e) {
 			const anah = this.getBirlestirIcinAnahtarDegeri(e);
 			return anah ? anah.join(CETEkOzellikler.anahtarDelim) : ``;
 		}
-
 		getAnahtarHVSiparis(e) {
 			e = e || {};
 			const {app} = sky;

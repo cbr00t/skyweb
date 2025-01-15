@@ -1,6 +1,6 @@
 (function() {
 	window.CETBarkodParser_Tarti = class extends window.CETBarkodParser_Kuralli {
-		static get aciklama() { return 'Tartı' }
+		static get aciklama() { return 'Tartı' } get tartimi() { return true }
 		async parseDevam(e) {
 			let result = await super.parseDevam(e); if (result) return result
 			const {app} = sky, {fiyatFra} = app, {barkod, kural} = this, {kod} = kural, kodLen = kod.length;
