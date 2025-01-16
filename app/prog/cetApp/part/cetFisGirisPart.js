@@ -1059,6 +1059,12 @@
 							ozelKampanyaKodParent.addClass('jqx-hidden');
 						}
 
+						let elmOkutmaSayisi = divSatir.find('.okutmaSayisi'), okutmaSayisi = rec.okutmaSayisi || 0;
+						if (elmOkutmaSayisi.length) {
+							if (okutmaSayisi > 1) { elmOkutmaSayisi.html(okutmaSayisi); elmOkutmaSayisi.parent().removeClass('jqx-hidden basic-hidden') }
+							else { elmOkutmaSayisi.parent().addClass('jqx-hidden') }
+						}
+						
 						const {netBedel} = rec;
 						if (fiyatGorurmu && bedelKullanilirmi && netBedel)
 							divSatir.find(`.netBedel`).html(bedelStr(netBedel));
