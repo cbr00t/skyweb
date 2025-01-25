@@ -23,26 +23,17 @@
 				idSaha: '', ayrisimAyiracli_barkod2Detay: {}
 			});
 			this.sonStokKontrolEdilirmi = app.sonStokKontrolEdilirmi && fis.class.sonStokKontrolEdilirmi;
-			if (!(this.layout || this.template))
-				this.template = app.templates.fisGiris
+			if (!(this.layout || this.template)) { this.template = app.templates.fisGiris }
 		}
 		async activatePart(e) {
 			await super.activatePart(e);
 			setTimeout(() => {
-				const {barcodeReader} = this;
-				if (this._barcodeReaderRunningFlag) {
-					delete this._barcodeReaderRunningFlag;
-					this.barkodIstendi(e)
-				}
+				const {barcodeReader} = this; if (this._barcodeReaderRunningFlag) { delete this._barcodeReaderRunningFlag; this.barkodIstendi(e) }
 				const {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla, btnLogout} = sky.app;
-				if (btnToggleFullScreen && btnToggleFullScreen.length)
-					btnToggleFullScreen.addClass('jqx-hidden')
-				if (chkOtoAktar && chkOtoAktar.length)
-					chkOtoAktar.addClass('jqx-hidden')
-				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length)
-					btnGonderimIsaretSifirla.addClass('jqx-hidden')
-				if (btnLogout && btnLogout.length)
-					btnLogout.addClass('jqx-hidden')
+				if (btnToggleFullScreen && btnToggleFullScreen.length) btnToggleFullScreen.addClass('jqx-hidden')
+				if (chkOtoAktar && chkOtoAktar.length) chkOtoAktar.addClass('jqx-hidden')
+				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length) btnGonderimIsaretSifirla.addClass('jqx-hidden')
+				if (btnLogout && btnLogout.length) btnLogout.addClass('jqx-hidden')
 			}, 150)
 		}
 		async deactivatePart(e) {
@@ -219,8 +210,7 @@
 				const lockedFlag = this.lockedFlag = userSettings.lockedFlag = chkKilitle.jqxToggleButton('toggled');
 				this.paramDegistimi = true;
 				chkKilitle_onToggle({ event: evt });
-				if (lockedFlag)
-					this.focusToDefault()
+				if (lockedFlag) { this.focusToDefault() }
 			});
 			if (!(this.prefetch || this.isPrefetch))
 				chkKilitle_onToggle()
@@ -713,8 +703,7 @@
 						this.setUniqueTimeout({
 							key: 'focusToDefault',
 							delayMS: 2000,
-							block: () =>
-								this.focusToDefault()
+							block: () => this.focusToDefault()
 						})
 					}
 				});
@@ -811,16 +800,15 @@
 		}
 
 		async tazele(e) {
-			let result = await super.tazele(e);
-			this.liste_degisti(e);
-			this.degistimi = false;
-			return result
+			let result = await super.tazele(e); this.liste_degisti(e);
+			this.degistimi = false; return result
 		}
 		async ekle(e) {
 			e = e || {}; let result = await super.ekle(e);
-			const rec = e.rec || {}, {barkodParser} = rec; const barkod = rec.barkod || (rec.barkodParser || {}).barkod;
+			const rec = e.rec || {}, {barkodParser} = rec; const barkod = rec.barkod || rec.barkodParser?.barkod;
 			if (barkod && barkodParser?.ayrisimAyiraclimi && barkodParser?.zVarmi) { this.ayrisimAyiracli_barkod2Detay[barkod] = rec }
-			const okunanTumBarkodlar = rec.okunanTumBarkodlar = rec.okunanTumBarkodlar || {}; okunanTumBarkodlar[barkod] = true; return result
+			const okunanTumBarkodlar = rec.okunanTumBarkodlar = rec.okunanTumBarkodlar || {}; okunanTumBarkodlar[barkod] = true;
+			return result
 		}
 		sil(e) {
 			e = e || {}; const rec = e.rec || this.selectedBoundRec || {}; let result = super.sil(e);
@@ -928,58 +916,29 @@
 					cellsRenderer: (rowIndex, columnIndex, value, rec) => {
 						const {app, fis, fiyatGorurmu, bedelKullanilirmi} = this;
 						rec = rec.originalRecord || rec;
-
-						const divSatir = this.newListeSatirDiv(e);
-						divSatir.attr('data-index', rowIndex);
-						
+						const divSatir = this.newListeSatirDiv(e); divSatir.attr('data-index', rowIndex);
+						if (rec.barkodTekrarmi) { divSatir.addClass('barkod-tekrar') }
 						const promoTextParent = divSatir.find(`.promoTextParent`);
-						if (rec.promoKod) {
-							divSatir.addClass(`promosyon`);
-							promoTextParent.find(`.promoText`).html(rec.promoKod)
-						}
-						else {
-							promoTextParent.addClass('jqx-hidden')
-						}
-
+						if (rec.promoKod) { divSatir.addClass(`promosyon`); promoTextParent.find(`.promoText`).html(rec.promoKod) } else { promoTextParent.addClass('jqx-hidden') }
 						if (!bedelKullanilirmi) {
 							[rec.class.ticariSahaKeys || [], rec.class.iskOranKeys || [], rec.class.kamOranKeys || []]
 								.forEach(keys => {
 									keys.forEach(key => {
-										let elm = divSatir.find(`.${key}`);
-										if (elm && elm.length)
-											elm.remove();
-										elm = divSatir.find(`.${key}Parent`);
-									if (elm && elm.length)
-										elm.remove();
-									});
-								});
+										let elm = divSatir.find(`.${key}`); if (elm && elm.length) { elm.remove() }
+										elm = divSatir.find(`.${key}Parent`); if (elm && elm.length) { elm.remove() }
+									})
+								})
 						}
-
-						for (const key in rec) {
-							const value = rec[key];
-							const item = divSatir.find(`.${key}`);
-							if (item.length)
-								item.html(value)
-						}
-
-						const {miktar} = rec;
-						const brm = rec.brm || 'AD';
-						const stokFra = app.brm2Fra[brm] || 0;
-						
-						const divMiktar = divSatir.find(`.miktar`);
-						if (divMiktar.length) {
-							let miktarText = '';
-							const {paketKod} = rec;
-							const paketMiktar = asInteger(rec.paketMiktar) || 0;
+						for (const key in rec) { const value = rec[key], item = divSatir.find(`.${key}`); if (item.length) { item.html(value) } }
+						const {miktar} = rec, brm = rec.brm || 'AD', stokFra = app.brm2Fra[brm] || 0;
+						const divMiktar = divSatir.find(`.miktar`); if (divMiktar.length) {
+							let miktarText = '', {paketKod} = rec, paketMiktar = asInteger(rec.paketMiktar) || 0;
 							if (paketKod && paketMiktar > 0) {
-								const {paketIcAdet} = rec;
-								const paketFazla = paketIcAdet ? (miktar - (paketMiktar * paketIcAdet)) : 0;
+								const {paketIcAdet} = rec, paketFazla = paketIcAdet ? (miktar - (paketMiktar * paketIcAdet)) : 0;
 								miktarText += `<span class="paketBilgi"><span class="_veri">${rec.paketMiktar} ${rec.paketKod}</span></span> `;
-								if (paketFazla)
-									miktarText += `<span class="paketFazlaBilgi">(<span class="_veri">+${paketFazla} ${brm}</span>)</span>`;
+								if (paketFazla) { miktarText += `<span class="paketFazlaBilgi">(<span class="_veri">+${paketFazla} ${brm}</span>)</span>` }
 								miktarText += ` = `;
 							}
-
 							const _miktarCoalesceDeger = sky.app.rbkKullanilirmi && rec.rbkIcinUygunmu ? 0 : 1;
 							miktarText += toStringWithFra(miktar || _miktarCoalesceDeger, stokFra);
 							divMiktar.html(miktarText)
@@ -1708,91 +1667,58 @@
 			}, 500, e)
 		}
 		async hizliBarkod_topluEkle(e) {
-			e = e || {};
-			this.txtHizliBarkod.val('');
-			this.focusToDefault();
-			
-			if (this.baslikNavBarCollapseInitFlag)
-				setTimeout(() => this.onResize(e), 150)
+			e = e || {}; this.txtHizliBarkod.val(''); this.focusToDefault();
+			if (this.baslikNavBarCollapseInitFlag) { setTimeout(() => this.onResize(e), 150) }
 			else {
-				this.baslikNavBarCollapseInitFlag = true;
-				this.baslik_navBar.jqxNavigationBar('collapseAt', 0);
-				for (const timeout of [200, 300])
-					setTimeout(() => this.onResize(e), timeout)
+				this.baslikNavBarCollapseInitFlag = true; this.baslik_navBar.jqxNavigationBar('collapseAt', 0);
+				for (const timeout of [200, 300]) { setTimeout(() => this.onResize(e), timeout) }
 			}
-			const {barkodlar} = e;
-			if ($.isEmptyObject(barkodlar))
-				return
-			const {listeWidget} = this;
-			listeWidget.beginUpdate();
-			try {
-				for (const barkod of barkodlar)
-					await this.ekleIstendi({ barkod: barkod })
-			}
+			const {barkodlar} = e; if ($.isEmptyObject(barkodlar)) { return }
+			const {listeWidget} = this; listeWidget.beginUpdate();
+			let barkodHatalari = [], {hataliBarkodlarIcinMesajGosterilirmi} = sky.app;
+			try { for (const barkod of barkodlar) { await this.ekleIstendi({ barkod, barkodHatalari }) } }
 			catch (ex) {
-				if (!(ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort'))
-					displayMessage(`${ex.errorText || ex.message || ex}`, `@ Toplu Barkod Ekleme İşlemi @`, undefined, undefined, false, true);
+				if (!(ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort')) {
+					displayMessage(`${ex.errorText || ex.message || ex}`, `@ Toplu Barkod Ekleme İşlemi @`, undefined, undefined, false, true) }
 			}
 			finally { listeWidget.endUpdate() }
+			if (barkodHatalari?.length) {
+				let text = `Şu barkodlar hatalıdır:<ul>${barkodHatalari.map(x => `<li class="bold">${x}</li>`).join(CrLf)}</ul>`;
+				displayMessage(text, '@ Barkod İşlemi @', undefined, undefined, hataliBarkodlarIcinMesajGosterilirmi ? true : null, undefined, 'top-right')
+			}
 			setTimeout(() => { this.onResize(e); this.focusToDefault(); this.selectLastRec() }, 100)
 		}
-		hizliStok_itemSelected(e) {
-			e.barkod = e.value; delete e.value;
-			this.ekleIstendi(e);
-			return true
-		}
+		hizliStok_itemSelected(e) { e.barkod = e.value; delete e.value; this.ekleIstendi(e); return true }
 		async liste_veriYuklendi(e) {
-			await super.liste_veriYuklendi($.extend({}, e, { noAutoSelect: true }));
-			if (!this.listeReadyFlag)
-			 	return
+			await super.liste_veriYuklendi($.extend({}, e, { noAutoSelect: true })); if (!this.listeReadyFlag) { return }
 			setTimeout(async () => {
-				if (!this.isListeVeriYuklendiEventTriggered)
-					this.isListeVeriYuklendiEventTriggered = true;
+				if (!this.isListeVeriYuklendiEventTriggered) { this.isListeVeriYuklendiEventTriggered = true }
 				this.degistimi = false
 			}, 10)
 		}
 		liste_degisti(e) {
 			e = e || {}; super.liste_degisti(e);
-			const {divFisBaslik} = this;
-			const divDvKod = divFisBaslik?.length ? divFisBaslik.find('.ortak > .dvKodParent.parent div#dvKod > .cetMstComboBox.part #widget') : null;
+			const {divFisBaslik} = this, divDvKod = divFisBaslik?.length ? divFisBaslik.find('.ortak > .dvKodParent.parent div#dvKod > .cetMstComboBox.part #widget') : null;
 			const ddDvKodWidget = divDvKod?.length ? divDvKod.jqxComboBox('getInstance') : null;
-			if (ddDvKodWidget)
-				divDvKod.jqxComboBox('disabled', !!this.listeWidget.getRows().length)
-			this.degistimi = true;
-			if (this.timer_listeDegisti) {
-				clearTimeout(this.timer_listeDegisti);
-				delete this.timer_listeDegisti
-			}
-			this.timer_listeDegisti = setTimeout(async e => {
-				try { await this.liste_degisti_devam(e) }
-				finally { delete this.timer_listeDegisti }
-			}, 500, e)
+			if (ddDvKodWidget) { divDvKod.jqxComboBox('disabled', !!this.listeWidget.getRows().length) }
+			this.degistimi = true; if (this.timer_listeDegisti) { clearTimeout(this.timer_listeDegisti); delete this.timer_listeDegisti }
+			this.timer_listeDegisti = setTimeout(async e => { try { await this.liste_degisti_devam(e) } finally { delete this.timer_listeDegisti } }, 500, e)
 		}
 		liste_degisti_devam(e) {
-			const {fis} = this;
-			fis.detaylar = this.listeRecs.map(rec =>
-				$.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec);
-			fis.dipHesapla();
-			const {dipTable} = this;
-			const uiSetValue = e => {
+			const {fis} = this; fis.detaylar = this.listeRecs.map(rec => $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec); fis.dipHesapla();
+			const {dipTable} = this, uiSetValue = e => {
 				const ui = dipTable.find(e.selector);
 				ui.html(typeof value == 'string' ? value : bedelStr(e.value || 0));
-				if (!(this.fiyatGorurmu && this.bedelKullanilirmi))
-					ui.parent().addClass('jqx-hidden');
-				else if (e.value)
-					ui.parent().removeClass('jqx-hidden');
-				else if (!asBool(e.noHide))
-					ui.parent().addClass('jqx-hidden');
+				if (!(this.fiyatGorurmu && this.bedelKullanilirmi)) ui.parent().addClass('jqx-hidden');
+				else if (e.value) ui.parent().removeClass('jqx-hidden');
+				else if (!asBool(e.noHide)) ui.parent().addClass('jqx-hidden');
 			};
 			const icmal = fis.icmal || {};
-			['brut', 'topIskonto', 'topKdv', 'yuvarlamaFarki', 'sonuc'].forEach(key =>
-				uiSetValue({ selector: `#${key}`, value: icmal[key] }));
-			if (/*!(icmal &&*/ (icmal.topKdv || icmal.topDipIskonto))/*)*/
-				uiSetValue({ selector: `#sonuc`, value: `${bedelStr(fis.sonucBedel)} ${fis.dvKod || 'TL'}`, noHide: true });
+			['brut', 'topIskonto', 'topKdv', 'yuvarlamaFarki', 'sonuc'].forEach(key => uiSetValue({ selector: `#${key}`, value: icmal[key] }));
+			if (/*!(icmal &&*/ (icmal.topKdv || icmal.topDipIskonto))/*)*/ { uiSetValue({ selector: `#sonuc`, value: `${bedelStr(fis.sonucBedel)} ${fis.dvKod || 'TL'}`, noHide: true }) }
 		}
 		async liste_satirSecildi(e) {
-			e = e || {}; await super.liste_satirSecildi(e);
-			let rec = this.selectedBoundRec;
+			e = e || {}; await super.liste_satirSecildi(e); let rec = this.selectedBoundRec;
 			const {app, fis, divListe} = this, {miktarGirilmezmi} = fis.class;
 			const {fisGirisSadeceBarkodZorunlumu, rbkKullanilirmi} = app, index = this.selectedIndex, {lastSelectedIndex} = e;
 			if (this.timer_listeSatirSecildi) { clearTimeout(this.timer_listeSatirSecildi); delete this.timer_listeSatirSecildi }
@@ -1878,7 +1804,7 @@
 			}
 		}
 		async ekleIstendi(e) {
-			e = e || {}; const batchFlag = asBool(e.batch || e.batchFlag), {app, fis} = this;
+			e = e || {}; const batchFlag = asBool(e.batch || e.batchFlag), {app, fis} = this, {barkodHatalari} = e;
 			const {degisiklikYapilmazmi, barkodGirisZorunlumu} = fis.class;
 			if (degisiklikYapilmazmi) {
 				displayMessage(`Bu belgeye satır eklenemez`, `@ Fiş Giriş İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
@@ -1886,80 +1812,56 @@
 			}
 			const fisGirisSadeceBarkodZorunlumu = app.fisGirisSadeceBarkodZorunlumu || barkodGirisZorunlumu;
 			app.hideNotifications();
-			let {barkod} = e;
-			let rec = e.rec || (batchFlag ? null : this.selectedHizliStokRec);
-			rec = (rec || {}).originalItem || rec;
-			if (!batchFlag) {
-				setTimeout(() => this.focusToDefault(), 10);
-				this.focusToDefault()
-			}
-			const fisSinif = fis.class;
-			let det = e.detay;
+			let {barkod} = e, rec = e.rec || (batchFlag ? null : this.selectedHizliStokRec);
+			rec = rec?.originalItem || rec;
+			if (!batchFlag) { setTimeout(() => this.focusToDefault(), 10); this.focusToDefault() }
+			let fisSinif = fis.class, det = e.detay;
 			if (!det && barkod) {
 				barkod = barkod.trim();
 				let ind = -1, carpan;
-				for (const matchStr of ['x', 'X', '*']) {
-					ind = barkod.indexOf(matchStr);
-					if (ind > -1)
-						break
-				}
+				for (const matchStr of ['x', 'X', '*']) { ind = barkod.indexOf(matchStr); if (ind > -1) { break } }
 				if (ind > -1) {
 					let miktarStr = barkod.substring(0, ind);		// substring from->to .. (to dahil degil)
 					e.barkod = barkod = barkod.substring(ind + 1);
 					e.carpan = carpan = asFloat(miktarStr) || null
 				}
 				if (fisGirisSadeceBarkodZorunlumu && (carpan && carpan != 1)) {
-					app.playSound_barkodError();
-					displayMessage(`Barkodlu eklemede <b>Miktar Belirtimi</b> (<i><u>3x12345</u> gibi</i>) yapamazsınız`, `@ Barkod İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
+					app.playSound_barkodError(); let mesaj = `Barkodlu eklemede <b>Miktar Belirtimi</b> (<i><u>3x12345</u> gibi</i>) yapamazsınız`;
+					if (barkodHatalari) { barkodHatalari.push(mesaj) } else { displayMessage(mesaj, '@ Barkod İşlemi @', undefined, undefined, undefined, undefined, 'top-right') }
 					return false
 				}
 				// barkod veya stok kod için ürün bul ve detay oluştur
 				try {
-					const barkodBilgi = await app.barkodBilgiBelirle({ barkod: barkod, carpan: carpan, fis: fis });
+					const barkodBilgi = await app.barkodBilgiBelirle({ barkod, carpan, fis });
 					if (barkodBilgi) {
-						const {listeWidget} = this;
-						/*if (fisGirisSadeceBarkodZorunlumu && barkodBilgi.barkod == barkodBilgi.shKod) {
-							this.app.playSound_barkodError();
-							displayMessage(`Barkod olarak doğrudan <b>Ürün Kodu</b> okutulamaz`, `@ Barkod İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
-							return false;
-						}*/
-						const _barkod = barkodBilgi.barkod;
+						const {listeWidget} = this, _barkod = barkodBilgi.barkod;
 						if (barkodBilgi.ayrisimAyiraclimi && barkodBilgi.zVarmi) {
 							const _det = this.ayrisimAyiracli_barkod2Detay[_barkod];
 							if (_det) {
-								const {uid} = _det;
-								listeWidget.selectrowbykey(uid);
-								let displayIndex = listeWidget.getrowdisplayindex(_det);
-								let araMesaj = displayIndex < 0 ? `` : `<b>${displayIndex + 1}. satırda</b> `;
-								app.playSound_barkodError();
-								displayMessage(`<b>${_barkod}</b> barkoduna ait ${araMesaj}tekrar eden kalem var !`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
-								setTimeout(async () => {
-									await this.onResize();
-									this.focusToDefault();
-								}, 50);
-								return false;
+								const {uid} = _det; listeWidget.selectrowbykey(uid);
+								let displayIndex = listeWidget.getrowdisplayindex(_det), araMesaj = displayIndex < 0 ? `` : `<b>${displayIndex + 1}. satırda</b> `;
+								app.playSound_barkodError(); let mesaj = `<b>${_barkod}</b> barkoduna ait ${araMesaj}tekrar eden kalem var !`;
+								if (barkodHatalari) { barkodHatalari.push(mesaj) } else { displayMessage(mesaj, 'Barkod İşlemi', undefined, undefined, undefined, undefined, 'top-right') }
+								setTimeout(async () => { await this.onResize(); this.focusToDefault(); }, 50); return false
 							}
 						}
 						const detaySinif = fisSinif.uygunDetaySinif({ rec: barkodBilgi }) || fisSinif.detaySinif;
-						det = await detaySinif.fromBarkodBilgi({ fis: fis, barkodBilgi: barkodBilgi });
-						app.playSound_barkodOkundu()
+						det = await detaySinif.fromBarkodBilgi({ fis, barkodBilgi }); app.playSound_barkodOkundu();
+						let {sonBarkod} = this; if (sonBarkod && barkod && sonBarkod == _barkod) { det.barkodTekrarmi = true }
+						sonBarkod = this.sonBarkod = _barkod
 					}
 					else {
-						app.playSound_barkodError();
-						displayMessage(`<u class="bold darkred">${barkod}</u> barkodu hatalıdır!`, `Barkod İşlemi`, undefined, undefined, undefined, undefined, 'top-right');
-						if (!batchFlag)
-							setTimeout(async () => { await this.onResize(); this.focusToDefault() }, 50)
+						app.playSound_barkodError(); let mesaj = `<u class="bold darkred">${barkod}</u> barkodu hatalıdır!`;
+						if (barkodHatalari) { barkodHatalari.push(mesaj) } else { displayMessage(mesaj, '@ Barkod İşlemi @', undefined, undefined, undefined, undefined, 'top-right') }
+						if (!batchFlag) { setTimeout(async () => { await this.onResize(); this.focusToDefault() }, 50) }
 					}
 				}
 				catch (ex) {
-					let message = ex;
-					if (ex && ex.isError)
-						message = ex.errorText || ex.message
-					if (message) {
+					let mesaj = ex; if (ex?.isError) { mesaj = ex.errorText || ex.message }
+					if (mesaj) {
 						app.playSound_barkodError();
-						displayMessage(message, `@ Barkod İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
-						if (!batchFlag)
-							setTimeout(async () => this.focusToDefault(), 50)
+						if (barkodHatalari) { barkodHatalari.push(mesaj) } else { displayMessage(mesaj, '@ Barkod İşlemi @', undefined, undefined, undefined, undefined, 'top-right') }
+						if (!batchFlag) setTimeout(async () => this.focusToDefault(), 50)
 					}
 					return false
 				}
@@ -1969,57 +1871,34 @@
 				if (fisGirisSadeceBarkodZorunlumu) {
 					app.playSound_barkodError();
 					displayMessage(`Sadece Barkod ile giriş yapılabilir`, `@ Detay Ekleme İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
-					if (!batchFlag)
-						setTimeout(async () => this.focusToDefault(), 50)
+					if (!batchFlag) { setTimeout(async () => this.focusToDefault(), 50) }
 					return false
 				}
 				const detaySinif = fisSinif.uygunDetaySinif({ rec: rec }) || fisSinif.detaySinif;
 				det = $.isPlainObject(rec) ? new detaySinif($.extend({}, rec, { fis: fis })) : rec.deepCopy()
 			}
 			if (det) {
-				for (const key of ['uid', '_visible'])
-					delete det[key]
-				// this.focusToDefault();
+				for (const key of ['uid', '_visible']) { delete det[key] }
 				await det.detayEkIslemler_ekle({ fis: fis, satisKosulYapilari: this.satisKosulYapilari });
-				// this.fis.detaylar.push(det);
-				await this.ekle({ rec: det });
-				setTimeout(() => {
-					if (app.rbkKullanilirmi && det.rbkIcinUygunmu && app.fisGirisiRbkOtomatikAcilsinmi) { this.rbkDuzenleIstendi({ rec: det }) }
-				}, 100);
+				await this.ekle({ rec: det, reverse: app.detaylarTersSiradami });
+				setTimeout(() => { if (app.rbkKullanilirmi && det.rbkIcinUygunmu && app.fisGirisiRbkOtomatikAcilsinmi) { this.rbkDuzenleIstendi({ rec: det }) } }, 100);
 				if (!batchFlag) {
-					// let rec = this.selectedRec;				// selectrowbykey sırasında event tetikleniyor
+					/* let rec = this.selectedRec;				// selectrowbykey sırasında event tetikleniyor */
 					setTimeout(() => {
 						this.selectLastRec();
-						if (this.baslikNavBarCollapseInitFlag) {
-							// setTimeout(() => this.onResize(e), 150)
-						}
-						else {
-							this.baslikNavBarCollapseInitFlag = true;
-							this.baslik_navBar.jqxNavigationBar('collapseAt', 0);
+						if (!this.baslikNavBarCollapseInitFlag) {
+							this.baslikNavBarCollapseInitFlag = true; this.baslik_navBar.jqxNavigationBar('collapseAt', 0);
 							setTimeout(() => this.onResize(e), 300)
 						}
-						// this.focusToDefault()
 					}, 100)
 				}
 			}
-			if (!batchFlag)
-				setTimeout(() => this.focusToDefault(), 50)
+			if (!batchFlag) { setTimeout(() => this.focusToDefault(), 50) }
 		}
 		async degistirIstendi(e) {
 			e = e || {}; let rec = e.rec || this.selectedBoundRec, det = rec;
-			if (det) {
-				det.cacheReset();
-				det = $.isPlainObject(det) ? this.fis.class.detaySinif.From(det) : det.deepCopy()
-			}
-			if (!det)
-				return
-			// delete det.uid;
-			const {app} = this;
-			/*if (app.fisGirisSadeceBarkodZorunlumu) {
-				displayMessage(`Sadece Barkod ile giriş yapılabilir, değişiklik yapamazsınız`, `@ Detay Değiştir İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
-				return false;
-			}*/
-			if (det.class.promosyonmu && !app.serbestModmu) { displayMessage(`<b>Promosyon</b> satırı <u>DEĞİŞTİRME</u> yetkiniz yok`, `! Değiştir İşlemi !`); return }
+			if (det) { det.cacheReset(); det = $.isPlainObject(det) ? this.fis.class.detaySinif.From(det) : det.deepCopy() } if (!det) { return }
+			const {app} = this; if (det.class.promosyonmu && !app.serbestModmu) { displayMessage(`<b>Promosyon</b> satırı <u>DEĞİŞTİRME</u> yetkiniz yok`, `! Değiştir İşlemi !`); return }
 			let wnd = this.degistirEkrani; if (wnd) wnd.jqxWindow('close')
 			const {layout, windows} = this, wndContent = layout.find('#degistirEkrani').contents('div').clone(true); wndContent.addClass(`part ${this.rootAppName} ${this.appName} ${this.partName}`);
 			await this.aboutToDeactivate(e);
@@ -2512,28 +2391,19 @@
 			content.find(`#fiyat`).val(det.fiyat || 0); content.find(`#bedel`).html(bedelStr(det.netBedel || 0))
 		}
 		async silIstendi(e) {
-			// this.focusToDefault();
-			const {app, fis, selectedIndex} = this;
-			const {degisiklikYapilmazmi} = fis.class;
-			app.hideNotifications();
-			
+			const {app, fis, selectedIndex} = this, {degisiklikYapilmazmi} = fis.class; app.hideNotifications();
 			if (degisiklikYapilmazmi) {
 				displayMessage(`Bu belgeden satır silinemez`, `@ Fiş Giriş İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
 				setTimeout(() => this.focusToDefault(), 10);
 				return false
 			}
-			
-			await this.sil();
-			if (selectedIndex && selectedIndex > 0)
-				this.listeWidget.selectRow(selectedIndex - 1)
-
+			delete this.sonBarkod;
+			await this.sil(); if (selectedIndex && selectedIndex > 0) { this.listeWidget.selectRow(selectedIndex - 1) }
 			setTimeout(() => this.focusToDefault(), 10)
 		}
 		temizleIstendi(e) {
-			const {app, fis} = this;
-			const {degisiklikYapilmazmi} = fis.class;
-			app.hideNotifications();
-			
+			const {app, fis} = this, {degisiklikYapilmazmi} = fis.class;
+			app.hideNotifications(); delete this.sonBarkod;
 			if (degisiklikYapilmazmi) {
 				displayMessage(`Bu belgeden silme işlemi yapılamaz`, `@ Fiş Giriş İşlemi @`, undefined, undefined, undefined, undefined, 'top-right');
 				setTimeout(() => this.focusToDefault(), 10);
@@ -2953,6 +2823,7 @@
 			const {barcodeReader} = this;
 			if (barcodeReader && (barcodeReader.initFlag || !barcodeReader.isReady)) { this.barkodIstendi(e) }
 		}
+		selectLastRec(e) { let {detaylarTersSiradami} = sky.app; return super[detaylarTersSiradami ? 'selectFirstRec' : 'selectLastRec'](e) }
 		async onResize(e) {
 			await super.onResize(e);
 			/*const {divListe, listeWidget, btnSil, divFisBaslik} = this;

@@ -1,123 +1,49 @@
 (function() {
 	window.CETParamPart = class extends window.CETSubPart {
-		static get partName() { return 'cetParam' } get adimText() { return 'Ayarlar' }
-		static get noResizeEventOnInputs() { return false }
+		static get partName() { return 'cetParam' } get adimText() { return 'Ayarlar' } static get noResizeEventOnInputs() { return false }
 		constructor(e) {
-			e = e || {};
-			super(e);
-			$.extend(this, {
-				tamamIslemi: e.tamamIslemi,
-				param: this.app.param.deepCopy()
-			});
-			if (!(this.layout || this.template))
-				this.template = this.app.templates.param
+			e = e || {}; super(e);
+			$.extend(this, { tamamIslemi: e.tamamIslemi, param: this.app.param.deepCopy() });
+			if (!(this.layout || this.template)) { this.template = this.app.templates.param }
 		}
 		async preInitLayout(e) {
-			e = e || {};
-			await super.preInitLayout(e);
-			const layout = e.layout || this.layout;
-			this.templates = $.extend(this.templates || {}, {
-				windows: layout.find(`#windows`)
-			});
+			e = e || {}; await super.preInitLayout(e); const layout = e.layout || this.layout;
+			this.templates = $.extend(this.templates || {}, { windows: layout.find(`#windows`) });
 			this.islemTuslari = layout.find('.islemTuslari.asil')
 		}
 		async postInitLayout(e) {
-			e = e || {};
-			await super.postInitLayout(e);	
-			const {app} = sky;
-			const {param, isAdmin} = app;
-			const isMiniDevice = $(window).width() < 400;
-			const layout = e.layout || this.layout;
-			const {islemTuslari} = this;
+			e = e || {}; await super.postInitLayout(e);
+			const {app} = sky, {param, isAdmin} = app, isMiniDevice = $(window).width() < 400;
+			const layout = e.layout || this.layout, {islemTuslari} = this;
 			setTimeout(() => {
 				const {btnToggleFullScreen, chkOtoAktar, btnGonderimIsaretSifirla} = sky.app;
-				if (btnToggleFullScreen && btnToggleFullScreen.length)
-					btnToggleFullScreen.addClass('jqx-hidden');
-				if (chkOtoAktar && chkOtoAktar.length)
-					chkOtoAktar.addClass('jqx-hidden');
-				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length)
-					btnGonderimIsaretSifirla.addClass('jqx-hidden');
+				if (btnToggleFullScreen && btnToggleFullScreen.length) btnToggleFullScreen.addClass('jqx-hidden');
+				if (chkOtoAktar && chkOtoAktar.length) chkOtoAktar.addClass('jqx-hidden');
+				if (btnGonderimIsaretSifirla && btnGonderimIsaretSifirla.length) btnGonderimIsaretSifirla.addClass('jqx-hidden');
 			}, 150);
-			this.btnTamam = islemTuslari.find(`#tamam`).jqxButton({ theme: theme })
-				.off('click')
-				.on('click', evt => this.tamamIstendi($.extend({}, e, { event: evt })));
-			
-			this.btnBarkodYukle = islemTuslari.find(`#barkodYukle`).jqxButton({ theme: theme })
-				.off('click')
-				.on('click', evt => this.barkodYukleIstendi($.extend({}, e, { event: evt })));
-			this.btnBarkodSakla = islemTuslari.find(`#barkodSakla`).jqxButton({ theme: theme })
-				.off('click')
-				.on('click', evt => this.barkodSaklaIstendi($.extend({}, e, { event: evt })));
-			
+			this.btnTamam = islemTuslari.find(`#tamam`).jqxButton({ theme }).off('click').on('click', evt => this.tamamIstendi({ ...e, event: evt }));
+			this.btnBarkodYukle = islemTuslari.find(`#barkodYukle`).jqxButton({ theme }).off('click').on('click', evt => this.barkodYukleIstendi({ ...e, event: evt }));
+			this.btnBarkodSakla = islemTuslari.find(`#barkodSakla`).jqxButton({ theme }).off('click').on('click', evt => this.barkodSaklaIstendi({ ...e, event: evt }));
 			const subContent = this.subContent = layout.find(`.subContent`);
-			let elm = subContent.find(`#wsHostName`)
-						.jqxInput({ theme: theme, width: isMiniDevice ? 190 : 240, height: false });
-			elm.off('focus').on('focus', evt =>
-				evt.target.select());
-			elm.val(param.wsHostName);
-
-			elm = subContent.find(`#wsHostName2`)
-						.jqxInput({ theme: theme, width: isMiniDevice ? 190 : 240, height: false });
-			elm.off('focus').on('focus', evt =>
-				evt.target.select());
-			elm.val(param.wsHostName2);
-			// elm.on('blur', evt => param.wsHostName = evt.target.value);
-			
-			let varsayilanWSHostName = param.varsayilanWSHostName;
-			subContent.find(`input[name="varsayilanWSHostName"][value="${varsayilanWSHostName}"]`)
-				.prop('checked', true);
-
-			elm = subContent.find('#skyWSUrl');
-			elm.off('focus').on('focus', evt =>
-				evt.target.select());
+			let elm = subContent.find(`#wsHostName`).jqxInput({ theme, width: isMiniDevice ? 190 : 240, height: false });
+			elm.off('focus').on('focus', evt => evt.target.select()); elm.val(param.wsHostName);
+			elm = subContent.find(`#wsHostName2`).jqxInput({ theme, width: isMiniDevice ? 190 : 240, height: false });
+			elm.off('focus').on('focus', evt => evt.target.select()); elm.val(param.wsHostName2);
+			let {varsayilanWSHostName} = param; subContent.find(`input[name="varsayilanWSHostName"][value="${varsayilanWSHostName}"]`).prop('checked', true);
+			elm = subContent.find('#skyWSUrl'); elm.off('focus').on('focus', evt => evt.target.select());
 			elm.val(param.skyWSURLUyarlanmis || '');
-			
-			if (!sky.config.isDevMode)
-				subContent.find('#skyWSUrl_parent').addClass('jqx-hidden');
-			
-			/*elm = subContent.find('#wsPort').jqxNumberInput({
-				theme: theme, width: 130, height: false, inputMode: 'simple',
-				min: 0, max: 65535, decimalDigits: 0,
-				spinButtons: true, spinButtonsWidth: 32,
-				decimal: param.wsPort || 8081
-			});*/
-			elm = subContent.find(`#wsPort`)
-						.jqxInput({ theme: theme, width: isMiniDevice ? 90 : 120, height: false });
-			elm.off('focus').on('focus', evt =>
-				evt.target.select());
-			elm.val(param.wsPort);
+			if (!sky.config.isDevMode) { subContent.find('#skyWSUrl_parent').addClass('jqx-hidden') }
+			elm = subContent.find(`#wsPort`).jqxInput({ theme, width: isMiniDevice ? 90 : 120, height: false });
+			elm.off('focus').on('focus', evt => evt.target.select()); elm.val(param.wsPort);
 			subContent.jqxValidator({
-				position: 'centerbottom',
-				rules: [
-					{	input: `#wsHostName`,
-						message: '(<b>WebServis IP</b>) geçersizdir',
-						action: 'change',
-						rule: 'minLength=2'
-					}/*,
-					{	input: `#wsPort`,
-						message: `(<b>WebServis Port</b>) değeri geçersizdir`,
-						action: 'change',
-						rule: ui => {
-							ui = $(ui);
-							const val = ui.val();
-							return val >= 1 && val <= 65535;
-						}
-					}*/
-				]
+				position: 'centerbottom', rules: [{	input: `#wsHostName`, message: '(<b>WebServis IP</b>) geçersizdir', action: 'change', rule: 'minLength=2' }]
 			});
-
 			const chkSerbestModmu = subContent.find(`#chkSerbestModmu`);
 			if (isAdmin) {
 				chkSerbestModmu.prop('checked', app.serbestModmu);
-				subContent.find(`#chkSerbestModmu_label`)
-					.off('mouseup, touchend')
-					.on('mouseup, touchend', evt =>
-						chkSerbestModmu.prop('checked', !chkSerbestModmu.prop('checked')));
+				subContent.find(`#chkSerbestModmu_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkSerbestModmu.prop('checked', !chkSerbestModmu.prop('checked')))
 			}
-			else {
-				chkSerbestModmu.parent().addClass('jqx-hidden');
-			}
-
+			else { chkSerbestModmu.parent().addClass('jqx-hidden') }
 			const chkGridAltMultiSelect = subContent.find(`#chkGridAltMultiSelect`);
 			chkGridAltMultiSelect.prop('checked', app.gridAltMultiSelectFlag);
 			subContent.find(`#chkGridAltMultiSelect_label`)
@@ -176,7 +102,7 @@
 			
 			let ddDokumDevice = subContent.find(`#ddDokumDevice`);
 			ddDokumDevice.jqxDropDownList({
-				theme: theme, animationType: animationType,
+				theme, animationType: animationType,
 				valueMember: 'kod', displayMember: 'aciklama',
 				selectedIndex: 0, searchMode: 'containsignorecase',
 				placeHolder: 'Seçiniz:', filterPlaceHolder: 'Bul:', filterable: false,
@@ -197,7 +123,7 @@
 
 			let ddDokumDeviceSP_baudRate = subContent.find(`#dokumDeviceSP_baudRate`);
 			ddDokumDeviceSP_baudRate.jqxDropDownList({
-				theme: theme, animationType: animationType,
+				theme, animationType: animationType,
 				valueMember: 'kod', displayMember: 'aciklama',
 				selectedIndex: 0, searchMode: 'containsignorecase',
 				placeHolder: 'Seçiniz:', filterPlaceHolder: 'Bul:', filterable: false,
@@ -211,7 +137,7 @@
 			
 			let ddDokumTurkceHarfYontemi = subContent.find(`#ddDokumTurkceHarfYontemi`);
 			ddDokumTurkceHarfYontemi.jqxDropDownList({
-				theme: theme, animationType: animationType,
+				theme, animationType: animationType,
 				valueMember: 'kod', displayMember: 'aciklama',
 				selectedIndex: 0, searchMode: 'containsignorecase',
 				placeHolder: 'Seçiniz:', filterPlaceHolder: 'Bul:', filterable: false,
@@ -259,7 +185,7 @@
 				if (val != _val) { currentTarget.value = val }
 			});
 			let ddDokumDataPrefix = subContent.find(`#ddDokumDataPrefix`).jqxComboBox({
-				theme: theme, width: isMiniDevice ? 300 : 380, height: false,
+				theme, width: isMiniDevice ? 300 : 380, height: false,
 				valueMember: 'kod', displayMember: 'aciklama', multiSelect: false,
 				searchMode: 'containsignorecase', minLength: 1, autoComplete: true,
 				source: CETDokumDevice.dokumEpsonChars
@@ -283,7 +209,7 @@
 			ddDokumDataPrefix.find(`input`).off(`focus`).on(`focus`, evt =>
 				evt.target.select());
 			let ddDokumDataPostfix = subContent.find(`#ddDokumDataPostfix`).jqxComboBox({
-				theme: theme,
+				theme,
 				width: isMiniDevice ? 300 : 380, height: false, 
 				valueMember: 'kod', displayMember: 'aciklama', multiSelect: false,
 				searchMode: 'containsignorecase', minLength: 1, autoComplete: true,
@@ -299,47 +225,33 @@
 			});
 			ddDokumDataPostfix.val(param.dokumDataPostfix);
 			ddDokumDataPostfix.find(`input`).off(`focus`).on(`focus`, evt => evt.target.select());
-			let chkDarDokummu = subContent.find(`#chkDarDokummu`); chkDarDokummu.prop('checked', param.darDokummu);
-			subContent.find(`#chkDarDokummu_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkDarDokummu.prop('checked', !chkDarDokummu.prop('checked')));
+			let chkDarDokummu = subContent.find('#chkDarDokummu'); chkDarDokummu.prop('checked', param.darDokummu);
+			subContent.find('#chkDarDokummu_label').off('mouseup, touchend').on('mouseup, touchend', evt => chkDarDokummu.prop('checked', !chkDarDokummu.prop('checked')));
 			let chkDokumZPLmi = subContent.find(`#chkDokumZPLmi`); chkDokumZPLmi.prop('checked', param.dokumZPLmi);
 			subContent.find(`#chkDokumZPLmi_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkDokumZPLmi.prop('checked', !chkDokumZPLmi.prop('checked')));
 			let chkDokumEkranami = subContent.find(`#chkDokumEkranami`);chkDokumEkranami.prop('checked', param.dokumEkranami);
 			subContent.find(`#chkDokumEkranami_label`).off('mouseup, touchend').on('mouseup, touchend', evt => chkDokumEkranami.prop('checked', !chkDokumEkranami.prop('checked')));
-			
-			let ddBarkodDevice = subContent.find(`#ddBarkodDevice`);
-			ddBarkodDevice.jqxDropDownList({
-				theme: theme, animationType: animationType,
-				valueMember: 'kod', displayMember: 'aciklama',
-				selectedIndex: 0, searchMode: 'containsignorecase',
-				placeHolder: 'Seçiniz:', filterPlaceHolder: 'Bul:', filterable: false,
-				dropDownHeight: 120, autoDropDownHeight: true, scrollBarSize: 25,
-				width: isMiniDevice ? 300 : 380, height: 35, itemHeight: 35,
-				source: $.merge(
-					[ { kod: '', aciklama: '' } ],
-					CETBarkodDevice.tip2DeviceKAListe || []
-				)
+			let ddBarkodDevice = subContent.find(`#ddBarkodDevice`); ddBarkodDevice.jqxDropDownList({
+				theme, animationType, valueMember: 'kod', displayMember: 'aciklama', selectedIndex: 0, searchMode: 'containsignorecase',
+				placeHolder: 'Seçiniz:', filterPlaceHolder: 'Bul:', filterable: false, dropDownHeight: 120, autoDropDownHeight: true, scrollBarSize: 25,
+				width: isMiniDevice ? 300 : 380, height: 35, itemHeight: 35, source: [{ kod: '', aciklama: '' }, ...(CETBarkodDevice.tip2DeviceKAListe || [])]
 			});
-			ddBarkodDevice
-				.off('change')
-				.on('change', evt => {
-					if (evt && evt.target)
-						this.barkodDeviceTipDegisti({ kod: ddDokumDevice.val() });
-				})
-			const barkodDeviceTip = param.barkodDeviceTip;
-			if (barkodDeviceTip)
-				ddBarkodDevice.val(barkodDeviceTip);
+			ddBarkodDevice.off('change').on('change', evt => { if (evt?.target) { this.barkodDeviceTipDegisti({ kod: ddDokumDevice.val() }) } })
+			const {barkodDeviceTip} = param; if (barkodDeviceTip) { ddBarkodDevice.val(barkodDeviceTip) }
 			this.barkodDeviceTipDegisti({ kod: barkodDeviceTip });
-			subContent.find('input')
-				.off('keyup')
-				.on('keyup', evt => {
-					let key = (evt.key || '').toLowerCase();
-					if (key == 'enter' || key == 'linefeed')
-						this.btnTamam.click();
-				});
-			/*const height = $(window).height() - 10;
-			let subContentWidget = this.subContentWidget = layout.find('.subContent-widget');
-			subContentWidget.jqxPanel({ theme: theme, height: height });
-			subContentWidget.jqxPanel('hScrollBar').hide();*/
+			let chkDetaylarTersSiradami = subContent.find('#chkDetaylarTersSiradami');
+			chkDetaylarTersSiradami.prop('checked', param.detaylarTersSiradami);
+			subContent.find('#chkDetaylarTersSiradami_label').off('mouseup, touchend')
+				.on('mouseup, touchend', evt => chkDetaylarTersSiradami.prop('checked', !chkDetaylarTersSiradami.prop('checked')));
+			let chkHataliBarkodlarIcinMesajGosterilirmi = subContent.find('#chkHataliBarkodlarIcinMesajGosterilirmi');
+			chkHataliBarkodlarIcinMesajGosterilirmi.prop('checked', param.hataliBarkodlarIcinMesajGosterilirmi);
+			subContent.find('#chkHataliBarkodlarIcinMesajGosterilirmi_label').off('mouseup, touchend')
+				.on('mouseup, touchend', evt => chkHataliBarkodlarIcinMesajGosterilirmi.prop('checked', !chkHataliBarkodlarIcinMesajGosterilirmi.prop('checked')));
+			let chkBarkodOkutmaSessizmi = subContent.find('#chkBarkodOkutmaSessizmi');
+			chkBarkodOkutmaSessizmi.prop('checked', param.barkodOkutmaSessizmi);
+			subContent.find('#chkBarkodOkutmaSessizmi_label').off('mouseup, touchend')
+				.on('mouseup, touchend', evt => chkBarkodOkutmaSessizmi.prop('checked', !chkBarkodOkutmaSessizmi.prop('checked')));
+			subContent.find('input').off('keyup').on('keyup', evt => { let key = (evt.key || '').toLowerCase(); if (key == 'enter' || key == 'linefeed') { this.btnTamam.click() } });
 			subContent.find(`#wsHostName`).focus();
 			this.onResize(e)
 		}
@@ -389,7 +301,10 @@
 				darDokummu: subContent.find('#chkDarDokummu').is(':checked'),
 				dokumZPLmi: subContent.find('#chkDokumZPLmi').is(':checked'),
 				dokumEkranami: subContent.find('#chkDokumEkranami').is(':checked'),
-				barkodDeviceTip: subContent.find('#ddBarkodDevice').val()
+				barkodDeviceTip: subContent.find('#ddBarkodDevice').val(),
+				detaylarTersSiradami: subContent.find('#chkDetaylarTersSiradami').is(':checked'),
+				hataliBarkodlarIcinMesajGosterilirmi: subContent.find('#chkHataliBarkodlarIcinMesajGosterilirmi').is(':checked'),
+				barkodOkutmaSessizmi: subContent.find('#chkBarkodOkutmaSessizmi').is(':checked')
 			});
 			return true
 		}
@@ -461,9 +376,9 @@
 			this.barkodYukleIstendi_kameraAcKapat(e);
 
 			const {wndContent} = e;
-			wndContent.find(`#btnBarkod`).jqxButton({ theme: theme })
+			wndContent.find(`#btnBarkod`).jqxButton({ theme })
 				.on('click', evt =>
-					this.barkodYukleIstendi_kameraAcKapat($.extend({}, e, { event: evt })));
+					this.barkodYukleIstendi_kameraAcKapat({ ...e, event: evt }));
 			
 			const txtBarkod = e.txtBarkod = wndContent.find(`#txtBarkod`);
 			txtBarkod.on('focus', evt => {
@@ -576,12 +491,12 @@
 		}
 		barkodSaklaIstendiDevam_ekranAcildi(e) {
 			const {wndContent, data, browserFlags} = e;
-			wndContent.find(`#btnKopyala`).jqxButton({ theme: theme })
+			wndContent.find(`#btnKopyala`).jqxButton({ theme })
 				.on('click', evt =>
-					this.barkodSaklaIstendiDevam_kopyalaIstendi($.extend({}, e, { event: evt })));
-			wndContent.find(`#btnKopyalaFlags`).jqxButton({ theme: theme })
+					this.barkodSaklaIstendiDevam_kopyalaIstendi({ ...e, event: evt }));
+			wndContent.find(`#btnKopyalaFlags`).jqxButton({ theme })
 				.on('click', evt =>
-					this.barkodSaklaIstendiDevam_kopyalaFlagsIstendi($.extend({}, e, { event: evt })));
+					this.barkodSaklaIstendiDevam_kopyalaFlagsIstendi({ ...e, event: evt }));
 			const txtBarkod = e.txtBarkod = wndContent.find(`#txtBarkod`);
 			txtBarkod.val(data);
 			txtBarkod.on('focus', evt => {

@@ -468,140 +468,72 @@
 				if (btnSec && btnSec.length)
 					setTimeout(() => setButonEnabled(btnSec, true), 1000)
 			}
-
-			return true;
-		}
-
-		ekle(e) {
-			e = e || {};
-			let {rec} = e;
-			if (!rec)
-				return false
-			
-			this.listeWidget.addRow(rec.uid, rec, 'last');
-			this.liste_degisti(e);
-
 			return true
 		}
-
+		ekle(e) {
+			e = e || {}; let {rec} = e, reverseFlag = e.reverse ?? e.reverseFlag; if (!rec) { return false }
+			this.listeWidget.addRow(rec.uid, rec, reverseFlag ? 'first' : 'last');
+			this.liste_degisti(e); return true
+		}
 		degistir(e) {
-			e = e || {};
-			let rec = e.rec || this.selectedBoundRec;
-			if (!rec)
-				return false;
-			
-			const {listeWidget} = this;
-			rec = $.extend(listeWidget.rowsByKey[rec.uid], rec);
-			listeWidget.updaterowbykey(rec.uid, rec);
-			delete rec[' '];
-			this.liste_degisti(e);
-
-			return true;
+			e = e || {}; let rec = e.rec || this.selectedBoundRec; if (!rec) { return false }
+			const {listeWidget} = this; rec = $.extend(listeWidget.rowsByKey[rec.uid], rec);
+			listeWidget.updaterowbykey(rec.uid, rec); delete rec[' ']; this.liste_degisti(e);
+			return true
 		}
-
 		sil(e) {
-			e = e || {};
-			const rec = e.rec || this.selectedBoundRec;
-			const {index} = e;
-			if (!rec && (index == null || index < 0))
-				return;
-			
+			e = e || {}; const rec = e.rec || this.selectedBoundRec, {index} = e;
+			if (!rec && (index == null || index < 0)) { return }
 			const {listeWidget} = this;
-			if (rec)
-				listeWidget.deleterowbykey(rec.uid)
-			else
-				listeWidget.deleteRow(index);
-			
-			this.liste_degisti(e);
-
-			return true;
+			if (rec) { listeWidget.deleterowbykey(rec.uid) } else { listeWidget.deleteRow(index) }
+			this.liste_degisti(e); return true
 		}
-
-		temizle(e) {
-			this.listeWidget.clear();
-			this.liste_degisti(e);
-
-			return true;
-		}
-
-		get listeRecs() {
-			return this.listeWidget.getRows();
-		}
-
+		temizle(e) { this.listeWidget.clear(); this.liste_degisti(e); return true }
+		get listeRecs() { return this.listeWidget.getRows() }
 		getListeRecsKontrollu() {
-			const {listeWidget} = this;
-			if ($.isEmptyObject(listeWidget.source.originaldata))
-				listeWidget.clearFilters();
-
-			return this.listeRecs;
+			const {listeWidget} = this; if ($.isEmptyObject(listeWidget.source.originaldata)) { listeWidget.clearFilters() }
+			return this.listeRecs
 		}
-
 		get editingUid() {
-			const {listeWidget} = this;
-			let editingIndex = (this.editingCell || {}).rowIndex;
-			let uid = editingIndex == null || editingIndex < 0 ? null : this.listeRecs[editingIndex].uid;
-			if (uid == null)
-				uid = listeWidget.editKey;
-
-			return uid;
+			let {listeWidget} = this, editingIndex = (this.editingCell || {}).rowIndex;
+			let uid = editingIndex == null || editingIndex < 0 ? null : this.listeRecs[editingIndex].uid; if (uid == null) { uid = listeWidget.editKey }
+			return uid
 		}
-
 		get editingRowIndex() {
-			const listeWidget = this.listeWidget;
-			let editingIndex = (this.editingCell || {}).rowIndex;
+			let {listeWidget} = this, editingIndex = this.editingCell?.rowIndex;
 			if (editingIndex == null || editingRowIndex < 0) {
-				let uid = listeWidget.editKey;
-				if (uid != null)
-					editingIndex = listeWidget.getrowdisplayindex(listeWidget.rowsByKey[uid]);
+				let {editKey: uid} = listeWidget;
+				if (uid != null) { editingIndex = listeWidget.getrowdisplayindex(listeWidget.rowsByKey[uid]) }
 			}
-
-			return editingIndex;
+			return editingIndex
 		}
-
 		get editingRec() {
-			const listeWidget = this.listeWidget;
-			let editingIndex = (this.editingCell || {}).rowIndex;
+			let {listeWidget} = this, editingIndex = this.editingCell?.rowIndex;
 			let rec = editingIndex == null || editingIndex < 0 ? null : this.listeRecs[editingIndex];
 			if (!rec) {
-				let uid = listeWidget.editKey;
-				if (uid != null)
-					editingIndex = listeWidget.rowsByKey[uid];
+				let {editKey: uid} = listeWidget;
+				if (uid != null) { editingIndex = listeWidget.rowsByKey[uid] }
 			}
-
-			return editingIndex;
+			return editingIndex
 		}
-
 		selectRec(e) {
-			e = e || {};
-			const widget = this.listeWidget;
-			if ($.isEmptyObject(this.listeRecs) && $.isEmptyObject(widget.dataViewRecords))
-				return false;
-			
-			let {noSelect, index} = e;
-			if (index != 'last') {
-				const recs = this.listeRecs;
-				if (!$.isEmptyObject(recs)) {
+			e = e || {}; const {listeWidget: widget} = this;
+			if ($.isEmptyObject(this.listeRecs) && $.isEmptyObject(widget.dataViewRecords)) { return false }
+			let {noSelect, index} = e; if (index != 'last') {
+				const {listeRecs: recs} = this; if (!$.isEmptyObject(recs)) {
 					switch (index) {
 						case 'first': index = 0; break;
 						case 'last': index = recs.length - 1; break;
 					}
 					const uid = e.rec ? e.rec.uid : (index == null ? e.key || e.uid : (recs[index] || {}).uid);
-					if (index == null || index < 0)
-						index = this.indexOfRec(e);
-					
+					if (index == null || index < 0) { index = this.indexOfRec(e) }
 					if (uid != null) {
-						this.disableEventsDo(() => {
-							widget.selectrowbykey(uid);
-							widget.ensurerowvisiblebykey(uid);
-						});
-						this.liste_satirSecildiBasit({ index: index });
+						this.disableEventsDo(() => { widget.selectrowbykey(uid); widget.ensurerowvisiblebykey(uid) });
+						this.liste_satirSecildiBasit({ index });
 					}
 				}
-				
-				return;
+				return
 			}
-
-			// widget.beginUpdate();
 			let selectLastRecBlock = e => {
 				const widget = e.widget;
 				let index = e.index;

@@ -3672,37 +3672,15 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 	/* margin: 0 0 0 1px; */
 	min-height: 28px;
 }
-@media (max-width: 400px) {
-	.part.cetApp.cetFisGiris #liste .listeSatir {
-		min-height: 18px;
-	}
-}
-.part.cetApp.cetFisGiris #liste .listeSatir.promosyon {
-	background-color: #cadebb;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .promoTextParent {
-	padding-right: 13px;
-	color: #888;
-	font-weight: normal;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .promoText {
-	color: #595;
-	font-weight: bolder;
-}
-
-.part.cetApp.cetFisGiris #liste .listeSatir .barkod {
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .shKod,
-.part.cetApp.cetFisGiris #liste .listeSatir .stokKod {
-	font-weight: bold;
-	padding-right: 8px;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .mfParent {
-	color: firebrick;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .kdvOraniText {
-	padding-left: 10px;
-}
+@media (max-width: 400px) { .part.cetApp.cetFisGiris #liste .listeSatir { min-height: 18px } }
+.part.cetApp.cetFisGiris #liste .listeSatir.promosyon { background-color: #cadebb }
+.part.cetApp.cetFisGiris #liste .listeSatir .promoTextParent { padding-right: 13px; color: #888; font-weight: normal }
+.part.cetApp.cetFisGiris #liste .listeSatir .promoText { color: #595; font-weight: bolder }
+.part.cetApp.cetFisGiris #liste .listeSatir .barkod { }
+.part.cetApp.cetFisGiris #liste .listeSatir.barkod-tekrar .barkod { color: whitesmoke !important; background-color: orangered !important }
+.part.cetApp.cetFisGiris #liste .listeSatir .shKod, .part.cetApp.cetFisGiris #liste .listeSatir .stokKod { font-weight: bold; padding-right: 8px }
+.part.cetApp.cetFisGiris #liste .listeSatir .mfParent { color: firebrick }
+.part.cetApp.cetFisGiris #liste .listeSatir .kdvOraniText { padding-left: 10px }
 .part.cetApp.cetFisGiris #liste .listeSatir .kadIskOranParent,
 	.part.cetApp.cetFisGiris #liste .listeSatir .proIskOranParent,
 	.part.cetApp.cetFisGiris #liste .listeSatir .iskOranParent,

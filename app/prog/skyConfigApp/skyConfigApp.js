@@ -24,7 +24,8 @@
 					'pdks-db-zktime': `PDKS Veri Alımı (<i>ZKTime Veritabanından</i>)`, 'pdks-db-timeroll': `PDKS Veri Alımı (<i>TimeRoll Veritabanından</i>)`,
 					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, frp: 'FRP', 
 					eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
-					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, eMail: `e-Mail Gönderimi`, eMailQueue: `e-Mail Kuyruğu İşlet`, cvmRestart: `CVM Yeniden Başlat`, wsRestart: `SkyWS Yeniden Başlat`
+					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, /*eMail: `e-Mail Gönderimi`,*/ eMailQueue: `e-Mail Kuyruğu İşlet`,
+					cvmRestart: `CVM Yeniden Başlat` /*, wsRestart: `SkyWS Yeniden Başlat`*/
 				};
 				if (gelismisModmu && !gelismisModDisabledFlag && SkyConfigYetki.yetkilimi({ yetki: 'subServiceManager' })) {
 					$.extend(result, {

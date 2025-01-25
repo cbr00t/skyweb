@@ -8,88 +8,6 @@
 			);
 			return cls ?? ( window.openDatabase ? DBMgr_WebSQL : DBMgr_SqlJS )
 		}
-		constructor(e) {
-			e = e ?? {}; super(e); const {dbMgrSinif} = this.class;
-			$.extend(this, {
-				mainPart: this,
-				// wsURLBase: updateWSUrlBaseBasit($.extend({}, sky.config, { path: sky.config.wsPath })),
-				param: new CETParam(),
-				dbMgrs: {
-					param: new dbMgrSinif({ dbName: `${this.appName}_PARAM` }),
-					rom_data: new dbMgrSinif({ dbName: `${this.appName}_ROM_DATA` })
-					//data: new dbMgrSinif({ dbName: `${this.appName}_Data` })
-				},
-				dbTablePrefixes: { const: 'const_', master: 'mst_', data: 'data_' },
-				dbCache: { recCounts: {} },
-				dokumTemps: {},
-				isAdmin: asBool(qs.admin),
-				isDokumDebug: asBool(qs.dokumDebug),
-				showLoadErrorsFlag: asBoolQ(qs.loadErrors),
-				onKamerami: asBoolQ(qs.onKamerami) == null ? false : asBool(qs.onKamerami),
-				ozelYetkiler: {
-					uygunAyrimTipleri: qs.uygunAyrimTipleri == null ? null : qs.uygunAyrimTipleri.split('|').filter(ka => ka && ka.kod),
-					serbestMod: asBoolQ(qs.serbestMod),
-					otoSonStokGuncelle: qs.otoSonStokGuncelle == null ? null : asBool(qs.otoSonStokGuncelle),
-					kmTakip: qs.kmTakip == null ? null : asBool(qs.kmTakip),
-					ilkIrsaliye: qs.ilkIrsaliye == null ? null : asBool(qs.ilkIrsaliye),
-					konumTakip: qs.konumTakip == null ? null : asBool(qs.konumTakip),
-					gridAltMultiSelect: asBoolQ(qs.gridAltMultiSelect),
-					listeKodDogrudanArama: asBoolQ(qs.listeKodDogrudanArama) == null ? asBoolQ(qs.listeKodDogrudanAramaYapilir) : asBoolQ(qs.listeKodDogrudanArama),
-					fisOzetBilgi: asBoolQ(qs.fisOzetBilgiGosterilir),
-					eIslem: asBoolQ(qs.eIslem),
-					eIslemOzelDokum: asBoolQ(qs.eIslemOzelDokum),
-					eBelgeAltSinir: qs.eBelgeAltSinir == null ? null : asFloat(qs.eBelgeAltSinir),
-					rota: asBoolQ(qs.rota) == null ? asBoolQ(qs.rotaKullanilir) : asBoolQ(qs.rota),
-					rotaZorunlu: asBoolQ(qs.rotaZorunlu) == null ? asBoolQ(qs.musteriRotaZorunlu) : asBoolQ(qs.rotaZorunlu),
-					musteriDegistirilir: asBoolQ(qs.musteriDegistirilirmi) == null ? asBoolQ(qs.musteriDegistirilir) : asBoolQ(qs.musteriDegistirilirmi),
-					bakiyeRiskGosterilmez: asBoolQ(qs.bakiyeRiskGosterilmez),
-					oncekiFislerGosterilmez: asBoolQ(qs.oncekiFislerGosterilmez),
-					fiyat: asBoolQ(qs.fiyat),
-					tahsilatIptal: asBoolQ(qs.tahsilatIptal) == null ? asBoolQ(qs.tahIptal) : asBoolQ(qs.tahsilatIptal),
-					tahsilattaAcikHesap: asBoolQ(qs.tahsilattaAcikHesap),
-					alimNetFiyat: asBoolQ(qs.alimNetFiyat),
-					alimFiyatGormez: asBoolQ(qs.alimFiyatGormez),
-					satisFiyatGormez: asBoolQ(qs.satisFiyatGormez),
-					iskonto: asBoolQ(qs.iskonto) == null ? asBoolQ(qs.isk) : asBoolQ(qs.iskonto),
-					iskSayi: qs.iskSayi == null ? null : asInteger(qs.iskSayi),
-					kamSayi: qs.kamSayi == null ? null : asInteger(qs.kamSayi),
-					satirIskOranSinir: qs.satirIskOranSinir ? asFloat(qs.satirIskOranSinir) || 0 : null,
-					menuAdimKisitIDListe: qs.menuAdimKisitIDListe ? qs.menuAdimKisitIDListe.split('|') : null,
-					fisAdimKisitIDListe: qs.fisAdimKisitIDListe ? qs.fisAdimKisitIDListe.split('|') : null,
-					dogrudanFisListeyeGirilirmi: asBool(qs.dogrudanFisListe),
-					barkodluFisGiris: asBoolQ(qs.barkodluFisGiris),
-					fisGirisSadeceBarkod: asBoolQ(qs.fisGirisSadeceBarkod),
-					geciciFisYok: asBoolQ(qs.geciciFisYok),
-					silerekBilgiAl: asBoolQ(qs.silerekBilgiAl),
-					ozelKampanya: asBoolQ(qs.ozelKampanya),
-					ozelKampanyaOranSayisi: qs.ozelKampanyaOranSayisi ? asInteger(qs.ozelKampanyaOranSayisi) : null,
-					rbk: asBoolQ(qs.rbk) == null ? null : asBool(qs.rbk),
-					doviz: asBoolQ(qs.doviz) == null ? null : asBool(qs.doviz),
-					resimBaseURL: qs.resimBaseURL,
-					barkodReferansAlinmaz: qs.barkodReferansAlinmaz
-				},
-				initCallbacks: [],
-				table2TipAdi: {
-					data_PIFFis: `Belge`,
-					data_TahsilatFis: `Tahsilat Fişi`,
-					data_UgramaFis: `Uğrama Fişi`
-					// mst_Cari: `Yeni Cari Tanım`
-				}
-			});
-			this.dbMgr_mf = this.dbMgrs.rom_data;
-
-			const extLogin = this.extensions.login;
-			$.extend(extLogin.options, {
-				isLoginRequired: false
-				/*loginTypes: [
-					{ kod: 'login', aciklama: 'VIO Kullanıcısı' },
-					// { kod: 'plasiyerLogin', aciklama: '<span style="color: steelblue;">Plasiyer</span>' }
-				]*/
-			});
-			// $.extend(extLogin.options, { isLoginRequired: true });
-			this.updateWSUrlBase();
-		}
-
 		static get rootAppName() { return 'cetApp' }
 		static get appName() { return this.rootAppName }
 		get appText() { return 'Sky ElTerminali' }
@@ -518,6 +436,9 @@
 		get karmaPaletBarkodBaslangic() { let value = this.ozelYetkiler?.karmaPaletBarkodBaslangic; if (value == null) { value = this.param.karmaPaletBarkodBaslangic } return value }
 		get irsaliyeBakiyeyiEtkilermi() { let flag = this.ozelYetkiler?.irsaliyeBakiyeyiEtkiler; if (flag == null) { flag = asBool(this.param.irsaliyeBakiyeyiEtkilermi) ?? false } return flag }
 		get barkodReferansAlinmazmi() { let flag = this.ozelYetkiler?.barkodReferansAlinmaz; if (flag == null) { flag = asBool(this.param.barkodReferansAlinmazmi) ?? false } return flag }
+		get detaylarTersSiradami() { let flag = this.ozelYetkiler?.detaylarTersSirada; if (flag == null) { flag = asBool(this.param.detaylarTersSiradami) ?? false } return flag }
+		get hataliBarkodlarIcinMesajGosterilirmi() { let flag = this.ozelYetkiler?.hataliBarkodlarIcinMesaj; if (flag == null) { flag = asBool(this.param.hataliBarkodlarIcinMesajGosterilirmi) ?? false } return flag }
+		get barkodOkutmaSessizmi() { let flag = this.ozelYetkiler?.barkodOkutmaSessiz; if (flag == null) { flag = asBool(this.param.barkodOkutmaSessizmi) ?? false } return flag }
 		get maxIskSayi() { return 6 } get maxKamSayi() { return this.maxIskSayi } get maxKadIskSayi() { return 5 }
 		get iskSayi() {
 			const {maxIskSayi} = this; let result = this.ozelYetkiler?.iskSayi;
@@ -879,7 +800,88 @@
 			return result;
 		}
 		
-		
+
+		constructor(e) {
+			e = e ?? {}; super(e); const {dbMgrSinif} = this.class;
+			$.extend(this, {
+				mainPart: this,
+				// wsURLBase: updateWSUrlBaseBasit($.extend({}, sky.config, { path: sky.config.wsPath })),
+				param: new CETParam(),
+				dbMgrs: {
+					param: new dbMgrSinif({ dbName: `${this.appName}_PARAM` }),
+					rom_data: new dbMgrSinif({ dbName: `${this.appName}_ROM_DATA` })
+					//data: new dbMgrSinif({ dbName: `${this.appName}_Data` })
+				},
+				dbTablePrefixes: { const: 'const_', master: 'mst_', data: 'data_' },
+				dbCache: { recCounts: {} },
+				dokumTemps: {},
+				isAdmin: asBool(qs.admin),
+				isDokumDebug: asBool(qs.dokumDebug),
+				showLoadErrorsFlag: asBoolQ(qs.loadErrors),
+				onKamerami: asBoolQ(qs.onKamerami) == null ? false : asBool(qs.onKamerami),
+				ozelYetkiler: {
+					uygunAyrimTipleri: qs.uygunAyrimTipleri == null ? null : qs.uygunAyrimTipleri.split('|').filter(ka => ka && ka.kod),
+					serbestMod: asBoolQ(qs.serbestMod),
+					otoSonStokGuncelle: qs.otoSonStokGuncelle == null ? null : asBool(qs.otoSonStokGuncelle),
+					kmTakip: qs.kmTakip == null ? null : asBool(qs.kmTakip),
+					ilkIrsaliye: qs.ilkIrsaliye == null ? null : asBool(qs.ilkIrsaliye),
+					konumTakip: qs.konumTakip == null ? null : asBool(qs.konumTakip),
+					gridAltMultiSelect: asBoolQ(qs.gridAltMultiSelect),
+					listeKodDogrudanArama: asBoolQ(qs.listeKodDogrudanArama) == null ? asBoolQ(qs.listeKodDogrudanAramaYapilir) : asBoolQ(qs.listeKodDogrudanArama),
+					fisOzetBilgi: asBoolQ(qs.fisOzetBilgiGosterilir),
+					eIslem: asBoolQ(qs.eIslem),
+					eIslemOzelDokum: asBoolQ(qs.eIslemOzelDokum),
+					eBelgeAltSinir: qs.eBelgeAltSinir == null ? null : asFloat(qs.eBelgeAltSinir),
+					rota: asBoolQ(qs.rota) == null ? asBoolQ(qs.rotaKullanilir) : asBoolQ(qs.rota),
+					rotaZorunlu: asBoolQ(qs.rotaZorunlu) == null ? asBoolQ(qs.musteriRotaZorunlu) : asBoolQ(qs.rotaZorunlu),
+					musteriDegistirilir: asBoolQ(qs.musteriDegistirilirmi) == null ? asBoolQ(qs.musteriDegistirilir) : asBoolQ(qs.musteriDegistirilirmi),
+					bakiyeRiskGosterilmez: asBoolQ(qs.bakiyeRiskGosterilmez),
+					oncekiFislerGosterilmez: asBoolQ(qs.oncekiFislerGosterilmez),
+					fiyat: asBoolQ(qs.fiyat),
+					tahsilatIptal: asBoolQ(qs.tahsilatIptal) == null ? asBoolQ(qs.tahIptal) : asBoolQ(qs.tahsilatIptal),
+					tahsilattaAcikHesap: asBoolQ(qs.tahsilattaAcikHesap),
+					alimNetFiyat: asBoolQ(qs.alimNetFiyat),
+					alimFiyatGormez: asBoolQ(qs.alimFiyatGormez),
+					satisFiyatGormez: asBoolQ(qs.satisFiyatGormez),
+					iskonto: asBoolQ(qs.iskonto) == null ? asBoolQ(qs.isk) : asBoolQ(qs.iskonto),
+					iskSayi: qs.iskSayi == null ? null : asInteger(qs.iskSayi),
+					kamSayi: qs.kamSayi == null ? null : asInteger(qs.kamSayi),
+					satirIskOranSinir: qs.satirIskOranSinir ? asFloat(qs.satirIskOranSinir) || 0 : null,
+					menuAdimKisitIDListe: qs.menuAdimKisitIDListe ? qs.menuAdimKisitIDListe.split('|') : null,
+					fisAdimKisitIDListe: qs.fisAdimKisitIDListe ? qs.fisAdimKisitIDListe.split('|') : null,
+					dogrudanFisListeyeGirilirmi: asBool(qs.dogrudanFisListe),
+					barkodluFisGiris: asBoolQ(qs.barkodluFisGiris),
+					fisGirisSadeceBarkod: asBoolQ(qs.fisGirisSadeceBarkod),
+					geciciFisYok: asBoolQ(qs.geciciFisYok),
+					silerekBilgiAl: asBoolQ(qs.silerekBilgiAl),
+					ozelKampanya: asBoolQ(qs.ozelKampanya),
+					ozelKampanyaOranSayisi: qs.ozelKampanyaOranSayisi ? asInteger(qs.ozelKampanyaOranSayisi) : null,
+					rbk: asBoolQ(qs.rbk) == null ? null : asBool(qs.rbk),
+					doviz: asBoolQ(qs.doviz) == null ? null : asBool(qs.doviz),
+					resimBaseURL: qs.resimBaseURL, barkodReferansAlinmaz: qs.barkodReferansAlinmaz,
+					detaylarTersSirada: qs.detaylarTersSirada, hataliBarkodlarIcinMesaj: qs.hataliBarkodlarIcinMesaj, barkodOkutmaSessiz: qs.barkodOkutmaSessiz
+				},
+				initCallbacks: [],
+				table2TipAdi: {
+					data_PIFFis: `Belge`,
+					data_TahsilatFis: `Tahsilat Fişi`,
+					data_UgramaFis: `Uğrama Fişi`
+					// mst_Cari: `Yeni Cari Tanım`
+				}
+			});
+			this.dbMgr_mf = this.dbMgrs.rom_data;
+
+			const extLogin = this.extensions.login;
+			$.extend(extLogin.options, {
+				isLoginRequired: false
+				/*loginTypes: [
+					{ kod: 'login', aciklama: 'VIO Kullanıcısı' },
+					// { kod: 'plasiyerLogin', aciklama: '<span style="color: steelblue;">Plasiyer</span>' }
+				]*/
+			});
+			// $.extend(extLogin.options, { isLoginRequired: true });
+			this.updateWSUrlBase();
+		}
 		updateWSUrlBase(e) {
 			let portArgs;
 			for (let i = 0; i < 10; i++)
@@ -5784,6 +5786,7 @@
 			return { totalRowsAffected, totalRowsAffected_data, totalRowsAffected_master }
 		}
 		playSound_barkodOkundu() {
+			if (this.barkodOkutmaSessizmi) { return }
 			setTimeout(async () => {
 				for (let i = 0; i < 1; i++) {
 					const audio = new Audio(`media/Barcode-scanner-beep-sound.mp3`);
@@ -5793,10 +5796,10 @@
 		}
 		playSound_barkodError() {
 			setTimeout(async () => {
-				for (let i = 0; i < 2; i++) {
+				for (let i = 0; i < 3; i++) {
 					const audio = new Audio(`media/Beep-tone-sound-effect.mp3`);
-					try { await audio.play() }
-					catch (ex) { }
+					try { await audio.play() } catch (ex) { }
+					await new $.Deferred(p => setTimeout(() => p.resolve(), 300))
 				}
 			}, 0)
 		}
