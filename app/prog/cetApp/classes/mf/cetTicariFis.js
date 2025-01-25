@@ -1356,7 +1356,7 @@
 		}
 		async eIslemTipDegeriFor(e) {
 			// if (this.class.alimmi || this.class.iademi)
-			if (this.class.alimmi != this.class.iademi) return ''
+			if (this.class.alimmi != this.class.iademi) { return '' }
 			return await super.eIslemTipDegeriFor(e)
 		}
 

@@ -340,50 +340,36 @@
 			}
 		}
 	};
-
-	window.CETDepoTransferTersFis = class extends window.CETDepoTransferFis {
-		static get fiiliCikismi() { return false }
-		static get alimmi() { return false }
-	}
+	window.CETDepoTransferTersFis = class extends window.CETDepoTransferFis { static get fiiliCikismi() { return false } static get alimmi() { return false } }
 
 	window.CETSubeTransferFis = class extends window.CETTransferFis {
+		static get aciklama() { return 'Şube Transfer' } static get numaratorTip() { return 'TRS' }
+		static get noYilDesteklermi() { return true } static get eIslemKullanilirmi() { return true }
+		get matbuuFormTip() {
+			const {app} = sky;
+			if (app.eIslemKullanilirmi && this.eIslemTip) {
+				if (app.eIrsaliyeKullanilirmi) {
+					const key = 'e-Irsaliye', tip2MatbuuForm = ((app._matbuuFormYapilari || {}).tip2MatbuuForm || {});
+					if (!tip2MatbuuForm || tip2MatbuuForm[key]) { return key }
+				}
+				return (app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem')
+			}
+			return 'Irsaliye'
+		}
 		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			$.extend(this, {
-				// yerKod: e.yerKod || '',
-				refSubeKod: e.refSubeKod || ''
-			});
+			e = e || {}; super(e);
+			$.extend(this, { refSubeKod: e.refSubeKod || '' });
 		}
-		
-		static get aciklama() { return 'Şube Transfer' }
-		// static get sonStoktanSecimYapilirmi() { return true }
-		// static get sonStokKontrolEdilirmi() { return !(this.alimmi || this.iademi) }
-		static get numaratorTip() { return `TRS` }
-
+		async eIslemTipDegeriFor(e) { const {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : '' }
 		hostVars(e) {
-			e = e || {};
-			let hv = super.hostVars();
-			$.extend(hv, {
-				// yerKod: this.yerKod || '',
-				refsubekod: this.refSubeKod || ''
-			});
-
-			return hv;
+			e = e || {}; let hv = super.hostVars();
+			$.extend(hv, { refsubekod: this.refSubeKod || '' });
+			return hv
 		}
-
 		async setValues(e) {
-			e = e || {};
-			await super.setValues(e);
-
-			const {rec} = e;
-			$.extend(this, {
-				// yerKod: rec.yerkod || '',
-				refSubeKod: rec.refsubekod || ''
-			});
+			e = e || {}; await super.setValues(e);
+			const {rec} = e; $.extend(this, { refSubeKod: rec.refsubekod || '' });
 		}
-
 		async initBaslikUI_ara(e) {
 			await super.initBaslikUI_ara(e);
 
@@ -520,7 +506,7 @@
 	};
 
 	window.CETSubelerArasiTransferSiparisFis = class extends window.CETTransferFis {
-		static get aciklama() { return 'Şube Transfer Siparişi' } static get numaratorTip() { return `TRSA` }
+		static get aciklama() { return 'Şube Transfer Siparişi' } static get numaratorTip() { return 'TRSA' }
 		constructor(e) {		/* (subeKod) üst seviyesinden atanmış idi .. super(e) .. ile */
 			e = e || {}; super(e); $.extend(this, { subeKod: this.subeKod || sky.app.defaultSubeKod || '', refSubeKod: e.refSubeKod || '' })
 		}
@@ -615,6 +601,7 @@
 			return await super.onKontrol(e)
 		}
 	}
+
 	window.CETPlasiyerFisOrtak = class extends window.CETStokFis {
 		static get sonStokEtkilenirmi() { return false } static get alimmi() { return true }
 		constructor(e) { e = e || {}; super(e); this.subeKod = sky.app.defaultSubeKod || '' }
