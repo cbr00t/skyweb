@@ -1098,19 +1098,15 @@
 		}
 
 		sessionInfoDegisti(e) {
-			e = e || {};
-			let degistimi = false;
-			const {sessionInfo} = sky.config;
-			if (sessionInfo && !sessionInfo.yetki)
-				sessionInfo.yetki = 'restricted'
-			let {gelismisModDisabledFlag} = this; const {chkGelismis} = this;
+			e = e || {}; let degistimi = false, gelismisModDisabledFlag = false, {sessionInfo} = sky.config;
+			if (sessionInfo.yetki == '') { sessionInfo.yetki = 'restricted' }
+			/*let {gelismisModDisabledFlag} = this; const {chkGelismis} = this;
 			if (!gelismisModDisabledFlag && !SkyConfigYetki.yetkilimi({ yetki: 'admin_readOnly' })) {
 				gelismisModDisabledFlag = this.gelismisModDisabledFlag = true;
 				this.gelismisModmu = false
-			}
-			chkGelismis[0].disabled = gelismisModDisabledFlag;
-			if (gelismisModDisabledFlag && chkGelismis.is(':checked'))
-				chkGelismis.prop('checked', false)
+			}*/
+			const {chkGelismis} = this; chkGelismis[0].disabled = gelismisModDisabledFlag;
+			if (gelismisModDisabledFlag && chkGelismis.is(':checked')) { chkGelismis.prop('checked', false) }
 			this.gelismisModFlagDegistiBasit(e)
 		}
 		gelismisModFlagDegisti(e) { this.gelismisModFlagDegistiBasit(e); this.tazele() }
