@@ -1088,19 +1088,28 @@
 							const _barkodDetayYapilar = barkodDetayYapilar; barkodDetayYapilar = []; let yetersizStokKodSet = {};
 							for (const barkodDetayYapi of _barkodDetayYapilar) {
 								const {det, barkodDetay, paketMiktar} = barkodDetayYapi, {hMiktar} = det;
-								const {shKod, paketKod} = barkodDetay, paketIcAdet = barkodDetay.paketIcAdet || 1;
-								const barDetMiktar = paketKodVarmi(paketKod) ? paketIcAdet * paketMiktar : paketMiktar, barkodDetay_tip2EkOzellik = barkodDetay.ekOzelliklerYapi.tip2EkOzellik;
+								const {shKod, paketKod} = barkodDetay, paketIcAdet = barkodDetay.paketIcAdet || 1, paketlimi = paketKodVarmi(paketKod);
+								const barDetMiktar = paketlimi ? paketIcAdet * paketMiktar : paketMiktar, barkodDetay_tip2EkOzellik = barkodDetay.ekOzelliklerYapi.tip2EkOzellik;
 								const anahStr = [shKod, ...ekOzSiraliKodSahalar.stokMst.map(attr => barkodDetay_tip2EkOzellik[attr]?.value || '')].join(delimWS);
 								let sonStokBilgiler = anah2SonStokBilgiler[anahStr]; if (!sonStokBilgiler?.length) { yetersizStokKodSet[shKod] = true; continue }
 								let kalan = hMiktar; for (const sonStokBilgi of sonStokBilgiler) {
 									let dusulecek = Math.min(kalan, sonStokBilgi.miktar); sonStokBilgi.miktar -= dusulecek; if (dusulecek <= 0) { continue }
-									let yBarkodDetay = barkodDetay.deepCopy(), yPaketMiktar = paketKodVarmi(paketKod) ? asInteger(dusulecek / paketIcAdet) : dusulecek;
+									let yBarkodDetay = barkodDetay.deepCopy(), yPaketMiktar = paketlimi ? Math.ceil(dusulecek / paketIcAdet) : dusulecek;
 									let yBarkodDetay_tip2EkOzellik = yBarkodDetay.ekOzelliklerYapi.tip2EkOzellik;
 									for (const belirtec in digerBelirtecSet) {
 										const {idSaha: kodSaha} = tip2EkOzellik[belirtec], value = sonStokBilgi[kodSaha];
 										if (value != null) { yBarkodDetay_tip2EkOzellik[belirtec].value = value }
 									} kalan -= dusulecek;
-									const yBarkodDetayYapi = { ...barkodDetayYapi, paketMiktar: yPaketMiktar, barkodDetay: yBarkodDetay }; barkodDetayYapilar.push(yBarkodDetayYapi)
+									let yBarkodDetayYapi = { ...barkodDetayYapi, paketMiktar: yPaketMiktar, barkodDetay: yBarkodDetay };
+									barkodDetayYapilar.push(yBarkodDetayYapi);
+									if (paketlimi && yPaketMiktar * paketIcAdet > dusulecek) {    /* paket'in bir tanesi eksik durumdadır */
+										let eksikIcAdet = (yPaketMiktar * paketIcAdet) - dusulecek;
+										if (yPaketMiktar > 1) {
+											let tamBarkodDetay = yBarkodDetay.deepCopy(), tamBarkodDetayYapi = { ...barkodDetayYapi, paketMiktar: --yPaketMiktar, barkodDetay: tamBarkodDetay };
+											barkodDetayYapilar.push(tamBarkodDetayYapi)
+										}
+										yBarkodDetay.paketIcAdet -= eksikIcAdet; yBarkodDetayYapi.paketMiktar = 1
+									}
 								}
 							}
 							if (!$.isEmptyObject(yetersizStokKodSet)) {
@@ -1160,7 +1169,7 @@
 
 			if (!rec) { this.focusToDefault(); return false } let det = rec; det.cacheReset();
 			if (det) { det = $.isPlainObject(det) ? fis.class.detaySinif.From(det) : det.deepCopy() } if (!det) { return false }
-			det.okutmaSayisi++; let paketKod = barkodDetay.paketKod ?? null, paketIcAdet = paketKodVarmi(paketKod) ? (det.paketKod2IcAdet || {})[paketKod] ?? null : null;
+			det.okutmaSayisi++; let paketKod = barkodDetay.paketKod ?? null, paketIcAdet = paketKodVarmi(paketKod) ? (barkodDetay.paketIcAdet || det.paketKod2IcAdet?.[paketKod]) ?? null : null;
 			let {miktar} = barkodDetay; let barkoddanMiktarGeldimi = !!miktar, paketMiktar = 0;
 			if (paketKod) { paketMiktar = (carpan || 1); det.paketMiktar += paketMiktar; if (!miktar) { miktar = paketMiktar * paketIcAdet } }
 			miktar = miktar || 1;
@@ -1172,8 +1181,7 @@
 				const {barkod} = barkodDetay; altDetay = {
 					okunanbarkod: barkod, shkod: barkodDetay.shKod, shadi: barkodDetay.shAdi, brm: barkodDetay.brm,
 					okunanTumBarkodlar: (barkodDetay.okunanTumBarkodlar || {}),
-					miktar: 0, okutmasayisi: 0, paketmiktar: 0,
-					paketkod: paketKod, paketicadet: paketIcAdet
+					miktar: 0, okutmasayisi: 0, paketmiktar: 0, paketkod: paketKod, paketicadet: paketIcAdet
 				};
 				const ekOzellikler = altDetay.ekOzellikler = {}; await barkodDetay.ekOzelliklerDo({ callback: async _e => {
 					const rafmi = _e.tip == 'raf', refRafmi = _e.tip == 'refRaf';
