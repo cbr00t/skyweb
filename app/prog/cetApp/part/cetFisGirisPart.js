@@ -1687,7 +1687,10 @@
 				displayMessage(text, '@ Barkod İşlemi @', undefined, undefined, hataliBarkodlarIcinMesajGosterilirmi ? true : null, undefined, 'top-right')
 					.on('close', evt => { setTimeout(() => this.focusToDefault(), 10) })
 			}
-			if (barkodHatasiVarmi) { this.divListe.focus(); setTimeout(() => this.divListe.focus(), 200) }
+			if (barkodHatasiVarmi) {
+				document.activeElement?.blur();
+				for (let waitMS of [500, 1000, 2000, 2500, 3000]) { setTimeout(() => document.activeElement?.blur(), waitMS) }
+			}
 			setTimeout(() => { this.onResize(e); if (!barkodHatasiVarmi) { } else { this.focusToDefault() } this.selectLastRec() }, 100)
 		}
 		hizliStok_itemSelected(e) { e.barkod = e.value; delete e.value; this.ekleIstendi(e); return true }

@@ -5796,7 +5796,7 @@
 		}
 		playSound_barkodError() {
 			setTimeout(async () => {
-				for (let i = 0; i < 3; i++) {
+				for (let i = 0; i < 1; i++) {
 					const audio = new Audio(`media/Beep-tone-sound-effect.mp3`);
 					try { await audio.play() } catch (ex) { }
 					await new $.Deferred(p => setTimeout(() => p.resolve(), 300))
