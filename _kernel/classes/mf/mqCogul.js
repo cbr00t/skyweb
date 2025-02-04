@@ -924,10 +924,7 @@
 		}
 
 		async getDokumDegeriDict(e) {
-			const {app} = sky;
-			const {isyeri} = app.param || {};
-			
-			const result = {};
+			const {app} = sky, {isyeri} = app.param || {}, result = {};
 			if (isyeri) {
 				for (const _key in isyeri) {
 					const key = `isyeri_${_key}`;

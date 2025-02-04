@@ -1682,11 +1682,13 @@
 					displayMessage(`${ex.errorText || ex.message || ex}`, `@ Toplu Barkod Ekleme İşlemi @`, undefined, undefined, false, true) }
 			}
 			finally { listeWidget.endUpdate() }
-			if (barkodHatalari?.length) {
+			let barkodHatasiVarmi = !!barkodHatalari?.length; if (barkodHatasiVarmi) {
 				let text = `Şu barkodlar hatalıdır:<ul>${barkodHatalari.map(x => `<li class="bold">${x}</li>`).join(CrLf)}</ul>`;
 				displayMessage(text, '@ Barkod İşlemi @', undefined, undefined, hataliBarkodlarIcinMesajGosterilirmi ? true : null, undefined, 'top-right')
+					.on('close', evt => { setTimeout(() => this.focusToDefault(), 10) })
 			}
-			setTimeout(() => { this.onResize(e); this.focusToDefault(); this.selectLastRec() }, 100)
+			if (barkodHatasiVarmi) { this.divListe.focus(); setTimeout(() => this.divListe.focus(), 200) }
+			setTimeout(() => { this.onResize(e); if (!barkodHatasiVarmi) { } else { this.focusToDefault() } this.selectLastRec() }, 100)
 		}
 		hizliStok_itemSelected(e) { e.barkod = e.value; delete e.value; this.ekleIstendi(e); return true }
 		async liste_veriYuklendi(e) {

@@ -1328,20 +1328,10 @@ body.cetApp {
 	background-image: url(../../../_kernel/images/geri.png);
 }
 
-.part.cetApp .asil.islemTuslari {
-	position: fixed;
-	right: 55px;
-	top: 0;
-	margin-top: 3px;
-	z-index: 10003 !important;
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
-}
+.part.cetApp .asil.islemTuslari { position: fixed; right: 55px; top: 0 z-index: 10003 !important; background-position: center; background-size: cover; background-repeat: no-repeat }
 @media (max-width: 400px) {
-	.cetApp #header #appTitle {
-		font-size: 50% !important;
-	}
+	.part.cetApp .asil.islemTuslari { top: 13px }
+	.cetApp #header #appTitle { font-size: 50% !important }
 	.cetApp .asil.islemTuslari {
 		/* margin-top: 0; */
 		margin-right: -12px;

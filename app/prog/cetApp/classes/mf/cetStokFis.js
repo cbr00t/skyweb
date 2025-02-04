@@ -16,6 +16,9 @@
 		async kaydetOncesiKontrol(e) { await super.kaydetOncesiKontrol(e) }
 		async getDokumDegeriDict(e) {
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
+				subeKod: this.subeKod, refSubeKod: this.refSubeKod,
+				subeAdi: e => sky.app.caches?.subeKod2Rec?.[this.subeKod]?.aciklama ?? '',
+				recSubeAdi: e => sky.app.caches?.subeKod2Rec?.[this.refSubeKod]?.aciklama ?? '',
 				Dip(e) {
 					const etiketSize = e.bedelEtiketUzunluk;
 					const veriSize = e.bedelVeriUzunluk + 1;
