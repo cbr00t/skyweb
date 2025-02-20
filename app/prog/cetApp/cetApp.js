@@ -5788,20 +5788,15 @@
 		playSound_barkodOkundu() {
 			if (this.barkodOkutmaSessizmi) { return }
 			setTimeout(async () => {
-				for (let i = 0; i < 1; i++) {
-					const audio = new Audio(`media/Barcode-scanner-beep-sound.mp3`);
-					try { await audio.play() } catch (ex) { }
-				}
-			}, 0)
+				const audio = new Audio(`media/Barcode-scanner-beep-sound.mp3`);
+				try { await audio.play() } catch (ex) { }
+			}, 10)
 		}
 		playSound_barkodError() {
 			setTimeout(async () => {
-				for (let i = 0; i < 1; i++) {
-					const audio = new Audio(`media/Beep-tone-sound-effect.mp3`);
-					try { await audio.play() } catch (ex) { }
-					await new $.Deferred(p => setTimeout(() => p.resolve(), 300))
-				}
-			}, 0)
+				const audio = new Audio(`media/Beep-tone-sound-effect.mp3`);
+				try { await audio.play() } catch (ex) { }
+			}, 10)
 		}
 		async onResize(e) {
 			e = e || {}; await super.onResize(e);
