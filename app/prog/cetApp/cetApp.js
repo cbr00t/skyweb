@@ -28,7 +28,10 @@
 		static get kmTakibiDesteklenirmi() { return false }
 
 		get fisTipleri() {
-			return [];
+			return [
+				CETFisTipi.fromFisSinif({ fisSinif: CETPlasiyerErtesiGunSiparisFis }),
+				CETFisTipi.fromFisSinif({ fisSinif: CETPlasiyerIadeFis })
+			]
 		}
 		get fisTipleriDuzenlenmis() {
 			let result = this._fisTipleri;

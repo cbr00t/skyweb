@@ -607,12 +607,94 @@
 
 	window.CETPlasiyerFisOrtak = class extends window.CETStokFis {
 		static get sonStokEtkilenirmi() { return false } static get alimmi() { return true }
-		constructor(e) { e = e || {}; super(e); this.subeKod = sky.app.defaultSubeKod || '' }
+		constructor(e) { e = e || {}; super(e); this.subeKod = e.subeKod || sky.app.defaultSubeKod || '' }
 		async onKontrol(e) {
 			e = e || {}; let tarih = this.tarih; const _today = today();
 			if (!tarih) { return this.error_onKontrol(`(Tarih) belirtilmelidir`, 'emptyValue') }
 			if (tarih <= today) { return this.error_onKontrol(`(Tarih) bugün veya daha eski olamaz`, 'invalidValue') }
 			return await super.onKontrol(e)
+		}
+		async initBaslikUI_ara(e) {
+			await super.initBaslikUI_ara(e);
+			const parentPart = e.parentPart, {app} = sky, param = parentPart.param, userSettings = param.userSettings = param.userSettings || {};
+			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {}, {layout} = e; let savedParentWidth;
+			if (!app.defaultPlasiyerKod || app.class.appMagazaVeyaSDMmi) {
+				let kod = this.plasiyerKod;
+				let sonDeger = sonDegerler.plasiyerKod;
+				/*if (sonDeger != kod) {
+					sonDeger = sonDegerler.plasiyerKod = kod;
+					parentPart.paramDegistimi = true;
+				}*/
+
+				const divSaha = layout.find(`#plasiyerKod`);
+				const sahaContainer = divSaha.parents(`.parent`);
+				const divEtiket = sahaContainer.find(`.etiket`);
+				let part = new CETMstComboBoxPart({
+					parentPart: parentPart,
+					content: divSaha,
+					// layout: layout.find('.hizliStok'),
+					placeHolder: 'Plasiyer',
+					listeSinif: CETKAListePart, table: 'mst_Plasiyer',
+					idSaha: 'kod', adiSaha: 'aciklama',
+					selectedId: kod,
+					widgetDuzenleyici: e => {
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
+							e.widgetArgs.width - (divEtiket.width() ||  0) );
+						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
+					},
+					events: {
+						comboBox_loadServerData: e => {
+							return (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.plasiyerKod2Rec)
+						},
+						comboBox_itemSelected: e => {
+							kod = this.plasiyerKod = (e.rec || {}).kod || e.value || sky.app.defaultPlasiyerKod;
+							if (sonDeger != kod) {
+								sonDeger = sonDegerler.plasiyerKod = kod;
+								parentPart.paramDegistimi = true;
+							}
+						}
+					}
+				});
+				if (!app.defaultPlasiyerKod) {
+				let kod = this.plasiyerKod;
+				let sonDeger = sonDegerler.plasiyerKod;
+				/*if (sonDeger != kod) {
+					sonDeger = sonDegerler.plasiyerKod = kod;
+					parentPart.paramDegistimi = true;
+				}*/
+
+				const divSaha = layout.find(`#plasiyerKod`);
+				const sahaContainer = divSaha.parents(`.parent`);
+				const divEtiket = sahaContainer.find(`.etiket`);
+				let part = new CETMstComboBoxPart({
+					parentPart: parentPart,
+					content: divSaha,
+					// layout: layout.find('.hizliStok'),
+					placeHolder: 'Plasiyer',
+					listeSinif: CETKAListePart, table: 'mst_Plasiyer',
+					idSaha: 'kod', adiSaha: 'aciklama',
+					selectedId: kod,
+					widgetDuzenleyici: e => {
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
+							e.widgetArgs.width - (divEtiket.width() ||  0) );
+						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
+					},
+					events: {
+						comboBox_loadServerData: e => {
+							return (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.plasiyerKod2Rec)
+						},
+						comboBox_itemSelected: e => {
+							kod = this.plasiyerKod = (e.rec || {}).kod || e.value || sky.app.defaultPlasiyerKod;
+							if (sonDeger != kod) {
+								sonDeger = sonDegerler.plasiyerKod = kod;
+								parentPart.paramDegistimi = true;
+							}
+						}
+					}
+				});
+				sahaContainer.removeClass(`jqx-hidden`);
+				await part.run();
+			}
 		}
 	};
 
