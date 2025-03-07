@@ -16,10 +16,9 @@
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
 				'zplSatirYukseklik', 'zplFontSize', 'zplFontKod', 'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi',
-				'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe', 'nakliyeSekliKullanilmazmi', 'dovizKullanilirmi', 'resimBaseURL',
-				'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi', 'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime', 'ekOzellikKullanim', 'tip2EkOzellikYapi',
-				'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings',
-				'detaylarTersSiradami', 'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi'
+				'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe', 'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', 'dovizKullanilirmi',
+				'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi', 'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime', 'ekOzellikKullanim', 'tip2EkOzellikYapi',
+				'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings', 'detaylarTersSiradami', 'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi'
 			]
 		}
 		static get version() { return 2 }
@@ -123,7 +122,7 @@
 				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',
 				'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi', 'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'ozelKampanyaKullanilirmi', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi',
-				'nakliyeSekliKullanilmazmi', /*'dovizKullanilirmi',*/ 'barkodReferansAlinmazmi', 'dokumRuloDuzmu', 'kapandimi'
+				'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', /*'dovizKullanilirmi',*/ 'barkodReferansAlinmazmi', 'dokumRuloDuzmu', 'kapandimi'
 			].forEach(key => { let value = this[key]; this[key] = asBool(value) });
 		}
 		reduce() {

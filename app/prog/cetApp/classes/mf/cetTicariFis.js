@@ -145,65 +145,42 @@
 				sahaContainer.removeClass(`jqx-hidden`);
 			}
 
-			if (this.class.sevkYeriKullanilirmi) {
-				let kod = this.sevkAdresKod;
-				let sonDeger = sonDegerler.sevkAdresKod;
-				/*if (sonDeger != kod) {
-					sonDeger = sonDegerler.sevkAdresKod = kod;
-					parentPart.paramDegistimi = true;
-				}*/
-				
-				const divSaha = layout.find(`#sevkAdresKod`);
-				const sahaContainer = divSaha.parents(`.parent`);
-				const divEtiket = sahaContainer.find(`.etiket`);
+			if (!app.sevkYeriKullanilmazmi && this.class.sevkYeriKullanilirmi) {
+				let kod = this.sevkAdresKod, sonDeger = sonDegerler.sevkAdresKod;
+				const divSaha = layout.find(`#sevkAdresKod`), sahaContainer = divSaha.parents(`.parent`), divEtiket = sahaContainer.find(`.etiket`);
 				let part = this._sevkAdresKodPart = new CETMstComboBoxPart({
-					parentPart: parentPart,
-					content: divSaha,
-					// layout: layout.find('.hizliStok'),
-					placeHolder: 'Sevk Yeri',
-					listeSinif: CETKAListePart, table: 'mst_SevkAdres',
-					idSaha: 'kod', adiSaha: 'aciklama',
-					selectedId: kod,
+					parentPart, content: divSaha, placeHolder: 'Sevk Yeri', listeSinif: CETKAListePart,
+					table: 'mst_SevkAdres', idSaha: 'kod', adiSaha: 'aciklama', selectedId: kod,
 					widgetDuzenleyici: e => {
-						savedParentWidth = e.widgetArgs.width = savedParentWidth || (
-							e.widgetArgs.width - (divEtiket.width() ||  0) );
+						savedParentWidth = e.widgetArgs.width = savedParentWidth || (e.widgetArgs.width - (divEtiket.width() ||  0));
 						e.widgetArgs.dropDownWidth = e.widgetArgs.width;
 					},
 					events: {
 						comboBox_stmDuzenleyici: e => {
 							const {mustKod} = this;
-							if (mustKod) {
-								e.stm.sentDo(sent =>
-									sent.where.degerAta(mustKod, `mst.mustKod`));
-							}
+							if (mustKod) { e.stm.sentDo(sent => sent.where.degerAta(mustKod, `mst.mustKod`)) }
 						},
 						liste_stmDuzenleyici: e => {
 							const {mustKod} = this;
-							if (mustKod) {
-								e.stm.sentDo(sent =>
-									sent.where.degerAta(mustKod, `mst.mustKod`));
-							}
+							if (mustKod) { e.stm.sentDo(sent => sent.where.degerAta(mustKod, `mst.mustKod`)) }
 						},
 						/*comboBox_loadServerData: e => {
 							return (e.wsArgs || {}).searchText ? null : Object.values(sky.app.caches.sevkAdresKod2Rec)
 						},*/
 						comboBox_itemSelected: e => {
-							kod = this.sevkAdresKod = (e.rec || {}).kod || e.value || '';
+							kod = this.sevkAdresKod = e.rec?.kod || e.value || '';
 							if (sonDeger != kod) {
 								sonDeger = sonDegerler.sevkAdresKod = kod;
-								parentPart.paramDegistimi = true;
+								parentPart.paramDegistimi = true
 							}
 						}
 					}
 				});
-				sahaContainer.removeClass(`jqx-hidden`);
-				await part.run();
+				sahaContainer.removeClass(`jqx-hidden`); await part.run();
 			}
-
 			if (!app.defaultYerKod || app.class.appMagazaVeyaSDMmi) {
 				let kod = this.yerKod;
 				let sonDeger = sonDegerler.yerKod;
-
 				const divSaha = layout.find(`#yerKod`);
 				const sahaContainer = divSaha.parents(`.parent`);
 				const divEtiket = sahaContainer.find(`.etiket`);

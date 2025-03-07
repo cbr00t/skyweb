@@ -2222,10 +2222,14 @@
 	<template id="cetDokumOnizleme" class="part">
 		<div>
 			<div class="asil islemTuslari flex-row">
+				<div class="nusha-parent">
+					<button id="eksi">-</button>
+					<input id="nushaSayi" name="nushaSayi" type="number" placeholder="Nüsha" min="0" max="4"></input>
+					<button id="arti">+</button>
+				</div>
 				<button id="kopya"></button>
 				<button id="yazdir"></button>
 			</div>
-
 			<div id="outputParent">
 				<textarea id="output" readonly></textarea>
 			</div>

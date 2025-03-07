@@ -116,15 +116,8 @@ const staticAssets = [
 
 self.addEventListener('install', async e => {
 	const cache = await caches.open(CACHE_NAME); 
-	for (const i in staticAssets) {
-		const url = staticAssets[i];
-		try { await cache.add(url) }
-		catch (ex) { }
-	}
-	self.skipWaiting();
-	/*setTimeout(() =>
-		self.skipWaiting(),
-		1000);*/
+	for (const url of staticAssets) { try { await cache.add(url) } catch (ex) { } }
+	self.skipWaiting()
 });
 
 self.addEventListener('activate', async e => {

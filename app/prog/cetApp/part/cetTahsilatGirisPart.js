@@ -88,14 +88,23 @@
 					divMustBilgi.find('.adresText').html(`${rec.adres || ''} ${rec.yore || ''}` + (rec.ilAdi ? ` / ${rec.ilAdi}` : ''))
 				}
 				divMustBilgi.find('.mustText').html(new CKodVeAdi({ kod: mustKod, aciklama: unvan }).parantezliOzet({ styled: true }));
-				const riskCariKod = await fis.getRiskCariKod(e);
+				const riskCariKod = await MQCogul.getRiskCariKod({ mustKod });
 				stm = new MQStm({
-					sent: new MQSent({
-						from: `mst_Cari`, where: [{ degerAta: riskCariKod, saha: 'kod' }],
-						sahalar: [`bakiye`, `riskLimiti`, `riskli`, 'takipBorcLimiti', 'takipBorc']
-					})
+					sent: new MQUnionAll([
+						new MQSent({
+							from: 'mst_Cari car',
+							where: { degerAta: mustKod, saha: 'car.kod' },
+							sahalar: ['1 oncelik', 'car.bakiye', `car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
+						}),
+						(riskCariKod ? new MQSent({
+							from: 'mst_Cari car',
+							where: { degerAta: riskCariKod, saha: 'car.kod' },
+							sahalar: ['2 oncelik', 'car.bakiye', `car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
+						}) : null)
+					].filter(x => !!x)),
+					orderBy: ['oncelik']
 				});
-				rec = await dbMgr.tekilExecuteSelect({ query: stm });
+				let recs = await dbMgr.executeSqlReturnRowsBasic({ query: stm }); rec = recs.find(_rec => _rec.riskLimiti);
 				const bakiye = !rec || bakiyeRiskGosterilmezmi ? `` : bedel(rec.bakiye), kalanRisk = !rec || bakiyeRiskGosterilmezmi ? `` : rec.riskLimiti ? bedel(rec.riskLimiti - rec.riskli) : `-Limit Yok-`;
 				const kalanTakipBorc = !rec || bakiyeRiskGosterilmezmi ? `` : rec.takipBorcLimiti ? bedel(rec.takipBorcLimiti - rec.takipBorc) : ``;
 				if (bakiye || kalanRisk || kalanTakipBorc) {
