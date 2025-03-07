@@ -1627,189 +1627,61 @@ body.cetApp {
 	.part.cetApp.cetExpandableIslemTuslari.right.bottom {
 	}
 }
+#loginForm.part.cetApp.loginUI #param { position: absolute; margin-top: -47px; right: 15px }
+.cetApp #loginForm.part #loginTipi { width: 296px !important }
+.cetApp #loginForm.part #loginTipi span { height: 20px; float: left }
 
-
-
-#loginForm.part.cetApp.loginUI #param {
-	position: absolute;
-	margin-top: -47px;
-	right: 15px;
-}
-
-.cetApp #loginForm.part #loginTipi {
-	width: 296px !important;
-}
-.cetApp #loginForm.part #loginTipi span {
-	/* padding-top: 5px !important; */
-	height: 20px;
-	float: left;
-}
-
-.part.cetApp.cetDokumOnizleme {
-}
-.part.cetApp.cetDokumOnizleme .islemTuslari {
-	/* position: fixed; */
-	/* top: 2px; */
-	/* right: 60px; */
-	/* padding: 0 2px; */
-}
-.part.cetApp.cetDokumOnizleme .islemTuslari #kopya {
-	position: relative; right: -13px !important; background-image: url(../../../_kernel/images/kopyala.png);
-}
+.part.cetApp.cetDokumOnizleme { }
+.part.cetApp.cetDokumOnizleme .islemTuslari { }
+.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent, .part.cetApp.cetDokumOnizleme .islemTuslari #kopya { position: relative; font-weight: bold; color: whitesmoke }
+.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent { right: 130px }
+.part.cetApp.cetDokumOnizleme .islemTuslari #nushaSayi { font-weight: bold !important; text-align: center !important; width: 50px; color: lightgreen; background-color: #333; padding-left: 20px }
+.part.cetApp.cetDokumOnizleme .islemTuslari #nushaSayi::placeholder { font-weight: bold !important; font-size: 80% !important; color: #aaa !important }
+.part.cetApp.cetDokumOnizleme .islemTuslari #kopya { right: -13px !important; background-image: url(../../../_kernel/images/kopyala.png) }
 .part.cetApp.cetDokumOnizleme .islemTuslari #kopya.jqx-fill-state-normal { background-color: #2a51bb }
-.part.cetApp.cetDokumOnizleme #outputParent,
+.part.cetApp.cetDokumOnizleme #outputParent, .part.cetApp.cetDokumOnizleme #output { width: 100%; height: 100% }
+.part.cetApp.cetDokumOnizleme #outputParent { }
 .part.cetApp.cetDokumOnizleme #output {
-	width: 100%;
-	height: 100%;
+	font-family: Courier New; font-size: 87%; font-weight: bold;
+	white-space: pre; line-height: 13px; color: #555; /* background-color: #ddeeee; */
+	background: radial-gradient(white 10%, #ddeeeeaa 90%); overflow: auto; user-select: all
 }
-.part.cetApp.cetDokumOnizleme #outputParent {
-}
-.part.cetApp.cetDokumOnizleme #output {
-	user-select: all;
-	font-family: Courier New;
-	font-size: 87%;
-	font-weight: bold;
-	white-space: pre;
-	line-height: 13px;
-	color: #555;
-	/* background-color: #ddeeee; */
-	background: radial-gradient(white 10%, #ddeeeeaa 90%);
-	overflow: auto;
-}
-@media (max-width: 400px) {
-	.part.cetApp.cetDokumOnizleme #output {
-		font-size: 65%;
-		line-height: 12px;
-	}
-}
+@media (max-width: 400px) { .part.cetApp.cetDokumOnizleme #output { font-size: 65%; line-height: 12px } }
 
-.part.cetApp.cetParam .islemTuslari {
-	/* position: fixed; */
-	/* margin-top: 2px; */
-	/* right: 7px; */
-	/* padding: 0 2px; */
-	z-index: 100;
-}
-.part.cetApp.cetParam .islemTuslari #tamam {
-	width: 40px;
-	height: 38px;
-	margin-top: 3px !important;
-}
-@media (max-width: 400px) {
-	.part.cetApp.cetParam .islemTuslari #tamam {
-		width: 30px;
-		height: 28px;
-		margin-top: 3px !important;
-		margin-left: 5px;
-		margin-right: -3px;
-	}
-}
-.part.cetApp.cetParam {
-	overflow-y: auto !important;
-}
-.part.cetApp.cetParam .subContent {
-	margin-top: 10px;
-	height: 180%;
-}
-.part.cetApp.cetParam .subContent > div {
-	padding: 8px 0;
-}
-.part.cetApp.cetParam .subContent > div > div {
-	padding: 0 0 2px 10px;
-	line-height: 23px;
-}
-.part.cetApp.cetParam .subContent > div > div.flex-row > div {
-	padding-right: 18px;
-}
-.part.cetApp.cetParam .ic-row {
-	height: 32px;
-	margin-top: 0 !important;
-}
+.part.cetApp.cetParam .islemTuslari { z-index: 100; }
+.part.cetApp.cetParam .islemTuslari #tamam { width: 40px; height: 38px; margin-top: 3px !important }
+@media (max-width: 400px) { .part.cetApp.cetParam .islemTuslari #tamam { width: 30px; height: 28px; margin-top: 3px !important; margin-left: 5px; margin-right: -3px } }
+.part.cetApp.cetParam { overflow-y: auto !important }
+.part.cetApp.cetParam .subContent { margin-top: 10px; height: 180% }
+.part.cetApp.cetParam .subContent > div { padding: 8px 0 }
+.part.cetApp.cetParam .subContent > div > div { padding: 0 0 2px 10px; line-height: 23px }
+.part.cetApp.cetParam .subContent > div > div.flex-row > div { padding-right: 18px }
+.part.cetApp.cetParam .ic-row { height: 32px; margin-top: 0 !important }
 @media (max-width: 350px) {
-	.part.cetApp.cetParam .subContent {
-		padding-bottom: 150px;
-	}
-	.part.cetApp.cetParam .subContent > div {
-		padding: 0;
-	}
-	.part.cetApp.cetParam .subContent > div > div {
-		padding: 0 0 0 8px;
-		line-height: 13px;
-	}
-	.part.cetApp.cetParam .ic-row {
-		height: 30px;
-		margin-top: 0 !important;
-	}
+	.part.cetApp.cetParam .subContent { padding-bottom: 150px }
+	.part.cetApp.cetParam .subContent > div { padding: 0 }
+	.part.cetApp.cetParam .subContent > div > div { padding: 0 0 0 8px; line-height: 13px }
+	.part.cetApp.cetParam .ic-row { height: 30px; margin-top: 0 !important }
 }
-.part.cetApp.cetParam .subContent .etiket,
-.part.cetApp.cetParam .subContent .ic-etiket {
-	font-weight: bold;
-}
-.part.cetApp.cetParam .subContent .etiket {
-	color: #999;
-	font-weight: bold;
-	font-size: 75%;
-	height: 33px;
-	margin-top: 0;
-}
-.part.cetApp.cetParam .subContent .ic-etiket {
-	font-size: 130%;
-	color: #888;
-	height: 60px !important;
-	margin-top: 8px;
-	padding-top: 8px;
-}
-.part.cetApp.cetParam .subContent .ic-veri {
-	height: 34px !important;
-}
-.part.cetApp.cetParam .subContent .veri * {
-	height: 33px;
-	font-size: 95%;
-}
+.part.cetApp.cetParam .subContent .etiket, .part.cetApp.cetParam .subContent .ic-etiket { font-weight: bold }
+.part.cetApp.cetParam .subContent .etiket { color: #999; font-weight: bold; font-size: 75%; height: 33px; margin-top: 0 }
+.part.cetApp.cetParam .subContent .ic-etiket { font-size: 130%; color: #888; height: 60px !important; margin-top: 8px; padding-top: 8px }
+.part.cetApp.cetParam .subContent .ic-veri { height: 34px !important }
+.part.cetApp.cetParam .subContent .veri * { height: 33px; font-size: 95% }
 @media (max-width: 350px) {
-	.part.cetApp.cetParam .subContent .ic-etiket {
-		margin-top: 13px;
-	}
-	.part.cetApp.cetParam .subContent .veri * {
-		height: 26px !important;
-		font-size: 92%;
-	}
+	.part.cetApp.cetParam .subContent .ic-etiket { margin-top: 13px }
+	.part.cetApp.cetParam .subContent .veri * { height: 26px !important; font-size: 92% }
 }
-
-.part.cetApp.cetParam input[type=radio] {
-	height: 32px;
-}
-.part.cetApp.cetParam #wsPort {
-	margin-top: 0;
-	height: 70px;
-	text-align: center;
-}
-.part.cetApp.cetParam #skyWSUrl_parent .etiket {
-	margin-top: 13px;
-	margin-right: 30px;
-}
-.part.cetApp.cetParam #skyWSUrl_parent #skyWSUrl {
-	width: 280px;
-}
+.part.cetApp.cetParam input[type=radio] { height: 32px }
+.part.cetApp.cetParam #wsPort { margin-top: 0; height: 70px; text-align: center }
+.part.cetApp.cetParam #skyWSUrl_parent .etiket { margin-top: 13px; margin-right: 30px }
+.part.cetApp.cetParam #skyWSUrl_parent #skyWSUrl { width: 280px }
 @media (max-width: 350px) {
-	.part.cetApp.cetParam .subContent .veri {
-		font-size: 75%;
-	}
-	.part.cetApp.cetParam #wsHostName,
-	.part.cetApp.cetParam #wsHostName2 {
-		max-width: 170px;
-	}
-	.part.cetApp.cetParam #wsPort {
-		max-width: 100px;
-		height: 60px !important;
-	}
+	.part.cetApp.cetParam .subContent .veri { font-size: 75% }
+	.part.cetApp.cetParam #wsHostName, .part.cetApp.cetParam #wsHostName2 { max-width: 170px }
+	.part.cetApp.cetParam #wsPort { max-width: 100px; height: 60px !important }
 }
-.part.cetApp.cetParam .dokumConfig {
-	border: #999 dotted thin;
-	margin: 0 20px 10px 20px;
-	padding-top: 8px !important;
-	padding-bottom: 8px !important;
-}
+.part.cetApp.cetParam .dokumConfig { border: #999 dotted thin; margin: 0 20px 10px 20px; padding-top: 8px !important; padding-bottom: 8px !important }
 .part.cetApp.cetParam #ddDokumDevice,
 .part.cetApp.cetParam #dokumDeviceSP_baudRate,
 .part.cetApp.cetParam #ddDokumTurkceHarfYontemi,

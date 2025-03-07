@@ -729,10 +729,12 @@
 			return result == null ? false : result;
 		}
 		get nakliyeSekliKullanilmazmi() {
-			let result = this.ozelYetkiler?.nakliyeSekliKullanilmaz;
-			if (result == null)
-				result = this.param.nakliyeSekliKullanilmazmi;
-			return result == null ? false : result;
+			let result = this.ozelYetkiler?.nakliyeSekliKullanilmaz ?? this.param.nakliyeSekliKullanilmazmi;
+			return result == null ? false : result
+		}
+		get sevkYeriKullanilmazmi() {
+			let result = this.ozelYetkiler?.sevkYeriKullanilmaz ?? this.param.sevkYeriKullanilmazmi;
+			return result == null ? false : result
 		}
 		get eIslemOzelDokummu() {
 			let flag = this.ozelYetkiler?.eIslemOzelDokum;
