@@ -272,20 +272,28 @@
 
 		async riskKontrol(e) {
 			e = e || {};
-			const {dbMgr} = this;
+			const {dbMgr, mustKod} = this;
 			const islem = e.islem || (e.sender || {}).islem;
 			const eskiFis = (islem == 'degistir') ? e.eskiFis : (islem == 'sil') ? this : null;
 			const yeniFis = (islem == 'sil') ? null : this;
 
 			const riskCariKod = await (this._promise_getRiskCariKod || this.getRiskCariKod(e));
 			let stm = new MQStm({
-				sent: new MQSent({
-					from: 'mst_Cari car',
-					where: { degerAta: riskCariKod, saha: `car.kod` },
-					sahalar: [`car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
-				})
+				sent: new MQUnionAll([
+					new MQSent({
+						from: 'mst_Cari car',
+						where: { degerAta: mustKod, saha: 'car.kod' },
+						sahalar: ['1 oncelik', `car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
+					}),
+					new MQSent({
+						from: 'mst_Cari car',
+						where: { degerAta: riskCariKod, saha: 'car.kod' },
+						sahalar: ['2 oncelik', `car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
+					})
+				]),
+				orderBy: ['oncelik']
 			});
-			let rec = await dbMgr.tekilExecuteSelect({ query: stm });
+			let recs = await dbMgr.executeSqlReturnRowsBasic({ query: stm }), rec = recs.find(_rec => _rec.riskLimiti);
 			if (rec) {
 				const riskLimiti = asFloat(rec.riskLimiti) || 0;
 				if (riskLimiti) {

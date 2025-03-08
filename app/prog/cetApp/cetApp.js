@@ -688,8 +688,9 @@
 		get fisGirisiRbkOtomatikAcilsinmi() {
 			const _flag = this.param.fisGirisiRbkOtomatikAcilsinmi;
 			let flag = _flag == null || _flag === '' ? true : asBool(_flag);
-			return flag;
+			return flag
 		}
+		get dokumNushaSayi() { return (this.ozelYetkiler?.dokumNushaSayi ?? this.param.dokumNushaSayi) ?? 0 }
 		get dokumNettenmi() {
 			let flag = this.ozelYetkiler?.dokumNetten;
 			if (flag == null)

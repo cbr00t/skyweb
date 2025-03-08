@@ -21,7 +21,7 @@
 				let value = asInteger(target.value), min = asInteger(target.min), max = asInteger(target.max);
 				let orjValue = value; value = Math.min(Math.max(value, min), max);
 				if (value != orjValue) { target.value = value }
-				this.nusha = value
+				this.nushaSayi = value
 			});
 			let elms = [
 				layout.find('#eksi').jqxButton({ theme, width: 40, height: 38 }),
@@ -29,13 +29,13 @@
 			];
 			for (let elm of elms) {
 				elm.on('click', ({ currentTarget: target }) => {
-					let {id} = target, nusha = this.nusha ?? 0;
+					let {id} = target, nushaSayi = this.nushaSayi ?? 0;
 					let txtNusha = this.txtNusha[0], min = asInteger(txtNusha.min), max = asInteger(txtNusha.max);
 					switch (id) {
-						case 'eksi': if (nusha > (min ?? 0)) { txtNusha.value = --nusha } break
-						case 'arti': if (!max || nusha < max) { txtNusha.value = ++nusha } break
+						case 'eksi': if (nushaSayi > (min ?? 0)) { txtNusha.value = --nushaSayi } break
+						case 'arti': if (!max || nushaSayi < max) { txtNusha.value = ++nushaSayi } break
 					}
-					this.nusha = nusha
+					this.nushaSayi = nushaSayi
 				})
 			}
 			this.write({ text: this.printOutput }); this.initEvents(e)
@@ -70,13 +70,8 @@
 			txtOutput.val(printOutput); return true
 		}
 		async yazdir(e) {
-			let nusha = this.nusha || 0, {btnYazdir, yazdirIslemi} = this; setButonEnabled(btnYazdir, false);
-			try {
-				for (let i = 0; i < nusha + 1; i++) {
-					if (i) { await new $.Deferred(p => setTimeout(() => p.resolve(), 500)) }
-					await yazdirIslemi?.call(this, e)
-				}
-			}
+			e = e ?? {}; let nushaSayi = e.nushaSayi = this.nushaSayi || 0, {btnYazdir, yazdirIslemi} = this;
+			setButonEnabled(btnYazdir, false); try { await yazdirIslemi?.call(this, e) }
 			finally { setTimeout(() => setButonEnabled(btnYazdir, true), 1000) }
 		}
 		async kopyaIstendi(e) {
@@ -85,7 +80,6 @@
 			displayMessage(`Rapor Bilgisi ara belleğe (<i>clipboard</i>) kopyalandı`, app.appText)
 		}
 		async yazdirIstendi(e) {
-			// await showProgress('Döküm yapılıyor...', null, 0);
 			try {
 				let result = await this.yazdir(e);
 				if (result && !result?.isError) { if (this.isComponent) { await this.destroyPart(e) } else { await this.geriIstendi(e) } }

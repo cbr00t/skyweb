@@ -16,39 +16,20 @@
 					})
 				})
 		*/
-		constructor(e) {
-			e = e || {};
-			super(e);
-		}
-
+		constructor(e) { e = e || {}; super(e); }
 		async yazdirDevam(e) {
-			await super.yazdirDevam(e);
-			
-			const matbuuForm = e.matbuuForm || await CETMatbuuForm.fromTip(e);
-			if (!matbuuForm)
-				throw { isError: true, rc: 'matbuuForm', errorText: `${e.tip ? e.tip + ' için' : ''} Matbuu Form belirlenemedi` };
-			
-			this.sayfalar = [];
-			return await matbuuForm.yazdir($.extend({}, e, { dokumcu: this }))
+			await super.yazdirDevam(e); const matbuuForm = e.matbuuForm || await CETMatbuuForm.fromTip(e);
+			if (!matbuuForm) { throw { isError: true, rc: 'matbuuForm', errorText: `${e.tip ? e.tip + ' için' : ''} Matbuu Form belirlenemedi` } }
+			this.sayfalar = []; return await matbuuForm.yazdir({ ...e, dokumcu: this })
 		}
-
 		sayfaEkle(e) {
-			const {matbuuForm} = e, {formBilgi: matbuuFormBilgi} = matbuuForm;
-			let sayfa = new CETDokumSayfa({
-				maxX: matbuuFormBilgi.sayfaBoyutlari.x,
-				sinir: matbuuFormBilgi.surekliFormmu ? null : matbuuFormBilgi.sayfaBoyutlari.y
-			});
-			this.sayfalar.push(sayfa);
-
-			return sayfa
+			const {matbuuForm} = e, {formBilgi: matbuuFormBilgi} = matbuuForm, {sayfaBoyutlari} = matbuuFormBilgi;
+			let sayfa = new CETDokumSayfa({ maxX: sayfaBoyutlari.x, sinir: matbuuFormBilgi.surekliFormmu ? null : sayfaBoyutlari.y });
+			this.sayfalar.push(sayfa); return sayfa
 		}
-
 		async writeToDevice(e) {
-			await super.writeToDevice(e);
-			
-			const srm = e.stream;
-			for (const sayfa of this.sayfalar)
-				await sayfa.writeToDevice(e)
+			await super.writeToDevice(e); let {stream: srm} = e, {sayfalar} = this;
+			for (const sayfa of sayfalar) { await sayfa.writeToDevice(e) }
 		}
 	}
 })()
