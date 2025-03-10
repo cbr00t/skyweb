@@ -203,70 +203,47 @@
 		}
 		
 		loadServerData_buildQuery(e) {
-			const wsArgs = e.duzWSArgs = $.extend({}, e.wsArgs, { rowCountOnly: e.rowCountOnly });
+			const {rowCountOnly} = e, wsArgs = e.duzWSArgs = { ...e.wsArgs, rowCountOnly };
 			wsArgs.filters = this.getFiltersFromListeWSArgs(wsArgs);
-			if (wsArgs.sortdatafield == 'unvan1' || wsArgs.sortdatafield == 'unvan2')
-				wsArgs.sortdatafield == 'unvan'
-			const {app, islemGorenlermi, bugunRotalarimi} = this;
-			if (islemGorenlermi === true) {
-				for (const key of ['pagenum', 'pagesize'])
-					delete wsArgs[key]
+			if (wsArgs.sortdatafield == 'unvan1' || wsArgs.sortdatafield == 'unvan2') { wsArgs.sortdatafield == 'unvan' }
+			for (let filter of wsArgs.filters ?? []) {
+				let {field} = filter; 
+				if (field && !field.includes('.')) { field = filter.field = `car.${field}` }
 			}
+			const {app, islemGorenlermi, bugunRotalarimi} = this;
+			if (islemGorenlermi === true) { for (const key of ['pagenum', 'pagesize']) { delete wsArgs[key] } }
 			let sent = new MQSent({
 				from: `mst_Cari car`,
-				sahalar: (e.rowCountOnly
+				sahalar: (rowCountOnly
 					? `COUNT(*) sayi`
 					: [
 						`car.rowid`, `car.kod`, `car.unvan`, `car.adres`, `car.yore`, `car.ilKod`, `car.ilAdi`, `car.vkn`,
 						`car.konTipKod`, `car.konSubeAdi`, `car.efatmi`, `car.herGunmu`, `car.rotaDisimi`, `car.rotaDevreDisimi`,
-						`car.bakiye`, `car.riskLimiti`, `car.riskli`, 'car.takipBorcLimiti', 'car.takipBorc'
+						`rcar.bakiye`, `rcar.riskLimiti`, `rcar.riskli`, 'rcar.takipBorcLimiti', 'rcar.takipBorc'
 					  ])
-						/*[	'car.rowid', 'car.*' ])*/
 			});
-			const {rotaDevreDisiGosterilirmi} = app;
-			if (!rotaDevreDisiGosterilirmi)
-				sent.where.add(`car.rotaDevreDisimi = 0`)
+			if (!rowCountOnly) { sent.fromIliski('mst_Cari rcar', `(case when coalesce(car.riskCariKod, '') = '' then car.kod else car.riskCariKod end) = rcar.kod`) }
+			const {rotaDevreDisiGosterilirmi} = app; if (!rotaDevreDisiGosterilirmi) { sent.where.add(`car.rotaDevreDisimi = 0`) }
 			if (bugunRotalarimi) {
 				sent.where.add(`car.rotaDisimi = 0`, `car.herGunmu = 0`);
-				const {defaultPlasiyerKod} = app;
-				if (defaultPlasiyerKod)
-					sent.where.degerAta(defaultPlasiyerKod, 'car.plasiyerKod')
+				const {defaultPlasiyerKod} = app; if (defaultPlasiyerKod) { sent.where.degerAta(defaultPlasiyerKod, 'car.plasiyerKod') }
 			}
-			let stm = new MQStm({
-				sent: sent,
-				orderBy: wsArgs.sortdatafield
-							? null
-							: ['rotaDisimi', 'herGunmu', 'seq']
-			});
+			let stm = new MQStm({ sent, orderBy: rowCountOnly || wsArgs.sortdatafield ? null : ['car.rotaDisimi', 'car.herGunmu', 'car.seq'] });
 			stm.fromGridWSArgs(wsArgs);
 			return stm
 		}
 		async loadServerData_ekIslemler(e) {
-			e = e || {};
-			let result = await super.loadServerData_ekIslemler(e);
-			if (result)
-				return result
-			let {recs} = e;
-			const kod2Rec = {};
-			for (const i in recs) {
-				const rec = recs[i];
-				kod2Rec[rec.kod] = rec
-			}
-			const dbMgr = sky.app.dbMgrs.rom_data;
-			let stm = this.buildQuery_fisIslemleri({ recs: recs, duzWSArgs: e.duzWSArgs || e.wsArgs });
+			e = e || {}; let result = await super.loadServerData_ekIslemler(e); if (result) { return result }
+			let {recs} = e, kod2Rec = {}; for (const rec of recs) { kod2Rec[rec.kod] = rec }
+			let dbMgr = sky.app.dbMgrs.rom_data, stm = this.buildQuery_fisIslemleri({ recs, duzWSArgs: e.duzWSArgs || e.wsArgs });
 			let _recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
-			_recs.forEach(_rec => {
-				const kod = _rec.mustKod;
-				const rec = kod2Rec[kod];
-				if (rec) {
-					for (const key of ['topKdv', 'fisSonuc', 'kayitSayisi'])
-						rec[key] = (rec[key] || 0) + (_rec[key] || 0)
-				}
-			})
+			for (const _rec of _recs) {
+				const kod = _rec.mustKod, rec = kod2Rec[kod];
+				if (rec) { for (const key of ['topKdv', 'fisSonuc', 'kayitSayisi']) { rec[key] = (rec[key] || 0) + (_rec[key] || 0) } }
+			}
 			const {islemGorenlermi, bugunRotalarimi} = this;
 			if (islemGorenlermi != null) {
-				recs = e.recs = recs.filter(rec =>
-					islemGorenlermi ? !!rec.kayitSayisi : !rec.kayitSayisi);
+				recs = e.recs = recs.filter(rec => islemGorenlermi ? !!rec.kayitSayisi : !rec.kayitSayisi);
 				e.totalRecs = recs.length
 			}
 			return false

@@ -231,7 +231,7 @@
 					#('G' 'Devam için Onay iste' #onayIstemi);
 					#('S' 'Sevkiyatı Durdur ' #sevkiyatDurdurmu);
 			*/
-			const riskKontrolDurum = sky.app.riskKontrolDurum; if (!riskKontrolDurum) { return }
+			const {riskKontrolDurum} = sky.app; if (!riskKontrolDurum) { return }
 			if (riskKontrolDurum == 'S') { await this.riskKontrol(e) }
 			else {
 				try { await this.riskKontrol(e) }
@@ -239,7 +239,7 @@
 			}
 		}
 		async riskAsildiMesajiGoster(e) {
-			const riskKontrolDurum = sky.app.riskKontrolDurum;
+			const {riskKontrolDurum} = sky.app;
 			if (riskKontrolDurum == 'S')
 				return false;
 
@@ -266,25 +266,21 @@
 						})
 				})
 			}
-
-			return true;
+			return true
 		}
-
 		async riskKontrol(e) {
-			e = e || {};
-			const {dbMgr, mustKod} = this;
-			const islem = e.islem || (e.sender || {}).islem;
+			e = e || {}; const {dbMgr, mustKod} = this;
+			const islem = e.islem || e.sender?.islem;
 			const eskiFis = (islem == 'degistir') ? e.eskiFis : (islem == 'sil') ? this : null;
 			const yeniFis = (islem == 'sil') ? null : this;
-
 			const riskCariKod = await (this._promise_getRiskCariKod || this.getRiskCariKod(e));
 			let stm = new MQStm({
 				sent: new MQUnionAll([
-					new MQSent({
+					/*new MQSent({
 						from: 'mst_Cari car',
 						where: { degerAta: mustKod, saha: 'car.kod' },
 						sahalar: ['1 oncelik', `car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
-					}),
+					}),*/
 					new MQSent({
 						from: 'mst_Cari car',
 						where: { degerAta: riskCariKod, saha: 'car.kod' },
@@ -299,44 +295,27 @@
 				if (riskLimiti) {
 					const riskli = asFloat(rec.riskli) || 0;
 					let artis = 0;
-					if (eskiFis)
-						artis -= eskiFis.hesaplanmisRiskArtisi;
-					if (yeniFis)
-						artis += yeniFis.hesaplanmisRiskArtisi;
-					
+					if (eskiFis) artis -= eskiFis.hesaplanmisRiskArtisi;
+					if (yeniFis) artis += yeniFis.hesaplanmisRiskArtisi;
 					const kalacakRisk = bedel(riskLimiti - (riskli + artis));
 					if (asBool(e.sifirDahil) ? kalacakRisk <= 0 : kalacakRisk < 0) {
-						throw {
-							isError: true, rc: 'riskAsildi',
-							errorText: `<span class="bold darkred">${bedelStr(kalacakRisk)} TL</span> Risk aşıldı!`
-						}
-					}
+						throw { isError: true, rc: 'riskAsildi', errorText: `<span class="bold darkred">${bedelStr(kalacakRisk)} TL</span> Risk aşıldı!` } }
 				}
-
 				const takipBorcLimiti = asFloat(rec.takipBorcLimiti) || 0;
 				if (takipBorcLimiti) {
 					const takipBorc = asFloat(rec.takipBorc) || 0;
 					let artis = 0;
-					if (eskiFis)
-						artis -= eskiFis.hesaplanmisTakipBorcArtisi;
-					if (yeniFis)
-						artis += yeniFis.hesaplanmisTakipBorcArtisi;
-					
+					if (eskiFis) artis -= eskiFis.hesaplanmisTakipBorcArtisi;
+					if (yeniFis) artis += yeniFis.hesaplanmisTakipBorcArtisi;
 					const kalacakTakipBorc = bedel(takipBorcLimiti - (takipBorc + artis));
 					if (asBool(e.sifirDahil) ? kalacakTakipBorc <= 0 : kalacakTakipBorc < 0) {
-						throw {
-							isError: true, rc: 'takipBorcAsildi',
-							errorText: `<span class="bold darkred">${bedelStr(kalacakTakipBorc)} TL</span> Takip Borç aşıldı!`
-						}
-					}
+						throw { isError: true, rc: 'takipBorcAsildi', errorText: `<span class="bold darkred">${bedelStr(kalacakTakipBorc)} TL</span> Takip Borç aşıldı!` } }
 				}
 			}
 		}
-
 		async bakiyeRiskDuzenle(e) {
-			e = e || {};
-			const {dbMgr} = this;
-			const islem = e.islem || (e.sender || {}).islem;
+			e = e || {}; const {dbMgr} = this;
+			const islem = e.islem || e.sender?.islem;
 			const eskiFis = (islem == 'degistir') ? e.eskiFis : (islem == 'sil') ? this : null;
 			const yeniFis = (islem == 'sil') ? null : this;
 			

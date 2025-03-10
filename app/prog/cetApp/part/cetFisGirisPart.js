@@ -282,11 +282,11 @@
 				const riskCariKod = await MQCogul.getRiskCariKod({ mustKod });
 				stm = new MQStm({
 					sent: new MQUnionAll([
-						new MQSent({
+						/*new MQSent({
 							from: 'mst_Cari car',
 							where: { degerAta: mustKod, saha: 'car.kod' },
 							sahalar: ['1 oncelik', 'car.bakiye', `car.riskLimiti`, `car.riskli`, `car.takipBorcLimiti`, `car.takipBorc`]
-						}),
+						}),*/
 						(riskCariKod ? new MQSent({
 							from: 'mst_Cari car',
 							where: { degerAta: riskCariKod, saha: 'car.kod' },
