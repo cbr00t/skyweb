@@ -5,19 +5,19 @@
 <head>
 	<meta charset="utf-8">
 	<title>Sky Web</title>
-	<meta name="description" content="Sky Web" />
-	<meta name="viewport" content="width=device-width, initial-scale=.97, minimum-scale=.97, maximum-scale=.97, user-scalable=no" />
-	<link rel="manifest" href="manifest.php?<?=$siteVersion?>" />
+	<meta name="description" content="Sky Web"/>
+	<meta name="viewport" content="width=device-width, initial-scale=.97, minimum-scale=.97, maximum-scale=.97, user-scalable=no"/>
+	<link rel="manifest" href="manifest.php?<?=$siteVersion?>"/>
 
 	<script async="false" src="../../vio/vioweb/lib/ieKontrol.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../../vio/vioweb/lib_external/bootstrap/css/bootstrap.css" />
-	<link rel="stylesheet" href="../../vio/vioweb/lib_external/bootstrap/css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="../../vio/vioweb/lib_external/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="../../vio/vioweb/lib_external/bootstrap/css/bootstrap-theme.min.css"/>
 
-	<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jquery-ui.css" />
-	<!--<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jqx.bootstrap.css" />-->
-	<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jqx.base.css" />
-	<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jqx.metro.css" />
+	<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jquery-ui.css"/>
+	<!--<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jqx.bootstrap.css"/>-->
+	<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jqx.base.css"/>
+	<link rel="stylesheet" href="../../vio/vioweb/lib_external/jqx/css/jqx.metro.css"/>
 	<script type="module" src="../../vio/vioweb/lib_external/etc/require.js"></script>
 	<script src="../../vio/vioweb/lib/core_extensions.js?<?=$siteVersion?>"></script>
     <script src="../../vio/vioweb/lib_external/jqx/jquery-3.3.1.min.js"></script>
@@ -31,16 +31,16 @@
 	<!--<script src="../lib_external/webSQL/alasql.js"></script>-->
 
 	<script src="../lib_external/html5-qrcode.min.js"></script>
-	<link rel="stylesheet" href="../lib_external/hightlight/xcode.min.css" />
+	<link rel="stylesheet" href="../lib_external/hightlight/xcode.min.css"/>
 	<script src="../lib_external/hightlight/hightlight.min.js"></script>
 	
-	<!--<link rel="stylesheet" href="../lib_external/htmlelements/styles/smart.default.css" />-->
+	<!--<link rel="stylesheet" href="../lib_external/htmlelements/styles/smart.default.css"/>-->
 	<!--<script src="../lib_external/htmlelements/smart.elements.js"></script>-->
 	<!--<script src="../lib_external/htmlelements/smart.ganttchart.js"></script>
 	<script src="../lib_external/htmlelements/smart.checkbox.js"></script>-->
 
 	<!--<script src="../lib_external/sql.min.js"></script>-->
-	<!--<link rel="stylesheet" href="../lib_external/apexcharts/apexcharts.css" />
+	<!--<link rel="stylesheet" href="../lib_external/apexcharts/apexcharts.css"/>
 	<script src="../lib_external/apexcharts/apexcharts.min.js"></script>
 	<script src="../lib_external/apexcharts/locales/tr.json"></script>-->
 	
@@ -81,13 +81,13 @@
 	<script src="lib/dbMgr_alaSQL.js?<?=$siteVersion?>"></script>
 	<script src="lib/kernel.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="index.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="index.css?<?=$siteVersion?>"/>
 	<script src="appBase/extensions/extension.js?<?=$siteVersion?>"></script>
 	<script src="appBase/extensions/partExtension.js?<?=$siteVersion?>"></script>
 	<script src="appBase/extensions/appExtension.js?<?=$siteVersion?>"></script>
 	<script src="appBase/ortak/layoutBase.js?<?=$siteVersion?>"></script>
 	<script src="appBase/ortak/appPartBase.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="appBase/ortak/app.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="appBase/ortak/app.css?<?=$siteVersion?>"/>
 	<script src="appBase/ortak/app.js?<?=$siteVersion?>"></script>
 	<script src="appBase/ortak/prog.js?<?=$siteVersion?>"></script>
 	<script src="appBase/ortak/module.js?<?=$siteVersion?>"></script>
@@ -106,9 +106,9 @@
 	<script src="classes/mf/mqDetayli.js?<?=$siteVersion?>"></script>
 	<script src="classes/mf/mqIcmal.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="appBase/part/knobProgressPart.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="appBase/part/knobProgressPart.css?<?=$siteVersion?>"/>
 	<script src="appBase/part/knobProgressPart.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="appBase/part/appIndicatorPart.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="appBase/part/appIndicatorPart.css?<?=$siteVersion?>"/>
 	<script src="appBase/part/appIndicatorPart.js?<?=$siteVersion?>"></script>
 	<script src="appBase/part/ortakIslemTuslariPart.js?<?=$siteVersion?>"></script>
 	<script src="appBase/part/subPart.js?<?=$siteVersion?>"></script>
@@ -117,13 +117,13 @@
 	<script src="appBase/part/tarihPart.js?<?=$siteVersion?>"></script>
 	<script src="appBase/part/dataTablePart.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/part/login/loginUI.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/part/login/loginUI.css?<?=$siteVersion?>"/>
 	<script src="../app/part/login/loginExtension.js?<?=$siteVersion?>"></script>
 	<script src="../app/part/login/loginUIBase.js?<?=$siteVersion?>"></script>
 	<script src="../app/part/login/loginUI.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/module/smartGantt/smartGantt_helper.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/module/smartGantt/smartGanttApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/module/smartGantt/smartGantt_helper.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/module/smartGantt/smartGanttApp.css?<?=$siteVersion?>"/>
 	<script src="../app/module/smartGantt/smartGanttApp.js?<?=$siteVersion?>"></script>
 
 	<!--<script src="../app/prog/b2x/classes/b2x_kodYapi.js?<?=$siteVersion?>"></script>
@@ -135,20 +135,20 @@
 	<script src="../app/prog/b2x/classes/b2x_item.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/b2x/classes/b2x_urunBilgileri.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/b2x/classes/b2x_sepetIslemleri.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="../app/prog/b2x/b2xApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/b2x/b2xApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/b2x/b2xApp.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="../app/prog/b2x/part/b2x_test.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/b2x/part/b2x_test.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/b2x/part/b2x_testPart.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-600px.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-900px.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-1024px.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-1300px.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-600px.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-900px.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-1024px.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/prog/b2c/css/b2cApp-max-1300px.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/b2c/b2cApp.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="../app/prog/b2c/part/b2c_loginUI.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/b2c/part/b2c_loginUI.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/b2c/part/b2c_loginUI.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="../app/prog/b2c/part/b2c_newUserUI.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/b2c/part/b2c_newUserUI.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/b2c/part/b2c_newUserUI.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/b2c/part/b2c_urunPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/b2c/part/b2c_sepetIcerikPart.js?<?=$siteVersion?>"></script>-->
@@ -202,7 +202,7 @@
 	<script src="../app/prog/cetApp/classes/mf/cetBekleyenUgramaFis.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/classes/mf/cetPromosyonDetay.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="../app/prog/cetApp/cetApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/cetApp/cetApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/cetApp/cetApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/cetSubPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/part/cetExpandableIslemTuslariPart.js?<?=$siteVersion?>"></script>
@@ -242,18 +242,18 @@
 	<script src="../app/prog/cetApp/part/cetRaporGridliPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/part/cetMusteriDurumuPart.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/prog/cetApp/cetSicakSogukMagazaOrtakApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/cetApp/cetSicakSogukMagazaOrtakApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/cetApp/cetSicakSogukMagazaOrtakApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/cetSDMApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/cetSicakSatisApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/cetSogukSiparisApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/cetApp/cetMagazaApp.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="../app/module/panelRaporlamaApp/panelRaporlamaApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/module/panelRaporlamaApp/panelRaporlamaApp.css?<?=$siteVersion?>"/>
 	<script src="../app/module/panelRaporlamaApp/panelRaporlamaApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/module/panelRaporlamaApp/part/panelRaporlamaTestPart.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="../app/prog/sosyalDurumApp/sosyalDurumApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/sosyalDurumApp/sosyalDurumApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/sosyalDurumApp/sosyalDurumApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/sosyalDurumApp/part/sosyalDurumPartBase.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/sosyalDurumApp/part/sosyalDurumGirisPart.js?<?=$siteVersion?>"></script>
@@ -262,7 +262,7 @@
 	<script src="../app/prog/sosyalDurumApp/part/sosyalDurumEDevlettenYuklePart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/sosyalDurumApp/part/sosyalDurumDegerlendirmePart.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="../app/prog/skyCafeApp/skyCafeApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/skyCafeApp/skyCafeApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/skyCafeApp/extension/skyCafeLoginExtension.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyCafeApp/skyCafeApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyCafeApp/skyCafeRestApp.js?<?=$siteVersion?>"></script>
@@ -304,9 +304,9 @@
 	<script src="../app/prog/skyCafeApp/part/skyCafeZHesaplasmaPart.js?<?=$siteVersion?>"></script>
 	
 	<script src="../app/prog/skyMESApp/skyMESApp.js?<?=$siteVersion?>"></script>
-	<link rel="stylesheet" href="../app/prog/skyMESApp/skyMESApp-base.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/prog/skyMESApp/skyMESApp.css?<?=$siteVersion?>" />
-	<link rel="stylesheet" href="../app/prog/skyMESApp/skyMakineDurumApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/skyMESApp/skyMESApp-base.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/prog/skyMESApp/skyMESApp.css?<?=$siteVersion?>"/>
+	<link rel="stylesheet" href="../app/prog/skyMESApp/skyMakineDurumApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/skyMESApp/skyMakineDurumApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyMESApp/part/skyMESKlavyePart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyMESApp/part/skyMESWindowPart.js?<?=$siteVersion?>"></script>
@@ -316,7 +316,7 @@
 	<script src="../app/prog/skyMESApp/part/skyMakineDurum_miktarGirisPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyMESApp/part/skyMakineDurum_gorevSecPart.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/prog/skyMESApp/skyHatIzlemeApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/skyMESApp/skyHatIzlemeApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/skyMESApp/skyHatIzlemeApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyMESApp/part/skyHatIzleme_siradakiIslerPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyMESApp/part/skyHatIzleme_bekleyenIslerPart.js?<?=$siteVersion?>"></script>
@@ -326,7 +326,7 @@
 	<script src="../app/prog/skyMESApp/part/skyHatIzleme_zamanEtuduPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyMESApp/part/skyMES_personelSecPart.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/prog/skyConfigApp/skyConfigApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/skyConfigApp/skyConfigApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/skyConfigApp/skyConfigApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyConfigApp/classes/skyConfigYetki.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyConfigApp/classes/skyConfigParam.js?<?=$siteVersion?>"></script>
@@ -350,7 +350,7 @@
 	<script src="../app/prog/skyConfigApp/part/parts/skyConfigToolsPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyConfigApp/part/parts/skyConfigGelismisPart.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/prog/skyKonumTakipApp/skyKonumTakipApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/skyKonumTakipApp/skyKonumTakipApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/skyKonumTakipApp/skyKonumTakipApp.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyKonumTakipApp/part/ortak/skyKonumTakipWindowPart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyKonumTakipApp/part/ortak/skyKonumTakipTextInputPart.js?<?=$siteVersion?>"></script>
@@ -358,15 +358,15 @@
 	<script src="../app/prog/skyKonumTakipApp/part/parts/skyKonumTakip_birKismiListePart.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/skyKonumTakipApp/part/parts/skyKonumTakip_plasUserSecPart.js?<?=$siteVersion?>"></script>
 
-	<link rel="stylesheet" href="../app/prog/skyTicMenuApp/skyTicMenuApp.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/skyTicMenuApp/skyTicMenuApp.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/skyTicMenuApp/skyTicMenuApp.js?<?=$siteVersion?>"></script>
 	
-	<link rel="stylesheet" href="../app/prog/ahmet/workspace01/workspace01.css?<?=$siteVersion?>" />
+	<link rel="stylesheet" href="../app/prog/ahmet/workspace01/workspace01.css?<?=$siteVersion?>"/>
 	<script src="../app/prog/ahmet/workspace01/workspace01_base.js?<?=$siteVersion?>"></script>
 	<script src="../app/prog/ahmet/workspace01/workspace01.js?<?=$siteVersion?>"></script>
 	
 
-	<!--<link rel="stylesheet" href="etc/ahmet.css?<?=$siteVersion?>" />
+	<!--<link rel="stylesheet" href="etc/ahmet.css?<?=$siteVersion?>"/>
 	<script src="etc/ahmet.js?<?=$siteVersion?>"></script>-->
 
 	
@@ -384,7 +384,7 @@
 	<main id="contentParent">
 		<div id="header" valign="middle" class="flex-row">
 			<div id="appTitle">
-				<span class="veri flex-row" />
+				<span class="veri flex-row"/>
 			</div>
 			
 			<div id="siteVersion">

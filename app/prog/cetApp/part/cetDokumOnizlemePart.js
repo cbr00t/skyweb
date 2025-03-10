@@ -71,7 +71,7 @@
 		}
 		async yazdir(e) {
 			e = e ?? {}; let nushaSayi = e.nushaSayi = this.nushaSayi || 0, {btnYazdir, yazdirIslemi} = this;
-			setButonEnabled(btnYazdir, false); try { await yazdirIslemi?.call(this, e) }
+			setButonEnabled(btnYazdir, false); try { return await yazdirIslemi?.call(this, e) }
 			finally { setTimeout(() => setButonEnabled(btnYazdir, true), 1000) }
 		}
 		async kopyaIstendi(e) {

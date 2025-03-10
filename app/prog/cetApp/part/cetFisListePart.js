@@ -30,7 +30,10 @@
 			}
 			this.focusToDefault()
 		}
-		async activatePart(e) { e = e || {}; const layout = e.layout || this.layout; this.initMustBilgi(e); await super.activatePart(e); this.cleanUpWidgets() }
+		async activatePart(e) {
+			e = e || {}; const layout = e.layout || this.layout; this.initMustBilgi(e); await super.activatePart(e); this.cleanUpWidgets();
+			setTimeout(() => this.onResize(e), 100)
+		}
 		async initActivatePartOrtak(e) { await super.initActivatePartOrtak(e) }
 		async deactivePart(e) { e = e || {}; const layout = e.layout || this.layout; await super.deactivePart(e) }
 
