@@ -571,7 +571,7 @@
 								comboBox_veriYuklendi: _e => {
 									if (value) {
 										const _recs = (_e.records.filter(_rec => !_rec.action) || []);
-										_e.rec = rec = _recs.find(_rec => (_rec.kod || _rec.uid) == value) || _recs[0];
+										_e.rec = rec = _recs?.find(_rec => (_rec.kod || _rec.uid) == value) || _recs[0];
 									}
 									resolve(_e);
 								}

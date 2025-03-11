@@ -289,7 +289,7 @@
 				]),
 				orderBy: ['oncelik']
 			});
-			let recs = await dbMgr.executeSqlReturnRowsBasic({ query: stm }), rec = recs.find(_rec => _rec.riskLimiti);
+			let recs = await dbMgr.executeSqlReturnRows({ query: stm }), rec = recs?.find(_rec => _rec.riskLimiti);
 			if (rec) {
 				const riskLimiti = asFloat(rec.riskLimiti) || 0;
 				if (riskLimiti) {
