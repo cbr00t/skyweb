@@ -68,7 +68,8 @@
 					].filter(x => !!x)),
 					orderBy: ['oncelik']
 				});
-				let recs = await dbMgr.executeSqlReturnRows({ query: stm }); rec = recs?.find(_rec => _rec.riskLimiti);
+				let recs = await dbMgr.executeSqlReturnRows(stm);
+				rec = recs?.find(_rec => _rec.riskLimiti) ?? recs?.[0];
 				const bakiye = !rec || bakiyeRiskGosterilmezmi ? `` : bedel(rec.bakiye);
 				const kalanRisk = !rec || bakiyeRiskGosterilmezmi ? `` : rec.riskLimiti ? bedel(rec.riskLimiti - rec.riskli) : `-Limit Yok-`;
 				const kalanTakipBorc = !rec || bakiyeRiskGosterilmezmi ? `` : rec.takipBorcLimiti ? bedel(rec.takipBorcLimiti - rec.takipBorc) : ``;
