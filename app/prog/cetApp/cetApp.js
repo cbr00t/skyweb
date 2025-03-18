@@ -977,7 +977,7 @@
 				catch (ex) { }
 			}
 
-			((window.savedProcs || {}).showProgress || showProgress)
+			(window.savedProcs?.showProgress || showProgress)
 				(null, null, 100, false);
 			
 			/*const barkodContainer = $(`<div id="barkodContainer" style="width: 100px; height: 100px;"/>`).appendTo(sky.app.content);
@@ -1031,10 +1031,10 @@
 			}
 
 			hideProgress();
-			((window.savedProcs || {}).hideProgress || hideProgress)();
+			(window.savedProcs?.hideProgress || hideProgress)();
 			setTimeout(() => {
 				hideProgress();
-				((window.savedProcs || {}).hideProgress || hideProgress)();
+				(window.savedProcs?.hideProgress || hideProgress)();
 				this.sonIslemlerSonrasi(e);
 			}, 1000);
 		}
@@ -1052,7 +1052,7 @@
 			for (const i in timeouts) {
 				setTimeout(() => {
 					hideProgress();
-					((window.savedProcs || {}).hideProgress || hideProgress)();
+					(window.savedProcs?.hideProgress || hideProgress)();
 				}, timeouts[i])
 			}
 
@@ -1078,7 +1078,7 @@
 			await this.extensions.login.loginIslemi(e);
 			
 			showProgress(null, null, 10);
-			((window.savedProcs || {}).showProgress || showProgress)(null, null, 10, false);
+			(window.savedProcs?.showProgress || showProgress)(null, null, 10, false);
 
 			let callback = this.afterRunCallback;
 			if ($.isFunction(callback)) {
@@ -2432,7 +2432,7 @@
 		async prefetchUIs(e) {
 			e = e || {}; const {parent, tempLayout} = this;
 			parent.css('opacity', .01);
-			((window.savedProcs || {}).showProgress || showProgress)(null, null, 1, false);
+			(window.savedProcs?.showProgress || showProgress)(null, null, 1, false);
 			const fis = new CETSatisFaturaFis();
 			if (fis.class.numaratorTip)
 				await fis.numaratorOlustur()
@@ -2465,7 +2465,7 @@
 			}
 			setTimeout(() => {
 				parent.css('opacity', 1);
-				((window.savedProcs || {}).hideProgress || hideProgress)();
+				(window.savedProcs?.hideProgress || hideProgress)();
 			}, 10);
 		}
 
@@ -2708,116 +2708,64 @@
 					this.onbellekSilIstendi()
 			}
 		}
-		
-		async tabloEksikleriTamamla_noCacheReset(e) {
-			return await this.tabloEksikleriTamamla($.extend({}, e, { noCacheReset: true }))
-		}
-
+		async tabloEksikleriTamamla_noCacheReset(e) { return await this.tabloEksikleriTamamla($.extend({}, e, { noCacheReset: true })) }
 		async gonderilecekBilgiler(e) {
-			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
-			const {alaSQLmi} = dbMgr;
-			const {tx} = e;
-			let {bilgiGonderTableYapilari} = e;
-			if (!bilgiGonderTableYapilari)
-				bilgiGonderTableYapilari = this.bilgiGonderTableYapilari
-
-			const {param} = this;
-			let _param = e.param;
+			e = e || {}; let dbMgr = e.dbMgr || this.dbMgr_mf, {alaSQLmi} = dbMgr, {tx} = e;
+			let {bilgiGonderTableYapilari} = e; if (!bilgiGonderTableYapilari) { bilgiGonderTableYapilari = this.bilgiGonderTableYapilari }
+			let {param} = this, {param: _param} = e;
 			if (!_param) {
 				_param = e.param = {};
-				if (this.kmTakibiYapilirmi) /* param.kapandimi */
-					_param.kapandimi = true;
-				if (param.ilkKM)
-					_param.ilkKM = param.ilkKM
-				if (param.sonKM)
-					_param.sonKM = param.sonKM
+				if (this.kmTakibiYapilirmi) { _param.kapandimi = true }
+				if (param.ilkKM) { _param.ilkKM = param.ilkKM }
+				if (param.sonKM) { _param.sonKM = param.sonKM }
 				if (param.mustKod2Bilgi) {
-					for (const mustKod in param.mustKod2Bilgi) {
-						const bilgi = param.mustKod2Bilgi[mustKod];
-						if (!$.isEmptyObject(bilgi)) {
-							const _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {};
-							_mustKod2Bilgi[mustKod] = bilgi
-						}
+					for (const [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
+						if ($.isEmptyObject(bilgi)) { continue }
+						const _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi
 					}
 				}
 			}
-			let paramGonderilsinmi = false;
-			if (_param) {
-				if (!paramGonderilsinmi && param.kapandimi)
-					paramGonderilsinmi = true;
-				
-				if (!paramGonderilsinmi && _param.mustKod2Bilgi) {
-					for (const mustKod in param.mustKod2Bilgi) {
-						const bilgi = param.mustKod2Bilgi[mustKod];
-						if (!$.isEmptyObject(bilgi)) {
-							paramGonderilsinmi = true;
-							break
-						}
-					}
-				}
+			let paramGonderilsinmi = false; if (_param) {
+				if (!paramGonderilsinmi && param.kapandimi) { paramGonderilsinmi = true }
+				if (!paramGonderilsinmi && _param.mustKod2Bilgi) { paramGonderilsinmi = Object.values(param.mustKod2Bilgi).find(x => !$.isEmptyObject(x)) }
 			}
-
-			const table2Info = {};
-			const result = { totalCount: 0, table2Info: table2Info };
-			if (paramGonderilsinmi) {
-				result.param = _param;
-				result.totalCount++
-			}
-			else if ($.isEmptyObject(bilgiGonderTableYapilari))
-				return result
+			let table2Info = {}, result = { totalCount: 0, table2Info: table2Info };
+			if (paramGonderilsinmi) { result.param = _param; result.totalCount++ }
+			else if ($.isEmptyObject(bilgiGonderTableYapilari)) { return result }
 			
-			// await this.knobProgressSetLabel(`Belgeler taranıyor...`);
-			const fetchBlock = async e => {
+			let fetchBlock = async e => {
 				let rs = await dbMgr.executeSql({ tx: e.tx || tx, query: e.query });
 				for (let i = 0; i < rs.rows.length; i++) {
-					const table = e.table || rec._table;
-					const rec = rs.rows[i];
-					const info = table2Info[table] = table2Info[table] || { count: 0, recs: [] };
-					info.count++;
-					info.recs.push(rec);
-					result.totalCount++
+					let table = e.table || rec._table, rec = rs.rows[i], info = table2Info[table] = table2Info[table] || { count: 0, recs: [] };
+					result.totalCount++; info.count++; info.recs.push(rec)
 				}
-				// await this.knobProgressStep(3)
 			};
-			const table2Recs = {};
-			for (const tableYapi of bilgiGonderTableYapilari) {
-				const fisIDListe = tableYapi.fisIDListe;
-				const baslikTable = tableYapi.baslik;
+			let table2Recs = {}, orderBy = ['rowid'];
+			for (let {fisIDListe, baslik: baslikTable, tanim: tanimTablolar /*, diger */} of bilgiGonderTableYapilari) {
 				let sent = new MQSent({
-					from: baslikTable,
-					where: [`gonderildi = ''`, `gecici = ''`, `degismedi = ''`],
+					from: baslikTable, where: [`gonderildi = ''`, `gecici = ''`, `degismedi = ''`],
 					sahalar: [`'${baslikTable}' _table`, `'fis' _tip`, ...(alaSQLmi ? [] : ['rowid']), '*']
 				});
-				if (fisIDListe && alaSQLmi)
-					sent.where.inDizi(fisIDListe, 'rowid')
-				await fetchBlock({ table: baslikTable, query: new MQStm({ sent: sent }) });
+				if (fisIDListe && alaSQLmi) { sent.where.inDizi(fisIDListe, 'rowid') }
+				await fetchBlock({ table: baslikTable, query: new MQStm({ sent, orderBy }) });
 				/*const digerTablolar = tableYapi.diger;
 				if (!$.isEmptyObject(digerTablolar)) {
-					for (const j in digerTablolar) {
-						const table = digerTablolar[j];
+					for (let table of digerTablolar) {
 						let sent = new MQSent({
-							from: `${table} har`,
-							fromIliskiler: [
-								{ from: `${baslikTable} fis`, iliski: `har.fissayac = fis.rowid` }
-							],
-							where: [`fis.gonderildi=''`],
-							sahalar: [`'${baslikTable}' _parentTable`, `'${table}' _table`, `'diger' _tip`, `har.rowid`, `har.*`]
+							from: `${table} har`, fromIliskiler: [ { from: `${baslikTable} fis`, iliski: `har.fissayac = fis.rowid` } ],
+							where: [`fis.gonderildi=''`], sahalar: [`'${baslikTable}' _parentTable`, `'${table}' _table`, `'diger' _tip`, `har.rowid`, `har.*`]
 						});
-						if (fisIDListe)
-							sent.where.inDizi(fisIDListe, `har.fissayac`);
-						await fetchBlock({ table: table, query: new MQStm({ sent: sent }) });
+						if (fisIDListe) { sent.where.inDizi(fisIDListe, `har.fissayac`) }
+						await fetchBlock({ table, query: new MQStm({ sent, orderBy }) });
 					}
 				}*/
-				const tanimTablolar = tableYapi.tanim;
 				if (!$.isEmptyObject(tanimTablolar)) {
 					for (const table of tanimTablolar) {
 						let sent = new MQSent({
-							from: table,
-							where: [`gonderildi=''`],
+							from: table, where: [`gonderildi = ''`],
 							sahalar: [`'${table}' _table`, `'tanim' _tip`, ...(alaSQLmi ? [] : ['rowid']), '*']
 						});
-						await fetchBlock({ table: table, query: new MQStm({ sent: sent }) })
+						await fetchBlock({ table, query: new MQStm({ sent, orderBy }) })
 					}
 				}
 			}
@@ -2830,12 +2778,12 @@
 				if (gonderilecekBilgiler?.totalCount) {
 					const {table2Info} = gonderilecekBilgiler;
 					let bilgiText = '';
-					for (const table in table2Info) {
+					for (let [table, {count}] in Object.entries(table2Info)) {
 						if (!table2TipAdi[table]) { continue }
-						const info = table2Info[table], {count} = info;
 						if (count) {
-							const tipAdi = table2TipAdi[table] || table;
-							if (bilgiText) { bilgiText += ', ' } bilgiText += `${count.toLocaleString()} adet ${tipAdi}`;
+							let tipAdi = table2TipAdi[table] || table;
+							if (bilgiText) { bilgiText += ', ' }
+							bilgiText += `${count.toLocaleString()} adet ${tipAdi}`;
 						}
 					}
 					if (bilgiText) {
@@ -2847,22 +2795,14 @@
 										`<b class="red">Devam edilirse bunlar silinecek!</b><p/>` +
 										`<p><span style="font-weight: bold;">Yine de devam edilsin mi?</span></p>`
 									),
-									`Merkeze Gönderilmemiş Bilgi Var`, true,
-									{
-										EVET: (dlgUI, btnUI) => {
-											dlgUI.jqxWindow('destroy');
-											p.resolve(true)
-										},
-										HAYIR: (dlgUI, btnUI) => {
-											dlgUI.jqxWindow('destroy')
-											p.resolve(false)
-										}
+									`Merkeze Gönderilmemiş Bilgi Var`, true, {
+										EVET: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy'); p.resolve(true) },
+										HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('destroy'); p.resolve(false) }
 									})
 							});
 						}
 						else {
-							result = false;
-							displayMessage(
+							result = false; displayMessage(
 								(
 									`<p>Merkeze <u>GÖNDERİLMEMİŞ</u> olan <b>${bilgiText}</b> var.<br/>` +
 									`<p><b class="red">Firma politkası gereği bu işleme izin verilmeyecek</span></b>` +
@@ -2871,57 +2811,32 @@
 								`Merkeze Gönderilmemiş Bilgi Var!`, true
 							);
 						}
-						
-						if (!result)
-							return false;
+						if (!result) { return false }
 					}
 				}
 			}
-
-			await this.knobProgressShow();
-			await this.knobProgressReset();
-
+			await this.knobProgressShow(); await this.knobProgressReset();
 			const dbMgrKeys = ['rom_data'];
-			/*if (!e.verilerSilinmesinFlag)
-				dbMgrKeys.push('data');*/
-			$.extend(e, {
-				dbMgrKeys: dbMgrKeys,
-				dbMgr: this.dbMgrs.rom_data
-			});
-
-			const {knobProgressPart} = this;
-			const savedProgressMaxValue = knobProgressPart.progress.jqxKnob('max');
-			const progressMaxValue = 200;
-			let result;
+			/*if (!e.verilerSilinmesinFlag) { dbMgrKeys.push('data') }*/
+			$.extend(e, { dbMgrKeys, dbMgr: this.dbMgrs.rom_data });
+			let result, {knobProgressPart} = this,  progressMaxValue = 200, savedProgressMaxValue = knobProgressPart.progress.jqxKnob('max');
 			try {
-				if (savedProgressMaxValue != progressMaxValue)
-					knobProgressPart.progress.jqxKnob('max', progressMaxValue);
-
-				let savedOtoAktarFlag = this.otoAktarFlag;
-				this.otoAktarFlag = false;
-				try {
-					result = await this.merkezdenBilgiYukleDevam(e);
-					await this.merkezdenBilgiYukleSonrasi(e)
-				}
-				finally {
-					if (savedOtoAktarFlag)
-						this.otoAktarFlag = savedOtoAktarFlag
-				}
+				if (savedProgressMaxValue != progressMaxValue) { knobProgressPart.progress.jqxKnob('max', progressMaxValue) }
+				let {otoAktarFlag: savedOtoAktarFlag} = this; this.otoAktarFlag = false;
+				try { result = await this.merkezdenBilgiYukleDevam(e); await this.merkezdenBilgiYukleSonrasi(e) }
+				finally { if (savedOtoAktarFlag) { this.otoAktarFlag = savedOtoAktarFlag } }
 			}
 			catch (ex) {
-				hideProgress();
-				((window.savedProcs || {}).hideProgress || hideProgress)();
-
-				if (!ex || ex.statusText)
-					displayServerResponse(ex);
-				else
-					displayMessage(ex.message || ex.errorText || ex.message || (ex.responseJSON || {}).errorText, `${ex.isError ? '@' : '!'} Merkezden Bilgi Alımı ${ex.isError ? '@' : '!'}`);
+				hideProgress(); (window.savedProcs?.hideProgress || hideProgress)();
+				if (!ex || ex.statusText) { displayServerResponse(ex) }
+				else { displayMessage(ex.message || ex.errorText || ex.message || (ex.responseJSON || {}).errorText, `${ex.isError ? '@' : '!'} Merkezden Bilgi Alımı ${ex.isError ? '@' : '!'}`) }
 				throw ex
 			}
 			finally {
 				if (savedProgressMaxValue != null && savedProgressMaxValue != progressMaxValue &&
-							knobProgressPart && knobProgressPart.progress && knobProgressPart.progress.length)
-					knobProgressPart.progress.jqxKnob('max', savedProgressMaxValue);
+							knobProgressPart && knobProgressPart.progress && knobProgressPart.progress.length) {
+					knobProgressPart.progress.jqxKnob('max', savedProgressMaxValue)
+				}
 			}
 
 			return result
@@ -2936,12 +2851,12 @@
 				try {
 					/*await this.merkezeBilgiGonderOnKontrol(_e);*/ _param = this.param; _param.kapandimi = true; await _param.kaydet();
 					_param.ilkKM = _param.sonKM = null; const _result = await this.merkezeBilgiGonder(_e); if (_result?.isError) { throw _result }
-					const hataliTable2FisIDListe = _result?.hataliTable2FisIDListe || {}; if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
+					const hataliTable2FisIDListe = _result?.hataliTable2FisIDListe || {};
+					if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
 					await _param.kaydet()
 				}
 				catch (ex) { console.error(ex); _param.kapandimi = false }
 			}
-			
 			islemAdi = 'Parametreler';
 			// (wsFetches.etParam = this.wsETParam()).fail(e.silent ? defFailBlockBasit : defFailBlock);
 			(wsFetches.etParam = this.wsETParam()).fail(defFailBlockBasit);
@@ -4709,7 +4624,7 @@
 				}, 1000);
 			}
 			catch (ex) {
-				hideProgress(); ((window.savedProcs || {}).hideProgress || hideProgress)();
+				hideProgress(); (window.savedProcs?.hideProgress || hideProgress)();
 				if (!ex || ex.statusText) { displayServerResponse(ex) }
 				else { displayMessage(ex.message || ex.errorText || ex.message || (ex.responseJSON || {}).errorText || '', `${ex.isError ? '@' : '!'} Merkeze Bilgi Gönderimi ${ex.isError ? '@' : '!'}`) }
 				throw ex

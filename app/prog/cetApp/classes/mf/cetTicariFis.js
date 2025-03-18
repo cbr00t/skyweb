@@ -1046,17 +1046,18 @@
 			return this.dokumDipSatirlar_normal(e)
 		}
 		dokumDipSatirlar_normal(e) {
+			const {app} = sky, {dokumNettenmi} = app;
 			const {fis} = e, etiketSize = e.bedelEtiketUzunluk + 1, veriSize = e.bedelVeriUzunluk;
 			const tekCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '-'), ciftCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '=');
 			this.gerekirseDipHesapla(); const {detaylar, icmal} = this, {cokluKdvmi} = icmal, {brut} = icmal;
+			const {dipIskOran, dipIskBedel} = this, dipIskVarmi = dipIskOran || dipIskBedel;
 			let yuruyenBakiye = brut,  toplamSatirIskBedel = 0;
 			for (const det of detaylar) { if (!det.silindimi) toplamSatirIskBedel += det.toplamIskontoBedel } toplamSatirIskBedel = bedel(toplamSatirIskBedel);
-			const satirlar = []; satirlar.push(ciftCizgi, 'BRÜT'.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize));
-			if (toplamSatirIskBedel) { satirlar.push('SATIR ISK.'.padStart(etiketSize) + ': ' + bedelStr(toplamSatirIskBedel).padStart(veriSize) ) }
-			const {dokumNettenmi} = sky.app, {dipIskOran, dipIskBedel} = this, dipIskVarmi = dipIskOran || dipIskBedel;
-			if (dipIskVarmi && dokumNettenmi) {
+			let satirlar = []; satirlar.push(ciftCizgi, 'BRÜT'.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize));
+			if (!dokumNettenmi && toplamSatirIskBedel) { satirlar.push('SATIR ISK.'.padStart(etiketSize) + ': ' + bedelStr(toplamSatirIskBedel).padStart(veriSize) ) }
+			if (!dokumNettenmi && dipIskVarmi) {
 				if (dipIskOran) {
-					const oranIskBedel = bedel(brut * dipIskOran / 100); yuruyenBakiye -= oranIskBedel;
+					let oranIskBedel = bedel(brut * dipIskOran / 100); yuruyenBakiye -= oranIskBedel;
 					satirlar.push(`İSKONTO %${dipIskOran.toLocaleString()}`.padStart(etiketSize) + ': ' + bedelStr(oranIskBedel).padStart(veriSize))
 				}
 				if (dipIskBedel) {
@@ -1068,8 +1069,8 @@
 			}
 			const {oran2MatrahVeKdv, yuvarlamaFarki} = icmal;
 			for (const oran in oran2MatrahVeKdv) {
-				const matrahVeKdv = oran2MatrahVeKdv[oran], matrah = asFloat(matrahVeKdv.matrah) || 0, kdv = asFloat(matrahVeKdv.kdv) || 0;
-				yuruyenBakiye += kdv; const oranText = oran.toString();
+				let matrahVeKdv = oran2MatrahVeKdv[oran], matrah = asFloat(matrahVeKdv.matrah) || 0, kdv = asFloat(matrahVeKdv.kdv) || 0;
+				yuruyenBakiye += kdv; let oranText = oran.toString();
 				if (oran && (cokluKdvmi /* || dipIskVarmi || toplamSatirIskBedel*/)) { satirlar.push(`KDV MAT. %${oranText}`.padStart(etiketSize) + ': ' + bedelStr(matrah).padStart(veriSize)) }
 				satirlar.push(`KDV %${oranText}`.padStart(etiketSize) + ': ' + bedelStr(kdv).padStart(veriSize))
 			}
@@ -1080,15 +1081,17 @@
 		}
 		dokumDipSatirlar_ozelEIslem(e) {
 			const {app} = sky, {ruloParam, dokumNettenmi} = app, {fiyatIskontoGosterim, stokGosterim, kdvVar} = ruloParam;
+			dokumNettenmi = dokumNettenmi || fiyatIskontoGosterim == 'NT';
 			const postfix = ' TL', etiketSize = e.bedelEtiketUzunluk + 2, veriSize = e.bedelVeriUzunluk - postfix.length;
 			const tekCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '-'), ciftCizgi = ''.padEnd(etiketSize + 2, ' ') + ''.padEnd(veriSize, '=');
 			this.gerekirseDipHesapla(); const {detaylar, icmal} = this, {cokluKdvmi} = icmal, {brut} = icmal;
 			let yuruyenBakiye = brut, toplamSatirIskBedel = 0; for (const det of detaylar) { if (!det.silindimi) toplamSatirIskBedel += det.toplamIskontoBedel }
 			toplamSatirIskBedel = bedel(toplamSatirIskBedel);
 			const satirlar = []; satirlar.push(ciftCizgi, `Brüt Tutar`.padStart(etiketSize) + ': ' + bedelStr(brut).padStart(veriSize) + postfix);
-			if (fiyatIskontoGosterim == 'DP' && toplamSatirIskBedel) { satirlar.push(`Satır İsk. Toplamı`.padStart(etiketSize) + ': ' + bedelStr(toplamSatirIskBedel).padStart(veriSize) + postfix) }
+			if (!dokumNettenmi && fiyatIskontoGosterim == 'DP' && toplamSatirIskBedel) {
+				satirlar.push(`Satır İsk. Toplamı`.padStart(etiketSize) + ': ' + bedelStr(toplamSatirIskBedel).padStart(veriSize) + postfix) }
 			const {dipIskOran, dipIskBedel} = this, dipIskVarmi = dipIskOran || dipIskBedel;
-			if (dipIskVarmi) {
+			if (!dokumNettenmi && dipIskVarmi) {
 				if (dipIskOran) {
 					const oranIskBedel = bedel(brut * dipIskOran / 100); yuruyenBakiye -= oranIskBedel;
 					satirlar.push(`Dip Oran İsk.(%${dipIskOran.toLocaleString()})`.padStart(etiketSize) + ': ' + bedelStr(oranIskBedel).padStart(veriSize) + postfix)
@@ -1210,7 +1213,8 @@
 			})
 		}
 		static async matbuuFormDuzenleRuntime_eIslem(e) {
-			const {app} = sky, {ruloParam, ruloEkNotlar} = app, {fiyatIskontoGosterim, stokGosterim, kdvVar} = ruloParam;
+			const {app} = sky, {ruloParam, ruloEkNotlar, dokumNettenmi} = app, {fiyatIskontoGosterim, stokGosterim, kdvVar} = ruloParam;
+			dokumNettenmi = dokumNettenmi || fiyatIskontoGosterim == 'NT';
 			const {matbuuForm, tip, fis} = e, {formBilgi, normalSahalar, digerSahalar} = matbuuForm, {sayfaBoyutlari, otoYBasiSonu, bedelEtiketUzunluk, bedelVeriUzunluk} = formBilgi;
 			const {eIslemTip} = fis, {pifTipi} = fis.class, width = sayfaBoyutlari.x - 1; let boslukAttrLength = 1; const spacer = () => ' '.repeat(boslukAttrLength++);
 			const ekNotlarDigerKeys = ['eIslemGenel', 'tumGenel']; let ekNotlarKey, ekNotlar, ekNotlarListe = [];
@@ -1220,7 +1224,10 @@
 			}
 			if (ekNotlarKey && !$.isEmptyObject(ekNotlar = ruloEkNotlar[ekNotlarKey])) ekNotlarListe.push(...ekNotlar)
 			if (fis.yildizlimi && !$.isEmptyObject(ekNotlar = ruloEkNotlar[ekNotlarKey = 'isaretli'])) ekNotlarListe.push(...ekNotlar)
-			for (const ekNotlarKey of ekNotlarDigerKeys) { const items = ruloEkNotlar[ekNotlarKey]; if (!$.isEmptyObject(items)) ekNotlarListe.push(...items) }
+			for (const ekNotlarKey of ekNotlarDigerKeys) {
+				let items = ruloEkNotlar[ekNotlarKey];
+				if (!$.isEmptyObject(items)) { ekNotlarListe.push(...items) }
+			}
 			let y = 1, sahalar = [];
 			if (!$.isEmptyObject(ekNotlarListe)) {
 				let isFullRow = false, _ekNotlarListe = ekNotlarListe; ekNotlarListe = [];
@@ -1230,11 +1237,17 @@
 					for (const line of lines) {
 						text = line.padEnd(); if (!(text && text[0] == '^')) continue; text = text.substring(1);
 						if (isFullRow || text.length <= width) { ekNotlarListe.push(text); continue }
-						while (text.length) { const part = text.substr(0, width); if (!part) break; ekNotlarListe.push(part); text = text.substring(part.length) }
+						while (text.length) {
+							let part = text.substr(0, width); if (!part) { break }
+							ekNotlarListe.push(part); text = text.substring(part.length)
+						}
 					}
 				}
 				sahalar.push({ pos: { x: 1, y: 0 }, genislik: width, attr: spacer() });
-				for (const satir of ekNotlarListe) { if (!satir) continue; sahalar.push({ pos: { x: 1, y: y++ }, genislik: width, attr: satir }) }
+				for (const satir of ekNotlarListe) {
+					if (!satir) { continue }
+					sahalar.push({ pos: { x: 1, y: y++ }, genislik: width, attr: satir })
+				}
 			}
 			sahalar.push({ pos: { x: 1, y: y++ }, /* <LOGO> <LOGO2> */ attr: '<CENTER><LOGO2><CENTER><BOLD><BIG>[efBelgeTipi]<MEDIUM1>' });
 			/* if (eIslemTip == 'A') sahalar.push({ pos: { x: 1, y: y++ }, attr: '<CENTER><LOGO2><LEFT>' }) */
@@ -1284,15 +1297,15 @@
 			sahalar.push({ attr: 'miktar', pos: { x: (x += genislik + 1), y: 1 }, genislik: (genislik = 9), alignment: 'r', tip: 'miktar' });
 			sahalar.push({ attr: 'brm', pos: { x: (x += genislik + 1), y: 1 }, genislik: (genislik = 4) });
 			x = 1; genislik = 0;
-			sahalar.push({ attr: (fiyatIskontoGosterim == 'NT' ? 'netFiyat' : 'fiyat'), pos: { x: (x += genislik + 1), y: 2 }, genislik: (genislik = 13), alignment: 'r', tip: 'fiyat' });
+			sahalar.push({ attr: (dokumNettenmi ? 'netFiyat' : 'fiyat'), pos: { x: (x += genislik + 1), y: 2 }, genislik: (genislik = 13), alignment: 'r', tip: 'fiyat' });
 			if (kdvVar) sahalar.push({ attr: 'kdvOraniText', pos: { x: (x += genislik + 1), y: 2 }, genislik: (genislik = 4), alignment: 'r' });
 			sahalar.push({ attr: 'kdvBedel', pos: { x: (x += genislik + 1), y: 2 }, genislik: (genislik = 10), alignment: 'r', ozelDonusum: e => bedelStr(e.value) });
-			if (!fiyatIskontoGosterim) {
+			if (!dokumNettenmi) {
 				sahalar.push({ attr: 'iskOranlariText', pos: { x: (x += genislik + 1), y: 2 }, genislik: (genislik = 9) });
 				sahalar.push({ attr: 'toplamIskontoBedel', pos: { x: (x += genislik + 1), y: 2 }, genislik: (genislik = 12) })
 			}
 			sahalar.push({
-				attr: (fiyatIskontoGosterim == 'NT' ? 'netBedel' : 'brutBedel'), alignment: 'r', tip: 'bedel',
+				attr: (dokumNettenmi ? 'netBedel' : 'brutBedel'), alignment: 'r', tip: 'bedel',
 				pos: { x: width - (bedelVeriUzunluk + 1), y: 2 }, genislik: (genislik = bedelVeriUzunluk)
 			});
 			for (const i in sahalar) { const saha = new CETMatbuuSaha_Detay(sahalar[i]); if (saha) normalSahalar.Detay[saha.attr] = saha }
@@ -1301,9 +1314,12 @@
 				sahalar.push({ pos: { x: 1, y: 0 }, genislik: width, attr: spacer() });
 				sahalar.push({ pos: { x: 1, y: 0 }, genislik: width, attr: eIslDipYazi })
 			}
-			ekNotlarListe = []; if (ekNotlarKey && !$.isEmptyObject(ekNotlar = ruloEkNotlar[ekNotlarKey])) ekNotlarListe.push(...ekNotlar)
-			if (fis.yildizlimi && !$.isEmptyObject(ekNotlar = ruloEkNotlar[ekNotlarKey = 'isaretli'])) ekNotlarListe.push(...ekNotlar)
-			for (const ekNotlarKey of ekNotlarDigerKeys) { const items = ruloEkNotlar[ekNotlarKey]; if (!$.isEmptyObject(items)) ekNotlarListe.push(...items) }
+			ekNotlarListe = []; if (ekNotlarKey && !$.isEmptyObject(ekNotlar = ruloEkNotlar[ekNotlarKey])) { ekNotlarListe.push(...ekNotlar) }
+			if (fis.yildizlimi && !$.isEmptyObject(ekNotlar = ruloEkNotlar[ekNotlarKey = 'isaretli'])) { ekNotlarListe.push(...ekNotlar) }
+			for (const ekNotlarKey of ekNotlarDigerKeys) {
+				let items = ruloEkNotlar[ekNotlarKey];
+				if (!$.isEmptyObject(items)) { ekNotlarListe.push(...items) }
+			}
 			if (!$.isEmptyObject(ekNotlarListe)) {
 				let isFullRow = false, _ekNotlarListe = ekNotlarListe; ekNotlarListe = [];
 				if (_ekNotlarListe.find(x => x[0] == '!')) { isFullRow = true; _ekNotlarListe = [_ekNotlarListe.join('')] }
@@ -1316,9 +1332,15 @@
 					}
 				}
 				sahalar.push({ pos: { x: 1, y: 0 }, genislik: width, attr: spacer() });
-				for (const satir of ekNotlarListe) { if (!satir) continue; sahalar.push({ pos: { x: 1, y: 0 }, genislik: width, attr: satir }) }
+				for (const satir of ekNotlarListe) {
+					if (!satir) { continue }
+					sahalar.push({ pos: { x: 1, y: 0 }, genislik: width, attr: satir })
+				}
 			}
-			for (const i in sahalar) { const saha = new CETMatbuuSaha_OtoAciklama(sahalar[i]); if (saha) digerSahalar[saha.attr] = saha }
+			for (const i in sahalar) {
+				let saha = new CETMatbuuSaha_OtoAciklama(sahalar[i]);
+				if (saha) { digerSahalar[saha.attr] = saha }
+			}
 			return true
 		}
 	};
