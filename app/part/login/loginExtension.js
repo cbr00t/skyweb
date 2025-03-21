@@ -85,7 +85,7 @@
 			
 			// await showProgress(`Oturum açılıyor...`, null, 1000);
 			try {
-				return await this.loginDevam({ sessionInfo: sessionInfo })
+				return await this.loginDevam({ sessionInfo })
 			}
 			finally {
 				// await sky.app.knobProgressHideWithReset({ delayMS: 1 });
@@ -166,6 +166,7 @@
 					}),
 					isAdmin: result.sessionObjectAdminmi,
 					// yetki: result.yetki,
+					yetki: result.yetki || 'admin',
 					subeKod: result.subeKod,
 					dbName: result.dbName,
 					firmaKisaUnvan: result.firmaKisaUnvan,
