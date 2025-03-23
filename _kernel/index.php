@@ -75,6 +75,7 @@
 	<script src="classes/etc/cCache.js?<?=$siteVersion?>"></script>
 	<script src="classes/etc/cCacheResponse.js?<?=$siteVersion?>"></script>
 	<script src="classes/etc/cPromise.js?<?=$siteVersion?>"></script>
+	<script src="classes/etc/qrGenerator.js?<?=$siteVersion?>"></script>
 	<script src="lib/config.js?<?=$siteVersion?>"></script>
 	<script src="lib/dbMgr_webSQL.js?<?=$siteVersion?>"></script>
 	<script src="lib/dbMgr_sqlJS.js?<?=$siteVersion?>"></script>

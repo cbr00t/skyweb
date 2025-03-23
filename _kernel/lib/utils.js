@@ -673,5 +673,7 @@
 		    const combinedAccuracy = Math.sqrt(Math.pow(konum1.accuracy || 0, 2) + Math.pow(konum2.accuracy || 0, 2));
 		    const uyarlanmisUzaklikMT = Math.max(0, uzaklikMT - combinedAccuracy); return uyarlanmisUzaklikMT
 		}
+
+		static delay(waitMS, returnValue) { return new $.Deferred(p => setTimeout(() => p.resolve(returnValue), waitMS)) }
 	}
 })();

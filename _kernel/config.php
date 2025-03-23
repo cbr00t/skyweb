@@ -1,1 +1,1 @@
-<?php $siteVersion = '2.65.45'?>
+<?php $siteVersion = '2.65.47'?>

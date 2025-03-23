@@ -91,6 +91,7 @@ const staticAssets = [
 
 	'../lib_external/instascan/',
 	'../lib_external/hightlight',
+	'../lib_external/html5-qrcode.min.js',
 	'../lib_external/qrcode.js',
 	'../lib_external/jsQR.js',
 	'../lib_external/stomp.js',

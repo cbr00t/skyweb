@@ -570,43 +570,26 @@
 		}
 
 		loadLibs(e) {
-			const {config} = sky;
-			if (!config.appLibsLoadedFlag) {
-				if (this.class.dateLibDesteklenirmi) {
-					// await $.getScript({ url: '/vio/vioweb/lib_external/etc/date.js', cache: true });
-					$(`<script sync src="../../vio/vioweb/lib_external/etc/date.js"></script>`).appendTo('head');
-				}
-				if (this.class.smartElementsDesteklenirmi)
-					$(`<script src="../lib_external/htmlelements/smart.elements.js"></script>`).appendTo('head');
-				if (this.class.qrScanDesteklenirmi) {
-					$(`<script src="../lib_external/qrcode.js"></script>`).appendTo('head');
-					$(`<script src="../lib_external/jsQR.js"></script>`).appendTo('head');
-					$(`<script src="../lib_external/webcodecamjs/js/qrcodelib.js"></script>`).appendTo('head');
-					$(`<script src="../lib_external/webcodecamjs/js/webcodecamjquery.js"></script>`).appendTo('head');
-				}
-				if (this.class.jsonEditorDesteklermi)
-					$(`<script src="../lib_external/jsoneditor.js"></script>`).appendTo('head');
-				if (this.class.aceEditorDesteklermi) {
-					$(`<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.5/ace.js" crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-wju2wMXmukx2760GKQBjykvRNeRY8LdMn6XnMPJQKRF7olV229IytqfkW9Z83lrdCVA168r4Ut4paNoRxJWoag=="></script>`)
-						.appendTo('head');
-					setTimeout(() => {
-						if (!window.ace) {
-							$(`<script src="../lib_external/ace.js"></script>`)
-								.appendTo('head');
-						}
-					}, 3000);
-
-				}
-				config.appLibsLoadedFlag = true;
+			const {config} = sky; if (config.appLibsLoadedFlag) { return }
+			if (this.class.dateLibDesteklenirmi) { $(`<script sync src="../../vio/vioweb/lib_external/etc/date.js"></script>`).appendTo('head') }
+			if (this.class.smartElementsDesteklenirmi) { $(`<script src="../lib_external/htmlelements/smart.elements.js"></script>`).appendTo('head') }
+			if (this.class.qrScanDesteklenirmi) {
+				$(`<script src="../lib_external/qrcode.js"></script>`).appendTo('head');
+				$(`<script src="../lib_external/jsQR.js"></script>`).appendTo('head');
+				$(`<script src="../lib_external/webcodecamjs/js/qrcodelib.js"></script>`).appendTo('head');
+				$(`<script src="../lib_external/webcodecamjs/js/webcodecamjquery.js"></script>`).appendTo('head')
 			}
-		}
+			if (this.class.jsonEditorDesteklermi) { $(`<script src="../lib_external/jsoneditor.js"></script>`).appendTo('head') }
+			if (this.class.aceEditorDesteklermi) {
+				$(`<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.5/ace.js" crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-wju2wMXmukx2760GKQBjykvRNeRY8LdMn6XnMPJQKRF7olV229IytqfkW9Z83lrdCVA168r4Ut4paNoRxJWoag=="></script>`).appendTo('head');
+				setTimeout(() => { if (!window.ace) { $(`<script src="../lib_external/ace.js"></script>`).appendTo('head') } }, 3000)
 
+			}
+			config.appLibsLoadedFlag = true
+		}
 		async onResize(e) {
-			e = e || {};
-			await super.onResize(e);
-			
-			const id2Children = {}
-			const {app, activePart, activeInnerPart, background} = this;
+			e = e || {}; await super.onResize(e);
+			const id2Children = {}, {app, activePart, activeInnerPart, background} = this;
 			/*if (parts) {
 				for (const key in parts) {
 					const part = parts[key];

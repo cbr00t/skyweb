@@ -39,36 +39,49 @@
 			await this.yeniSayfaOlustur(e); await this.yazdir_otomatikSahalar(e)
 		}
 		async yeniSayfaOlustur(e) {
-			const {dokumcu} = e; let sayfa = dokumcu.sayfaEkle({ matbuuForm: this }); const {fis, gecerliSahaYapilari} = e; let sahalar = gecerliSahaYapilari.normal;
-			for (let attr in sahalar) {
-				const saha = sahalar[attr]; attr = saha.attr || attr;
-				let value = await fis.dokumSahaDegeri($.extend({}, e, { attr }));
-				value = await saha.getConvertedValue($.extend({}, e, { value, fis })); value = await this.getConvertedValue({ tip: 'tekil', attr, value });
+			let {app} = sky, {dokumcu} = e, needWait = false;
+			let  sayfa = dokumcu.sayfaEkle({ matbuuForm: this });
+			let {fis, gecerliSahaYapilari} = e, sahalar = gecerliSahaYapilari.normal;
+			for (let [attr, saha] of Object.entries(sahalar)) {
+				attr = saha.attr || attr; let value = await fis.dokumSahaDegeri({ ...e, attr });
+				value = await saha.getConvertedValue({ ...e, value, fis });
+				value = await this.getConvertedValue({ tip: 'tekil', attr, value });
 				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value })
 			}
 			sahalar = gecerliSahaYapilari.aciklama;
-			for (const [text, saha] of Object.entries(sahalar)) {
-				const {kosul, isaret} = saha; if (fis) {
+			for (let [text, saha] of Object.entries(sahalar)) {
+				let {kosul, isaret} = saha; if (fis) {
 					const fisSinif = fis.class;
 					if (kosul && !(kosul == 'N' ? !fisSinif.iademi : kosul == 'I' ? fisSinif.iademi : false)) { continue }
 					if (isaret && !(isaret == 'N' ? !fis.yildizlimi : isaret == 'I' ? fis.yildizlimi : false)) { continue }
 				}
-				const srDict = {}, expListe = await Utils.getExpressions($.extend({}, e, { text }));
+				let srDict = {}, expListe = await Utils.getExpressions($.extend({}, e, { text }));
 				if (!$.isEmptyObject(expListe)) {
-					for (const exp of expListe) {
-						if (exp) {
-							let value = await fis.dokumSahaDegeri($.extend({}, e, { attr: exp }));
-							value = await saha.getConvertedValue($.extend({}, e, { value, fis })); value = await this.getConvertedValue({ tip: 'tekil', attr: exp, value });
-							srDict[exp] = (value || '').toString().trimEnd()
+					for (let exp of expListe) {
+						if (!exp) { continue } let value = await fis.dokumSahaDegeri({ ...e, attr: exp });
+						value = await saha.getConvertedValue({ ...e, value, fis });
+						value = await this.getConvertedValue({ tip: 'tekil', attr: exp, value });
+						if (exp.startsWith('QR=') || exp.startsWith('QR-')) {													/* a!cbr00t-CGPR */
+							value = value || exp.slice(3);
+							if (app.dokumZPLmi) { value = `^FO100,100\n^BQN,2,10\n^FDLA,${value}^FS` }
+							else {
+								let {prnCmd} = new QRGenerator().qrDrawAndSave(value);
+								value = prnCmd; needWait = true
+							}
 						}
+						srDict[exp] = (value || '').toString().trimEnd()
 					}
 				}
 				let value = text; if (!$.isEmptyObject(srDict)) {
-					for (const key in srDict) { value = value.replaceAll(`[${key}]`, srDict[key]).replaceAll(`#${key}#`, srDict[key]) } }
-				value = await fis.dokumSahaDegeri($.extend({}, e, { attr: value })) || value;
-				value = await saha.getConvertedValue($.extend({}, e, { value, fis })); value = await this.getConvertedValue({ tip: 'aciklama', attr: value, value });
-				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value });
+					for (const key in srDict) {
+						value = value.replaceAll(`[${key}]`, srDict[key]).replaceAll(`#${key}#`, srDict[key]) }
+				}
+				value = await fis.dokumSahaDegeri({ ...e, attr: value }) || value;
+				value = await saha.getConvertedValue({ ...e, value, fis });
+				value = await this.getConvertedValue({ tip: 'aciklama', attr: value, value });
+				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value })
 			}
+			if (needWait) { await Utils.delay(1000) }
 			return e.sayfa = sayfa
 		}
 		async yazdir_otomatikSahalar(e) {
