@@ -42,7 +42,14 @@
 			}
 			if (zplmi) { srm.write(`^XZ${CrLf}`) }
 		}
-		static isPOSCommand(value) { return value[0] == '^' || value.includes('[!') || value.includes('<IMAGE') || value.includes('<LOGO') }
+		static isPOSCommand(value) {
+			if (!value) { return false }
+			return (
+				( value[0] == '^' || value.startsWith('!') ) ||
+				( value.includes('<') && value.includes('>') ) ||
+				( value.includes('QR=') || value.includes('QR-') )
+			)
+		}
 	}
 	window.CETDokumSatir = class extends window.CObject {
 		constructor(e) { e = e || {}; super(e); this.chars = new Array() }
