@@ -847,7 +847,8 @@
 		}
 		async getDokumDegeriDict(e) {
 			const bilgiFisiYazi = e => 'BİLGİ FİŞİDİR', eBelgeBilgiFisiYazi = e => this.eBelgemi ? `e-Belge BİLGİ FİŞİDİR` : '';
-			return $.extend(await super.getDokumDegeriDict(e) || {}, {
+			let result = {
+				...await super.getDokumDegeriDict(e),
 				async efaturaKullanirmi(e) { return sky.app.eIslemKullanilirmi && this.class.eIslemKullanilirmi && await this.getCariEFatmi(e) },
 				efAyrimTipi: this.eIslemTipi,
 				efBelgeTipi(e) { return sky.app.eIslemTip2UzunAdi(this.eIslemTip) },
@@ -863,8 +864,34 @@
 				eBelgeBilgiFisiYaziKoyu: e => { let result = eBelgeBilgiFisiYazi(); if (result) { result = `<BOLD>${result}<NORMAL>` } return result },
 				eBelgeBilgiFisiYaziBuyuk: e => { let result = eBelgeBilgiFisiYazi(); if (result) { result = `<BIG>${result}<NORMAL>` } return result },
 				efSenaryoTipi: async e => { const cariEFatmi = await this.getCariEFatmi(e); return cariEFatmi ? 'TICARIFATURA' : 'EARSIVFATURA' },
-				Yalniz: e => { const {sonucBedel} = this; return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : '' }
-			})
+				Yalniz: e => { const {sonucBedel} = this; return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : '' },
+				'QR-EISLEM': async e => {
+					let _bedelStr = value => toFileStringWithFra(value, 2);
+					let {app} = sky, {mustKod, class: fisSinif} = this, {isyeri} = app.param;
+					let {sahisfirmasi: sahismi, tckimlikno: tckn, vergino: vkn} = isyeri;
+					let cariRec = await this.dokum_getMustRec(e) ?? {}, cariEFatmi = await this.getCariEFatmi(e);
+					let vkntckn = sahismi ? tckn : vkn, {vkn: avkntckn} = cariRec;
+					let senaryo = cariEFatmi ? 'TICARIFATURA' : 'EARSIVFATURA', tip = fisSinif.satismi == fisSinif.iademi ? 'IADE' : 'SATIS';
+					let {seri, noYil, uuid: ettn, dvKod} = this, fisNo = this.fisNo ?? 0;
+					let parabirimi = !dvKod || dvKod == 'TL' ? 'TRY' : dvKod;
+					let tarih = asReverseDateString(this.tarih), no = `${seri}${noYil}${fisNo.toString().padStart(9, '0')}`;
+					let icmal = this.icmal ?? {}, oran2MatrahVeKdv = icmal.oran2MatrahVeKdv ?? {};
+					let brut = icmal.brut ?? 0, topDipIskonto = icmal.topDipIskonto ?? 0, topKdv = icmal.topKdv ?? 0, sonuc = icmal.sonuc ?? 0;
+					let malhizmettoplam = _bedelStr(brut), vergidahil = _bedelStr(brut - topDipIskonto + topKdv), odenecek = _bedelStr(sonuc);
+					let qrData = {
+						vkntckn, avkntckn, senaryo, tip, tarih, no, ettn, parabirimi,
+						malhizmettoplam, vergidahil, odenecek
+					};
+					for (let [oran, {matrah, kdv}] of Object.entries(oran2MatrahVeKdv)) {
+						if (!oran) { continue }
+						qrData[`kdvmatrah(${oran})`] = _bedelStr(matrah ?? 0);
+						qrData[`hesaplanankdv(${oran})`] = _bedelStr(kdv ?? 0);
+					}
+					return toJSONStr(qrData)
+				}
+			};
+			result['QR=EISLEM'] = result['QR-EISLEM'];
+			return result
 		}
 	}
 })()

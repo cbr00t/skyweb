@@ -80,29 +80,24 @@
 		}
 
 		static async getCariEkBilgi(e) {
-			e = e || {};
-			const {mustKod} = e;
-			let rec = null;
+			e = e || {}; let {mustKod, tx} = e, {caches} = sky.app, rec = null;
 			if (mustKod) {
-				const cacheDict = sky.app.caches.mustKod2EkBilgi = sky.app.caches.mustKod2EkBilgi || {};
-				rec = cacheDict[mustKod];
-				if (!rec) {
+				let cacheDict = caches.mustKod2EkBilgi = caches.mustKod2EkBilgi || {};
+				rec = cacheDict[mustKod]; if (!rec) {
 					let sent = new MQSent({
 						from: 'mst_Cari',
 						sahalar: [
 							`kod`, `unvan`, `efatmi`, `stdDipIskOran`, `tipKod`, `bolgeKod`, `kosulGrupKod`, `stkFytInd`,
 							`(case when length(coalesce(riskCariKod, '')) = 0 then kod else riskCariKod end) riskCariKod`,
 							`konTipKod`, `konSubeAdi`, `konumLongitude`, `konumLatitude`, `konumAccuracy`, `rotaDevreDisimi`,
-							'adres', 'yore', 'ilAdi'
+							'adres', 'yore', 'ilAdi', 'sahismi', 'vkn'
 						]
-					});
-					sent.where.degerAta(mustKod, 'kod');
-					rec = await this.dbMgr.tekilExecuteSelect({ tx: e.tx, query: sent });
-					cacheDict[mustKod] = rec;
+					}), {where: wh} = sent; wh.degerAta(mustKod, 'kod');
+					rec = await this.dbMgr.tekilExecuteSelect({ tx, query: sent });
+					cacheDict[mustKod] = rec
 				}
 			}
-
-			return rec;
+			return rec
 		}
 
 		static async getCariEFatmi(e) {
@@ -1112,12 +1107,14 @@
 			return plasiyerText
 		}
 		async dokum_getMustRec(e) {
-			const {dokumTemps} = sky.app, mustKod2DokumTemps = dokumTemps.mustKod2DokumTemps = dokumTemps.mustKod2DokumTemps || {};
-			const {mustKod} = this; if (!mustKod) return null
-			const mustIcinDokumTemps = mustKod2DokumTemps[mustKod] = mustKod2DokumTemps[mustKod] || {}; let rec = mustIcinDokumTemps.mustRec;
+			let {dokumTemps} = sky.app, mustKod2DokumTemps = dokumTemps.mustKod2DokumTemps = dokumTemps.mustKod2DokumTemps || {};
+			let {mustKod} = this; if (!mustKod) { return null }
+			let mustIcinDokumTemps = mustKod2DokumTemps[mustKod] = mustKod2DokumTemps[mustKod] || {}; let rec = mustIcinDokumTemps.mustRec;
 			if (rec === undefined) {
-				let sent = new MQSent({ from: 'mst_Cari', sahalar: ['unvan', 'yore', 'ilKod', 'ilAdi', 'sahismi', 'vergiDaire', 'vkn', 'adres', 'eMail'] });
-				sent.where.degerAta(mustKod, 'kod');
+				let sent = new MQSent({
+					from: 'mst_Cari',
+					sahalar: ['unvan', 'yore', 'ilKod', 'ilAdi', 'sahismi', 'vkn', 'vergiDaire', 'adres', 'eMail']
+				}), {where: wh} = sent; wh.degerAta(mustKod, 'kod');
 				rec = mustIcinDokumTemps.mustRec = await this.dbMgr.tekilExecuteSelect(sent)
 			}
 			return rec

@@ -43,7 +43,8 @@
 			let  sayfa = dokumcu.sayfaEkle({ matbuuForm: this });
 			let {fis, gecerliSahaYapilari} = e, sahalar = gecerliSahaYapilari.normal;
 			for (let [attr, saha] of Object.entries(sahalar)) {
-				attr = saha.attr || attr; let value = await fis.dokumSahaDegeri({ ...e, attr });
+				attr = saha.attr || attr;
+				let value = await fis.dokumSahaDegeri({ ...e, attr });
 				value = await saha.getConvertedValue({ ...e, value, fis });
 				value = await this.getConvertedValue({ tip: 'tekil', attr, value });
 				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value })
@@ -58,7 +59,8 @@
 				let srDict = {}, expListe = await Utils.getExpressions($.extend({}, e, { text }));
 				if (!$.isEmptyObject(expListe)) {
 					for (let exp of expListe) {
-						if (!exp) { continue } let value = await fis.dokumSahaDegeri({ ...e, attr: exp });
+						if (!exp) { continue }
+						let value = await fis.dokumSahaDegeri({ ...e, attr: exp });
 						value = await saha.getConvertedValue({ ...e, value, fis });
 						value = await this.getConvertedValue({ tip: 'tekil', attr: exp, value });
 						if (exp.startsWith('QR=') || exp.startsWith('QR-')) {													/* a!cbr00t-CGPR */
