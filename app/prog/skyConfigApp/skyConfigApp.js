@@ -25,7 +25,7 @@
 					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, frp: 'FRP', 
 					eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
 					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, /*eMail: `e-Mail Gönderimi`,*/ eMailQueue: `e-Mail Kuyruğu İşlet`,
-					cvmRestart: `CVM Yeniden Başlat` /*, wsRestart: `SkyWS Yeniden Başlat`*/
+					cvmRestart: `CVM Yeniden Başlat` /*, wsRestart: `SkyWS Yeniden Başlat`*/ , webBrowserIPC: 'WebBrowser IPC'
 				};
 				if (gelismisModmu && !gelismisModDisabledFlag && SkyConfigYetki.yetkilimi({ yetki: 'subServiceManager' })) {
 					$.extend(result, {
@@ -679,7 +679,8 @@
 				'genel', 'waitSignal', 'yonetim', 'cariEFatSorgu', 'skyMES/hatIzleme', 'skyMES/makineDurum',
 				'pdks', 'skyBulutYedekleme', 'b2b', 'b2b/fuhrer', 'b2b/atomedya', 'skyCafe/rest', 'skyCafe/pratik', /*'elterm',*/
 				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk', 'skyERP', 'skyTablet',
-				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest', 'hamachi', 'skyWS', 'hfs', 'frp', 'frps', 'vioPortal', 'skyTurmob'
+				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest',
+				'hamachi', 'skyWS', 'hfs', 'frp', 'frps', 'vioPortal', 'skyTurmob', 'webBrowserIPC'
 			];
 			const servisTipListe = Object.keys(this.servisTip2Aciklama);
 			return {

@@ -324,6 +324,7 @@ body.skyConfigApp .jqx-menu-wrapper ul > li.selected,
 	.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #dosya,
 	.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #url,
 	.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #configFile { width: 97% }
+.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #key { width: 130px }
 .part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #args,
 	.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #query,
 	.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #postData { width: 99%; color: #1c3972 }

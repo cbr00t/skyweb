@@ -147,8 +147,13 @@
 
 			const txtCmd = tabPage.find(`#cmd`);
 			txtCmd.val(args.cmd);
-			txtCmd.on('focus', evt => evt.target.select())
+			txtCmd.on('focus', evt => evt.target.select());
 			txtCmd.on('change', evt => args.cmd = evt.target.value);
+
+			const txtKey = tabPage.find(`#key`);
+			txtKey.val(args.key);
+			txtKey.on('focus', evt => evt.target.select());
+			txtKey.on('change', evt => args.cmd = evt.target.value);
 
 			let txtConfigFile = tabPage.find('#configFile'); txtConfigFile.val(args.configFile);
 			txtConfigFile.on('focus', ({ currentTarget: target }) => target.select())

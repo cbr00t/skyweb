@@ -999,6 +999,7 @@
 				},
 				kayitZamani: dateTimeToString(this.kayitZamani),
 				erisimZamani: dateTimeToString(this.erisimZamani),
+				sevkAdresAdi: e => this.getSevkAdresAdi(e),
 				plasiyerAdi: e => this.getPlasiyerAdi(e),
 				plasiyerText: e => this.getPlasiyerText(e),
 				isyeriUnvan: e => this.dokum_getIsyeriUnvan(e),
@@ -1084,6 +1085,17 @@
 					return satirlar;
 				}
 			});
+			return result
+		}
+		async getSevkAdresAdi(e) {
+			e = e || {}; let {sevkAdresKod} = this; if (!sevkAdresKod) { return null }
+			let {sevkAdresAdi: result} = this; if (result == null) {
+				let {caches} = sky.app, cache = caches.sevkAdresKod2Rec = caches.sevkAdresKod2Rec || {}, rec = cache[sevkAdresKod];
+				result = rec?.aciklama; if (result == null) {
+					const stm = new MQStm({ sent: new MQSent({ from: `mst_SevkAdres`, where: { degerAta: sevkAdresKod, saha: 'kod' }, sahalar: ['RTRIM(aciklama) aciklama'] }) });
+					result = await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: stm })
+				}
+			}
 			return result
 		}
 		async getPlasiyerAdi(e) {

@@ -538,20 +538,21 @@
 								(rec.fisSonuc ? `<br/><span class="veri">${bedelStr(rec.fisSonuc)} <u class="orangered">${rec.dvkod || 'TL'}</u></span>` : ``)
 							)
 						});
-						/*let divBakiyeVeRiskText = ekleyici({
-							selector: `.bakiyeVeRiskText`, value: rec,
-							valueGetter: rec => (
-								(rec.bakiye ? `<span class="etiket">B:</span><span class="veri bakiye">${bedelStr(rec.bakiye)}</span>` : ``) +
-								(rec.riskli ? ` <span class="etiket">R:</span><span class="veri kalanRisk">${bedelStr(rec.riskli)}</span>` : ``)
-							)
-						});
-						if (divBakiyeVeRiskText && divBakiyeVeRiskText.length) {
-							if ((asFloat(rec.bakiye) || 0) < 0)
-								divBakiyeVeRiskText.find('.bakiye').addClass('red');
-							if ((asFloat(rec.riskli) || 0) < 0)
-								divBakiyeVeRiskText.find('.kalanRisk').addClass('red');
-						}*/
-
+						if (!sky.app.bakiyeRiskGosterilmezmi) {
+							let divBakiyeVeRiskText = ekleyici({
+								selector: `.bakiyeVeRiskText`, value: rec,
+								valueGetter: rec => (
+									(rec.bakiye ? `<span class="etiket">B:</span><span class="veri bakiye">${bedelStr(rec.bakiye)}</span>` : ``) +
+									(rec.riskLimiti && rec.riskli ? ` <span class="etiket">R:</span><span class="veri kalanRisk">${bedelStr(rec.riskli)}</span>` : ``)
+								)
+							});
+							if (divBakiyeVeRiskText && divBakiyeVeRiskText.length) {
+								if ((asFloat(rec.bakiye) || 0) < 0)
+									divBakiyeVeRiskText.find('.bakiye').addClass('red');
+								if ((asFloat(rec.riskli) || 0) < 0)
+									divBakiyeVeRiskText.find('.kalanRisk').addClass('red');
+							}
+						}
 						return divSatir[0].outerHTML.trim();
 					}
 				}
@@ -590,9 +591,12 @@
 				// wsArgs.sortdatafield = ['tarih', 'seri', 'fisno', 'fisTipText'];
 				// wsArgs.sortdatafield = ['kayitzamani'];
 
-			let uni = new MQUnionAll();
-			let stm = new MQStm({ sent: uni });
+			let uni = new MQUnionAll(), stm = new MQStm({ sent: uni });
 			app.fisListe_stmSentDuzenle($.extend({ stm: stm, uni: uni }, wsArgs));
+			uni.sentDo(sent => {
+				sent.leftJoin({ alias: 'car', from: 'mst_Cari rcar', on: `(case when coalesce(car.riskCariKod, '') = '' then car.kod else car.riskCariKod end) = rcar.kod` });
+				sent.sahalar.addAll([`rcar.bakiye`, `rcar.riskLimiti`, `rcar.riskli`, 'rcar.takipBorcLimiti', 'rcar.takipBorc'])
+			});
 			
 			const {mustKod} = this;
 			if (mustKod) {

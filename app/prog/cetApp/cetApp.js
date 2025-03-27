@@ -2776,12 +2776,11 @@
 			if (!silent && !verilerSilinmesinFlag) {
 				let gonderilecekBilgiler = await this.gonderilecekBilgiler(e);
 				if (gonderilecekBilgiler?.totalCount) {
-					const {table2Info} = gonderilecekBilgiler;
-					let bilgiText = '';
-					for (let [table, info] in Object.entries(table2Info)) {
+					let {table2Info} = gonderilecekBilgiler, bilgiText = '';
+					for (let [table, info] of Object.entries(table2Info)) {
 						if (!info) { continue }
 						let {count} = info; if (count) {
-							let tipAdi = info || table; if (bilgiText) { bilgiText += ', ' }
+							let tipAdi = table2TipAdi[table] || table; if (bilgiText) { bilgiText += ', ' }
 							bilgiText += `${count.toLocaleString()} adet ${tipAdi}`
 						}
 					}
@@ -4633,13 +4632,13 @@
 		async merkezeBilgiGonderDevam(e) {
 			let {promise_merkezeBilgiGonder} = this; if (promise_merkezeBilgiGonder) { try { await promise_merkezeBilgiGonder } catch (ex) { } }
 			promise_merkezeBilgiGonder = this.promise_merkezeBilgiGonder = new $.Deferred(p => {
-				this.merkezeBilgiGonderDevam2(e)
+				this.merkezeBilgiGonderDevam_internal(e)
 					.then(result => p.resolve(result)).catch(err => p.reject(err))
 					.finally(() => this.promise_merkezeBilgiGonder = null);
 			});
 			return await promise_merkezeBilgiGonder
 		}
-		async merkezeBilgiGonderDevam2(e) {
+		async merkezeBilgiGonderDevam_internal(e) {
 			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf, {silent, otoGondermi, timer} = e;
 			let {bilgiGonderTableYapilari} = e; if (!bilgiGonderTableYapilari) { bilgiGonderTableYapilari = this.bilgiGonderTableYapilari }
 			let totalRecords = 0, kontroleEsasToplamSayi = 0; const {param} = this; let _param = e.param = e.param = {};
@@ -4663,16 +4662,16 @@
 			}
 			if (paramGonderilsinmi) { totalRecords++ }
 			// await this.knobProgressSetLabel(`Belgeler taranıyor...`);
-			const fetchBlock = async e => {
+			let _table2Recs = {}, fetchBlock = async e => {
 				let rs = await dbMgr.executeSql({ query: e.query });
 				for (let i = 0; i < rs.rows.length; i++) {
 					const table = e.table || rec._table, rec = rs.rows[i];
-					const recs = table2Recs[table] = table2Recs[table] || []; recs.push(rec);
+					const recs = _table2Recs[table] = _table2Recs[table] || []; recs.push(rec);
 					totalRecords++; e.toplamSayi = recs.length
 				}
 				if (!silent) { await this.knobProgressStep(3) }
 			};
-			const table2Recs = {}; for (const tableYapi of bilgiGonderTableYapilari) {
+			for (const tableYapi of bilgiGonderTableYapilari) {
 				const {fisIDListe} = tableYapi, baslikTable = tableYapi.baslik;
 				let sent = new MQSent({
 					from: baslikTable, where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`, `degismedi = ''`],
@@ -4715,18 +4714,59 @@
 			}
 			if (!totalRecords) { throw { isError: false, rc: 'noRecords', errorText: `Gönderilmeyi bekleyen hiç belge bulunamadı` } }
 			await this.knobProgressSetLabel(`Belgeler gönderiliyor...`);
-			let result = await this.wsCETSaveTables({ silent: true, data: { param: _param, table2Recs } });
-			if (!result) { result = { isError: true, rc: 'unknownError', errorText: '' } } if (result.isError) { throw result }
-			result = result || {}; $.extend(e, { toplamSayi: kontroleEsasToplamSayi, hataSayi: 0 });
-			const hataliTable2FisIDListe = result.hataliTable2FisIDListe || {};
-			for (const fisIDListe of Object.values(hataliTable2FisIDListe)) { if (fisIDListe && fisIDListe.length) { e.hataSayi += fisIDListe.length } }
-			await this.knobProgressStep(50);
-			let mesaj = result.message || result.mesaj;
-			if (mesaj) {
-				if (silent) { await this.knobProgressHideWithReset({ update: { labelTemplate: 'error', label: `<u>Sunucu Yanıtı</u>: ${mesaj}` }, delayMS: 8000 }) }
-				else { await displayMessage(mesaj, 'Sunucu Yanıtı') }
+			let hataliTable2FisIDListe = {}, mesajlar = [], errors = [];
+			let paramGonderildimi = false, result = { basariliTable2FisIDListe: {}, hataliTable2FisIDListe: {} };
+			try {
+				for (let [table, recs] of Object.entries(_table2Recs)) {
+					for (let i = 0; i < recs.length; i++) {
+						let rec = recs[i], {rowid} = rec, param = paramGonderildimi ? undefined : _param, table2Recs = {};
+						let {diger} = bilgiGonderTableYapilari.find(x => x.baslik == table) ?? {}, detayTable = diger?.[0];
+						if (detayTable && table == detayTable) { continue }
+						table2Recs[table] = [rec]; if (detayTable) {
+							let detRecs = _table2Recs[detayTable]?.filter(_rec => _rec.fissayac == rowid);
+							table2Recs[detayTable] = detRecs
+						}
+						let _result;
+						try { _result = await this.wsCETSaveTables({ silent: true, data: { param, table2Recs } }); paramGonderildimi = true }
+						catch (ex) {
+							let {statusText} = ex;
+							let errorText =
+								(statusText == 'error' || statusText.startsWith('abort') || statusText.startsWith('cancel'))
+									? 'Merkez ile iletisim kurulamadı'
+									: ex.errorText ?? ex.responseJSON?.errorText ?? ex.responseText ?? ex.message ?? ex ?? '??';
+							_result = { isError: true, rc: 'wsError', errorText }
+						}
+						let mesaj = _result.message || _result.mesaj; if (mesaj) { mesajlar.push(mesaj) }
+						_result = _result || { isError: true, rc: 'unknownError', errorText: '??' };
+						if (_result.isError) {
+							errors.push(_result.errorText ?? _result.message ?? _result);
+							(hataliTable2FisIDListe[table] = hataliTable2FisIDListe[table] ?? []).push(rowid)
+						}
+						let {basariliTable2FisIDListe: _basariliTable2FisIDListe, hataliTable2FisIDListe: _hataliTable2FisIDListe} = _result;
+						if (_basariliTable2FisIDListe?.[table]) {
+							(result.basariliTable2FisIDListe[table] = result.basariliTable2FisIDListe[table] ?? []).push(..._basariliTable2FisIDListe?.[table]) }
+						if (_hataliTable2FisIDListe?.[table]) {
+							(result.hataliTable2FisIDListe[table] = result.hataliTable2FisIDListe[table] ?? []).push(..._hataliTable2FisIDListe?.[table]) }
+					}
+				}
 			}
-			$.extend(e, { result, mesaj }); await this.merkezeBilgiGonderSonrasi(e);
+			finally {
+				if (errors.length) {
+					errors = Object.keys(asSet(errors));
+					let errorText = errors.length ? `<ul>${errors.map(x => `<li>${x}</li>`).join(CrLf)}</ul>` : null;
+					displayMessage(errorText, '@ Belge Gönderim - HATALAR @')
+				}
+				$.extend(e, { toplamSayi: kontroleEsasToplamSayi, hataSayi: 0 });
+				for (let fisIDListe of Object.values(hataliTable2FisIDListe)) {
+					if (fisIDListe?.length) { e.hataSayi += fisIDListe.length } }
+				await this.knobProgressStep(50);
+				let mesaj = mesajlar.length ? `<ul>${mesajlar.map(x => `<li>${x}</li>`).join(CrLf)}</ul>` : null;
+				if (mesaj) {
+					if (silent) { await this.knobProgressHideWithReset({ update: { labelTemplate: 'error', label: `<u>Sunucu Yanıtı</u>: ${mesaj}` }, delayMS: 8000 }) }
+					else { await displayMessage(mesaj, 'Belge Gönderim - Bilgilendirme') }
+				}
+				$.extend(e, { result, mesaj }); await this.merkezeBilgiGonderSonrasi(e)
+			}
 			return result
 		}
 		async merkezeBilgiGonderSonrasi(e) {
