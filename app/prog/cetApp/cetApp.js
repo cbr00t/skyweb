@@ -2778,7 +2778,7 @@
 				if (gonderilecekBilgiler?.totalCount) {
 					const {table2Info} = gonderilecekBilgiler;
 					let bilgiText = '';
-					for (let [table, info] in Object.entries(table2Info)) {
+					for (let [table, info] of Object.entries(table2Info)) {
 						if (!info) { continue }
 						let {count} = info; if (count) {
 							let tipAdi = info || table; if (bilgiText) { bilgiText += ', ' }
