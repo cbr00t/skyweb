@@ -178,7 +178,7 @@
 			let block = e => {
 				let {sahalar, sabitKey} = e; if ($.isEmptyObject(sahalar)) { return }
 				for (let [attr, saha] of Object.entries(sahalar)) {
-					attr = saha.attr || attr; if ((attr == 'Dip' && dipYazdirilirmi) || saha.yazdirilabilirmi) {
+					attr = saha.attr || attr; if ((attr == 'Dip' ? dipYazdirilirmi : true) && saha.yazdirilabilirmi) {
 						let key = e.sabitKey || (saha.otomatikmi ? 'otomatik' : 'normal');
 						let sahaYapi = (result[key] = result[key] || {}); sahaYapi[attr] = saha
 					}
