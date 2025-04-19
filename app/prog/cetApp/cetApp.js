@@ -4630,7 +4630,8 @@
 			return result
 		}
 		async merkezeBilgiGonderDevam(e) {
-			let {promise_merkezeBilgiGonder} = this; if (promise_merkezeBilgiGonder) { try { await promise_merkezeBilgiGonder } catch (ex) { } }
+			let {promise_merkezeBilgiGonder} = this;
+			if (promise_merkezeBilgiGonder) { try { await promise_merkezeBilgiGonder } catch (ex) { } }
 			promise_merkezeBilgiGonder = this.promise_merkezeBilgiGonder = new $.Deferred(p => {
 				this.merkezeBilgiGonderDevam_internal(e)
 					.then(result => p.resolve(result)).catch(err => p.reject(err))
@@ -4645,70 +4646,79 @@
 			if (this.kmTakibiYapilirmi /*param.kapandimi*/) { _param.kapandimi = true }
 			if (param.ilkKM) { _param.ilkKM = param.ilkKM } if (param.sonKM) { _param.sonKM = param.sonKM }
 			if (param.mustKod2Bilgi) {
-				for (const mustKod in param.mustKod2Bilgi) {
-					const bilgi = param.mustKod2Bilgi[mustKod];
-					if (!$.isEmptyObject(bilgi)) { const _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi; }
+				for (let [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
+					if (!$.isEmptyObject(bilgi)) {
+						let _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {};
+						_mustKod2Bilgi[mustKod] = bilgi;
+					}
 				}
 			}
 			let paramGonderilsinmi = false;
 			if (_param) {
-				if (!paramGonderilsinmi && (param.ilkKM || param.sonKM || param.kapandimi)) { paramGonderilsinmi = true }
+				if (!paramGonderilsinmi && (param.ilkKM || param.sonKM || param.kapandimi)) {
+					paramGonderilsinmi = true }
 				if (!paramGonderilsinmi && _param.mustKod2Bilgi) {
-					for (const mustKod in param.mustKod2Bilgi) { const bilgi = param.mustKod2Bilgi[mustKod]; if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break } } }
+					for (let [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
+						if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break } }
+				}
 			}
 			if (!paramGonderilsinmi && $.isEmptyObject(bilgiGonderTableYapilari)) {
-				if (!silent) { displayMessage('Gönderilecek belge bulunamadı!', this.appText); }
+				if (!silent) { displayMessage('Gönderilecek belge bulunamadı!', this.appText) }
 				await this.merkezeBilgiGonderSonrasi(e); return false
 			}
 			if (paramGonderilsinmi) { totalRecords++ }
 			// await this.knobProgressSetLabel(`Belgeler taranıyor...`);
 			let _table2Recs = {}, fetchBlock = async e => {
-				let rs = await dbMgr.executeSql({ query: e.query });
+				let {query} = e, rs = await dbMgr.executeSql({ query });
 				for (let i = 0; i < rs.rows.length; i++) {
-					const table = e.table || rec._table, rec = rs.rows[i];
-					const recs = _table2Recs[table] = _table2Recs[table] || []; recs.push(rec);
+					let table = e.table || rec._table, rec = rs.rows[i];
+					let recs = _table2Recs[table] = _table2Recs[table] || []; recs.push(rec);
 					totalRecords++; e.toplamSayi = recs.length
 				}
 				if (!silent) { await this.knobProgressStep(3) }
 			};
-			for (const tableYapi of bilgiGonderTableYapilari) {
-				const {fisIDListe} = tableYapi, baslikTable = tableYapi.baslik;
-				let sent = new MQSent({
-					from: baslikTable, where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`, `degismedi = ''`],
-					sahalar: [`'${baslikTable}' _table`, `'fis' _tip`, `rowid`, `*`]
-				});
-				if (timer) {
-					if (baslikTable == 'data_PIFFis') {
-						sent.where.add(
-							`NOT ` +
-							new MQOrClause([
-								new MQSubWhereClause({ parantezli: true, birlestirDict: CETSayimFis.varsayilanKeyHostVars() }),
-								new MQSubWhereClause({ parantezli: true, birlestirDict: CETBekleyenSayimFis.varsayilanKeyHostVars() }),
-								new MQSubWhereClause({ parantezli: true, birlestirDict: CETBekleyenUgramaFis.varsayilanKeyHostVars() })
-							]).toString()
-						)
+			for (let tableYapi of bilgiGonderTableYapilari) {
+				let {fisIDListe} = tableYapi, {baslik: baslikTable, diger: digerTablolar} = tableYapi;
+				let {tanim: tanimTablolar} = tableYapi; if (!$.isEmptyObject(tanimTablolar)) {
+					for (let table of tanimTablolar) {
+						let sent = new MQSent({
+							from: table, where: [`gonderildi = ''`],
+							sahalar: [`'${table}' _table`, `'tanim' _tip`, `rowid`, `*`]
+						});
+						await fetchBlock({ table, query: new MQStm({ sent }) })
 					}
 				}
-				if (fisIDListe) { sent.where.inDizi(fisIDListe, `rowid`) }
-				const _e = { table: baslikTable, query: new MQStm({ sent }) }; await fetchBlock(_e); kontroleEsasToplamSayi += (_e.toplamSayi || 0);
-				const digerTablolar = tableYapi.diger;
+				if (baslikTable) {
+					let sent = new MQSent({
+						from: baslikTable, where: [`gonderildi = ''`, `gecici = ''`, `rapor = ''`, `degismedi = ''`],
+						sahalar: [`'${baslikTable}' _table`, `'fis' _tip`, `rowid`, `*`]
+					}), {where: wh} = sent;
+					if (timer) {
+						if (baslikTable == 'data_PIFFis') {
+							wh.add(
+								`NOT ` +
+								new MQOrClause([
+									new MQSubWhereClause({ parantezli: true, birlestirDict: CETSayimFis.varsayilanKeyHostVars() }),
+									new MQSubWhereClause({ parantezli: true, birlestirDict: CETBekleyenSayimFis.varsayilanKeyHostVars() }),
+									new MQSubWhereClause({ parantezli: true, birlestirDict: CETBekleyenUgramaFis.varsayilanKeyHostVars() })
+								]).toString()
+							)
+						}
+					}
+					if (fisIDListe) { wh.inDizi(fisIDListe, `rowid`) }
+					let _e = { table: baslikTable, query: new MQStm({ sent }) };
+					await fetchBlock(_e); kontroleEsasToplamSayi += (_e.toplamSayi || 0)
+				}
 				if (!$.isEmptyObject(digerTablolar)) {
-					for (const table of digerTablolar) {
+					for (let table of digerTablolar) {
 						let sent = new MQSent({
 							from: `${table} har`,
 							fromIliskiler: [ { from: `${baslikTable} fis`, iliski: `har.fissayac = fis.rowid` } ],
 							where: [`fis.gonderildi = ''`, `fis.gecici = ''`, `fis.rapor = ''`, `fis.degismedi = ''`],
 							sahalar: [`'${baslikTable}' _parentTable`, `'${table}' _table`, `'diger' _tip`, `har.rowid`, `har.*`]
-						});
-						if (fisIDListe) { sent.where.inDizi(fisIDListe, `har.fissayac`) }
-						await fetchBlock({ table: table, query: new MQStm({ sent }) })
-					}
-				}
-				const tanimTablolar = tableYapi.tanim;
-				if (!$.isEmptyObject(tanimTablolar)) {
-					for (const table of tanimTablolar) {
-						let sent = new MQSent({ from: table, where: [`gonderildi = ''`], sahalar: [`'${table}' _table`, `'tanim' _tip`, `rowid`, `*`] });
-						await fetchBlock({ table: table, query: new MQStm({ sent }) })
+						}), {where: wh} = sent;
+						if (fisIDListe) { wh.inDizi(fisIDListe, `har.fissayac`) }
+						await fetchBlock({ table, query: new MQStm({ sent }) })
 					}
 				}
 			}
@@ -4720,6 +4730,7 @@
 				for (let [table, recs] of Object.entries(_table2Recs)) {
 					for (let i = 0; i < recs.length; i++) {
 						let rec = recs[i], {rowid} = rec, param = paramGonderildimi ? undefined : _param, table2Recs = {};
+						if (bilgiGonderTableYapilari.find(x => x.diger == table)) { continue }
 						let {diger} = bilgiGonderTableYapilari.find(x => x.baslik == table) ?? {}, detayTable = diger?.[0];
 						if (detayTable && table == detayTable) { continue }
 						table2Recs[table] = [rec]; if (detayTable) {
