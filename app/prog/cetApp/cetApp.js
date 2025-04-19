@@ -4729,7 +4729,7 @@
 			try {
 				for (let [table, recs] of Object.entries(_table2Recs)) {
 					for (let i = 0; i < recs.length; i++) {
-						let rec = recs[i], {rowid} = rec, param = paramGonderildimi ? undefined : _param, table2Recs = {};
+						let rec = recs[i], {rowid} = rec, param = paramGonderildimi ? {} : _param, table2Recs = {};
 						if (bilgiGonderTableYapilari.find(x => x.diger == table)) { continue }
 						let {diger} = bilgiGonderTableYapilari.find(x => x.baslik == table) ?? {}, detayTable = diger?.[0];
 						if (detayTable && table == detayTable) { continue }

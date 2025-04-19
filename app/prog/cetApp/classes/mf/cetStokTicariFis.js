@@ -890,7 +890,7 @@
 					return toJSONStr(qrData)
 				}
 			};
-			result['QR=EISLEM'] = result['QR-EISLEM'];
+			result['QR=EISLEM'] = result['QR=EİSLEM'] = result['QR-EİSLEM'] = result['QR=EİŞLEM'] = result['QR-EİŞLEM'] = result['QR-EISLEM'];
 			return result
 		}
 	}

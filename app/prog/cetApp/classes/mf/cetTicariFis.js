@@ -1427,14 +1427,8 @@
 		}
 		
 		async eIslemTipDegeriFor(e) {
-			if (this.class.alimmi || this.class.iademi)
-				return '';
-
-			let {app} = sky;
-			return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : ''
-
-			//let cariEFatmi = await this.getCariEFatmi(e);
-			//return cariEFatmi ? 'IR' : '';
+			if (this.class.alimmi != this.class.iademi) { return '' }
+			let {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : ''
 		}
 
 		async yeniTanimOncesiIslemler(e) {
