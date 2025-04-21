@@ -348,34 +348,24 @@
 		async getDokumDegeriDict(e) {
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
 				Miktar(e) {
-					const {detaylar} = this;
-					const brm2MF = {};
-					const brm2Toplam = {};
-
-					for (const i in detaylar) {
-						const det = detaylar[i];
-						const brm = det.brm || 'AD';
-						const {malFazlasi} = det;
-						
-						brm2Toplam[brm] = (brm2Toplam[brm] || 0) + asFloat(det.miktar) || 0;
-						if (malFazlasi)
-							brm2MF[brm] = (brm2MF[brm] || 0) + asFloat(det.malFazlasi) || 0;
+					let {app} = sky, {brm2Fra} = app, {detaylar} = this, brm2MF = {}, brm2Toplam = {};
+					for (let det of detaylar) {
+						let {miktar, brm, malFazlasi} = det; brm = brm || 'AD';
+						miktar = asFloat(miktar);
+						let fra = brm2Fra[brm]; if (miktar && fra != null) { miktar = roundToFra(miktar, fra) }
+						brm2Toplam[brm] = (brm2Toplam[brm] || 0) + asFloat(miktar) || 0;
+						if (malFazlasi) { brm2MF[brm] = (brm2MF[brm] || 0) + asFloat(malFazlasi) || 0 }
 					}
-					
-					const result = [];
-					for (const brm in brm2Toplam) {
-						const toplam = brm2Toplam[brm];
-						const malFazlasi = brm2MF[brm];
-						if (toplam) {
+					let result = []; for (let [brm, toplam] of Object.entries(brm2Toplam)) {
+						let malFazlasi = brm2MF[brm]; if (toplam) {
 							result.push(
 								numberToString(toplam) +
 								(malFazlasi ? `+${malFazlasi}` : '') +
 								' ' + brm
-							);
+							)
 						}
 					}
-
-					return `TOPLAM : ${result.join(' ; ')}`;
+					return `TOPLAM : ${result.join(' ; ')}`
 				}
 			})
 		}

@@ -347,7 +347,8 @@
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
 				promosyonKod: '', proKod: '', promosyonText: '', proText: '',
 				miktar: e => {
-					const {miktar, malFazlasi} = this;
+					let {miktar, brm, malFazlasi} = this, fra = sky.app.brm2Fra[brm];
+					if (miktar && fra != null) { miktar = roundToFra(miktar, fra) }
 					let value = miktar.toString(); if (malFazlasi) { value += `+${malFazlasi.toString()}` }
 					return value
 				},
