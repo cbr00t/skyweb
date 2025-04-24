@@ -22,7 +22,7 @@
 	<script src="../../vio/vioweb/lib/core_extensions.js?<?=$siteVersion?>"></script>
     <script src="../../vio/vioweb/lib_external/jqx/jquery-3.3.1.min.js"></script>
 	<script src="../../vio/vioweb/lib_external/jqx/jquery-ui.js"></script>
-	<script src="../../vio/vioweb/lib_external/jqx/jquery.ajax-cross-origin.min.js"></script>
+	<!--<script src="../../vio/vioweb/lib_external/jqx/jquery.ajax-cross-origin.min.js"></script>-->
 	<script src="../../vio/vioweb/lib_external/jqx/jqx-all.js"></script>
 	<script src="../lib_external/base64.js"></script>
 	<script src="../lib_external/webSQL/sql-wasm.js"></script>
