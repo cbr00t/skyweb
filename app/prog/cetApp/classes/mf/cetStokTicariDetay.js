@@ -54,19 +54,17 @@
 				stokKdvSaha: CETTicariFis.stokKdvSaha,
 				stokKdvDegiskenmiSaha: CETTicariFis.stokKdvDegiskenmiSaha
 			};
-			const {fiiliCikismi, stokKdvSaha, stokKdvDegiskenmiSaha} = fisSinif;
-			const {dovizlimi} = fis;
+			const {dovizlimi} = fis, {fiiliCikismi, stokKdvSaha, stokKdvDegiskenmiSaha, alimmi, iademi} = fisSinif;
 			let stkFytInd = (e.cariRow || {}).stkFytInd || (fis || {}).cariStkFytInd;
 			if (!stkFytInd) {
 				const mustKod = e.mustKod || (e.cariRow || {}).kod || (fis || {}).mustKod;
 				if (mustKod)
 					stkFytInd = await MQCogul.getCariStkFytInd({ mustKod: mustKod });
 			}
-			const brmFiyatSaha =
+			let brmFiyatSaha =
 				dovizlimi
 					? (stkFytInd ? `dvFiyat${stkFytInd}` : 'dvBrmFiyat')
-					: (stkFytInd ? `satFiyat${stkFytInd}` : 'brmFiyat');
-			
+					: alimmi ? (iademi ? 'almNetFiyat' : 'almFiyat') : (stkFytInd ? `satFiyat${stkFytInd}` : 'brmFiyat');
 			let sent = new MQSent({
 				from: `mst_Stok ${alias}`,
 				fromIliskiler: [

@@ -1653,24 +1653,17 @@
 			this.focusToDefault()
 		}
 		hizliBarkod_enterIstendi(e) {
-			if (this.timer_hizliBarkod_topluEkle) {
-				clearTimeout(this.timer_hizliBarkod_topluEkle);
-				delete this.timer_hizliBarkod_topluEkle
-			}
-			this.timer_hizliBarkod_topluEkle = setTimeout(async e => {
-				e = e || {};
+			if (this.timer_hizliBarkod_topluEkle) { clearTimeout(this.timer_hizliBarkod_topluEkle); delete this.timer_hizliBarkod_topluEkle }
+			this.timer_hizliBarkod_topluEkle = setTimeout(async ({ event: evt }) => {
 				try {
-					const evt = e.event;
-					const _e = $.extend({}, e, {
-						event: evt,
-						barkodlar: (evt.currentTarget.value || '').split('\n')
-										.map(x => x.replace('\r', '').trim())
-										.filter(x => !!x)
-					});
+					let _e = {
+						...e, event: evt,
+						barkodlar: (evt.currentTarget.value || '').split('\n').map(x => x.replace('\r', '').trim()).filter(x => !!x)
+					};
 					await this.hizliBarkod_topluEkle(_e)
 				}
 				finally { delete this.timer_hizliBarkod_topluEkle }
-			}, 500, e)
+			}, 300, e ?? {})
 		}
 		async hizliBarkod_topluEkle(e) {
 			e = e || {}; this.txtHizliBarkod.val(''); this.focusToDefault();
@@ -1682,20 +1675,18 @@
 			const {barkodlar} = e; if ($.isEmptyObject(barkodlar)) { return }
 			const {listeWidget} = this; listeWidget.beginUpdate();
 			let barkodHatalari = [], {hataliBarkodlarIcinMesajGosterilirmi} = sky.app;
-			try { for (const barkod of barkodlar) { await this.ekleIstendi({ barkod, barkodHatalari }) } }
+			try { for (let barkod of barkodlar) { await this.ekleIstendi({ barkod, barkodHatalari }) } }
 			catch (ex) {
 				if (!(ex.rc == 'runtimeInterrupt' || ex.rc == 'userAbort')) {
 					displayMessage(`${ex.errorText || ex.message || ex}`, `@ Toplu Barkod Ekleme İşlemi @`, undefined, undefined, false, true) }
 			}
 			finally { listeWidget.endUpdate() }
 			let barkodHatasiVarmi = !!barkodHatalari?.length; if (barkodHatasiVarmi) {
+				document.activeElement?.blur();
+				for (let waitMS of [100, 200, 300, 500, 700, 1000, 1500]) { setTimeout(() => document.activeElement?.blur(), waitMS) }
 				let text = `Şu barkodlar hatalıdır:<ul>${barkodHatalari.map(x => `<li class="bold">${x}</li>`).join(CrLf)}</ul>`;
 				displayMessage(text, '@ Barkod İşlemi @', undefined, undefined, hataliBarkodlarIcinMesajGosterilirmi ? true : null, undefined, 'top-right')
-					.on('close', evt => { setTimeout(() => this.focusToDefault(), 10) })
-			}
-			if (barkodHatasiVarmi) {
-				document.activeElement?.blur();
-				for (let waitMS of [500, 1000, 2000, 2500, 3000]) { setTimeout(() => document.activeElement?.blur(), waitMS) }
+					.on('close', evt => { setTimeout(() => this.focusToDefault(), 200) })
 			}
 			setTimeout(() => { this.onResize(e); if (!barkodHatasiVarmi) { } else { this.focusToDefault() } this.selectLastRec() }, 100)
 		}
