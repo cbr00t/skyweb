@@ -218,9 +218,30 @@
 		}
 		async satisKosulYapilariIcinDuzenle(e) {
 			e = e || {}; await super.satisKosulYapilariIcinDuzenle(e);
-			const {app} = sky, {fiyatFra, dvFiyatFra, iskSayi} = app, {fis} = e;
+			const {app} = sky, {fiyatFra, dvFiyatFra, iskSayi} = app, {fis} = e, {alimmi} = fis.class;
 			const {satisKosulYapilari} = e; if (!satisKosulYapilari) { return }
 			let _e = { stokKod: this.shKod, grupKod: this.grupKod }; let rec, kosulTip, kosulSinif, kosulKodListe;
+			if (alimmi && !(this.ozelFiyatVarmi || this.ozelIskontoVarmi)) {
+				kosulTip = 'AL'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
+				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe }, _e));
+				if (rec) {
+					$.extend(this, { iskontoYapilmazmi: asBool(this.iskontoYapilmazmi) || asBool(rec.iskontoYapilmazmi), promosyonYapilmazmi: asBool(rec.promosyonYapilmazmi) });
+					const {dovizlimi} = fis; let value = dovizlimi ? roundToFra(rec.ozelDvFiyat, dvFiyatFra) : roundToFra(rec.ozelFiyat, fiyatFra);
+					if (value) {
+						$.extend(this, { fiyat: value, ozelFiyatVarmi: true });
+						this.orjFiyat = this.fiyat; this._fiyatBelirlendimi = false; this.brmFiyatDuzenle(e);
+						this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod }
+					}
+					value = roundToFra(rec.enDusukFiyat, dovizlimi ? dvFiyatFra : fiyatFra);
+					if (value) { this.enDusukFiyat = value }
+					if (this.iskontoUygulanabilirmi) {
+						let uygunmu = false;
+						for (let i = 1; i <= iskSayi; i++) { const key = `iskOran${i}`; let value = asFloat(rec[key]) || 0; if (value) { uygunmu = true; this[key] = value } }
+						if (uygunmu) { this.ozelIskontoVarmi = true; this.kosulYapi[kosulTip] = { detTip: rec.detTip, kosulKod: rec.kosulKod, vioID: rec.vioID, detKosulKod: rec.kod } }
+						let value = roundToFra(rec.enDusukFiyat, fiyatFra); if (value) { this.enDusukFiyat = value }
+					}
+				}
+			}
 			if (!this.ozelFiyatVarmi) {
 				kosulTip = 'FY'; kosulSinif = CETSatisKosul.kosulTip2Sinif(kosulTip); kosulKodListe = (satisKosulYapilari[kosulTip] || []).map(kosul => kosul.id);
 				rec = await kosulSinif.kosullarIcinStokGrupBilgi($.extend({ kosulKodListe }, _e));

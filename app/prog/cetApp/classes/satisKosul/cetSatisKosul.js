@@ -41,7 +41,8 @@
 					CETKademeliIskontoKosul,
 					CETKampanyaKosul,
 					CETMalFazlasiKosul,
-					CETIskontoSinirKosul
+					CETIskontoSinirKosul,
+					CETAlimKosul
 				]
 			}
 

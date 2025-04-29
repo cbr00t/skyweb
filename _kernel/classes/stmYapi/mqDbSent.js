@@ -48,9 +48,8 @@
 			this.where.fromGridWSArgs(e);
 		}
 
-		*getSentListe(e) {
-			yield this
-		}
+		*getSentListe(e) { yield this }
+		[Symbol.iterator](e) { return this.getSentListe(e) }
 		sentDo(e) {
 			e = e || {};
 			if (typeof e != 'object')

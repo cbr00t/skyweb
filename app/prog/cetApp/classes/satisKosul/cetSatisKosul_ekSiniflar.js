@@ -14,12 +14,22 @@
 		static get kosulTip() { return 'SB' }
 
 		static get kosulDetayEkSahalar() {
-			const result = super.kosulDetayEkSahalar;
-			for (let i = 1; i <= sky.app.iskSayi; i++)
-				result.push(`iskOran${i}`)
+			let result = super.kosulDetayEkSahalar;
+			for (let i = 1; i <= sky.app.iskSayi; i++) { result.push(`iskOran${i}`) }
 			return result
 		}
 	}
+
+	window.CETAlimKosul = class extends window.CETSatisKosul {
+		static get kosulTip() { return 'AL' } static get alimmi() { return true }
+		static get kosulDetayEkSahalar() {
+			let result = super.kosulDetayEkSahalar || [];
+			result.push('ozelFiyat', 'ozelDvFiyat', 'orjFiyat', 'orjDvFiyat');
+			for (let i = 1; i <= sky.app.iskSayi; i++) { result.push(`iskOran${i}`) }
+			return result
+		}
+	}
+	
 
 	window.CETKademeliIskontoKosul = class extends window.CETSatisKosul {
 		static get kosulTip() { return 'KD' }

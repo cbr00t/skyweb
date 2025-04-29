@@ -29,13 +29,9 @@
 			}
 		}
 
-		getSentListe(e) {
-			return this.sent.getSentListe(e)
-		}
-	
-		sentDo(e) {
-			return this.sent.sentDo(e)
-		}
+		getSentListe(e) { return this.sent.getSentListe(e) }
+		[Symbol.iterator](e) { return this.getSentListe(e) }
+		sentDo(e) { return this.sent.sentDo(e) }
 
 		unionAllYap() {
 			return (this.sent = new MQUnionAll([this.sent]));
