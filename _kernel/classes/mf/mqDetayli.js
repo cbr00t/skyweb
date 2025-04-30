@@ -347,25 +347,23 @@
 
 		async getDokumDegeriDict(e) {
 			return $.extend(await super.getDokumDegeriDict(e) || {}, {
-				Miktar(e) {
-					let {app} = sky, {brm2Fra} = app, {detaylar} = this, brm2MF = {}, brm2Toplam = {};
-					for (let det of detaylar) {
-						let {miktar, brm, malFazlasi} = det; brm = brm || 'AD';
-						miktar = asFloat(miktar);
+				Miktar({ matbuuForm }) {
+					let {app} = sky, {brm2Fra} = app, {detaylar} = this;
+					let {normalSahalar: normal} = matbuuForm, {yazdirilabilirmi: okutmaSayisiVarmi} = normal.Detay.okutmaSayisi ?? {};
+					let brm2Toplam = {}, brm2MF = {}, topOkutmaSayisi = 0;
+					for (let {miktar, brm, malFazlasi, okutmaSayisi} of detaylar) {
+						brm = brm || 'AD'; miktar = asFloat(miktar); okutmaSayisi = asFloat(okutmaSayisi);
 						let fra = brm2Fra[brm]; if (miktar && fra != null) { miktar = roundToFra(miktar, fra) }
 						brm2Toplam[brm] = (brm2Toplam[brm] || 0) + asFloat(miktar) || 0;
 						if (malFazlasi) { brm2MF[brm] = (brm2MF[brm] || 0) + asFloat(malFazlasi) || 0 }
+						if (okutmaSayisi) { topOkutmaSayisi += okutmaSayisi }
 					}
 					let result = []; for (let [brm, toplam] of Object.entries(brm2Toplam)) {
-						let malFazlasi = brm2MF[brm]; if (toplam) {
-							result.push(
-								numberToString(toplam) +
-								(malFazlasi ? `+${malFazlasi}` : '') +
-								' ' + brm
-							)
-						}
+						let malFazlasi = brm2MF[brm];
+						if (toplam) { result.push(`${numberToString(toplam)}${malFazlasi ? `+${malFazlasi}` : ''} ${brm}`) }
 					}
-					return `TOPLAM : ${result.join(' ; ')}`
+					if (okutmaSayisiVarmi && topOkutmaSayisi) { result.push(`O: ${topOkutmaSayisi}`) }
+					return `TOPLAM : ${result.join(' | ')}`
 				}
 			})
 		}
