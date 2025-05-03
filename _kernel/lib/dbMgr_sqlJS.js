@@ -13,15 +13,10 @@
 		async open(e) {
 			let {db} = this;
 			if (!this.isOpen) {
-				const {dbName} = this;
-				await initSqlJsPromise;
-				const sql = await initSqlJs({ locateFile: fileName => `../lib_external/webSQL/${fileName}` });
+				let {dbName} = this; await initSqlJsPromise;
+				let sql = await initSqlJs({ locateFile: fileName => `../lib_external/webSQL/${fileName}` });
 				console.debug('initSqlJs');
-				let {fs} = this;
-				if (!fs) {
-					fs = (await Utils.getFS()).fs;
-					console.debug('init fs', fs)
-				}
+				let {fs} = this; if (!fs) { fs = (await Utils.getFS()).fs; console.debug('init fs', fs) }
 				let data = await this.dbLoad();
 				db = this.db = new sql.Database(data?.length ? data : undefined);
 				console.debug('memory db create', dbName, db);
@@ -43,8 +38,7 @@
 						}
 					);
 					wnd.find(`.jqx-window-content > .ui-dialog-button [value = 'EVET']`).jqxButton('template', 'danger');
-					let rdlg = await promise;
-					if (rdlg) {
+					let rdlg = await promise; if (rdlg) {
 						db = this.db = new sql.Database();
 						console.warn('empty memory db re-create', dbName, db);
 						return
@@ -52,23 +46,16 @@
 				}
 				try { await this.executeSql(`PRAGMA page_size=${16 * 1024}; VACUUM`) }
 				catch (ex) { console.debug(ex) }
-				let {onBeforeUnload} = this.class;
-				if (!onBeforeUnload)
-					onBeforeUnload = evt => this.class.onBeforeUnload(evt)
-				window.removeEventListener('beforeunload', onBeforeUnload);
-				window.removeEventListener('unload', onBeforeUnload);
-				window.addEventListener('beforeunload', onBeforeUnload);
-				window.addEventListener('unload', onBeforeUnload)
+				let {onBeforeUnload} = this.class; if (!onBeforeUnload) { onBeforeUnload = evt => this.class.onBeforeUnload(evt) }
+				window.removeEventListener('beforeunload', onBeforeUnload); window.removeEventListener('unload', onBeforeUnload);
+				window.addEventListener('beforeunload', onBeforeUnload); window.addEventListener('unload', onBeforeUnload)
 			}
 			return db
 		}
 		async close(e) {
-			if (!this.isOpen)
-				return null
-			await this.dbSave(e);
-			let {dbName, db} = this;
-			db.close();
-			delete this.db;
+			if (!this.isOpen) { return null }
+			if (!this.noAutoSaveFlag) { await this.dbSave(e) }
+			let {dbName, db} = this; db.close(); delete this.db;
 			console.debug('db close', dbName, db);
 			return db
 		}
@@ -77,125 +64,91 @@
 			let {file, fh, data} = e;
 			if (!data) {
 				if (!fh) {
-					let {file} = e;
 					if (!file) {
-						const files = await showOpenFilePicker({ multiple: false, excludeAcceptAllOption: true, types: [{ accept: { 'application/x-db': ['.db'] }, description: 'SQLite DB Dosyaları' }] });
-						file = (files || [])[0]
+						let files = await showOpenFilePicker({
+							multiple: false, excludeAcceptAllOption: true,
+							types: [{ accept: { 'application/x-db': ['.db'] }, description: 'SQLite DB Dosyaları' }]
+						});
+						file = files?.[0]
 					}
-					fh = await file.getFile()
+					fh = await file?.getFile()
 				}
-				data = new Uint8Array(await fh.arrayBuffer())
+				data = await fh?.arrayBuffer(); data = data ? new Uint8Array(data) : null
 			}
 			if (data) { await dbMgr.dbSave({ data }, true); await dbMgr.dbLoad() }
-			const {dbStoragePath, dbFileName} = this; return {dbStoragePath, dbFileName, file, fh, data}
+			let {dbStoragePath, dbFileName} = this;
+			return {dbStoragePath, dbFileName, file, fh, data}
 		}
 		async dbLoad(e) {
-			const {app} = this;
-			if (!app)
-				return null
-			e = e || {};
-			const {indicatorPart} = app;
-			const {dbName, db, dbStoragePath, dbFileName, fs} = this;
+			e = e || {}; let {app} = this; if (!app) { return null }
+			let {indicatorPart} = app, {dbName, db, dbStoragePath, dbFileName, fs} = this;
 			let rootDir, fh, file, data;
 			try {
-				if (indicatorPart?.dbCallback)
-					await indicatorPart.dbCallback({ state: true })
+				if (indicatorPart?.dbCallback) { await indicatorPart.dbCallback({ state: true }) }
 				try {
 					rootDir = await Utils.getFSDirHandle(dbStoragePath, false, { fs });
 					fh = await rootDir.getFileHandle(dbFileName, { create: false });
 					file = await fh.getFile()
 				}
 				catch (ex) { if (!ex?.code || ex?.code != ex.NOT_FOUND_ERR); return null }
-				data = await file.arrayBuffer();
-				data = data ? new Uint8Array(data) : null;
+				data = await file.arrayBuffer(); data = data ? new Uint8Array(data) : null;
 				this.hasChanges = false;
 				console.debug('db load', dbName, db, dbStoragePath, dbFileName, rootDir, fs, fh);
-				if (data) {
-					try { console.debug( data.length, String.fromCharCode.apply(null, Array.from(data.slice(0, 100)) )) }
-					catch (ex) { }
-				}
-				if (indicatorPart?.dbCallback)
-					await indicatorPart.dbCallback({ state: false })
+				if (data) { try { console.debug( data.length, String.fromCharCode.apply(null, Array.from(data.slice(0, 100)) )) } catch (ex) { } }
+				if (indicatorPart?.dbCallback) { await indicatorPart.dbCallback({ state: false }) }
 			}
 			catch (ex) {
 				console.error('db load', ex, dbName, db, dbStoragePath, dbFileName, rootDir, fs, fh);
-				if (indicatorPart?.dbCallback)
-					await indicatorPart.dbCallback({ state: null })
+				if (indicatorPart?.dbCallback) { await indicatorPart.dbCallback({ state: null }) }
 			}
 			return data
 		}
 		async dbSave(e, _force) {
-			if (!this.isOpen)
-				return null
-			const {app} = this;
-			if (!app)
-				return null
-			e = e || {};
-			let forceFlag = asBool(e.force ?? _force ?? false);
-			if (!(forceFlag || this.hasChanges))
-				return null
-			const {indicatorPart} = app;
-			const {dbName, db, dbStoragePath, dbFileName, fs} = this;
+			e = e || {}; if (!this.isOpen) { return null }
+			let {app} = this; if (!app) { return null }
+			let forceFlag = asBool(e.force ?? _force ?? false), {hasChanges: prev_hasChanges} = this;
+			if (!(forceFlag || prev_hasChanges)) { return null }
+			let {indicatorPart} = app, {dbName, db, dbStoragePath, dbFileName, fs} = this;
 			let rootDir, fh, data;
 			try {
-				if (indicatorPart?.dbCallback)
-					await indicatorPart.dbCallback({ state: true })
+				if (indicatorPart?.dbCallback) { await indicatorPart.dbCallback({ state: true }) }
 				data = e.data ?? db.export();
-				try { console.debug('db save', 'data export', dbName, db, data) }
-				catch (ex) { }
-				if (data == null)
-					return null
+				try { console.debug('db save', 'data export', dbName, db, data) } catch (ex) { }
+				if (data == null) { return null }
 				rootDir = await Utils.getFSDirHandle(dbStoragePath, true, { fs });
 				fh = await rootDir.getFileHandle(dbFileName, { create: true });
-				const sw = await fh.createWritable();
-				try { await sw.write(data) }
-				finally { await sw.close() }
+				let sw = await fh.createWritable();
+				try { await sw.write(data) } finally { await sw.close() }
 				this.hasChanges = false;
 				console.debug('db save', 'file write', dbName, db, dbStoragePath, dbFileName, rootDir, fs, fh);
-				if (data) {
-					try { console.debug(data.length, String.fromCharCode.apply(null, Array.from(data.slice(0, 100)))) }
-					catch (ex) { }
-				}
-				if (indicatorPart?.dbCallback)
-					await indicatorPart.dbCallback({ state: false })
+				if (data) { try { console.debug(data.length, String.fromCharCode.apply(null, Array.from(data.slice(0, 100)))) } catch (ex) { } }
+				if (indicatorPart?.dbCallback) { await indicatorPart.dbCallback({ state: false }) }
+				if (prev_hasChanges && data) { this.rdbBackup_initTimer({ ...e, data }) }
 			}
 			catch (ex) {
 				console.error('db save', ex, dbName, db, dbStoragePath, dbFileName, rootDir, fs, fh);
-				if (indicatorPart?.dbCallback)
-					await indicatorPart.dbCallback({ state: null })
+				if (indicatorPart?.dbCallback) { await indicatorPart.dbCallback({ state: null }) }
 			}
 			return data
 		}
 		async dbClear(e) {
-			const {dbName, dbStoragePath, fs} = this;
-			let {db} = this;
-			await this.close();
-			this.db = null;
-			console.log('  ', '  ', 'memory db clear', 'db-obj', dbName, db)
+			let {dbName, dbStoragePath, fs, db} = this;
+			await this.close(); this.db = null;
+			console.log('  ', '  ', 'memory db clear', 'db-obj', dbName, db);
 			try {
-				const rootDir = await Utils.getFSDirHandle(dbStoragePath, false, { fs });
+				let rootDir = await Utils.getFSDirHandle(dbStoragePath, false, { fs });
 				await rootDir.remove({ recursive: true });
 				console.log('  ', '  ', 'memory db clear', 'fs', dbName, fs, rootDir)
 			}
-			catch (ex) {
-				if (!ex?.code || ex?.code != ex.NOT_FOUND_ERR)
-					console.error(ex)
-			}
-			await this.open();
-			db = this.db;
+			catch (ex) { if (!ex?.code || ex?.code != ex.NOT_FOUND_ERR) { console.error(ex) } }
+			await this.open(); db = this.db;
 			console.warn('db clear', dbName, fs, db);
 			return true
 		}
 		async getTx(e) {
-			e = e || {};
-			if (e.tx)
-				return e.tx
-			if (!this.isOpen)
-				await this.open()
-			// (!e.readOnly && this.isOpen)
-			//	this.dbSaveProc(e)
-			if (this.isOpen)
-				this.dbSaveProc(e)
+			e = e || {}; if (e.tx) { return e.tx }
+			if (!this.isOpen) { await this.open() }
+			if (this.isOpen) { this.dbSaveProc(e) }
 			return {}
 		}
 		async executeSql(e, _params, isRetry) {
@@ -229,7 +182,7 @@
 			this.dbSaveProc(e);
 			let result = { rows: [] }, {columns, values} = _result || {};
 			if (values) { for (const _rec of values) { const rec = {}; for (let i = 0; i < columns.length; i++) { rec[columns[i]] = _rec[i] } result.rows.push(rec) } }
-			const returnType = e.return;
+			let {return: returnType} = e;
 			switch (returnType) { case 'rows': case 'rowsBasic': result = result.rows; break }
 			if (dbOpCallback) { setTimeout(() => dbOpCallback.call(this, { operation: 'executeSql', state: false }, e), 20) }
 			return result

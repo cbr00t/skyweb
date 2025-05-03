@@ -917,13 +917,12 @@ body * {
 
 #dropdownlistArrowwidget { margin-left: -20px !important; width: 40px !important }
 
+.jqx-window { animation: 200ms ease 1 animation--wnd-content }
+.animate-veryslow { animation: 2000ms ease 1 animation--wnd-content }
+.animate-slow { animation: 700ms ease 1 animation--wnd-content }
+.animate { animation: 300ms ease 1 animation--wnd-content }
+.animate-fast { animation: 200ms ease 1 animation--wnd-content }
 @keyframes animation--wnd-content {
-    0% { opacity: .1; filter: blur(10px) }
-   80% { opacity: .5 }
+    0% { opacity: .1; filter: blur(5px) }
   100% { opacity: 1; filter: blur(0px) }
 }
-.jqx-window { animation: 200ms ease 1 animation--wnd-content }
-.animate-veryslow { animation: 4000ms ease 1 animation--wnd-content }
-.animate-slow { animation: 1300ms ease 1 animation--wnd-content }
-.animate { animation: 800ms ease 1 animation--wnd-content }
-.animate-fast { animation: 300ms ease 1 animation--wnd-content }

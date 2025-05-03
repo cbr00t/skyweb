@@ -2111,7 +2111,7 @@
 			if (caches) { for (let key in caches) delete caches[key]; delete this.caches }
 			this.initCaches(e);
 			// if (!isDevMode) {
-			this.promise_prefetchUI = new $.Deferred(p => {
+			/*this.promise_prefetchUI = new $.Deferred(p => {
 				setTimeout(async () => {
 					let result;
 					const {activePart} = this;
@@ -2123,11 +2123,9 @@
 						}
 					}
 					setTimeout(() => p.resolve(result), 10);
-				}, 5000);
-			});
-
-			const savedAppTitleText = this.appTitleText;
-			const uiClassList = [CETCariListePart, CETStokListePart];
+				}, 5000)
+			}); */
+			let {appTitleText: savedAppTitleText} = this, uiClassList = [CETCariListePart, CETStokListePart];
 			try {
 				for (const i in uiClassList) {
 					const ui = uiClassList[i].current;
@@ -2721,7 +2719,7 @@
 				if (param.mustKod2Bilgi) {
 					for (const [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
 						if ($.isEmptyObject(bilgi)) { continue }
-						const _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi
+						let _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi
 					}
 				}
 			}
@@ -2729,14 +2727,14 @@
 				if (!paramGonderilsinmi && param.kapandimi) { paramGonderilsinmi = true }
 				if (!paramGonderilsinmi && _param.mustKod2Bilgi) { paramGonderilsinmi = Object.values(param.mustKod2Bilgi).find(x => !$.isEmptyObject(x)) }
 			}
-			let table2Info = {}, result = { totalCount: 0, table2Info: table2Info };
+			let table2Info = {}, result = { totalCount: 0, table2Info };
 			if (paramGonderilsinmi) { result.param = _param; result.totalCount++ }
 			else if ($.isEmptyObject(bilgiGonderTableYapilari)) { return result }
 			
 			let fetchBlock = async e => {
-				let rs = await dbMgr.executeSql({ tx: e.tx || tx, query: e.query });
-				for (let i = 0; i < rs.rows.length; i++) {
-					let table = e.table || rec._table, rec = rs.rows[i], info = table2Info[table] = table2Info[table] || { count: 0, recs: [] };
+				let _recs = await dbMgr.executeSqlReturnRowsBasic({ tx: e.tx || tx, query: e.query });
+				for (let i = 0; i < _recs.length; i++) {
+					let table = e.table || rec._table, rec = _recs[i], info = table2Info[table] = table2Info[table] || { count: 0, recs: [] };
 					result.totalCount++; info.count++; info.recs.push(rec)
 				}
 			};
@@ -2748,12 +2746,13 @@
 				});
 				if (fisIDListe && alaSQLmi) { sent.where.inDizi(fisIDListe, 'rowid') }
 				await fetchBlock({ table: baslikTable, query: new MQStm({ sent, orderBy }) });
-				/*const digerTablolar = tableYapi.diger;
+				/*let digerTablolar = tableYapi.diger;
 				if (!$.isEmptyObject(digerTablolar)) {
 					for (let table of digerTablolar) {
 						let sent = new MQSent({
 							from: `${table} har`, fromIliskiler: [ { from: `${baslikTable} fis`, iliski: `har.fissayac = fis.rowid` } ],
-							where: [`fis.gonderildi=''`], sahalar: [`'${baslikTable}' _parentTable`, `'${table}' _table`, `'diger' _tip`, `har.rowid`, `har.*`]
+							where: [`fis.gonderildi = ''`, `fis.rapor = ''`],
+							sahalar: [`'${baslikTable}' _parentTable`, `'${table}' _table`, `'diger' _tip`, `har.rowid`, `har.*`]
 						});
 						if (fisIDListe) { sent.where.inDizi(fisIDListe, `har.fissayac`) }
 						await fetchBlock({ table, query: new MQStm({ sent, orderBy }) });
@@ -4612,6 +4611,73 @@
 				}
 			}
 		}
+		async merkezeBilgiGonderFromJSON(e) {
+			e = e ?? {}; let {silent, data} = e;
+			if (!data) {
+				let fi = (await showOpenFilePicker({ multiple: false, types: [{ accept: { 'application/json':['.json'] }, description: 'JSON Veri Dosyası' }] }))?.[0];
+				let fh = await fi?.getFile(); data = await fh?.text()
+			}
+			if (typeof data != 'object') { data = JSON.parse(data) }
+			if (!data) { throw { isError: true, rc: 'noData', errorText: 'Data belirtilmeli veya JSON Dosya seçilmelidir' } }
+			let {wsHostNameUyarlanmis: wsHostName} = this.param, {param: _param, table2Recs: _table2Recs} = data;
+			let hataliTable2FisIDListe = {}, mesajlar = [], errors = [];
+			let paramGonderildimi = false, result = { basariliTable2FisIDListe: {}, hataliTable2FisIDListe: {} };
+			try {
+				let {bilgiGonderTableYapilari} = this;
+				for (let [table, recs] of Object.entries(_table2Recs)) {
+					for (let i = 0; i < recs.length; i++) {
+						let rec = recs[i], {rowid} = rec, param = paramGonderildimi ? {} : _param, table2Recs = {};
+						if (bilgiGonderTableYapilari.find(x => x.diger == table)) { continue }
+						let {diger} = bilgiGonderTableYapilari.find(x => x.baslik == table) ?? {}, detayTable = diger?.[0];
+						if (detayTable && table == detayTable) { continue }
+						table2Recs[table] = [rec]; if (detayTable) {
+							let detRecs = _table2Recs[detayTable]?.filter(_rec => _rec.fissayac == rowid);
+							table2Recs[detayTable] = detRecs
+						}
+						let _result;
+						try { _result = await this.wsCETSaveTables({ silent: true, data: { param, table2Recs } }); paramGonderildimi = true }
+						catch (ex) {
+							let {statusText} = ex;
+							let errorText =
+								(statusText == 'error' || statusText.startsWith('abort') || statusText.startsWith('cancel'))
+									? 'Merkez ile iletisim kurulamadı'
+									: ex.errorText ?? ex.responseJSON?.errorText ?? ex.responseText ?? ex.message ?? ex ?? '??';
+							_result = { isError: true, rc: 'wsError', errorText }
+						}
+						let mesaj = _result.message || _result.mesaj; if (mesaj) { mesajlar.push(mesaj) }
+						_result = _result || { isError: true, rc: 'unknownError', errorText: '??' };
+						if (_result.isError) {
+							errors.push(_result.errorText ?? _result.message ?? _result);
+							(hataliTable2FisIDListe[table] = hataliTable2FisIDListe[table] ?? []).push(rowid)
+						}
+						let {basariliTable2FisIDListe: _basariliTable2FisIDListe, hataliTable2FisIDListe: _hataliTable2FisIDListe} = _result;
+						if (_basariliTable2FisIDListe?.[table]) {
+							(result.basariliTable2FisIDListe[table] = result.basariliTable2FisIDListe[table] ?? []).push(..._basariliTable2FisIDListe?.[table]) }
+						if (_hataliTable2FisIDListe?.[table]) {
+							(result.hataliTable2FisIDListe[table] = result.hataliTable2FisIDListe[table] ?? []).push(..._hataliTable2FisIDListe?.[table]) }
+					}
+				}
+			}
+			finally {
+				if (errors.length) {
+					errors = Object.keys(asSet(errors));
+					let errorText = errors.length ? `<ul>${errors.map(x => `<li>${x}</li>`).join(CrLf)}</ul>` : null;
+					displayMessage(errorText, '@ Belge Gönderim - HATALAR @')
+				}
+				$.extend(e, { hataSayi: 0 });
+				for (let fisIDListe of Object.values(hataliTable2FisIDListe)) {
+					if (fisIDListe?.length) { e.hataSayi += fisIDListe.length } }
+				await this.knobProgressStep(50);
+				let mesaj = mesajlar.length ? `<ul>${mesajlar.map(x => `<li>${x}</li>`).join(CrLf)}</ul>` : null;
+				if (mesaj) {
+					if (silent) { await this.knobProgressHideWithReset({ update: { labelTemplate: 'error', label: `<u>Sunucu Yanıtı</u>: ${mesaj}` }, delayMS: 8000 }) }
+					else { await displayMessage(mesaj, 'Belge Gönderim - Bilgilendirme') }
+				}
+				$.extend(e, { result, mesaj });
+				await this.merkezeBilgiGonderSonrasi(e)
+			}
+			return result
+		}
 		async merkezeBilgiGonder(e) {
 			e = $.extend({}, e); this.prefetchAbortedFlag = true;
 			await this.knobProgressShow(); await this.knobProgressReset();
@@ -4640,17 +4706,15 @@
 			return await promise_merkezeBilgiGonder
 		}
 		async merkezeBilgiGonderDevam_internal(e) {
-			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf, {silent, otoGondermi, timer} = e;
+			e = e || {}; let dbMgr = e.dbMgr || this.dbMgr_mf, {silent, otoGondermi, timer} = e;
 			let {bilgiGonderTableYapilari} = e; if (!bilgiGonderTableYapilari) { bilgiGonderTableYapilari = this.bilgiGonderTableYapilari }
 			let totalRecords = 0, kontroleEsasToplamSayi = 0; const {param} = this; let _param = e.param = e.param = {};
 			if (this.kmTakibiYapilirmi /*param.kapandimi*/) { _param.kapandimi = true }
 			if (param.ilkKM) { _param.ilkKM = param.ilkKM } if (param.sonKM) { _param.sonKM = param.sonKM }
 			if (param.mustKod2Bilgi) {
 				for (let [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
-					if (!$.isEmptyObject(bilgi)) {
-						let _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {};
-						_mustKod2Bilgi[mustKod] = bilgi;
-					}
+					if ($.isEmptyObject(bilgi)) { continue }
+					let _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi
 				}
 			}
 			let paramGonderilsinmi = false;
@@ -4659,7 +4723,8 @@
 					paramGonderilsinmi = true }
 				if (!paramGonderilsinmi && _param.mustKod2Bilgi) {
 					for (let [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
-						if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break } }
+						if (!$.isEmptyObject(bilgi)) { paramGonderilsinmi = true; break }
+					}
 				}
 			}
 			if (!paramGonderilsinmi && $.isEmptyObject(bilgiGonderTableYapilari)) {
@@ -4669,17 +4734,16 @@
 			if (paramGonderilsinmi) { totalRecords++ }
 			// await this.knobProgressSetLabel(`Belgeler taranıyor...`);
 			let _table2Recs = {}, fetchBlock = async e => {
-				let {query} = e, rs = await dbMgr.executeSql({ query });
-				for (let i = 0; i < rs.rows.length; i++) {
-					let table = e.table || rec._table, rec = rs.rows[i];
-					let recs = _table2Recs[table] = _table2Recs[table] || []; recs.push(rec);
-					totalRecords++; e.toplamSayi = recs.length
+				let {query} = e, recs = await dbMgr.executeSqlReturnRowsBasic({ query });
+				for (let i = 0; i < recs.length; i++) {
+					let table = e.table || rec._table, rec = recs[i];
+					let _recs = _table2Recs[table] = _table2Recs[table] || []; _recs.push(rec);
+					totalRecords++; e.toplamSayi = _recs.length
 				}
 				if (!silent) { await this.knobProgressStep(3) }
 			};
-			for (let tableYapi of bilgiGonderTableYapilari) {
-				let {fisIDListe} = tableYapi, {baslik: baslikTable, diger: digerTablolar} = tableYapi;
-				let {tanim: tanimTablolar} = tableYapi; if (!$.isEmptyObject(tanimTablolar)) {
+			for (let {fisIDListe, baslik: baslikTable, diger: digerTablolar, tanim: tanimTablolar} of bilgiGonderTableYapilari) {
+				if (!$.isEmptyObject(tanimTablolar)) {
 					for (let table of tanimTablolar) {
 						let sent = new MQSent({
 							from: table, where: [`gonderildi = ''`],
@@ -4776,7 +4840,8 @@
 					if (silent) { await this.knobProgressHideWithReset({ update: { labelTemplate: 'error', label: `<u>Sunucu Yanıtı</u>: ${mesaj}` }, delayMS: 8000 }) }
 					else { await displayMessage(mesaj, 'Belge Gönderim - Bilgilendirme') }
 				}
-				$.extend(e, { result, mesaj }); await this.merkezeBilgiGonderSonrasi(e)
+				$.extend(e, { result, mesaj });
+				await this.merkezeBilgiGonderSonrasi(e)
 			}
 			return result
 		}
@@ -5381,14 +5446,15 @@
 			)
 		}
 		async merkezeBilgiGonderIstendi(e) {
-			this.prefetchAbortedFlag = true; let layout = this.templates.merkezeBilgiGonderMesaji.contents('div').clone(true); layout.addClass(`part ${this.appName} ${this.rootAppName}`);
-			const gonderilecekBilgiler = await this.gonderilecekBilgiler(e);
-			if (!(gonderilecekBilgiler && gonderilecekBilgiler.totalCount)) { displayMessage(`Gönderilmeyi bekleyen hiç belge bulunamadı`, this.appText); return false }
-			let bilgiText = ''; const {table2TipAdi} = this, {table2Info} = gonderilecekBilgiler;
-			for (const table in table2Info) {
-				if (!table2TipAdi[table]) { continue }
-				const info = table2Info[table], {count} = info;
-				if (count) { const tipAdi = table2TipAdi[table] || table; if (bilgiText) { bilgiText += ', ' } bilgiText += `${count.toLocaleString()} adet ${tipAdi}` }
+			this.prefetchAbortedFlag = true; let layout = this.templates.merkezeBilgiGonderMesaji.contents('div').clone(true);
+			layout.addClass(`part ${this.appName} ${this.rootAppName}`);
+			let gonderilecekBilgiler = await this.gonderilecekBilgiler(e);
+			if (!gonderilecekBilgiler?.totalCount) { displayMessage(`Gönderilmeyi bekleyen hiç belge bulunamadı`, this.appText); return false }
+			let bilgiText = '', {table2TipAdi} = this, {table2Info} = gonderilecekBilgiler;
+			for (let [table, { count }] of Object.entries(table2Info)) {
+				if (!(count && table2TipAdi[table])) { continue }
+				let tipAdi = table2TipAdi[table] || table;
+				if (bilgiText) { bilgiText += ', ' } bilgiText += `${count.toLocaleString()} adet ${tipAdi}`
 			}
 			if (bilgiText) { layout.find(`.belgelerText`).html(bilgiText) }
 			createJQXWindow(layout, this.appText,
@@ -6144,3 +6210,21 @@ else {
 	}
 	({ data: await promise })
 */
+
+
+
+/*
+// BACKUP
+console.table(await sky.app.dbMgr_mf.rdbBackupProc())
+
+// RESTORE
+console.table(await sky.app.merkezeBilgiGonderFromJSON())
+
+// TEST
+let fi = (await showOpenFilePicker({ multiple: false, types: [{ accept: { 'application/json':['.json'] }, description: 'JSON Veri Dosyası' }] }))?.[0];
+let fh = await fi?.getFile(), data = await fh.text();
+let url = `http://localhost:8081/ws/elterm/depo/cetSaveTables/?sessionMatch=true&user=WEB&pass=www321&input=json&output=json`; 
+try { await $.post({ cache: false, processData: false, contentType: 'application/json', dataType: 'json', url, data }) }
+catch (ex) { console.error(ex.responseJSON ?? ex.responseText ?? ex.errorText ?? ex.message ?? ex) }
+*/
+
