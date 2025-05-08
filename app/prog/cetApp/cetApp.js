@@ -1046,7 +1046,8 @@
 		}
 
 		async run(e) {
-			await super.run(e);
+			this.ajaxSetup(e);
+			await super.run(e)
 
 			const timeouts = [1000, 2000, 3000];
 			for (const i in timeouts) {
@@ -1260,10 +1261,9 @@
 			await this.cleanUpWidgets(e);
 			await super.activatePart(e)
 		}
-
 		ajaxSetup(e) {
-			if (!this.programcimi)
-				$.ajaxSetup({ timeout: 10 * 60 * 1000 });
+			$.ajaxSetup({ timeout: 15 * 60_000 });
+			return this
 		}
 		getSubLayoutContainer(e) {
 			const layout = e.layout || this.layout;
@@ -3775,6 +3775,8 @@
 				}
 			}
 
+			this._bilgiYukleYapiliyorFlag = false;
+
 			(async() => {
 				try {
 					await this.merkezdenBilgiYukleDevam_bekleyenSayimFisler(e);
@@ -3790,8 +3792,8 @@
 
 			const {oncekiFislerGosterilmezmi} = this;
 			if (!oncekiFislerGosterilmezmi) {
-				$.extend(wsFetches, { oncekiFisler: this.wsOncekiFisler() })						// next prefetch
-				await (async () => {
+				$.extend(wsFetches, { oncekiFisler: this.wsOncekiFisler() });						// next prefetch
+				(async () => {
 					islemAdi = 'Önceki Belgeler';
 					recs = await this.fetchWSRecs({ source: await wsFetches.oncekiFisler, islemAdi: islemAdi, step: 5 });
 					// subCount = asInteger(recs.length / 3);
@@ -5328,8 +5330,8 @@
 		}
 		wsOncekiFisler(e) {
 			return lastAjaxObj = $.get({
-				url: `${this.wsURLBase}oncekiFisler`,
-				data: this.buildAjaxArgs(e)
+				timeout: 15 * 60_000,
+				url: `${this.wsURLBase}oncekiFisler`, data: this.buildAjaxArgs(e)
 			})
 		}
 		wsCETSaveTables(e) {

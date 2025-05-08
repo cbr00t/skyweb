@@ -26,7 +26,7 @@
 (function() {
 	window.DBMgr_WebSQL = class extends window.CObject {
 		static DBSaveTimerKey = '_timer_dbSave'; static DBSave_MinIdleTimeMS = 3000; static DBSaveTimer_MinIdleTimeMS = this.DBSave_MinIdleTimeMS + 500;
-		static RDBBackup_TimerKey = '_timer_remoteDBBackup'; static RDBBackup_IntervalMS = 3 * 60_000; static RDBBackup_TimeoutMS = 10 * 60_000;
+		static RDBBackup_TimerKey = '_timer_remoteDBBackup'; static RDBBackup_IntervalMS = 20 * 60_000; static RDBBackup_TimeoutMS = 15 * 60_000;
 		static DBWriteClauses = ['INTO ', 'INSERT ', 'UPDATE', 'DELETE', 'CREATE ', 'DROP ', 'ALTER ', 'EXEC ', 'IMPORT '];
 		get webSQLmi() { return true } get app() { return this._app ?? sky.app } get isOpen() { return !!this.db }
 
@@ -330,12 +330,12 @@
 			clearTimeout(this[DBSaveTimerKey]); let dbData;
 			this[DBSaveTimerKey] = setTimeout(async () => {
 				try {
-					let {_lastSave_timestamp, dbName, db, hasChanges} = this;
+					let {_lastSave_timestamp, dbName, db, hasChanges} = this, data = db?.export();
 					let farkMS = (now() - _lastSave_timestamp);
 					if (!_lastSave_timestamp || farkMS > DBSave_MinIdleTimeMS) {
 						this._lastSave_timestamp = now(); dbData = await this.dbSave(e); this._lastSave_timestamp = now();
 						if (console.group) { console.group('dbSaveProc', 'timer trigger') }
-						let _e = { dbName, db, lastSave_timestamp: this._lastSave_timestamp, farkMS, hasChanges };
+						let _e = { dbName, db, lastSave_timestamp: this._lastSave_timestamp, farkMS, hasChanges, size: data?.length };
 						if (hasChanges) { console.warn(_e) } else { console.debug(_e) }
 						if (console.groupEnd) { console.groupEnd() }
 					}
@@ -362,6 +362,7 @@
 			let {config, app} = sky, {wsHostNameUyarlanmis: wsHostName} = app.param ?? {}; if (!wsHostName) { return null }
 			let {class: dbMgrClass} = this, {RDBBackup_TimeoutMS: timeout} = dbMgrClass;
 			let {app: _app, dbName} = this; dbName = dbName || 'sqlite';
+			if (app._bilgiYukleYapiliyorFlag) { return null }
 			let {user} = config.sessionInfo ?? {}; user = user || '_';
 			let dateStr = now().toString('ddMMyyyy_HHmm'), rootDir = `skyTablet/${user}`;
 			let results = [];
@@ -550,25 +551,16 @@
 		getTxSelector(e) { return e.txSelector = e.readOnly ? 'readTransaction' : 'transaction'; }
 		get dbClosedError() { return { isError: true, rc: 'notOpen', errorText: 'Veritabanı kapalı' } }
 		defaultDbOpCallback(e, _e) {
-			e = e || {};
-			if (e.operation != 'executeSql')
-				return
-			const app = this.app || sky.app;
-			const indicatorPart = (app || {}).indicatorPart;
-			if (indicatorPart && indicatorPart.dbCallback)
-				return indicatorPart.dbCallback(e)
+			e = e || {}; if (e.operation != 'executeSql') { return }
+			let app = this.app ?? sky.app ?? {}, {indicatorPart} = app;
+			indicatorPart?.dbCallback?.(e)
 		}
-		handleError(reject, ex) {
-			if (reject)
-				reject(ex)
-			else
-				throw ex
-		}
+		handleError(reject, ex) { if (reject) { reject(ex) } else { throw ex } }
 		isDBWrite(e) {
-			const query = e?.query ?? e; if (query) {
-				const query = e.query ?? e; if (query.isDBWriteClause) { return true }
+			let query = e?.query ?? e; if (query) {
+				query = e.query ?? e; if (query.isDBWriteClause) { return true }
 				if (typeof query == 'string') {
-					const queryUpper = query.toUpperCase(), {DBWriteClauses} = this.class;
+					let queryUpper = query.toUpperCase(), {DBWriteClauses} = this.class;
 					return DBWriteClauses.some(clause => queryUpper.includes(clause))
 				}
 			}

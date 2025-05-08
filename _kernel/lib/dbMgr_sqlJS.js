@@ -26,18 +26,20 @@
 				}
 				try { await this.executeSql(`select count(*) from sqlite_master`) }
 				catch (ex) {
-					console.error(ex);
-					let promise = new $.Deferred();
-					let wnd = createJQXWindow(
-						`<p><b class="red">!! SQLite Veritabanı okunamadı !!</b> (<i>hasarlı olabilir</i>)<br/>Yeniden oluşturulsun mu?</p><p><b class="red">** UYARI:</b> <span class="darkred">Bu işlem tabletteki bütün veriyi siler</span></p>`,
-						'SQLite Veritabanı Erişim Sorunu',
-						{ isModal: true, width: 400, height: 250 },
-						{
-							EVET: (dlgUI, btnUI) => { dlgUI.jqxWindow('close'); promise.resolve(true) },
-							HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('close'); promise.resolve(false) }
-						}
-					);
-					wnd.find(`.jqx-window-content > .ui-dialog-button [value = 'EVET']`).jqxButton('template', 'danger');
+					console.error(ex); let promise = new $.Deferred();
+					if (data) {
+						let wnd = createJQXWindow(
+							`<p><b class="red">!! SQLite Veritabanı okunamadı !!</b> (<i>hasarlı olabilir</i>)<br/>Yeniden oluşturulsun mu?</p><p><b class="red">** UYARI:</b> <span class="darkred">Bu işlem tabletteki bütün veriyi siler</span></p>`,
+							'SQLite Veritabanı Erişim Sorunu',
+							{ isModal: true, width: 400, height: 250 },
+							{
+								EVET: (dlgUI, btnUI) => { dlgUI.jqxWindow('close'); promise.resolve(true) },
+								HAYIR: (dlgUI, btnUI) => { dlgUI.jqxWindow('close'); promise.resolve(false) }
+							}
+						);
+						wnd.find(`.jqx-window-content > .ui-dialog-button [value = 'EVET']`).jqxButton('template', 'danger')
+					}
+					else { promise.resolve(true) }
 					let rdlg = await promise; if (rdlg) {
 						db = this.db = new sql.Database();
 						console.warn('empty memory db re-create', dbName, db);

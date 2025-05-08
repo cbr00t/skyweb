@@ -264,7 +264,7 @@
 						}
 					});
 					(savedProcs || window).showProgress(null, null, 1, true);
-					setTimeout(() => (savedProcs || window).hideProgress(null, null, 1, true), 500);
+					setTimeout(() => (savedProcs || window).hideProgress(null, null, 1, true), 300);
 					// this.islemTuslariVarsaGizle();
 					let _promise = fisGirisPart.run();
 					setTimeout(() => {
@@ -343,7 +343,8 @@
 			if (kaydederkenAktarFlag) { promises.push(this.merkezeBilgiGonder({ fis })) }
 			if (kaydederkenYazdirFlag) { await this.yazdir({ fis }); yazdirildimi = true; }
 			try { if (!$.isEmptyObject(promises)) { await Promise.all(promises) } } catch (ex) { defFailBlockBasit(ex, 'error') }
-			setTimeout(() => { this.tazele() }, yazdirildimi ? 500 : 200); setTimeout(() => { this.onResize() }, yazdirildimi ? 1500 : 500);
+			setTimeout(() => { this.tazele() }, yazdirildimi ? 500 : 200);
+			setTimeout(() => { this.onResize() }, yazdirildimi ? 1500 : 500);
 			return true;
 		}
 		fisIslemTipiSec() {
