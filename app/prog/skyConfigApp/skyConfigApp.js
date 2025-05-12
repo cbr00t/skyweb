@@ -754,6 +754,7 @@
 					sqlSingleConn: { type: 'boolean', /* format: 'checkbox' */ default: false, title: `WebServis Geneli: Tek SQL Bağlantısı kullanılsın` },
 					sql: item_sqlVeEkSql,
 					maxWait: { type: 'number', default: 8, title: `WebServis Geneli: En Fazla Eşzamanlı Senkronizasyon Bekleme Sayısı` },
+					allowLocalServices: { type: 'boolean', default: false, title: 'WebServis Geneli: Terminal makine için Yerel Servis Çalıştırma izni' },
 					noLogAPI: {
 						type: 'array', uniqueItems: true, default: [],
 						title: `WebServis Geneli: Sky Servisler için Log kaydı <u>ALINMAYACAK</u> API İsimleri`,
