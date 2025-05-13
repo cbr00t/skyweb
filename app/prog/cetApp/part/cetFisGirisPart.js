@@ -665,17 +665,21 @@
 						// this.focusToDefault()
 					},
 					comboBox_stmDuzenleyici: async e => {
-						const {fis, sonStokKontrolEdilirmi} = this;
-						let stokSent = (await CETStokTicariDetay.getStokEkBilgiStm({
-							fis: fis, alias: 'mst', yerKod: fis.yerKod,
-							sonStokKontrolEdilirmi: sonStokKontrolEdilirmi
-						})).sent;
-						const {stm} = e;
-						stm.sentDo(sent =>
-							stokSent.where.birlestir(sent.where));
+						const {fis, sonStokKontrolEdilirmi} = this, {searchText} = e;
+						let {sent: stokSent} = await CETStokTicariDetay.getStokEkBilgiStm({
+							fis, alias: 'mst', yerKod: fis.yerKod,
+							sonStokKontrolEdilirmi, searchText
+						});
+						let {stm, alias} = e; for (let sent of stm.getSentListe()) {
+							let or = stokSent.where.liste.find(x => x instanceof MQOrClause);
+							if (or) {
+								stokSent.where.add(`${alias}.kod <> ''`);
+								or.add(new MQAndClause(sent.where.liste.filter(x => !x.endsWith(`<> ''`))))
+							}
+							else { stokSent.where.birlestir(sent.where) }
+						}
 						stm.sent = stokSent;
-						/*if (sonStokKontrolEdilirmi)
-							this.app.stmSentDuzenle_sonStokBagla({ stm: stm, alias: 'mst', shKodClause: `mst.kod`, yerKod: fis.yerKod });*/
+						/*if (sonStokKontrolEdilirmi) this.app.stmSentDuzenle_sonStokBagla({ stm: stm, alias: 'mst', shKodClause: `mst.kod`, yerKod: fis.yerKod });*/
 						return stm
 					},
 					listedenSec: e => { this.aboutToDeactivate(e) },
@@ -1707,7 +1711,9 @@
 			this.timer_listeDegisti = setTimeout(async e => { try { await this.liste_degisti_devam(e) } finally { delete this.timer_listeDegisti } }, 500, e)
 		}
 		liste_degisti_devam(e) {
-			const {fis} = this; fis.detaylar = this.listeRecs.map(rec => $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec); fis.dipHesapla();
+			const {fis} = this;
+			fis.detaylar = this.listeRecs.map(rec => $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec);
+			fis.dipHesapla();
 			const {dipTable} = this, uiSetValue = e => {
 				const ui = dipTable.find(e.selector);
 				ui.html(typeof value == 'string' ? value : bedelStr(e.value || 0));

@@ -327,14 +327,10 @@
 						e.callback(result);
 					}
 					this.comboBox_veriYuklendi($.extend(e, {}, { sender: this, totalrecords: result.length, records: result }));
-					return result;
+					return result
 				}
 			}
-
-			const {table} = this;
-			if (!table)
-				return;
-			
+			const {table} = this; if (!table) { return }
 			const {alias, idSaha, adiSaha, sadeceKodmu} = this;
 			const aliasVeNokta = alias ? alias + '.' : '';
 			const tableVeAlias = `${table}${alias ? ' ' + alias : ''}`;
@@ -350,26 +346,22 @@
 			let searchText = ((wsArgs || {}).searchText || '');
 			searchText = searchText.trim ? searchText.trim().toLocaleUpperCase(culture) : null;
 			if (searchText) {
-				let parts = searchText.split(' ');
-				for (let part of parts) {
-					part = part.trim();
-					if (part) {
-						const orjPart = part = part.replace(/\*/g, `%`).replace(`'`, `''`);
-						if (!(part[0] == '*' || part[0] == '%'))
-							part = `%${part}`;
-						// sent.where.add(`(${kodClause} = ${MQSQLOrtak.sqlDegeri(orjPart)} OR UPPER(${adiClause}) LIKE ${MQSQLOrtak.sqlDegeri(part + '%')})`);
-						sent.where.add(`(${kodClause} LIKE ${MQSQLOrtak.sqlDegeri(part + '%')} OR UPPER(${adiClause}) LIKE ${MQSQLOrtak.sqlDegeri(part + '%')})`);
+				let {where: wh} = sent;
+				let parts = searchText.split(' '); for (let part of parts) {
+					part = part.trim(); if (part) {
+						let orjPart = part = part.replace(/\*/g, `%`).replace(`'`, `''`);
+						if (!(part[0] == '*' || part[0] == '%')) { part = `%${part}`; }
+						wh.add(`(${kodClause} LIKE ${MQSQLOrtak.sqlDegeri(part + '%')} OR UPPER(${adiClause}) LIKE ${MQSQLOrtak.sqlDegeri(part + '%')})`)
 					}
 				}
 			}
 			let stm = new MQStm({
-				sent: sent,
-				orderBy: [sadeceKodmu ? kodClause : adiClause],
+				sent, orderBy: [sadeceKodmu ? kodClause : adiClause],
 				limit: wsArgs.maxRow
 			});
 			handler = this.events.comboBox_stmDuzenleyici;
 			if ($.isFunction(handler)) {
-				let _e = $.extend({}, e, { sender: this, stm: stm, sent: sent, table: this.table, alias: this.alias, searchText: searchText, maxRow: wsArgs.maxRow, wsArgs: wsArgs });
+				let _e = $.extend({}, e, { sender: this, stm, sent, table: this.table, alias: this.alias, searchText: searchText, maxRow: wsArgs.maxRow, wsArgs: wsArgs });
 				let result = await handler.call(this, $.extend({}, _e));
 				if (result === false)
 					return;

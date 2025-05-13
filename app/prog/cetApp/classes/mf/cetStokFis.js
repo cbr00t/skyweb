@@ -149,7 +149,7 @@
 							const defaultSubeKod = sky.app.defaultSubeKod;
 							if (defaultSubeKod != null) {
 								e.stm.sentDo(sent =>
-									sent.where.degerAta(defaultSubeKod, `mst.subeKod`));
+									sent.where.degerAta(defaultSubeKod, `mst.subeKod`))
 							}
 						},
 						comboBox_itemSelected: e => {
@@ -157,15 +157,11 @@
 							if (sonDeger != kod) {
 								sonDeger = sonDegerler.yerKod = kod;
 								parentPart.paramDegistimi = true;
-								
 								if (parentPart.listeReadyFlag) {
-									const {detaylar} = this;
-									let degistimi = false;
-									for (let i in detaylar) {
-										const det = detaylar[i];
-										det.cacheReset();
-										det.detYerKodReset();
-										det.ekOzelliklerDo({
+									let {detaylar} = this, degistimi = false;
+									for (let det of detaylar) {
+										det.detYerKodReset(); det.cacheReset();
+										/*det.ekOzelliklerDo({    // rafKod, refRafKod  sıfırlamaya sebep oluyor - dikkat!
 											callback: _e => {
 												const ekOzellik = _e.item;
 												if ((ekOzellik.tip == 'raf' || ekOzellik.tip == 'refRaf') && ekOzellik.value) {
@@ -173,10 +169,9 @@
 													degistimi = true;
 												}
 											}
-										})
+										})*/
 									}
-									if (degistimi && parentPart && parentPart.tazele)
-										parentPart.tazele();
+									/* if (degistimi) { parentPart?.tazele?.() } */
 								}
 							}
 						}
@@ -231,9 +226,8 @@
 									let degistimi = false;
 									for (let i in detaylar) {
 										const det = detaylar[i];
-										det.cacheReset();
-										det.detYerKodReset();
-										det.ekOzelliklerDo({
+										det.detYerKodReset(); det.cacheReset()
+										/*det.ekOzelliklerDo({
 											callback: _e => {
 												const ekOzellik = _e.item;
 												if ((ekOzellik.tip == 'raf' || ekOzellik.tip == 'refRaf') && ekOzellik.value) {
@@ -241,10 +235,9 @@
 													degistimi = true;
 												}
 											}
-										})
+										})*/
 									}
-									if (degistimi && parentPart && parentPart.tazele)
-										parentPart.tazele();
+									/* if (degistimi) { parentPart?.tazele?.() } */
 								}
 							}
 						}

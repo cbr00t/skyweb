@@ -42,14 +42,10 @@
 			const {barkod} = this; if (barkod) { okunanTumBarkodlar[barkod] = true }
 		}
 		static async getStokEkBilgiStm(e) {
-			e = e || {};
-			const alias = e.alias || 'stk';
-			const {app} = sky;
-			const {sonStokKontrolEdilirmi, wsArgs} = e;
-			const basitmi = e.basit || e.basitmi;
-			const detaylimi = e.detayli || e.detaylimi;
-			const fis = e.fis || {};
-			const fisSinif = fis.class || {
+			e = e || {}; let alias = e.alias || 'stk';
+			let {app} = sky, {sonStokKontrolEdilirmi, wsArgs, searchText} = e;
+			let basitmi = e.basit || e.basitmi, detaylimi = e.detayli || e.detaylimi;
+			const fis = e.fis || {}, fisSinif = fis.class || {
 				fiiliCikismi: true,
 				stokKdvSaha: CETTicariFis.stokKdvSaha,
 				stokKdvDegiskenmiSaha: CETTicariFis.stokKdvDegiskenmiSaha
@@ -58,8 +54,7 @@
 			let stkFytInd = (e.cariRow || {}).stkFytInd || (fis || {}).cariStkFytInd;
 			if (!stkFytInd) {
 				const mustKod = e.mustKod || (e.cariRow || {}).kod || (fis || {}).mustKod;
-				if (mustKod)
-					stkFytInd = await MQCogul.getCariStkFytInd({ mustKod: mustKod });
+				if (mustKod) { stkFytInd = await MQCogul.getCariStkFytInd({ mustKod: mustKod }); }
 			}
 			let brmFiyatSaha =
 				dovizlimi
@@ -68,14 +63,14 @@
 			let sent = new MQSent({
 				from: `mst_Stok ${alias}`,
 				fromIliskiler: [
-					{ alias: alias, from: `mst_StokGrup grp`, on: `${alias}.grupKod = grp.kod` }
-					// { alias: alias, leftJoin: `mst_BarkodReferans bref`, on: `${alias}.kod = bref.stokKod AND bref.varsayilanmi <> 0` }
-				],
-				// where: [],
+					{ alias: alias, from: `mst_StokGrup grp`, on: `${alias}.grupKod = grp.kod` },
+					(searchText ? { alias: alias, leftJoin: `mst_BarkodReferans bref`, on: `${alias}.kod = bref.stokKod AND bref.varsayilanmi <> 0` } : null)
+				].filter(x => !!x),
 				sahalar: (e.rowCountOnly
 					? `COUNT(*) sayi`
 					: [
-						`${alias}.rowid`, `${alias}.kod`, `${alias}.aciklama`, `${alias}.brm`, /* `bref.refKod barkod`, */
+						`${alias}.rowid`, `${alias}.kod`, `${alias}.aciklama`, `${alias}.brm`,
+						(searchText ? `bref.refKod barkod` : null),
 						`${alias}.grupKod`, `grp.aciklama grupAdi`, `grp.anaGrupKod`,
 						basitmi ? `NULL yerKod` : `son.yerKod`,
 						basitmi ? `NULL sonStok` : `son.miktar sonStok`,
@@ -94,31 +89,25 @@
 						((stokKdvDegiskenmiSaha ? `${alias}.${stokKdvDegiskenmiSaha}` : `NULL`) + ` kdvDegiskenmi`),
 						`${alias}.satirIskOranSinirVarmi`, `${alias}.satirIskOranSinir`,
 						`${alias}.boyutTipi`, `${alias}.bedenKategoriKod`
-					  ])
+					  ].filter(x => !!x))
 			});
-			let stm = new MQStm({ sent: sent });
-			if (!$.isEmptyObject(wsArgs))
-				stm.fromGridWSArgs(wsArgs)
-			
+			let stm = new MQStm({ sent }); if (!$.isEmptyObject(wsArgs)) { stm.fromGridWSArgs(wsArgs) }
 			let shKodListe = e.shKod || e.shKodListe;
-			if (shKodListe && !$.isArray(shKodListe))
-				shKodListe = [shKodListe]
-			if (!$.isEmptyObject(shKodListe))
-				sent.where.inDizi(shKodListe, `${alias}.kod`)
-
+			if (shKodListe && !$.isArray(shKodListe)) { shKodListe = [shKodListe] }
+			if (!$.isEmptyObject(shKodListe)) { sent.where.inDizi(shKodListe, `${alias}.kod`) }
+			if (searchText) {
+				let {where: wh} = sent; wh.add(new MQOrClause([
+					{ like: `%${searchText}`, saha: 'bref.refKod' }
+				]))
+			}
 			if (!basitmi) {
 				app.stmSentDuzenle_sonStokBagla({
-					stm: stm, alias: alias,
-					shKodClause: `${alias}.kod`,
-					yerKod: e.yerKod /*|| fis.yerKod*/,
-					leftJoin: !sonStokKontrolEdilirmi,
-					detaylimi: detaylimi
+					stm, alias, shKodClause: `${alias}.kod`, yerKod: e.yerKod /*|| fis.yerKod*/,
+					leftJoin: !sonStokKontrolEdilirmi, detaylimi: detaylimi
 				})
 			}
-			
 			return stm
 		}
-
 		static async fromBarkodBilgi(e) {
 			e = e || {};
 			const fis = e.fis || {};
