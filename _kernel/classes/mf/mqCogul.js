@@ -53,7 +53,8 @@
 		static get siparisMiktarKontrolEdilirmi() { return false }
 		static get siparisRefKontrolEdilirmi() { return false }
 		static get tarihKontrolYapilirmi() { return false }
-		static get tarihKontrolGunSayisi() { return 2 }
+		static get tarihKontrolGunSayisi_once() { return 15 }
+		static get tarihKontrolGunSayisi_sonra() { return 2 }
 		static get aciklama() { return '' }
 		get eIslemNumaratorTip() { return this.eIslemTip }
 		get yildizlimi() { return this.ozelIsaret == '*' }
@@ -429,18 +430,18 @@
 				
 				const _today = today();
 				const farkGun = (tarih - _today) / Date_OneDayNum;
-				const {tarihKontrolGunSayisi} = this.class;
-				if (farkGun > tarihKontrolGunSayisi) {
+				const {tarihKontrolGunSayisi_sonra, tarihKontrolGunSayisi_once} = this.class;
+				if (farkGun > tarihKontrolGunSayisi_sonra) {
 					return {
 						isError: true, rc: 'invalidArgument',
-						errorText: `Belge Tarihi <b>${tarihKontrolGunSayisi} günden <u>ileri</u></b> olamaz`
+						errorText: `Belge Tarihi <b>${tarihKontrolGunSayisi_sonra} günden <u>ileri</u></b> olamaz`
 					}
 				}
-				else if (farkGun < 0 - tarihKontrolGunSayisi) {
+				else if (farkGun < 0 - tarihKontrolGunSayisi_once) {
 					return {
 						isError: true,
 						rc: 'invalidArgument',
-						errorText: `Belge Tarihi <b>${tarihKontrolGunSayisi} günden <u>geri</u></b> olamaz`
+						errorText: `Belge Tarihi <b>${tarihKontrolGunSayisi_once} günden <u>geri</u></b> olamaz`
 					}
 				}
 			}

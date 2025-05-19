@@ -1418,27 +1418,25 @@
 			await fis.dipHesapla(); this.tazele();
 		}
 		async birlestir(e) {
-			e = e || {};
-			const {fis} = this, {detaySinif} = fis, recs = this.listeRecs, anah2Detay = {}, proDetListe = [];
+			e = e || {}; const {fis} = this, {detaySinif} = fis, recs = this.listeRecs, anah2Detay = {}, proDetListe = [];
 			for (const rec of recs) {
 				if (rec.class.promosyonmu || rec.promoKod) {
 					proDetListe.push(rec);
 					continue
 				}
-				const _det = $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec.deepCopy();
-				const anahStr = _det.getBirlestirIcinAnahtarStr({ fis: fis, birlestir: true });
+				let _det = $.isPlainObject(rec) ? new fis.class.detaySinif(rec) : rec.deepCopy();
+				let anahStr = _det.getBirlestirIcinAnahtarStr({ fis: fis, birlestir: true });
 				let det = anah2Detay[anahStr];
 				if (det) {
-					det.okutmaSayisi++;
-					det.miktar += _det.miktar || 0;
-					if (det.paketMiktar != null && _det.paketMiktar != null)
-						det.paketMiktar += (_det.paketMiktar || 0);
+					det.okutmaSayisi += (_det.okutmaSayisi || 0);
+					det.miktar += (_det.miktar || 0);
+					if (det.paketMiktar != null && _det.paketMiktar != null) { det.paketMiktar += (_det.paketMiktar || 0) }
 					await det.bedelHesapla();
 					const {siparisVioID2MiktarYapi} = det;
 					const diger_siparisVioID2MiktarYapi = _det.siparisVioID2MiktarYapi;
 					if (siparisVioID2MiktarYapi && diger_siparisVioID2MiktarYapi) {
-						for (const vioID in diger_siparisVioID2MiktarYapi)
-							siparisVioID2MiktarYapi[vioID] = (siparisVioID2MiktarYapi[vioID] || 0) + (diger_siparisVioID2MiktarYapi[vioID] || 0);
+						for (const vioID in diger_siparisVioID2MiktarYapi) {
+							siparisVioID2MiktarYapi[vioID] = (siparisVioID2MiktarYapi[vioID] || 0) + (diger_siparisVioID2MiktarYapi[vioID] || 0) }
 					}
 				}
 				else
