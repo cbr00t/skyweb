@@ -1,11 +1,6 @@
 (function() {
 	window.MQTekil = class extends window.MFYapi {
-		static get storageName() { return `${sky.app.appName}.${this.table}` }
-		get storageName() { return this.class.storageName }
-		constructor(e) {
-			e = e || {};
-			super(e)
-		}
+		static get storageName() { return `${sky.app.appName}.${this.table}` } static get mqTekilmi() { return true } get storageName() { return this.class.storageName }
 		yukle(e) {
 			e = e || {};
 			let result = e.rec || localStorage.getItem(this.storageName);
