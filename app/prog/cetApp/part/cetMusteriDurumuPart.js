@@ -989,146 +989,72 @@
 						pagerButtonsCount: 5, pagerPosition: 'top', pageSize: 5,
 						columns: columns, source: dataAdapter
 					};
-					if (listeArgsDuzenle)
-						listeArgsDuzenle.call(this, _e);
+					if (listeArgsDuzenle) { listeArgsDuzenle.call(this, _e) }
 					grid.jqxDataTable(listeArgs);
 				}
 			});
-			
-			fisSinif.musteriDurumu_initRowDetails(e);
+			fisSinif.musteriDurumu_initRowDetails(e)
 		}
-
 		loadServerData_buildQuery(e) {
-			const {app, mustKod} = this;
-			const {rowCountOnly} = e;
-			const wsArgs = $.extend({}, e.wsArgs, { rowCountOnly: rowCountOnly });
+			let {app, mustKod} = this, {rowCountOnly} = e;
+			let wsArgs = { ...e.wsArgs, rowCountOnly: rowCountOnly };
 			wsArgs.filters = this.getFiltersFromListeWSArgs(wsArgs);
 			switch (parseInt(wsArgs.sortdatafield)) {
-				case 7:
-					wsArgs.sortdatafield = ['tarih', 'seri', 'fisno'];
-					break;
-				case 8:
-				case 9:
-					wsArgs.sortdatafield = ['fisSonuc'];
-					break;
+				case 7: wsArgs.sortdatafield = ['tarih', 'seri', 'fisno']; break;
+				case 8: case 9: wsArgs.sortdatafield = ['fisSonuc']; break;
 			}
 			if (!rowCountOnly) {
-				if ($.isEmptyObject(wsArgs.sortdatafield))
-					wsArgs.sortdatafield = ['tarih DESC', 'kayitzamani DESC'];
-				
-				if (typeof wsArgs.sortdatafield != 'object')
-					wsArgs.sortdatafield = [wsArgs.sortdatafield];
+				if ($.isEmptyObject(wsArgs.sortdatafield)) { wsArgs.sortdatafield = ['tarih DESC', 'kayitzamani DESC'] }
+				if (typeof wsArgs.sortdatafield != 'object') { wsArgs.sortdatafield = [wsArgs.sortdatafield] }
 				wsArgs.sortdatafield.unshift('rapor');
 			}
-
-			let uni = new MQUnionAll();
-			let stm = new MQStm({ sent: uni });
-			app.fisListe_stmSentDuzenle($.extend({ stm: stm, uni: uni, musteriDurumu: true }, wsArgs));
+			let uni = new MQUnionAll(), stm = new MQStm({ sent: uni });
+			app.fisListe_stmSentDuzenle({ stm, uni, musteriDurumu: true, ...wsArgs });
 			if (mustKod) {
 				uni.sentDo(sent =>
 					sent.where.degerAta(mustKod, 'fis.mustkod'));
 			}
-			/*if (this.fisGirisAdimindanmi) {
-				uni.sentDo(sent =>
-					sent.where.add(`fis.rapor <> ''`));
-			}*/
 			stm.fromGridWSArgs(wsArgs);
-
-			return stm;
+			return stm
 		}
-
-		/*buildQuery_detayToplamlari(e) {
-			let recs = e.recs;
-			let idListe = [];
-			$.each(recs, (_, rec) =>
-				idListe.push(rec.rowid));
-			
-			let sent = new MQSent({
-				from: `data_PIFStok har`,
-				sahalar: ['har.fissayac', 'COUNT(*) detaySayisi']
-			})
-			sent.where.inDizi(idListe, 'har.fissayac');
-			
-			return sent.getQueryYapi();
-		}*/
-
 		async loadServerData_ekIslemler(e) {
-			let result = await super.loadServerData_ekIslemler(e);
-			if (result)
-				return result;
-			
-			// let id2Rec = e.id2Rec = {};
+			let result = await super.loadServerData_ekIslemler(e); if (result) { return result }
 			let topKDV = 0, topSatisBedel = 0, topIadeBedel = 0, topTahsilatBedel = 0;
-			const {recs} = e;
-			for (const rec of recs) {
-				const fisSinif = CETFis.fisSinifFor({ rec: rec });
-				let fisTipText = (rec.fisTipText || '').trim();
-				if (!fisTipText)
-					fisTipText = (fisSinif ? fisSinif.aciklama : null) || '';
-				
-				// id2Rec[rec.rowid] = rec;
+			let {recs} = e; for (const rec of recs) {
+				let fisSinif = CETFis.fisSinifFor({ rec }), fisTipText = (rec.fisTipText || '').trim();
+				if (!fisTipText) { fisTipText = (fisSinif ? fisSinif.aciklama : null) || '' }
 				$.extend(rec, {
 					grupText: rec.rapormu || rec.rapor ? '2- Merkezdeki Hareketler' : '1- Tabletteki Belgeler',
 					tarih: dateKisaString(new Date(rec.tarih) || ''),
 					vade: rec.vade ? dateKisaString(new Date(rec.vade) || '') : null,
-					mustText: rec.mustkod
-									? `(<span class="mustKod">${rec.mustkod}</span>) <span class="mustUnvan">${rec.mustunvan}</span>`
-									: '',
-					fisTipText: fisTipText
+					mustText: rec.mustkod ? `(<span class="mustKod">${rec.mustkod}</span>) <span class="mustUnvan">${rec.mustunvan}</span>` : '',
+					fisTipText
 				});
-
 				if (fisSinif) {
-					const _bedel = bedel(rec.fisSonuc || rec.fissonuc || rec.net || rec.toplambedel || 0);
+					let _bedel = bedel(rec.fisSonuc || rec.fissonuc || rec.net || rec.toplambedel || 0);
 					if (_bedel) {
-						const {fiiliCikismi} = fisSinif;
+						let {fiiliCikismi} = fisSinif;
 						if (fisSinif.stokmu || fisSinif.ticarimi) {
-							if (fiiliCikismi)
-								topSatisBedel += _bedel;
-							else
-								topIadeBedel += _bedel;
-							
+							if (fiiliCikismi) { topSatisBedel += _bedel } else { topIadeBedel += _bedel }
 							if (fisSinif.ticarimi && !(rec.ozelisaret || rec.ozelIsaret)) {
-								const kdv = bedel(rec.topkdv || rec.topKDV || 0);
-								if (fiiliCikismi)
-									topKDV += kdv;
-								else
-									topKDV -= kdv;
+								let kdv = bedel(rec.topkdv || rec.topKDV || 0);
+								if (fiiliCikismi) { topKDV += kdv } else { topKDV -= kdv }
 							}
 						}
-						else if (fisSinif.tahsilatmi)
-							topTahsilatBedel += _bedel;
+						else if (fisSinif.tahsilatmi) { topTahsilatBedel += _bedel }
 					}
 				}
 			}
-			$.extend(this, {
-				topKDV: topKDV,
-				topSatisBedel: topSatisBedel,
-				topIadeBedel: topIadeBedel,
-				topTahsilatBedel: topTahsilatBedel
-			});
-			this.dipGosterimTazele(e);
-			
-			// this.focusToDefault();
+			$.extend(this, { topKDV, topSatisBedel, topIadeBedel, topTahsilatBedel });
+			this.dipGosterimTazele(e)
 		}
-		
 		async liste_veriYuklendi(e) {
-			// await super.liste_veriYuklendi(e);
-			
-			if (this.isListeVeriYuklendiEventTriggered)
-				return super.liste_veriYuklendi(e);
-
-			// await this.selectLastRec();
+			if (this.isListeVeriYuklendiEventTriggered) { return super.liste_veriYuklendi(e) }
 			this.isListeVeriYuklendiEventTriggered = true;
-
-			if (!$.isEmptyObject(this.listeRecs))
-				this.clearUniqueTimeout({ key: 'cariTooltip' });
-			
-			this.focusToDefault();
-			this.initMustBilgi(e);
-			
-			this.divListe.jqxDataTable('groups', ['grupText']);
+			if (!$.isEmptyObject(this.listeRecs)) { this.clearUniqueTimeout({ key: 'cariTooltip' }) }
+			this.focusToDefault(); this.initMustBilgi(e);
+			this.divListe.jqxDataTable('groups', ['grupText'])
 		}
-
 		liste_satirTiklandi(e) {
 			// this.focusToDefault();
 		}

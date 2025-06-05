@@ -1368,33 +1368,27 @@
 				orderBy.add('kayitzamani');*/
 		}
 		fisListe_stmSentDuzenleDevam(e) {
-			e = e || {};
-			const {rowCountOnly} = e;
-			const {ozelIsaretKullanilirmi, bakiyeRiskGosterilmezmi} = this;
-			const musteriDurumumu = bakiyeRiskGosterilmezmi ? false : (e.musteriDurumu || e.musteriDurumumu);
-			//if (!musteriDurumumu) {
-				e.uni.add(new MQSent({
-					from: `data_UgramaFis fis`,
-					fromIliskiler: [
-						// { from: 'mst_Cari car', iliski: 'fis.mustkod = car.kod' }
-						{ alias: `fis`, leftJoin: `mst_Cari car`, on: `fis.mustkod = car.kod` }
-					],
-					sahalar: (rowCountOnly
-						? `COUNT(*) sayi`
-						: [	`fis.rowid`,
-							`'Uğrama' fisTipText`,
-							`0 topKdv`, `0 fisSonuc`, `0 detaySayisi`,
-							`fis.kayitzamani`, `fis.gonderildi`, `fis.silindi`, `fis.yazdirildi`, `fis.gecici`, `fis.rapor`, `'*' tamamlandi`, `fis.degismedi`,
-							`'U' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `'' ozelIsaret`, `fis.tarih`, `NULL vade`, `'' seri`, `0 fisno`,
-							'fis.mustkod ticmustkod', /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
-							`fis.mustkod`, 'car.unvan mustunvan', 'car.yore', 'car.ilKod', 'car.ilAdi', `car.efatmi`, `fis.fisaciklama`, `'' ba`,
-						    `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
-						  ])
-				}));
-			//}
-
-			let ayrimTipiClause = '';
-			const {uygunAyrimTipleri} = this;
+			e = e || {}; let {rowCountOnly} = e, {ozelIsaretKullanilirmi, oncekiFislerGosterilmezmi} = this;
+			let musteriDurumumu = !oncekiFislerGosterilmezmi && (e.musteriDurumu || e.musteriDurumumu);
+			e.uni.add(new MQSent({
+				from: `data_UgramaFis fis`,
+				fromIliskiler: [
+					// { from: 'mst_Cari car', iliski: 'fis.mustkod = car.kod' }
+					{ alias: `fis`, leftJoin: `mst_Cari car`, on: `fis.mustkod = car.kod` }
+				],
+				sahalar: (rowCountOnly
+					? `COUNT(*) sayi`
+					: [	`fis.rowid`,
+						`'Uğrama' fisTipText`,
+						`0 topKdv`, `0 fisSonuc`, `0 detaySayisi`,
+						`fis.kayitzamani`, `fis.gonderildi`, `fis.silindi`, `fis.yazdirildi`, `fis.gecici`, `fis.rapor`, `'*' tamamlandi`, `fis.degismedi`,
+						`'U' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `'' ozelIsaret`, `fis.tarih`, `NULL vade`, `'' seri`, `0 fisno`,
+						'fis.mustkod ticmustkod', /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
+						`fis.mustkod`, 'car.unvan mustunvan', 'car.yore', 'car.ilKod', 'car.ilAdi', `car.efatmi`, `fis.fisaciklama`, `'' ba`,
+						`'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+					  ])
+			}));
+			let ayrimTipiClause = '', {uygunAyrimTipleri} = this;
 			if (!$.isEmptyObject(uygunAyrimTipleri)) {
 				for (const ka of uygunAyrimTipleri) {
 					const {kod, aciklama} = ka;
@@ -1502,7 +1496,6 @@
 					   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
 					  ])
 			}));
-
 			if (musteriDurumumu) {
 				e.uni.add(new MQSent({
 					from: `data_DigerHareket fis`,
@@ -4548,67 +4541,35 @@
 			}, 2000)
 		}
 
+		/* bakiye, risk, sonStok ... hesaplaması */
 		async merkezdenBilgiYukleSonrasiDevam(e) {
-			e = e || {};
-			// bakiye, risk, sonStok ... hesaplaması
-
-			const {param, kmTakibiYapilirmi} = this;
-			let paramDegistimi = false;
-			if (param.kapandimi) {
-				param.kapandimi = false;
-				paramDegistimi = true;
-			}
+			e = e || {}; let {param, kmTakibiYapilirmi} = this;
+			let paramDegistimi = false; if (param.kapandimi) { param.kapandimi = false; paramDegistimi = true }
 			if (kmTakibiYapilirmi) {
 				const sonKM = param.sonKM || 0;
 				const ilkKM = param.ilkKM || 0;
-				if (sonKM < ilkKM) {
-					param.sonKM = param.ilkKM;
-					paramDegistimi = true;
-				}
-				if (ilkKM != sonKM) {
-					param.ilkKM = param.sonKM;
-					paramDegistimi = true;
-				}
+				if (sonKM < ilkKM) { param.sonKM = param.ilkKM; paramDegistimi = true }
+				if (ilkKM != sonKM) { param.ilkKM = param.sonKM; paramDegistimi = true }
 			}
-			if (paramDegistimi)
-				await param.kaydet();
-
+			if (paramDegistimi) { await param.kaydet() }
 			await this.merkezdenBilgiYukleDevam_fisKaydetSonrasiIslemler(e);
-
-			if (this.class.appSicakVeyaSogukmu)
-				displayMessage(`BİLGİLENDİRME: <b>Açılış yapıldı</b>`, this.appText);
+			if (this.class.appSicakVeyaSogukmu) { displayMessage(`BİLGİLENDİRME: <b>Açılış yapıldı</b>`, this.appText) }
 		}
-
 		async merkezdenBilgiYukleDevam_fisKaydetSonrasiIslemler(e) {
-			e = e || {};
-			const uni = new MQUnionAll();
-			const stm = new MQStm({ sent: uni });
+			e = e || {}; await this.ortakReset(e); await this.onbellekOlustur(e);
+			let uni = new MQUnionAll(), stm = new MQStm({ sent: uni });
 			this.fisListe_stmSentDuzenle({ stm: stm, uni: uni, musteriDurumu: false });
-			
-			const haricTabloSet = asSet(['data_UgramaFis']);
-			uni.liste = uni.liste.filter(sent =>
-				!haricTabloSet[sent.from.liste[0].deger]
-			);
-			stm.sentDo(sent => {
-				sent.where.addAll([
-					`fis.gonderildi = ''`,
-					`fis.rapor = ''`,
-					`fis.gecici = ''`,
-					`fis.degismedi = ''`
-				]);
-			});
-			
-			const dbMgr = this.dbMgrs.rom_data;
-			const recs = await dbMgr.executeSqlReturnRowsBasic({ query: stm });
+			let haricTabloSet = asSet(['data_UgramaFis']);
+			uni.liste = uni.liste.filter(sent => !haricTabloSet[sent.from.liste[0].deger] );
+			stm.sentDo(({ where: wh }) => wh.add(`fis.gonderildi = ''`, `fis.rapor = ''`, `fis.gecici = ''`, `fis.degismedi = ''`))
+			let {rom_data: dbMgr} = this.dbMgrs, recs = await dbMgr.executeSqlReturnRowsBasic(stm);
 			if (!$.isEmptyObject(recs)) {
 				await this.knobProgressSetLabel('Son Stok/Bakiye-Risk/Bek.Sipariş Düzenlemesi...');
 				for (let i = 0; i < recs.length; i++) {
-					const rec = recs[i];
-					const fis = await CETFis.fromRec({ rec: rec });
+					let rec = recs[i], fis = await CETFis.fromRec({ rec });
 					if (fis) {
-						if (fis.kaydetSonrasiIslemler)
-							await fis.kaydetSonrasiIslemler({ islem: 'yeni' });
-						await this.knobProgressStep(1);
+						if (fis.kaydetSonrasiIslemler) { await fis.kaydetSonrasiIslemler({ islem: 'yeni' }) }
+						await this.knobProgressStep(1)
 					}
 				}
 			}
