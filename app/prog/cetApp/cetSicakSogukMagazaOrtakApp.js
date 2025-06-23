@@ -29,23 +29,16 @@
 		static get sonStoktanSecimYapilirmi() { return true }
 		/*get sonStokKontrolEdilirmi() { return this.param.sonStokKontrolEdilirmi }
 		get riskKontrolDurum() { return this.param.riskKontrolDurum }*/
-
 		/*get defaultLayoutName() {
 			return `../cetSicakSogukMagazaOrtakApp/cetSicakSogukMagazaOrtakApp`
 		}*/
-
 		get fisTipleri() {
-			return $.merge([
-				CETFisTipi.fromFisSinif({ fisSinif: CETTahsilatFis })
-			], super.fisTipleri || [])
+			return [
+				CETFisTipi.fromFisSinif({ fisSinif: CETTahsilatFis }),
+				...(super.fisTipleri || [])
+			]
 		}
-
-		get bilgiGonderTableYapilari() {
-			return $.merge(super.bilgiGonderTableYapilari || [], [
-				{ baslik: 'data_UgramaFis' }
-			])
-		}
-
+		get bilgiGonderTableYapilari() { return [...super.bilgiGonderTableYapilari /*, 'data_UgramaFis'*/] }
 		get raporlar() {
 			const raporlar = super.raporlar;
 			if (!this.appMagazami) {

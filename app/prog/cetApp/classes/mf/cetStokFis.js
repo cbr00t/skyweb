@@ -341,16 +341,11 @@
 	window.CETSubeTransferFis = class extends window.CETTransferFis {
 		static get aciklama() { return 'Şube Transfer' } static get numaratorTip() { return 'TRS' }
 		static get noYilDesteklermi() { return true } static get eIslemKullanilirmi() { return true }
-		get matbuuFormTip() {
-			const {app} = sky;
-			if (app.eIslemKullanilirmi && this.eIslemTip) {
-				if (app.eIrsaliyeKullanilirmi) {
-					const key = 'e-Irsaliye', tip2MatbuuForm = ((app._matbuuFormYapilari || {}).tip2MatbuuForm || {});
-					if (!tip2MatbuuForm || tip2MatbuuForm[key]) { return key }
-				}
-				return (app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem')
-			}
-			return 'Irsaliye'
+		static get numaratorTip() { return CETIrsaliyeFis.numaratorTip }
+		get matbuuFormTip() { return CETIrsaliyeFis.matbuuFormTip }
+		async eIslemTipDegeriFor(e) {
+			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
+			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
 		}
 		constructor(e) {
 			e = e || {}; super(e);
@@ -634,18 +629,26 @@
 	};
 	window.CETPlasiyerErtesiGunSiparisFis = class extends window.CETPlasiyerFisOrtak {
 		static get numaratorTip() { return 'PS' } static get aciklama() { return 'Ertesi Gün Sipariş' }
+		async eIslemTipDegeriFor(e) {
+			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
+			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
+		}
 		constructor(e) { e = e || {}; super(e) }
 	};
 	window.CETPlasiyerIadeFis = class extends window.CETPlasiyerFisOrtak {
-		static get numaratorTip() { return `PI` } static get aciklama() { return 'Pls. Depoya İADE' }
+		static get numaratorTip() { return 'PI' } static get aciklama() { return 'Pls. Depoya İADE' }
 		static get iademi() { return true } static get sonStokEtkilenirmi() { return true }
+		async eIslemTipDegeriFor(e) {
+			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
+			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
+		}
 		constructor(e) { e = e || {}; super(e); this.bozukmu = asBool(e.bozukmu) }
 		hostVars(e) { e = e || {}; let hv = super.hostVars(); hv.bozukmu = bool2Int(this.bozukmu); return hv }
 		async setValues(e) { e = e || {}; await super.setValues(e); const {rec} = e; this.bozukmu = asBool(rec.bozukmu) }
 		async initBaslikUI_ara(e) {
 			await super.initBaslikUI_ara(e);
 			const parentPart = e.parentPart, param = parentPart.param, userSettings = param.userSettings = param.userSettings || {};
-			const sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {}, {layout} = e; let savedParentWidth;
+			let sonDegerler = userSettings.sonDegerler = userSettings.sonDegerler || {}, {layout} = e, savedParentWidth;
 			if (true) {
 				let flag = this.bozukmu; const divSaha = layout.find(`#chkBozukmu`), sahaContainer = divSaha.parents(`.parent`);
 				let changeHandler = evt => { flag = this.bozukmu = divSaha.prop('checked'); sonDeger = sonDegerler.bozukmu = flag; parentPart.paramDegistimi = true };

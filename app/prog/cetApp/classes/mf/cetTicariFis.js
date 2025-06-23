@@ -1416,19 +1416,17 @@
 			let {app} = sky;
 			if (app.eIslemKullanilirmi && this.eIslemTip) {
 				if (app.eIrsaliyeKullanilirmi) {
-					let key = 'e-Irsaliye';
-					let tip2MatbuuForm = ((app._matbuuFormYapilari || {}).tip2MatbuuForm || {});
-					if (!tip2MatbuuForm || tip2MatbuuForm[key])
-						return key
+					let key = 'e-Irsaliye', tip2MatbuuForm = app._matbuuFormYapilari?.tip2MatbuuForm || {};
+					if (!tip2MatbuuForm || tip2MatbuuForm[key]) { return key }
 				}
 				return (app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem')
 			}
 			return 'Irsaliye'
 		}
-		
 		async eIslemTipDegeriFor(e) {
-			if (this.class.alimmi != this.class.iademi) { return '' }
-			let {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : ''
+			let {app} = sky, {alimmi, iademi} = this.class;
+			if (alimmi != iademi) { return '' }
+			return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : ''
 		}
 
 		async yeniTanimOncesiIslemler(e) {

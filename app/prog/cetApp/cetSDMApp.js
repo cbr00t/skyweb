@@ -12,16 +12,14 @@
 			})
 		}
 		get fisTipleri() {
-			const ekOzellikKullanim = this.ekOzellikKullanim || {};
-			let liste = [];
+			let ekOzellikKullanim = this.ekOzellikKullanim || {}, liste = [];
 			liste.push(CETFisTipi.fromFisSinif({ fisSinif: CETBekleyenSayimFis }).hidden());
 			liste.push(CETFisTipi.fromFisSinif({ fisSinif: CETBekleyenUgramaFis }).hidden());
 			liste.push(...[
 				CETFisTipi.fromFisSinif({ fisSinif: CETSayimFis }),
 				CETFisTipi.fromFisSinif({ fisSinif: CETDepoTransferFis })
 			]);
-			if ((ekOzellikKullanim.raf || {}).kullanilirmi)
-				liste.push(CETFisTipi.fromFisSinif({ fisSinif: CETForkliftFis }));
+			if (ekOzellikKullanim.raf?.kullanilirmi) { liste.push(CETFisTipi.fromFisSinif({ fisSinif: CETForkliftFis })) }
 			liste.push(...[
 				CETFisTipi.fromFisSinif({ fisSinif: CETSubeTransferFis }),
 				CETFisTipi.fromFisSinif({ aciklamaPrefix: `Mal Kabul: `, fisSinif: CETAlimFaturaFis }),
@@ -35,11 +33,10 @@
 				CETFisTipi.fromFisSinif({ aciklamaPrefix: `Sevkiyat: `, fisSinif: CETSatisIadeFaturaFis }),
 				CETFisTipi.fromFisSinif({ aciklamaPrefix: `Sevkiyat: `, fisSinif: CETSatisIadeIrsaliyeFis }),
 				CETFisTipi.fromFisSinif({ fisSinif: CETSubelerArasiTransferSiparisFis }),
-				CETFisTipi.fromFisSinif({ fisSinif: CETTahsilatFis })
+				CETFisTipi.fromFisSinif({ fisSinif: CETTahsilatFis }),
+				...(super.fisTipleri ?? [])
 			]);
-			liste.push(...(super.fisTipleri || []));
-
-			return liste;
+			return liste
 		}
 		get raporlar() {
 			const raporlar = super.raporlar;

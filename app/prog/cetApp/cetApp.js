@@ -27,18 +27,11 @@
 		static get aceEditorDesteklermi() { return true }
 		static get kmTakibiDesteklenirmi() { return false }
 
-		get fisTipleri() {
-			return [
-				CETFisTipi.fromFisSinif({ fisSinif: CETPlasiyerErtesiGunSiparisFis }),
-				CETFisTipi.fromFisSinif({ fisSinif: CETPlasiyerIadeFis })
-			]
-		}
+		get fisTipleri() { return [] }
 		get fisTipleriDuzenlenmis() {
 			let result = this._fisTipleri;
-			if (result == null)
-				result = this._fisTipleri = this.fisTipleri;
-			
-			return result;
+			if (result == null) { result = this._fisTipleri = this.fisTipleri }
+			return result
 		}
 		get fisTipleriVeSablon() {
 			let liste = $.merge([], this.fisTipleriDuzenlenmis);
@@ -139,7 +132,8 @@
 		get bilgiGonderTableYapilari() {
 			return [
 				{ baslik: 'data_PIFFis', diger: ['data_PIFStok'], tanim: [`mst_Cari`] },
-				{ baslik: 'data_TahsilatFis', diger: ['data_TahsilatDetay'] }
+				{ baslik: 'data_TahsilatFis', diger: ['data_TahsilatDetay'] },
+				{ baslik: 'data_UgramaFis' }
 			]
 		}
 
@@ -1242,8 +1236,7 @@
 			//if (navigator.onLine)
 			//	this.merkezdenBilgiYukle();
 		}
-		postInitLayout_ara(e) {
-		}
+		postInitLayout_ara(e) { }
 		async destroyLayout(e) {
 			e = e || {};
 			let layout = e.layout || this.layout;
@@ -4509,7 +4502,7 @@
 		async merkezdenBilgiYukleDevam_bekleyenUgramaFisler(e) { return null }
 		async merkezdenBilgiYukleSonrasi(e) {
 			e = e || {}; const {sessionInfo} = sky.config;
-			if (!sky.config.test && (sessionInfo && sessionInfo.hasSessionOrUser)) {
+			if (!sky.config.test && (sessionInfo?.hasSessionOrUser)) {
 				await this.knobProgressSetLabel('Oturum Bilgileri kaydediliyor...');
 				await this.extensions.login.dbSaveLogin({ clear: true });
 				await this.knobProgressStep(1);
@@ -4526,12 +4519,12 @@
 							const _result = await initCallbacks[i];
 							try { if (_result && $.isFunction(_result.run)) { await _result.run(e) } } catch (ex) { defFailBlock(ex) }
 						}
-						this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e)
+						await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);
+						await this.sonIslemler(e)
 					}
 				})
 			}
-			else { this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e) }
-			
+			else { await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e); await this.sonIslemler(e) }
 			setTimeout(() => {
 				this.aktarimProgressCompleted({
 					defer: true,

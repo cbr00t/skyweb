@@ -13,6 +13,8 @@
 				CETFisTipi.fromFisSinif({ fisSinif: CETAlimIadeFaturaFis }),
 				CETFisTipi.fromFisSinif({ fisSinif: CETAlimIadeIrsaliyeFis }),
 				CETFisTipi.fromFisSinif({ fisSinif: CETUgramaFis }),
+				CETFisTipi.fromFisSinif({ fisSinif: CETPlasiyerErtesiGunSiparisFis }),
+				CETFisTipi.fromFisSinif({ fisSinif: CETPlasiyerIadeFis }),
 				...(super.fisTipleri || [])
 			].filter(x => !!x)
 		}
