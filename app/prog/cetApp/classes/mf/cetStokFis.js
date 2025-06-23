@@ -594,6 +594,11 @@
 
 	window.CETPlasiyerFisOrtak = class extends window.CETStokFis {
 		static get sonStokEtkilenirmi() { return false } static get alimmi() { return true }
+		static get eIslemKullanilirmi() { return true }
+		async eIslemTipDegeriFor(e) {
+			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
+			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
+		}
 		constructor(e) { e = e || {}; super(e); this.subeKod = e.subeKod || sky.app.defaultSubeKod || '' }
 		async onKontrol(e) {
 			e = e || {}; let tarih = this.tarih; const _today = today();
@@ -629,19 +634,11 @@
 	};
 	window.CETPlasiyerErtesiGunSiparisFis = class extends window.CETPlasiyerFisOrtak {
 		static get numaratorTip() { return 'PS' } static get aciklama() { return 'Ertesi Gün Sipariş' }
-		async eIslemTipDegeriFor(e) {
-			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
-			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
-		}
 		constructor(e) { e = e || {}; super(e) }
 	};
 	window.CETPlasiyerIadeFis = class extends window.CETPlasiyerFisOrtak {
 		static get numaratorTip() { return 'PI' } static get aciklama() { return 'Pls. Depoya İADE' }
 		static get iademi() { return true } static get sonStokEtkilenirmi() { return true }
-		async eIslemTipDegeriFor(e) {
-			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
-			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
-		}
 		constructor(e) { e = e || {}; super(e); this.bozukmu = asBool(e.bozukmu) }
 		hostVars(e) { e = e || {}; let hv = super.hostVars(); hv.bozukmu = bool2Int(this.bozukmu); return hv }
 		async setValues(e) { e = e || {}; await super.setValues(e); const {rec} = e; this.bozukmu = asBool(rec.bozukmu) }
