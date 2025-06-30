@@ -593,7 +593,7 @@
 	}
 
 	window.CETPlasiyerFisOrtak = class extends window.CETStokFis {
-		static get eIslemKullanilirmi() { let {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi && app.sicakTeslimFisimi }
+		static get eIslemKullanilirmi() { let {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi && app.ertesiGunTeslimFisiIslenirmi }
 		static get numaratorTip() { return this.adimTipi }
 		// static get numaratorTip() { return this.eIslemKullanilirmi ? CETIrsaliyeFis.numaratorTip : this.adimTipi }
 		static get noYilDesteklermi() { return this.eIslemKullanilirmi }

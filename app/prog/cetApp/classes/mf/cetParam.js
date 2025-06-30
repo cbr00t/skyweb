@@ -11,7 +11,7 @@
 				'menuAdimKisitIDListe', 'fisAdimKisitIDListe', 'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'silerekBilgiAlYapilirmi',
 				'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi', 'stokPaketKodlari', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis', 'alimNetFiyatGosterilirmi',
 				'iskSayi', 'kamSayi', 'kadIskSayi', 'satirIskOranSinir', 'musteriDegistirilirmi', 'musteriRotaZorunlumu', 'rotaDevreDisiGosterilirmi', 'sonStoktanSecimYapilirmi',
-				'riskKontrolDurum', 'eIslemKullanilirmi', 'eIrsaliyeKullanilirmi', 'eBelgeAltSinir', 'sicakTeslimFisimi',
+				'riskKontrolDurum', 'eIslemKullanilirmi', 'eIrsaliyeKullanilirmi', 'eBelgeAltSinir', 'sicakTeslimFisimi', 'ertesiGunTeslimFisiIslenirmi',
 				'depoSiparisRefKontrolEdilirmi', 'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi',
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
@@ -119,7 +119,7 @@
 			[	'serbestModmu', 'gridAltMultiSelectFlag', 'dokumEkranami', 'stokFiyatKdvlimi', 'yildizKullanilirmi', 'darDokummu', 'dokumZPLmi', 'dokumNettenmi', 'sonStokKontrolEdilirmi', 'sonStokKontrolEdilirmi_siparis',
 				'dogrudanFisListeyeGirilirmi', 'barkodluFisGirisYapilirmi', 'fisGirisSadeceBarkodZorunlumu', 'geciciFisKullanilmazmi', 'listeKodDogrudanAramaYapilirmi', 'fisOzetBilgiGosterilirmi' ,'silerekBilgiAlYapilirmi',
 				'alimNetFiyatGosterilirmi', 'musteriDegistirilirmi', 'bakiyeRiskGosterilmezmi', 'musteriRotaZorunlumu', 'ilkIrsaliyeDokumuZorunlumu', 'kmTakibiYapilirmi', 'faturadaTahsilatYapilirmi', 'yazdirilanTahsilatDegistirilmezmi', 'tahsilatIptalEdilemezmi', 'tahsilattaAcikHesapKullanilirmi',
-				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',
+				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'ertesiGunTeslimFisiIslenirmi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',
 				'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi', 'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'ozelKampanyaKullanilirmi', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi',
 				'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', /*'dovizKullanilirmi',*/ 'barkodReferansAlinmazmi', 'dokumRuloDuzmu', 'kapandimi'

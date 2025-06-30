@@ -389,6 +389,7 @@
 		get rotaKullanilirmi() { let flag = this.ozelYetkiler?.rota; if (flag == null) { flag = this.param.rotaKullanilirmi } return flag; }
 		get rotaDevreDisiGosterilirmi() { let flag = this.ozelYetkiler?.rotaDevreDisi; if (flag == null) { flag = this.param.rotaDevreDisiGosterilirmi } return flag }
 		get sicakTeslimFisimi() { let flag = this.ozelYetkiler?.sicakTeslimFisi; if (flag == null) { flag = this.param.sicakTeslimFisimi } return flag }
+		get ertesiGunTeslimFisiIslenirmi() { let flag = this.ozelYetkiler?.ertesiGunTeslimFisiIslenir; if (flag == null) { flag = this.param.ertesiGunTeslimFisiIslenirmi } return flag }
 		get riskKontrolDurum() { let value = this.ozelYetkiler?.riskKontrolDurum; if (value == null) { value = this.param.riskKontrolDurum } return value || '' }
 		get stokFiyatKdvlimi() { let flag = this.ozelYetkiler?.stokFiyatKdvli; if (flag == null) { flag = this.param.stokFiyatKdvlimi } return flag }
 		get kdvDahilFiyatGosterim() { let flag = this.ozelYetkiler?.kdvDahilFiyatGosterim; if (flag == null) { flag = this.param.kdvDahilFiyatGosterim } return flag }
