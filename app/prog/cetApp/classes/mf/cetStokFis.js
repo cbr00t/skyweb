@@ -339,7 +339,7 @@
 	window.CETDepoTransferTersFis = class extends window.CETDepoTransferFis { static get fiiliCikismi() { return false } static get alimmi() { return false } }
 
 	window.CETSubeTransferFis = class extends window.CETTransferFis {
-		static get aciklama() { return 'Şube Transfer' } static get numaratorTip() { return 'TRS' }
+		static get aciklama() { return 'Şube Transfer' } static get adimTipi() { return 'TRS' }
 		static get noYilDesteklermi() { return true } static get eIslemKullanilirmi() { return true }
 		static get numaratorTip() { return CETIrsaliyeFis.numaratorTip }
 		get matbuuFormTip() { return CETIrsaliyeFis.matbuuFormTip }
@@ -593,12 +593,13 @@
 	}
 
 	window.CETPlasiyerFisOrtak = class extends window.CETStokFis {
+		static get eIslemKullanilirmi() { let {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi && app.sicakTeslimFisimi }
+		static get numaratorTip() { return this.adimTipi }
+		// static get numaratorTip() { return this.eIslemKullanilirmi ? CETIrsaliyeFis.numaratorTip : this.adimTipi }
+		static get noYilDesteklermi() { return this.eIslemKullanilirmi }
+		get matbuuFormTip() { return this.class.eIslemKullanilirmi ? CETIrsaliyeFis.matbuuFormTip : super.matbuuFormTip }
+		async eIslemTipDegeriFor(e) { return this.class.eIslemKullanilirmi ? 'IR' : '' }
 		static get sonStokEtkilenirmi() { return false } static get alimmi() { return true }
-		static get eIslemKullanilirmi() { return true }
-		async eIslemTipDegeriFor(e) {
-			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
-			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
-		}
 		constructor(e) { e = e || {}; super(e); this.subeKod = e.subeKod || sky.app.defaultSubeKod || '' }
 		async onKontrol(e) {
 			e = e || {}; let tarih = this.tarih; const _today = today();
@@ -633,11 +634,11 @@
 		}
 	};
 	window.CETPlasiyerErtesiGunSiparisFis = class extends window.CETPlasiyerFisOrtak {
-		static get numaratorTip() { return 'PS' } static get aciklama() { return 'Ertesi Gün Sipariş' }
+		static get adimTipi() { return 'PS' } static get aciklama() { return 'Ertesi Gün Sipariş' }
 		constructor(e) { e = e || {}; super(e) }
 	};
 	window.CETPlasiyerIadeFis = class extends window.CETPlasiyerFisOrtak {
-		static get numaratorTip() { return 'PI' } static get aciklama() { return 'Pls. Depoya İADE' }
+		static get adimTipi() { return 'PI' } static get aciklama() { return 'Pls. Depoya İADE' }
 		static get iademi() { return true } static get sonStokEtkilenirmi() { return true }
 		constructor(e) { e = e || {}; super(e); this.bozukmu = asBool(e.bozukmu) }
 		hostVars(e) { e = e || {}; let hv = super.hostVars(); hv.bozukmu = bool2Int(this.bozukmu); return hv }
