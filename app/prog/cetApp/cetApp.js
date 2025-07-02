@@ -4520,12 +4520,12 @@
 							const _result = await initCallbacks[i];
 							try { if (_result && $.isFunction(_result.run)) { await _result.run(e) } } catch (ex) { defFailBlock(ex) }
 						}
-						await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);
-						await this.sonIslemler(e)
 					}
+					// await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);
+					await this.sonIslemler(e)
 				})
 			}
-			else { await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e); await this.sonIslemler(e) }
+			else { /*await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);*/ await this.sonIslemler(e) }
 			setTimeout(() => {
 				this.aktarimProgressCompleted({
 					defer: true,
@@ -4534,7 +4534,6 @@
 				})
 			}, 2000)
 		}
-
 		/* bakiye, risk, sonStok ... hesaplaması */
 		async merkezdenBilgiYukleSonrasiDevam(e) {
 			e = e || {}; let {param, kmTakibiYapilirmi} = this;
