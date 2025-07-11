@@ -92,9 +92,9 @@
 		}
 		async onKontrol(e) {
 			e = e || {}; if (!this.yerKod) { return this.error_onKontrol(`(Depo) belirtilmelidir`, 'emptyValue') }
-			let result = sky.app.caches.yerKod2Rec[this.yerKod];
+			/*let result = sky.app.caches.yerKod2Rec[this.yerKod];
 			if (result == null) { result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_Yer WHERE kod = ?`, params: [this.yerKod] })) }
-			if (!result) { return this.error_onKontrol(`(${this.yerKod} kodlu Depo) hatalıdır`, 'invalidValue') }
+			if (!result) { return this.error_onKontrol(`(${this.yerKod} kodlu Depo) hatalıdır`, 'invalidValue') }*/
 			return await super.onKontrol(e)
 		}
 		async sonStokDuzenle(e) { const _e = $.extend({}, e, { dogrudanMiktarAlinirmi: true }); return await super.sonStokDuzenle(e) }

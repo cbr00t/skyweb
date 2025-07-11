@@ -520,24 +520,16 @@
 		async onKontrol(e) {
 			e = e || {}; let superResult = await super.onKontrol(e);
 			if (!superResult || superResult.isError) { return superResult }
-			let kod = this.nakSekliKod;
-			if (kod) {
-				let result = sky.app.caches.nakliyeSekliKod2Rec[kod];
-				if (result == null) { result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_NakliyeSekli WHERE kod = ?`, params: [kod] })) }
-				if (!result) { return this.error_onKontrol(`<b>(${kod})</b> kodlu <u>Nakliye Şekli</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Nakliye Şekli</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue') }
-			}
-			kod = this.tahSekliKodNo;
-			if (kod) {
-				let result = sky.app.caches.tahsilSekliKodNo2Rec[kod];
-				if (result == null)
-					result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({ tx: e.tx, query: `SELECT COUNT(*) sayi FROM mst_TahsilSekli WHERE kodNo = ?`, params: [kod] }))
-				if (!result)
-					return this.error_onKontrol(`<b>(${kod})</b> kodlu <u>Tahsil Şekli</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Tahsil Şekli</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue');
-			}
+			let {caches} = sky.app, {dbMgr} = this, {tx, kontrolIslemi} = e;
+			/*let {mustKod, sevkAdresKod, nakSekliKod, tahSekliKodNo} = this;
+			await kontrolIslemi(mustKod, caches.mustKod2EkBilgi, 'mst_Cari', 'kod', 'Müşteri');
+			await kontrolIslemi(sevkAdresKod, caches.sevkAdresKod2Rec, 'mst_SevkAdres', 'kod', 'Sevk Adres');
+			await kontrolIslemi(nakSekliKod, caches.nakliyeSekliKod2Rec, 'mst_NakliyeSekli', 'kod', 'Nakliye Şekli');
+			await kontrolIslemi(tahSekliKodNo, caches.tahsilSekliKodNo2Rec, 'mst_TahsilSekli', 'kodNo', 'Tahsil Şekli')*/
 			return superResult
 		}
 		async kaydetOncesiKontrol_ara(e) {
-			await super.kaydetOncesiKontrol_ara(e);
+			await super.kaydetOncesiKontrol_ara(e); let {dbMgr_mf: dbMgr, caches} = sky.app;
 			if (this.class.sevkTarihKullanilirmi) {
 				let {tarih, sevkTarih} = this;
 				if (tarih && sevkTarih && asDate(tarih).clearTime() > asDate(sevkTarih).clearTime())

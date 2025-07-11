@@ -385,50 +385,34 @@
 		}
 
 		async onKontrol(e) {
-			e = e || {};
-			let result = await this.onKontrol_detaylar(e);
-			if (!result || result.isError)
-				return result;
-			
-			if (this.class.musteriKullanilirmi) {
-				if (!this.mustKod)
-					return this.error_onKontrol(`<b>Müşteri</b> belirtilmelidir`, 'emptyValue');
-				result = await MQCogul.getCariEkBilgi({ mustKod: this.mustKod })
-				if (!result)
-					return this.error_onKontrol(`<b>(${this.mustKod})</b> kodlu <u>Müşteri</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Müşteri</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue');
-			}
-
-			let kod = this.plasiyerKod;
-			if (kod) {
-				result = sky.app.caches.plasiyerKod2Rec[kod];
-				if (result == null) {
-					result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({
-						tx: e.tx,
-						query: `SELECT COUNT(*) sayi FROM mst_Plasiyer WHERE kod = ?`,
-						params: [kod]
-					}))
+			e = e || {}; let result = await this.onKontrol_detaylar(e);
+			if (!result || result.isError) { return result }
+			let {musteriKullanilirmi} = this.class, {dbMgr} = this, {tx} = e;
+			let kontrolIslemi = e.kontrolIslemi = async (kod, cacheSource, table, kodSaha, etiket) => {
+				if (!kod) { return }
+				kodSaha = kodSaha || 'kod';
+				let query = `SELECT COUNT(*) sayi FROM ${table} WHERE ${kodSaha} = ?`, params = [kod];
+				let varmi = cacheSource?.[kod] || asInteger(await dbMgr.tekilDegerExecuteSelect({ tx, query, params }));
+				if (!varmi) {
+					throw this.error_onKontrol((
+						`<p/>[ <b class=red>${kod}</b> ] kodlu <u class=bold>${etiket} Kodu</u> hatalıdır.<p/><p/>` +
+					    `<p class="gray">** Ekranda <u>${etiket} Kodu</u> kutusu <b>boş gözüküyor ise</b><br/>` + 
+						` <b class=royalblue>Kutunun üzerine tıklayıp, ENTER tuşuna basarak</b> değeri silebilirsiniz</p>`
+					), 'invalidValue')
 				}
-				if (!result)
-					return this.error_onKontrol(`<b>(${kod})</b> kodlu <u>Plasiyer</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Plasiyer</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue');
+			};
+			let {mustKod, sevkAdresKod, plasiyerKod, yerKod, nakSekliKod, tahSekliKodNo} = this;
+			if (musteriKullanilirmi) {
+				if (!mustKod) { return this.error_onKontrol(`<b>Müşteri</b> belirtilmelidir`, 'emptyValue') }
+				await kontrolIslemi(mustKod, caches.mustKod2EkBilgi, 'mst_Cari', 'kod', 'Müşteri')
 			}
-
-			kod = this.yerKod;
-			if (kod) {
-				result = sky.app.caches.yerKod2Rec[kod];
-				if (result == null) {
-					result = parseInt(await this.dbMgr.tekilDegerExecuteSelect({
-						tx: e.tx,
-						query: `SELECT COUNT(*) sayi FROM mst_Yer WHERE kod = ?`,
-						params: [kod]
-					}))
-				}
-				if (!result)
-					return this.error_onKontrol(`<b>(${kod})</b> kodlu <u>Depo</u> hatalıdır.<p/><p class="gray">** Ekranda <u>Yer kodu</u> kutusu <b>boş gözüküyor ise</b>, üzerine tıklayıp ENTER tuşuna basarak değeri silebilirsiniz</p>`, 'invalidValue');
-			}
-			
-			return await super.onKontrol(e);
+			await kontrolIslemi(plasiyerKod, caches.plasiyerKod2Rec, 'mst_Plasiyer', 'kod', 'Plasiyer');
+			await kontrolIslemi(yerKod, caches.yerKod2Rec, 'mst_Yer', 'kod', 'Yer');
+			await kontrolIslemi(sevkAdresKod, caches.sevkAdresKod2Rec, 'mst_SevkAdres', 'kod', 'Sevk Adres');
+			await kontrolIslemi(nakSekliKod, caches.nakliyeSekliKod2Rec, 'mst_NakliyeSekli', 'kod', 'Nakliye Şekli');
+			await kontrolIslemi(tahSekliKodNo, caches.tahsilSekliKodNo2Rec, 'mst_TahsilSekli', 'kodNo', 'Tahsil Şekli');
+			return await super.onKontrol(e)
 		}
-
 		async onKontrol_detaylar(e) {
 			e = e || {};
 			const detaylar = this.sonStokIcinAltDetaylar;
