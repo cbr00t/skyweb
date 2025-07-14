@@ -221,11 +221,9 @@
 			e.callback({ totalrecords: recs.length, records: recs })
 		}
 		async stokBilgiStm(e) {
-			e = e || {};
-			let stokKod = this.hizliStokPart.selectedId;
-			if (!stokKod)
-				return null
-			const fis = e.fis || this.fis || ((e.parentPart || this.parentPart) || {}).fis;
+			e = e || {}; let stokKod = this.hizliStokPart.selectedId; if (!stokKod) { return null }
+			let  fis = e.fis || this.fis || ((e.parentPart || this.parentPart) || {}).fis;
+			let kdvOraniSaha = fis?.stokKdvSaha || CETSatisFaturaFis.stokKdvSaha;
 			let stkFytInd = (e.cariRow || {}).stkFytInd || (fis || {}).cariStkFytInd;
 			if (!stkFytInd) {
 				const mustKod = e.mustKod || (e.cariRow || {}).kod || this.mustKod || (fis || {}).mustKod;
@@ -242,7 +240,7 @@
 					`stk.kod`, `stk.aciklama`, `stk.grupKod`, `stk.fiyatGorFiyati`, `stk.satFiyat1`, `stk.satFiyat2`,
 					`stk.satFiyat3`, `stk.satFiyat4`, `stk.satFiyat5`, `stk.satFiyat6`, `stk.satFiyat7`,
 					`stk.almFiyat`, `stk.almNetFiyat`, `stk.brm`,
-					`stk.${brmFiyatSaha} brmFiyat`
+					`stk.${brmFiyatSaha} brmFiyat`, `${kdvOraniSaha} kdvOrani`
 				]
 			});
 			let stm = new MQStm({ sent: sent });

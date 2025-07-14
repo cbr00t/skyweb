@@ -156,8 +156,9 @@
 				const cariTipKod = istenenKapsam.cariTip || cariRec.tipKod;
 				const cariBolgeKod = istenenKapsam.cariBolge || cariRec.bolgeKod;
 				const kosulGrupKod = istenenKapsam.cariKosulGrup || cariRec.kosulGrupKod;
+				const plasiyerKod = istenenKapsam.plasiyer;
 				
-				if (cariKod || cariTipKod || cariBolgeKod || kosulGrupKod) {
+				if (cariKod || cariTipKod || cariBolgeKod || kosulGrupKod || plasiyerKod) {
 					const cariKodClause = MQSQLOrtak.sqlDegeri(cariKod);
 					sent.leftJoin({
 						alias: `kos`, from: `mst_KosulMusteriler mus`,
@@ -197,6 +198,11 @@
 									`(kos.cariKosulGrupBasi = '' OR kos.cariKosulGrupBasi <= ${MQSQLOrtak.sqlDegeri(kosulGrupKod)})`,
 									`(kos.cariKosulGrupSonu = '' OR ${MQSQLOrtak.sqlDegeri(kosulGrupKod)} <= kos.cariKosulGrupSonu)`
 								]),
+								new MQSubWhereClause([
+									plasiyerKod ? `1 = 1` : `1 = 2`,
+									`(kos.plasiyerBasi = '' OR kos.plasiyerBasi <= ${MQSQLOrtak.sqlDegeri(plasiyerKod)})`,
+									`(kos.plasiyerSonu = '' OR ${MQSQLOrtak.sqlDegeri(plasiyerKod)} <= kos.plasiyerSonu)`
+								])
 							])
 						])
 					]));
@@ -235,7 +241,7 @@
 				orderBy: [`oncelik`, `tarihBasi DESC`, `ozelMusteriListesiVarmi DESC`, `kod DESC`, `tarihSonu`]
 			})
 
-			return stm;
+			return stm
 		}
 
 		static async tip2KosulYapilari_gerekirseCariEkBilgiler(e) {

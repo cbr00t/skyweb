@@ -14,7 +14,7 @@
 				'riskKontrolDurum', 'eIslemKullanilirmi', 'eIrsaliyeKullanilirmi', 'eBelgeAltSinir', 'sicakTeslimFisimi', 'ertesiGunTeslimFisiIslenirmi',
 				'depoSiparisRefKontrolEdilirmi', 'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi',
 				'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
-				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
+				'kdvDahilFiyatGosterim', 'alimFiyatGorurmu', 'satisFiyatGorurmu', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'konumToleransMetre', 'dokumRuloDuzmu', 'dokumNushaSayi',
 				'zplSatirYukseklik', 'zplFontSize', 'zplFontKod', 'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi',
 				'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe', 'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', 'dovizKullanilirmi',
 				'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi', 'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime', 'ekOzellikKullanim', 'tip2EkOzellikYapi',
