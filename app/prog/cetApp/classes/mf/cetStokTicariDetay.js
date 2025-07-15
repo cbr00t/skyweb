@@ -76,15 +76,16 @@
 						basitmi ? `NULL sonStok` : `son.miktar sonStok`,
 						basitmi ? `NULL olasiMiktar` : `(son.orjMiktar + son.olasiFark) olasiMiktar`,
 						/*`${sonStokKontrolEdilirmi ? 'son.miktar' : 'NULL'} sonStok`,*/
-						(
+						`${alias}.${brmFiyatSaha} brmFiyat`,
+						/*(
 							dovizlimi
 								? (fiiliCikismi
 									 ? `${alias}.${brmFiyatSaha} brmFiyat`
-									 : `(case when ${alias}.almFiyat == 0 then ${alias}.dvBrmFiyat else ${alias}.almFiyat end) brmFiyat`)
+									 : `(case when ${alias}.almFiyat = 0 then ${alias}.brmFiyat else ${alias}.almFiyat end) brmFiyat`)
 								: (fiiliCikismi
 									 ? `${alias}.${brmFiyatSaha} brmFiyat`
-									 : `(case when ${alias}.almFiyat == 0 then ${alias}.dvBrmFiyat else ${alias}.almFiyat end) brmFiyat`)
-						),
+									 : `(case when ${alias}.almFiyat = 0 then ${alias}.dvBrmFiyat else ${alias}.almFiyat end) brmFiyat`)
+						),*/
 						((stokKdvSaha ? `${alias}.${stokKdvSaha}` : `NULL`) + ` kdvOrani`),
 						((stokKdvDegiskenmiSaha ? `${alias}.${stokKdvDegiskenmiSaha}` : `NULL`) + ` kdvDegiskenmi`),
 						`${alias}.satirIskOranSinirVarmi`, `${alias}.satirIskOranSinir`,

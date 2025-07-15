@@ -3539,6 +3539,10 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetFisGiris #liste .listeSatir .promoTextParent { padding-right: 13px; color: #888; font-weight: normal }
 .part.cetApp.cetFisGiris #liste .listeSatir .promoText { color: #595; font-weight: bolder }
 .part.cetApp.cetFisGiris #liste .listeSatir .barkod { }
+.part.cetApp.cetFisGiris #liste /*:not(.jqx-grid-cell-selected) >*/ .listeSatir.barkod-tekrar {
+	/*border: 3px solid firebrick*/
+	background: linear-gradient(90deg, #ffccbb 5%, #ffccbb55 20%) !important
+}
 .part.cetApp.cetFisGiris #liste .listeSatir.barkod-tekrar .barkod { color: whitesmoke !important; background-color: orangered !important }
 .part.cetApp.cetFisGiris #liste .listeSatir .shKod, .part.cetApp.cetFisGiris #liste .listeSatir .stokKod { font-weight: bold; padding-right: 8px }
 .part.cetApp.cetFisGiris #liste .listeSatir .mfParent { color: firebrick }

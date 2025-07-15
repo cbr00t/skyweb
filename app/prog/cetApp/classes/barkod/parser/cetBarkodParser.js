@@ -51,30 +51,30 @@
 			}
 		}
 		async shEkBilgileriBelirle(e) {
-			e = e || {}; let shKod = e.shKod || this.shKod;
-			if (!shKod) { return false }
-			const {app} = sky, dbMgr = e.dbMgr || this.dbMgr, {fis} = e, dovizlimi = fis?.dovizlimi;
+			e = e || {}; let shKod = e.shKod || this.shKod; if (!shKod) { return false }
+			let {app} = sky, dbMgr = e.dbMgr || this.dbMgr, {fis} = e, fisSinif = fis?.class;
+			let dovizlimi = fis?.dovizlimi, alimmi = fisSinif?.alimmi, iademi = fisSinif?.iademi;
 			let stkFytInd = e.cariRow?.stkFytInd || fis?.cariStkFytInd;
 			if (!stkFytInd) {
-				const mustKod = e.mustKod || e.cariRow?.kod || fis?.mustKod;
-				if (mustKod) stkFytInd = await MQCogul.getCariStkFytInd({ mustKod });
+				let mustKod = e.mustKod || e.cariRow?.kod || fis?.mustKod;
+				if (mustKod) { stkFytInd = await MQCogul.getCariStkFytInd({ mustKod }) }
 			}
-			const brmFiyatSaha = ( dovizlimi
-				? (stkFytInd ? `dvFiyat${stkFytInd}` : 'dvBrmFiyat')
-				: (stkFytInd ? `satFiyat${stkFytInd}` : 'brmFiyat')
-			);
-			const stokKdvSaha = e.stokKdvSaha || fis?.class?.stokKdvSaha;
-			const stokKdvDegiskenmiSaha = e.stokKdvDegiskenmiSaha || fis?.class?.stokKdvDegiskenmiSaha;
+			let brmFiyatSaha =
+				dovizlimi
+					? (stkFytInd ? `dvFiyat${stkFytInd}` : 'dvBrmFiyat')
+					: alimmi ? (iademi ? 'almNetFiyat' : 'almFiyat') : (stkFytInd ? `satFiyat${stkFytInd}` : 'brmFiyat');
+			let stokKdvSaha = e.stokKdvSaha || fis?.class?.stokKdvSaha;
+			let stokKdvDegiskenmiSaha = e.stokKdvDegiskenmiSaha || fis?.class?.stokKdvDegiskenmiSaha;
 			let sent = new MQSent({
 				from: 'mst_Stok stk',
 				where: [
 					new MQOrClause([
-						{ degerAta: shKod, saha: `stk.tartiReferans` },
-						{ degerAta: shKod, saha: `stk.kod` },
-						{ degerAta: '0'   + shKod, saha: `stk.kod`},
+						{ degerAta: shKod, saha: 'stk.tartiReferans' },
+						{ degerAta: shKod, saha: 'stk.kod' }
+						/*{ degerAta: '0'   + shKod, saha: `stk.kod`},
 						{ degerAta: '00'   + shKod, saha: `stk.kod` },
 						{ degerAta: '000'  + shKod, saha: `stk.kod` },
-						{ degerAta: '0000' + shKod, saha: `stk.kod` },
+						{ degerAta: '0000' + shKod, saha: `stk.kod` },*/
 					])
 				],
 				sahalar: [
@@ -87,7 +87,7 @@
 			});
 			let stm = new MQStm(sent), rec = e.shRec = await dbMgr.tekilExecuteSelect(stm);
 			if (!rec) { return false }
-			for (const key in rec) { const value = rec[key]; if (value != null) { this[key] = value } }
+			for (let key in rec) { const value = rec[key]; if (value != null) { this[key] = value } }
 			return true
 		}
 	}

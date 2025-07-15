@@ -545,7 +545,7 @@
 
 		async comboBox_itemSelectedDevam(e) {
 			// let rec = e.rec = e.rec || this.selectedRec;
-			let {rec, value} = e;
+			e = e ?? {}; let {rec, value} = e;
 			const {comboBox, comboBoxWidget, table, idSaha, adiSaha} = this;
 			comboBoxWidget.input.val('');
 			comboBox.jqxComboBox('placeHolder', this.originalPlaceHolder || '');

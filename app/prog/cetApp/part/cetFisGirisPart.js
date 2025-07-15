@@ -1655,7 +1655,7 @@
 			this.focusToDefault()
 		}
 		hizliBarkod_enterIstendi(e) {
-			if (this.timer_hizliBarkod_topluEkle) { clearTimeout(this.timer_hizliBarkod_topluEkle); delete this.timer_hizliBarkod_topluEkle }
+			// if (this.timer_hizliBarkod_topluEkle) { clearTimeout(this.timer_hizliBarkod_topluEkle); delete this.timer_hizliBarkod_topluEkle }
 			this.timer_hizliBarkod_topluEkle = setTimeout(async ({ event: evt }) => {
 				try {
 					let _e = {
@@ -1665,7 +1665,7 @@
 					await this.hizliBarkod_topluEkle(_e)
 				}
 				finally { delete this.timer_hizliBarkod_topluEkle }
-			}, 300, e ?? {})
+			}, 100, e ?? {})
 		}
 		async hizliBarkod_topluEkle(e) {
 			e = e || {}; this.txtHizliBarkod.val(''); this.focusToDefault();

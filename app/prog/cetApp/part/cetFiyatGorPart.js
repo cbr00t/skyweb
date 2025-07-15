@@ -176,16 +176,18 @@
 						}
 					}
 				}
-				if (alimFiyatGorurmu && alimNetFiyatGosterilirmi) {
-					const value = stokRec.almNetFiyat;
-					if (value) {
+				if (alimFiyatGorurmu) {
+					let {almFiyat, almNetFiyat} = stokRec;
+					if (almFiyat) {
 						recs.push({
-							etiket: 'ALIM NET FIYAT',
-							veri: (
-								toStringWithFra(stokRec.almNetFiyat || 0, fiyatFra) +
-								(` ${dvKod || 'TL'}`)
-							),
-							bedelmi: true
+							etiket: 'ALIM FIYAT', bedelmi: true,
+							veri: `${toStringWithFra(almFiyat || 0, fiyatFra)} ${dvKod || 'TL'}`
+						})
+					}
+					if (alimNetFiyatGosterilirmi && almNetFiyat) {
+						recs.push({
+							etiket: 'ALIM NET FIYAT', bedelmi: true,
+							veri: `${toStringWithFra(almNetFiyat || 0, fiyatFra)} ${dvKod || 'TL'}`
 						})
 					}
 				}
@@ -237,10 +239,9 @@
 					{ degerAta: stokKod, saha: `stk.kod` }
 				],
 				sahalar: [
-					`stk.kod`, `stk.aciklama`, `stk.grupKod`, `stk.fiyatGorFiyati`, `stk.satFiyat1`, `stk.satFiyat2`,
+					`stk.kod`, `stk.aciklama`, 'stk.brm', `stk.grupKod`, `stk.fiyatGorFiyati`, `stk.satFiyat1`, `stk.satFiyat2`,
 					`stk.satFiyat3`, `stk.satFiyat4`, `stk.satFiyat5`, `stk.satFiyat6`, `stk.satFiyat7`,
-					`stk.almFiyat`, `stk.almNetFiyat`, `stk.brm`,
-					`stk.${brmFiyatSaha} brmFiyat`, `${kdvOraniSaha} kdvOrani`
+					`stk.almFiyat`, `stk.almNetFiyat`, `stk.${brmFiyatSaha} brmFiyat`, `stk.${kdvOraniSaha} kdvOrani`
 				]
 			});
 			let stm = new MQStm({ sent: sent });

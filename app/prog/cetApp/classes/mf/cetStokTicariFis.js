@@ -158,7 +158,7 @@
 						`har.shkod`, `stk.aciklama shadi`,
 						`(case when har.xbrm == '' then stk.brm else har.xbrm end) brm`,
 						`har.orjfiyat`, `har.belgefiyat`,
-						(fiiliCikismi ? `stk.brmFiyat` : `(case when stk.almFiyat == 0 then stk.brmFiyat else stk.almFiyat end) brmFiyat`),
+						(fiiliCikismi ? `stk.brmFiyat` : `(case when stk.almFiyat = 0 then stk.brmFiyat else stk.almFiyat end) brmFiyat`),
 						`har.orjKdvOrani`, `har.kdvorani kdvOrani`, `har.kdvDegiskenmi`,
 						`har.belgebrutbedel`, `har.belgebedel`, `har.paketBilgi`, `har.sevkSipHarSayac`, `har.altDetaylar`, `har.kosulYapi`
 						/*((stokKdvSaha ? `stk.${stokKdvSaha}` : `NULL`) + ` kdvOrani`),

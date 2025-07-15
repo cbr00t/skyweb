@@ -13,9 +13,11 @@
 		}
 		async parseDevam(e) {
 			e = e || {}; let result = await super.parseDevam(e); if (result) { return result }
+			let {tip2EkOzellik} = sky.app, {uygunEkOzellikTipSet} = this.class, {dbMgr, barkod} = this;
+			/*let _e = { ...e, shKod: barkod };
+			if (await this.shEkBilgileriBelirle(_e)) { e.shRec = _e.shRec; return true }*/
 		// barkod referans
-			const {tip2EkOzellik} = sky.app, {uygunEkOzellikTipSet} = this.class, {dbMgr, barkod} = this;
-			const sent = new MQSent({
+			let sent = new MQSent({
 				from: 'mst_BarkodReferans ref',
 				where: [ { degerAta: barkod, saha: 'ref.refKod' } ],
 				sahalar: [
@@ -27,10 +29,11 @@
 				]
 			});
 			for (const tip of Object.keys(uygunEkOzellikTipSet)) { const ekOzellik = tip2EkOzellik[tip] || {}, {idSaha} = ekOzellik; if (idSaha) sent.sahalar.add(`ref.${idSaha} ${idSaha}`) }
-			const stm = new MQStm({ sent, orderBy: ['varsayilanmi DESC'] }); let rec = await dbMgr.tekilExecuteSelect(stm);
+			let stm = new MQStm({ sent, orderBy: ['varsayilanmi DESC'] }); let rec = await dbMgr.tekilExecuteSelect(stm);
 			if (rec) { $.extend(this, rec); if (await this.shEkBilgileriBelirle(e)) { e.shRec = rec; return true } }
 		// stok kodu
-			let _e = $.extend({}, e, { shKod: barkod });
+			let _e = { ...e, shKod: barkod };
+			/* $.extend(_e, { shKod: barkod }); */
 			if (await this.shEkBilgileriBelirle(_e)) { e.shRec = _e.shRec; return true }
 			return false
 		}
