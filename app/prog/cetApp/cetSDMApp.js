@@ -51,10 +51,11 @@
 		}
 		get tabloEksikIslemYapi() {
 			return [
+				...super.tabloEksikIslemYapi /*,
 				{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'urunToplama')),
 					queries: [`ALTER TABLE data_PIFStok ADD urunToplama TEXT NOT NULL`]
-				}
+				}*/
 			]
 		}
 		async merkezdenBilgiYukleDevam_bekleyenSayimFisler(e) {

@@ -70,6 +70,10 @@
 				where: [
 					new MQOrClause([
 						{ degerAta: shKod, saha: 'stk.tartiReferans' },
+						{ degerAta: shKod, saha: 'stk.tartiReferans2' },
+						{ degerAta: shKod, saha: 'stk.tartiReferans3' },
+						{ degerAta: shKod, saha: 'stk.tartiReferans4' },
+						{ degerAta: shKod, saha: 'stk.tartiReferans5' },
 						{ degerAta: shKod, saha: 'stk.kod' }
 						/*{ degerAta: '0'   + shKod, saha: `stk.kod`},
 						{ degerAta: '00'   + shKod, saha: `stk.kod` },

@@ -218,9 +218,18 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('mst_Stok', 'tartiReferans2')),
+					queries: [
+						`ALTER TABLE mst_Stok ADD tartiReferans2 TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Stok ADD tartiReferans3 TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Stok ADD tartiReferans4 TEXT NOT NULL DEFAULT ''`,
+						`ALTER TABLE mst_Stok ADD tartiReferans5 TEXT NOT NULL DEFAULT ''`
+					]
+				},
+				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'oncelik')),
 					queries: [`ALTER TABLE mst_Promosyon ADD oncelik	INTEGER NOT NULL DEFAULT 0`]
-				}
+				}*/
 				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'cariKosulGrupBasi')),
 					queries: [
@@ -3438,8 +3447,9 @@
 					dayaniksizmi: bool2Int(rec.dayaniksizmi), /*toptanaEsasmi: bool2Int(rec.toptanaesasmi),*/
 					satKdvOrani: asInteger(rec.satkdvorani) || 0, almKdvOrani: asInteger(rec.almkdvorani) || 0,
 					satKdvDegiskenmi: bool2Int(rec.satkdvdegiskenmi), almKdvDegiskenmi: bool2Int(rec.kdvdegiskenmi),
-					tartiReferans: rec.tartireferans || '', resimKodu: rec.resimkodu || '',
-					paketIciAdet: asFloat(rec.koliici) || 0, paketIciAdet2: asFloat(rec.koliici2) || 0,
+					tartiReferans: rec.tartireferans || '', tartiReferans2: rec.tartireferans2 || '', tartiReferans3: rec.tartireferans3 || '',
+					tartiReferans4: rec.tartireferans4 || '', tartiReferans5: rec.tartireferans5 || '',
+					resimKodu: rec.resimkodu || '', paketIciAdet: asFloat(rec.koliici) || 0, paketIciAdet2: asFloat(rec.koliici2) || 0,
 					/*satFiyatMiktarTipi: rec.satfiyatmiktartipi, almFiyatMiktarTipi: rec.almfiyatmiktartipi,*/
 					brmFiyat: asFloat(rec.brmfiyat) || 0, fiyatGorFiyati: asFloat(rec.fiyatgorfiyati) || 0,
 					dvBrmFiyat: asFloat(rec.dvbrmfiyat) || 0, dvFiyatGorFiyati: asFloat(rec.dvfiyatgorfiyati) || 0,
@@ -5781,13 +5791,13 @@
 		playSound_barkodOkundu() {
 			if (this.barkodOkutmaSessizmi) { return }
 			setTimeout(async () => {
-				const audio = new Audio(`media/Barcode-scanner-beep-sound.mp3`);
+				let audio = new Audio(`media/Barcode-scanner-beep-sound.mp3`);
 				try { await audio.play() } catch (ex) { }
 			}, 10)
 		}
 		playSound_barkodError() {
 			setTimeout(async () => {
-				const audio = new Audio(`media/Beep-tone-sound-effect.mp3`);
+				let audio = new Audio(`media/Beep-tone-sound-effect.mp3`);
 				try { await audio.play() } catch (ex) { }
 			}, 10)
 		}
