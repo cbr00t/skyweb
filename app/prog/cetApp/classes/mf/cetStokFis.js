@@ -342,7 +342,7 @@
 		static get aciklama() { return 'Şube Transfer' } static get adimTipi() { return 'TRS' }
 		static get noYilDesteklermi() { return true } static get eIslemKullanilirmi() { return true }
 		static get numaratorTip() { return CETIrsaliyeFis.numaratorTip }
-		get matbuuFormTip() { return CETIrsaliyeFis.matbuuFormTip }
+		get matbuuFormTip() { return 'Irsaliye' }
 		async eIslemTipDegeriFor(e) {
 			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
 			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
