@@ -218,6 +218,10 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'tumBarkodlar')),
+					queries: [`ALTER TABLE data_PIFFis ADD tumBarkodlar TEXT NOT NULL DEFAULT ''`]
+				}
+				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Stok', 'tartiReferans2')),
 					queries: [
 						`ALTER TABLE mst_Stok ADD tartiReferans2 TEXT NOT NULL DEFAULT ''`,
@@ -225,7 +229,7 @@
 						`ALTER TABLE mst_Stok ADD tartiReferans4 TEXT NOT NULL DEFAULT ''`,
 						`ALTER TABLE mst_Stok ADD tartiReferans5 TEXT NOT NULL DEFAULT ''`
 					]
-				},
+				},*/
 				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Promosyon', 'oncelik')),
 					queries: [`ALTER TABLE mst_Promosyon ADD oncelik	INTEGER NOT NULL DEFAULT 0`]
@@ -559,6 +563,11 @@
 			if (flag == null)
 				flag = this.param.fisGirisSadeceBarkodZorunlumu;
 			return flag;
+		}
+		get hizliBarkodmu() {
+			let flag = this.ozelYetkiler?.hizliBarkod;
+			if (flag == null) { flag = this.param.hizliBarkodmu }
+			return flag
 		}
 		get geciciFisKullanilmazmi() {
 			let flag = this.ozelYetkiler?.geciciFisYok;
@@ -1388,7 +1397,7 @@
 						`'U' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `'' ozelIsaret`, `fis.tarih`, `NULL vade`, `'' seri`, `0 fisno`,
 						'fis.mustkod ticmustkod', /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
 						`fis.mustkod`, 'car.unvan mustunvan', 'car.yore', 'car.ilKod', 'car.ilAdi', `car.efatmi`, `fis.fisaciklama`, `'' ba`,
-						`'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+						`'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`, `'' tumBarkodlar`
 					  ])
 			}));
 			let ayrimTipiClause = '', {uygunAyrimTipleri} = this;
@@ -1469,7 +1478,7 @@
 									'A'
 							end) ba`,
 						`fis.seferAdi`, `fis.soforAdi`, `fis.plaka`, `fis.ekBilgi`, `fis.containerNox`, `fis.planNo`,
-					   `fis.dipiskoran`, `fis.dipiskbedel`, `fis.dvkod`
+					   `fis.dipiskoran`, `fis.dipiskbedel`, `fis.dvkod`, 'fis.tumBarkodlar'
 					  ])
 			}));
 
@@ -1496,7 +1505,7 @@
 						`'BT' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `fis.ozelisaret ozelIsaret`, `fis.tarih`, `NULL vade`, `fis.seri`, `fis.fisno`,
 						`fis.mustkod ticmustkod`, /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
 						`fis.mustkod`, `car.unvan mustunvan`, `car.yore`, `car.ilKod`, `car.ilAdi`, `car.efatmi`, `fis.fisaciklama`, `'' ba`,
-					   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+					   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`, `'' tumBarkodlar`
 					  ])
 			}));
 			if (musteriDurumumu) {
@@ -1514,7 +1523,7 @@
 							`fis.fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimTipi`, `fis.ozelisaret ozelIsaret`, `fis.tarih`, `fis.vade`, `fis.seri`, `fis.fisno`,
 							'fis.mustkod ticmustkod', /*'car.bakiye', 'car.riskli kalanRisk',*/ `'' efayrimtipi`, `'' zorunluguidstr`,
 							`fis.mustkod`, `car.unvan mustunvan`, `car.yore`, `car.ilKod`, `car.ilAdi`, `car.efatmi`, `fis.refText fisaciklama`, `fis.ba`,
-						   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`
+						   `'' seferAdi`, `'' soforAdi`, `'' plaka`, `'' ekBilgi`, `'' containerNox`, `0 planNo`, `0 dipiskoran`, `0 dipiskbedel`, `'' dvkod`, `'' tumBarkodlar`
 						  ])
 				}));
 			}

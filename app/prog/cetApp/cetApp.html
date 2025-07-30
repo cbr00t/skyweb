@@ -196,6 +196,11 @@
 								<input id="chkFisGirisSadeceBarkodZorunlumu" name="chkFisGirisSadeceBarkodZorunlumu" type="checkbox"></input>
 								<label id="chkFisGirisSadeceBarkodZorunlumu_label">Fiş Girişi: Barkod Kullanımı Zorunludur</label>
 							</div>
+
+							<div id="chkHizliBarkodmu_parent">
+								<input id="chkHizliBarkodmu" name="chkHizliBarkodmu" type="checkbox"></input>
+								<label id="chkHizliBarkodmu_label">Fiş Girişi: Hızlı Barkod</label>
+							</div>
 						</div>
 
 						<div class="flex-row">
@@ -1180,7 +1185,6 @@
 						<div class="flex-row">
 							<span>%</span>
 							<div id="dipIskOran" class="veri"/>
-							
 							<div id="dipIskBedel" class="veri"/>
 							<span>TL</span>
 						</div>
@@ -1193,15 +1197,24 @@
 			<div class="detay">
 				<div class="navBar">
 					<div class="header">
-						<!--<div id="hizliStok"/>-->
-						<div id="hizliStok" class="hizliStok"></div>
-						<textarea id="hizliBarkod" class="hizliBarkod jqx-hidden" rows="1"></textarea>
+						<form action="" autocomplete="false" readonly onfocus="this.removeAttribute('readonly')" onsubmit="javascript:return false">
+							<div id="hizliStok" class="hizliStok"></div>
+							<textarea id="hizliBarkod" class="hizliBarkod jqx-hidden" rows="1"></textarea>
+						</form>
 					</div>
 					<div class="content"></div>
 				</div>
 
 				<form action="" autocomplete="false" readonly onfocus="this.removeAttribute('readonly')" onsubmit="javascript:return false">
 					<div id="liste"></div>
+					
+					<div id="hizliBarkodForm" class="jqx-hidden">
+						<div class="_islemTuslari">
+							<button id="vazgec"></button>
+							<button id="tamam"></button>
+						</div>
+						<div class="items"></div>
+					</div>
 				</form>
 
 				<div id="barkodContainer"/>
@@ -1281,7 +1294,7 @@
 			</template>
 
 			<template class="toolbar-external islemTuslari-ozel">
-				<div id="sil" />
+				<div id="sil"></div>
 			</template>
 
 			<template class="toolbar-external islemTuslari">
@@ -1305,7 +1318,6 @@
 			
 			<template id="listeParts">
 				<div class="barkodContainer"/>
-
 				<div class="listeSatir">
 					<div class="flex-row">
 						<button class="contextMenu"></button>

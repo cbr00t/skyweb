@@ -800,7 +800,7 @@
 			$.extend(e.listeArgs, {
 				theme: theme, localization: localizationObj,
 				width: false, /* height: 'auto', */
-				altRows: true, autoRowHeight: true,
+				altRows: true, autoRowHeight: true, incrementalSearch: false,
 				filterMode: 'simple', selectionMode: 'singlerow',
 				filterHeight: isMiniDevice ? 35 : 40,
 				pagerHeight: isMiniDevice ? 32 : 40,

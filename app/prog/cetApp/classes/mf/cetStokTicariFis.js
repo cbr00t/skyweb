@@ -143,7 +143,8 @@
 				yerKod: (e.yerKod || sky.app.defaultYerKod || '').trimEnd(),
 				noYil: e.noYil || (this.class.noYilDesteklermi ? today().getFullYear() : 0),
 				sevkTarih: e.sevkTarih || null,
-				sevkAdresKod: (e.sevkAdresKod || e.sevkadreskod || e.xadreskod || '').trimEnd()
+				sevkAdresKod: (e.sevkAdresKod || e.sevkadreskod || e.xadreskod || '').trimEnd(),
+				tumBarkodlar: e.tumBarkodlar ?? []
 			})
 		}
 		static detaylarQueryStm(e) {
@@ -186,7 +187,8 @@
 				yerkod: this.yerKod || '',
 				xplasiyerkod: sky.app.defaultPlasiyerKod || this.plasiyerKod || '', /* this.plasiyerKod || '', */
 				sevktarih: Utils.asReverseDateString(this.sevkTarih) || '',
-				xadreskod: this.sevkAdresKod || ''
+				xadreskod: this.sevkAdresKod || '',
+				tumBarkodlar: this.tumBarkodlar ?? [],
 				/*efayrimtipi: this.efAyrimTipi || '',
 				zorunluguidstr: this.efUUID || ''*/
 			});
@@ -207,7 +209,8 @@
 				noYil: rec.noyil || today().getFullYear(),
 				mustUnvan: rec.mustunvan,
 				sevkTarih: asDate(rec.sevktarih) || null,
-				sevkAdresKod: rec.xadreskod || ''
+				sevkAdresKod: rec.xadreskod || '',
+				tumBarkodlar: this.tumBarkodlar ?? []
 			})
 			//if (sky.config.isDevMode)
 			//	this.abc = rec.abc3 || '';

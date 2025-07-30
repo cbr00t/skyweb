@@ -85,21 +85,24 @@
 		}
 
 		async preInitLayout(e) {
-			e = e || {};
-			await super.preInitLayout(e);
-			const layout = e.layout || this.layout;
+			e = e || {}; await super.preInitLayout(e);
+			let layout = e.layout || this.layout;
+			let {app, param, fis} = this;
 			this.dipTable = layout.find('#dipTable');
 			this.templates = $.extend(this.templates || {}, {
 				hizliStokItem: layout.find('template#hizliStokItem'),
 				fisBaslik: layout.find('template#templates_fisBaslik'),
 				paketBozEkrani: layout.find('template#paketBozEkrani')
 			});
-
-			const {app, param} = this;
-			let {fis} = this;
+			let hizliBarkodForm = this.hizliBarkodForm = layout.find('#hizliBarkodForm');
+			this.hizliBarkodItems = hizliBarkodForm.children('.items');
+			hizliBarkodForm.find('._islemTuslari > #tamam').jqxButton({ theme })
+				.on('click', event => this.hizliBarkodEkleWithForm_tamamIslemi({ ...e, event }));
+			hizliBarkodForm.find('._islemTuslari > #vazgec').jqxButton({ theme })
+				.on('click', event => this.hizliBarkodEkleWithForm_vazgecIslemi({ ...e, event }));
 			if (!this.eskiFis) {
 				this.eskiFis = fis;
-				fis = this.fis = fis.deepCopy();
+				fis = this.fis = fis.deepCopy()
 			}
 			/*const num = fis.numarator;
 			if (!this.yeniKayitmi && num && !fis.fisNo)
@@ -827,7 +830,12 @@
 			for (const barkod in okunanTumBarkodlar) { delete ayrisimAyiracli_barkod2Detay[barkod] }
 			return result
 		}
-		temizle(e) { let result = super.temizle(e); this.ayrisimAyiracli_barkod2Detay = {}; return result }
+		temizle(e) {
+			let result = super.temizle(e);
+			this.ayrisimAyiracli_barkod2Detay = {};
+			this.fis.tumBarkodlar = [];
+			return result
+		}
 		async kaydet(e) {
 			const {app, fis} = this; app.hideNotifications();
 			e = { sender: this, islem: this.islem, fis, eskiFis: this.eskiFis, gecicimi: fis.gecicimi, satisKosulYapilari: this.satisKosulYapilari, promosyonYapilari: this.promosyonYapilari, ...e };
@@ -1655,7 +1663,8 @@
 			this.focusToDefault()
 		}
 		hizliBarkod_enterIstendi(e) {
-			// if (this.timer_hizliBarkod_topluEkle) { clearTimeout(this.timer_hizliBarkod_topluEkle); delete this.timer_hizliBarkod_topluEkle }
+			let {app} = sky; if (app.hizliBarkodmu) { return this.hizliBarkodEkleWithForm(e) }
+			if (this.timer_hizliBarkod_topluEkle) { clearTimeout(this.timer_hizliBarkod_topluEkle); delete this.timer_hizliBarkod_topluEkle }
 			this.timer_hizliBarkod_topluEkle = setTimeout(async ({ event: evt }) => {
 				try {
 					let _e = {
@@ -1665,7 +1674,58 @@
 					await this.hizliBarkod_topluEkle(_e)
 				}
 				finally { delete this.timer_hizliBarkod_topluEkle }
-			}, 100, e ?? {})
+			}, 300, e ?? {})
+		}
+		hizliBarkodEkleWithForm({ event: evt }) {
+			let {app} = sky, {currentTarget: target} = evt, {value} = target;
+			let barkodlar = value.replace('\r', '').split('\n').map(x => x.trimEnd()).filter(x => x);
+			if (!barkodlar.length) { return false }
+			let {fis, hizliBarkodForm, hizliBarkodItems, divListe} = this;
+			for (let barkod of barkodlar) {
+				let item = $(
+					`<div class="item" data-state="processing" data-barkod="${barkod}">
+						<div class="actions"><button id="sil"></button></div>
+						<div class="img"> </div>
+						<div class="text">${barkod}</div>
+					</div>`
+				);
+				hizliBarkodItems.prepend(item);
+				item.find('.actions > button').jqxButton({ theme, width: '100%', height: '100%' });
+				item.find('.actions > #sil').on('click', ({ currentTarget: target }) => $(target).parents('.item').remove());
+				divListe.addClass('jqx-hidden'); hizliBarkodForm.removeClass('jqx-hidden basic-hidden');
+				this.focusToDefault();
+				item.data('promise', new $.Deferred());
+				(async () => {
+					let result;
+					try { result = await app.barkodBilgiBelirle({ barkod, fis }) }
+					catch (ex) { console.error(ex) }
+					item.attr('data-state', result ? 'success' : 'error');
+					let promise = item.data('promise');
+					promise?.resolve(result)
+				})()
+			}
+			return true
+		}
+		hizliBarkodEkleWithForm_tamamIslemi(e) {
+			let {hizliBarkodForm, hizliBarkodItems, divListe} = this;
+			let items = hizliBarkodItems.children();
+			(async () => {
+				for (let item of items.find('[data-state = processing]')) { await $(item).data('promise') }
+				let barkodlar = items.children('[data-state = success]').map(item => $(item))
+				if (items?.length) {
+					hizliBarkodItems.children().remove();
+					this.hizliBarkod_topluEkle({ ...e, barkodlar })
+				}
+				hizliBarkodForm.addClass('jqx-hidden'); divListe.removeClass('jqx-hidden basic-hidden');
+				this.focusToDefault()
+			})();
+			this.focusToDefault()
+		}
+		hizliBarkodEkleWithForm_vazgecIslemi(e) {
+			let {hizliBarkodForm, hizliBarkodItems, divListe} = this;
+			hizliBarkodItems.children().remove();
+			hizliBarkodForm.addClass('jqx-hidden'); divListe.removeClass('jqx-hidden');
+			this.focusToDefault()
 		}
 		async hizliBarkod_topluEkle(e) {
 			e = e || {}; this.txtHizliBarkod.val(''); this.focusToDefault();
@@ -1674,8 +1734,10 @@
 				this.baslikNavBarCollapseInitFlag = true; this.baslik_navBar.jqxNavigationBar('collapseAt', 0);
 				for (const timeout of [200, 300]) { setTimeout(() => this.onResize(e), timeout) }
 			}
-			const {barkodlar} = e; if ($.isEmptyObject(barkodlar)) { return }
-			const {listeWidget} = this; listeWidget.beginUpdate();
+			let {fis, listeWidget} = this;
+			fis.tumBarkodlar?.push(barkod);
+			listeWidget.beginUpdate();
+			let {barkodlar} = e; if ($.isEmptyObject(barkodlar)) { return }
 			let barkodHatalari = [], {hataliBarkodlarIcinMesajGosterilirmi} = sky.app;
 			try { for (let barkod of barkodlar) { await this.ekleIstendi({ barkod, barkodHatalari }) } }
 			catch (ex) {
@@ -1838,9 +1900,9 @@
 				}
 				// barkod veya stok kod için ürün bul ve detay oluştur
 				try {
-					const barkodBilgi = await app.barkodBilgiBelirle({ barkod, carpan, fis });
+					let barkodBilgi = await app.barkodBilgiBelirle({ barkod, carpan, fis });
 					if (barkodBilgi) {
-						const {listeWidget} = this, _barkod = barkodBilgi.barkod;
+						let {listeWidget} = this, _barkod = barkodBilgi.barkod;
 						if (barkodBilgi.ayrisimAyiraclimi && barkodBilgi.zVarmi) {
 							const _det = this.ayrisimAyiracli_barkod2Detay[_barkod];
 							if (_det) {

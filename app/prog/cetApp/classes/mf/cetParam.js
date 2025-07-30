@@ -18,7 +18,8 @@
 				'zplSatirYukseklik', 'zplFontSize', 'zplFontKod', 'ozelKampanyaKullanilirmi', 'ozelKampanyaOranSayisi', 'otoSonStokGuncellenirmi',
 				'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe', 'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', 'dovizKullanilirmi',
 				'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi', 'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime', 'ekOzellikKullanim', 'tip2EkOzellikYapi',
-				'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings', 'detaylarTersSiradami', 'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi'
+				'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings', 'detaylarTersSiradami',
+				'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi', 'hizliBarkodmu'
 			]
 		}
 		static get version() { return 2 }

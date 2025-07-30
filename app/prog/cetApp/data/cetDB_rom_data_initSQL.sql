@@ -759,7 +759,8 @@ CREATE TABLE IF NOT EXISTS data_PIFFis (
 	dipiskbedel					REAL NOT NULL DEFAULT 0,
 	detaykayitsayisi			INTEGER NOT NULL DEFAULT 0,
 	--pkarmami					TEXT NOT NULL DEFAULT ''
-	tahsilatRowId				INTEGER
+	tahsilatRowId				INTEGER,
+	tumBarkodlar				TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS data_PIFStok (

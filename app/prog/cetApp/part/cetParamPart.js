@@ -65,12 +65,12 @@
 				.on('mouseup, touchend', evt =>
 					chkBarkodluFisGiris.prop('checked', !chkBarkodluFisGiris.prop('checked')));
 
-			let chkFisGirisSadeceBarkodZorunlumu = subContent.find(`#chkFisGirisSadeceBarkodZorunlumu`);
-			chkFisGirisSadeceBarkodZorunlumu.prop('checked', app.fisGirisSadeceBarkodZorunlumu);
-			subContent.find(`#chkFisGirisSadeceBarkodZorunlumu_label`)
+			let chkHizliBarkodmu = subContent.find(`#chkHizliBarkodmu`);
+			chkHizliBarkodmu.prop('checked', app.hizliBarkodmu);
+			subContent.find(`#chkHizliBarkodmu`)
 				.off('mouseup, touchend')
 				.on('mouseup, touchend', evt =>
-					chkFisGirisSadeceBarkodZorunlumu.prop('checked', !chkFisGirisSadeceBarkodZorunlumu.prop('checked')));
+					chkHizliBarkodmu.prop('checked', !chkHizliBarkodmu.prop('checked')));
 			
 			let chkGeciciFisKullanilmaz = subContent.find(`#chkGeciciFisKullanilmaz`);
 			chkGeciciFisKullanilmaz.prop('checked', app.geciciFisKullanilmazmi);
@@ -283,6 +283,7 @@
 				gridAltMultiSelectFlag: subContent.find('#chkGridAltMultiSelect').is(':checked'),
 				dogrudanFisListeyeGirilirmi: subContent.find('#chkDogrudanFisListe').is(':checked'),
 				barkodluFisGirisYapilirmi: subContent.find('#chkBarkodluFisGiris').is(':checked'),
+				hizliBarkodmu: subContent.find('#chkHizliBarkodmu').is(':checked'),
 				fisGirisSadeceBarkodZorunlumu: subContent.find('#chkFisGirisSadeceBarkodZorunlumu').is(':checked'),
 				geciciFisKullanilmazmi: subContent.find('#chkGeciciFisKullanilmaz').is(':checked'),
 				listeKodDogrudanAramaYapilirmi: subContent.find('#chkListeKodDogrudanAramaYapilir').is(':checked'),
