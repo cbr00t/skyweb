@@ -42,7 +42,7 @@
 				altRows: true, autoRowHeight: true, columnsHeight: 30,
 				sortable: true, columnsResize: true, filterable: true, pageable: false,
 				filterMode: 'default', selectionMode: 'singlerow',
-				pagerMode: 'advanced', pageSizeOptions: [4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 20, 25, 30],
+				pagerMode: 'advanced', pageSizeOptions: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 20],
 				pagerButtonsCount: 5, pagerPosition: 'top', pageSize: 10,
 				/* serverProcessing: true, */
 				autoShowLoadElement: true,

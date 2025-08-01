@@ -67,7 +67,7 @@
 
 			let chkHizliBarkodmu = subContent.find(`#chkHizliBarkodmu`);
 			chkHizliBarkodmu.prop('checked', app.hizliBarkodmu);
-			subContent.find(`#chkHizliBarkodmu`)
+			subContent.find(`#chkHizliBarkodmu_label`)
 				.off('mouseup, touchend')
 				.on('mouseup, touchend', evt =>
 					chkHizliBarkodmu.prop('checked', !chkHizliBarkodmu.prop('checked')));

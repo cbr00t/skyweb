@@ -808,11 +808,9 @@
 				columnsHeight: isMiniDevice ? 23 : 28,
 				sortable: true, filterable: true, pageable: true, columnsResize: true, showToolbar: true,
 				pagerMode: 'advanced',
-				pageSizeOptions: [
-					3, 4, 5, 6, 7, 8, 10, 13, 15, 20, 25, 30, 33, 35
-				],
-				pagerButtonsCount: 5, pagerPosition: 'top',
+				pageSizeOptions: [ 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 20 ],
 				pageSize: userSettings_liste.pageSize || (isMiniDevice ? 5 : 8),
+				pagerButtonsCount: 5, pagerPosition: 'top',
 				/* serverProcessing: true, */
 				autoShowLoadElement: true,
 				renderToolbar: toolbar => {

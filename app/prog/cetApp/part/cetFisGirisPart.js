@@ -921,8 +921,8 @@
 			$.extend(e.listeArgs, {
 				/* editable: true, */ serverProcessing: false, pageable: true, filterable: true, columnsResize: false,
 				showToolbar: false, toolbarHeight: 36, filterHeight: 25, filterMode: 'default',
-				pageSizeOptions: [3, 5, 8, 10, 11, 13, 15, 20, 25],
-				pageSize: this.userSettings_liste.pageSize || 8,
+				pageSizeOptions: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+				pageSize: this.userSettings_liste.pageSize || 5,
 				height: $(window).width() < 450 ? $(window).height() - 150 : $(window).height() - 180
 			})
 		}
@@ -1677,44 +1677,71 @@
 			}, 300, e ?? {})
 		}
 		hizliBarkodEkleWithForm({ event: evt }) {
-			let {app} = sky, {currentTarget: target} = evt, {value} = target;
+			let {app} = sky, {fiyatGorurmu, bedelKullanilirmi} = app, {currentTarget: target} = evt, {value} = target;
 			let barkodlar = value.replace('\r', '').split('\n').map(x => x.trimEnd()).filter(x => x);
+			let {txtHizliBarkod, hizliBarkodForm, hizliBarkodItems, divListe, sonBarkod, fis} = this;
+			txtHizliBarkod.val(''); this.focusToDefault();
 			if (!barkodlar.length) { return false }
-			let {fis, hizliBarkodForm, hizliBarkodItems, divListe} = this;
 			for (let barkod of barkodlar) {
+				let tekrarmi = sonBarkod && barkod == sonBarkod;
+				this.sonBarkod = barkod;
+				let ekCSSListe = [tekrarmi ? 'tekrar' : ''].filter(x => x);
+				let ekCSS = ekCSSListe?.length ? ` ${ekCSSListe.join(' ')}` : '';
 				let item = $(
-					`<div class="item" data-state="processing" data-barkod="${barkod}">
+					`<div class="item${ekCSS}" data-state="processing" data-barkod="${barkod}">
 						<div class="actions"><button id="sil"></button></div>
 						<div class="img"> </div>
-						<div class="text">${barkod}</div>
+						<div class="text">
+							<div class="barkod">${barkod}</div>
+							<div class="sh"><span class="kod"></span> <span class="adi"></span></div>
+							<div class="miktar"></div>
+							<div class="fiyat${fiyatGorurmu && bedelKullanilirmi ? '' : ' jqx-hidden'}"></div>
+						</div>
 					</div>`
 				);
 				hizliBarkodItems.prepend(item);
 				item.find('.actions > button').jqxButton({ theme, width: '100%', height: '100%' });
 				item.find('.actions > #sil').on('click', ({ currentTarget: target }) => $(target).parents('.item').remove());
-				divListe.addClass('jqx-hidden'); hizliBarkodForm.removeClass('jqx-hidden basic-hidden');
-				this.focusToDefault();
+				divListe.addClass('basic-hidden'); hizliBarkodForm.removeClass('jqx-hidden basic-hidden');
 				item.data('promise', new $.Deferred());
 				(async () => {
-					let result;
-					try { result = await app.barkodBilgiBelirle({ barkod, fis }) }
+					let ind = -1, carpan = 1, result, _e = { fis, barkod, carpan };
+					for (let matchStr of ['x', 'X', '*']) {
+						ind = barkod.indexOf(matchStr);
+						if (ind > -1) { break }
+					}
+					if (ind > -1) {
+						let miktarStr = barkod.substring(0, ind);		// substring from->to .. (to dahil degil)
+						_e.barkod = barkod = barkod.substring(ind + 1);
+						_e.carpan = carpan = asFloat(miktarStr) || null
+					}
+					try { result = await app.barkodBilgiBelirle(_e) }
 					catch (ex) { console.error(ex) }
 					item.attr('data-state', result ? 'success' : 'error');
-					let promise = item.data('promise');
-					promise?.resolve(result)
+					if (result) {
+						let {shKod, shAdi, okunanMiktar, miktar, carpan, brm, fiyat} = result;
+						if (!miktar) { miktar = carpan }
+						brm ||= 'AD';
+						item.find('.text > .sh > .kod').html(shKod ?? '');
+						item.find('.text > .sh > .adi').html(shAdi ?? '');
+						item.find('.text > .miktar').html(`${miktar} ${brm}`);
+						item.find('.text > .fiyat').html(fiyat ? `${fiyat} TL` : '')
+					}
+					let promise = item.data('promise'); promise?.resolve(result)
 				})()
 			}
 			return true
 		}
 		hizliBarkodEkleWithForm_tamamIslemi(e) {
 			let {hizliBarkodForm, hizliBarkodItems, divListe} = this;
-			let items = hizliBarkodItems.children();
+			let items = hizliBarkodItems.children(); delete this.sonBarkod;
 			(async () => {
 				for (let item of items.find('[data-state = processing]')) { await $(item).data('promise') }
-				let barkodlar = items.children('[data-state = success]').map(item => $(item))
-				if (items?.length) {
-					hizliBarkodItems.children().remove();
-					this.hizliBarkod_topluEkle({ ...e, barkodlar })
+				let barkodlar = $.makeArray(items.filter('[data-state = success]').map((_, item) => $(item).data('barkod').toString()));
+				hizliBarkodItems.children().remove();
+				if (barkodlar?.length) {
+					barkodlar.reverse();
+					this.hizliBarkod_topluEkle({ ...e, barkodlar, batchFlag: true, silent: true })
 				}
 				hizliBarkodForm.addClass('jqx-hidden'); divListe.removeClass('jqx-hidden basic-hidden');
 				this.focusToDefault()
@@ -1723,7 +1750,7 @@
 		}
 		hizliBarkodEkleWithForm_vazgecIslemi(e) {
 			let {hizliBarkodForm, hizliBarkodItems, divListe} = this;
-			hizliBarkodItems.children().remove();
+			delete this.sonBarkod; hizliBarkodItems.children().remove();
 			hizliBarkodForm.addClass('jqx-hidden'); divListe.removeClass('jqx-hidden');
 			this.focusToDefault()
 		}
@@ -1737,7 +1764,7 @@
 			let {fis, listeWidget} = this;
 			fis.tumBarkodlar?.push(barkod);
 			listeWidget.beginUpdate();
-			let {barkodlar} = e; if ($.isEmptyObject(barkodlar)) { return }
+			let {barkodlar, silent, batchFlag} = e; if ($.isEmptyObject(barkodlar)) { return }
 			let barkodHatalari = [], {hataliBarkodlarIcinMesajGosterilirmi} = sky.app;
 			try { for (let barkod of barkodlar) { await this.ekleIstendi({ barkod, barkodHatalari }) } }
 			catch (ex) {
@@ -1749,10 +1776,17 @@
 				document.activeElement?.blur();
 				for (let waitMS of [100, 200, 300, 500, 700, 1000, 1500]) { setTimeout(() => document.activeElement?.blur(), waitMS) }
 				let text = `Şu barkodlar hatalıdır:<ul>${barkodHatalari.map(x => `<li class="bold">${x}</li>`).join(CrLf)}</ul>`;
-				displayMessage(text, '@ Barkod İşlemi @', undefined, undefined, hataliBarkodlarIcinMesajGosterilirmi ? true : null, undefined, 'top-right')
-					.on('close', evt => { setTimeout(() => this.focusToDefault(), 200) })
+				if (!silent) {
+					displayMessage(text, '@ Barkod İşlemi @', undefined, undefined, hataliBarkodlarIcinMesajGosterilirmi ? true : null, undefined, 'top-right')
+						.on('close', evt => { setTimeout(() => this.focusToDefault(), 200) })
+				}
 			}
-			setTimeout(() => { this.onResize(e); if (!barkodHatasiVarmi) { } else { this.focusToDefault() } this.selectLastRec() }, 100)
+			if (!batchFlag) {
+				setTimeout(() => {
+					this.onResize(e); listeWidget.refresh(); this.liste_degisti();
+					this.focusToDefault(); this.selectLastRec()
+				}, 300)
+			}
 		}
 		hizliStok_itemSelected(e) { e.barkod = e.value; delete e.value; this.ekleIstendi(e); return true }
 		async liste_veriYuklendi(e) {
@@ -1887,7 +1921,7 @@
 			if (!det && barkod) {
 				barkod = barkod.trim();
 				let ind = -1, carpan;
-				for (const matchStr of ['x', 'X', '*']) { ind = barkod.indexOf(matchStr); if (ind > -1) { break } }
+				for (let matchStr of ['x', 'X', '*']) { ind = barkod.indexOf(matchStr); if (ind > -1) { break } }
 				if (ind > -1) {
 					let miktarStr = barkod.substring(0, ind);		// substring from->to .. (to dahil degil)
 					e.barkod = barkod = barkod.substring(ind + 1);

@@ -786,7 +786,7 @@
 			}
 			return result
 		}
-		get resimBaseURL() { return (this.ozelYetkiler?.resimBaseURL ?? this.param.resimBaseURL) || `https://${this.param.wsHostNameUyarlanmis}:9200/ws/skyTablet/stokResim/?id=` }
+		get resimBaseURL() { return (this.ozelYetkiler?.resimBaseURL ?? this.param.resimBaseURL) || `http://${this.param.wsHostNameUyarlanmis}:8200/ws/genel/stokResim/?id=` }
 		get isyeri() {
 			let result = this._isyeri;
 			if (result === undefined) {

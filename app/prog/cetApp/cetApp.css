@@ -1066,11 +1066,9 @@ body.cetApp {
 	font-weight: normal;
 }
 .part.cetApp .listeSatir input.miktar {
-	font-size: 120%;
-	width: 70px;
-	height: 30px;
-	text-align: right !important;
-	font-weight: bold !important;
+	font-size: 120%; font-weight: bold !important; text-align: right !important; 
+	width: 70px; height: 30px; color: lightgreen !important; background-color: #333 !important
+	
 }
 @media (max-width: 400px) {
 	.part.cetApp .listeSatir input.miktar {
@@ -3307,17 +3305,29 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 	.part.cetApp.cetFisGiris.locked #hizliBarkod,
 	.part.cetApp.cetFisGiris.locked #hizliBarkod * { pointer-events: all; opacity: unset }
 
-.part.cetApp.cetFisGiris #hizliBarkodForm { width: 100%; height: 100%; border: 1px solid #eee }
-.part.cetApp.cetFisGiris #hizliBarkodForm > ._islemTuslari { position: relative; width: 100%; height: 45px; padding-right: 30px }
+.part.cetApp.cetFisGiris #hizliBarkodForm { width: 99.5vw; height: 71vh !important; border: 3px solid #aaa; box-shadow: 0 0 10px 0 #aaa; overflow: auto }
+.part.cetApp.cetFisGiris #hizliBarkodForm > ._islemTuslari { position: relative; width: 100%; height: 45px; padding-right: 10px }
 .part.cetApp.cetFisGiris #hizliBarkodForm > ._islemTuslari > * { position: relative; width: 50px; height: 100%; float: right }
-.part.cetApp.cetFisGiris #hizliBarkodForm > ._islemTuslari > *:not(:first-child) { margin-right: 30px }
-.part.cetApp.cetFisGiris #hizliBarkodForm > .items { width: 100%; height: 100%; padding: 5px }
-.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item { padding: 5px 10px }
-.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > * { display: inline-flex; vertical-align: middle; font-size: 120%; height: 30px; margin: 5px 0 }
+.part.cetApp.cetFisGiris #hizliBarkodForm > ._islemTuslari > *:not(:first-child) { margin-right: 10px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items { width: 100%; height: 120%; padding: 3px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item { width: 100%; padding: 3px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > * { display: inline-flex; position: relative; vertical-align: top; font-size: 75%; height: 25px; margin: 3px 0 }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > * { display: inline-block; position: relative }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > *:not(:first-child) { margin-left: 5px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > * > *:not(:first-child) { margin-left: 5px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .barkod { font-weight: bold; min-width: 110px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .sh { font-weight: bold; min-width: 130px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .sh .kod { font-weight: bold; color: gray }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .sh .adi { color: royalblue }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .miktar,
+	.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .fiyat { text-align: right !important }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .miktar { min-width: 50px; margin-left: 20px }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item > .text > .fiyat { min-width: 130px }
 .part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item:first-child { border: 2px solid royalblue }
-.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item[data-state = processing] { color: gray }
-.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item[data-state = success] { color: forestgreen }
-.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item[data-state = error] { color: firebrick; background: #ffcccc }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item[data-state = processing] { color: gray; box-shadow: 0 0 5px 0 gray }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item[data-state = success] { color: forestgreen; box-shadow: 0 0 5px 0 forestgreen }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item.tekrar { font-weight: bold; color: purple }
+.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item[data-state = error] { color: firebrick; background: #ffcccc; box-shadow: 0 0 5px 0 #ffcccc }
 .part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item:hover,
 	.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item:focus,
 		.part.cetApp.cetFisGiris #hizliBarkodForm > .items > .item:active { filter: brightness(0.9) }
@@ -3588,15 +3598,9 @@ body.cetApp #listBoxContentinnerListBoxddAyrimTipi {
 .part.cetApp.cetFisGiris #liste .listeSatir .ozelKampanyaKodParent .ozelKampanyaKod { font-family: Conv_Roboto-Bold; color: #c57825 }
 .part.cetApp.cetFisGiris #listeParent #liste .listeSatir .ozelKampanyaOranText { font-family: Conv_Roboto-Bold; color: #c57825 }
 .part.cetApp.cetFisGiris #liste .listeSatir .okutmaSayisiParent .okutmaSayisi { font-family: Conv_Roboto-Bold; color: rebeccapurple }
-.part.cetApp.cetFisGiris #liste .listeSatir .miktarParent .miktar {
-	color: green;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .fiyatParent .fiyat {
-	color: #235db2;
-}
-.part.cetApp.cetFisGiris #liste .listeSatir .fiyatParent.ozelFiyat .fiyat {
-	color: orangered;
-}
+.part.cetApp.cetFisGiris #liste .listeSatir .miktarParent .miktar { color: green }
+.part.cetApp.cetFisGiris #liste .listeSatir .fiyatParent .fiyat { color: #235db2 }
+.part.cetApp.cetFisGiris #liste .listeSatir .fiyatParent.ozelFiyat .fiyat { color: orangered }
 .part.cetApp.cetFisGiris #liste .listeSatir .netBedelParent {
 	font-size: 110%;
 	float: right;
