@@ -1694,7 +1694,11 @@
 						<div class="text">
 							<div class="barkod">${barkod}</div>
 							<div class="sh"><span class="kod"></span> <span class="adi"></span></div>
-							<div class="miktar"></div>
+							<div class="miktar_brm">
+								<!--<input class="miktar" type="number" min="0" max="99999"></input>-->
+								<span class="miktar"></span>
+								<span class="brm"></span>
+							</div>
 							<div class="fiyat${fiyatGorurmu && bedelKullanilirmi ? '' : ' jqx-hidden'}"></div>
 						</div>
 					</div>`
@@ -1722,10 +1726,12 @@
 						let {shKod, shAdi, okunanMiktar, miktar, carpan, brm, fiyat} = result;
 						if (!miktar) { miktar = carpan }
 						brm ||= 'AD';
-						item.find('.text > .sh > .kod').html(shKod ?? '');
-						item.find('.text > .sh > .adi').html(shAdi ?? '');
-						item.find('.text > .miktar').html(`${miktar} ${brm}`);
-						item.find('.text > .fiyat').html(fiyat ? `${fiyat} TL` : '')
+						item.find('.text .sh > .kod').html(shKod ?? '');
+						item.find('.text .sh > .adi').html(shAdi ?? '');
+						// item.find('.text .miktar').val(miktar);
+						item.find('.text .miktar').html(miktar);
+						item.find('.text .brm').html(brm);
+						item.find('.text .fiyat').html(fiyat ? `${fiyat} TL` : '')
 					}
 					let promise = item.data('promise'); promise?.resolve(result)
 				})()
@@ -1741,7 +1747,8 @@
 				hizliBarkodItems.children().remove();
 				if (barkodlar?.length) {
 					barkodlar.reverse();
-					this.hizliBarkod_topluEkle({ ...e, barkodlar, batchFlag: true, silent: true })
+					await this.hizliBarkod_topluEkle({ ...e, barkodlar, batchFlag: true, silent: true });
+					if (this.otoBirlestirFlag) { this.birlestirIstendi(e) }
 				}
 				hizliBarkodForm.addClass('jqx-hidden'); divListe.removeClass('jqx-hidden basic-hidden');
 				this.focusToDefault()

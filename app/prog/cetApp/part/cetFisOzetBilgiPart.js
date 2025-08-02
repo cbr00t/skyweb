@@ -1,28 +1,17 @@
 (function() {
 	window.CETFisOzetBilgiPart = class extends window.CETListeOrtakPart {
+		static get canDefer() { return true } static get canDestroy() { return true }
+		static get partName() { return 'cetFisOzetBilgi' } get adimText() { return 'Fiş Özet Bilgi' }
 		constructor(e) {
-			e = e || {};
-			super(e);
-
-			const {app, parentPart} = this;
-			if (!(this.layout || this.template))
-				this.template = app.templates.fisOzetBilgi;
+			e = e || {}; super(e);
+			let {app, parentPart} = this;
+			if (!(this.layout || this.template)) { this.template = app.templates.fisOzetBilgi }
 		}
-
-		static get canDefer() { return true }
-		static get canDestroy() { return true }
-		static get partName() { return 'cetFisOzetBilgi' }
-		get adimText() { return 'Fiş Özet Bilgi' }
-
-		
 		async postInitLayout(e) {
-			e = e || {};
-			await super.postInitLayout(e);
-
+			e = e || {}; await super.postInitLayout(e);
 			const layout = e.layout || this.layout;
 			const {parentPart} = this;
 			const {param, fis, islem, yeniKayitmi, fiyatGorurmu} = parentPart;
-
 			const degisiklikYapilabilirmi = (islem != 'izle') && !(fis.devreDisimi || fis.gonderildimi /*|| fis.gecicimi*/);
 			const islemTuslari = this.islemTuslari = layout.find('.asil.islemTuslari');
 			islemTuslari.children('button').jqxButton({ theme: theme });
@@ -109,29 +98,24 @@
 			});
 		}
 
-		async liste_columnsDuzenle(e) {
-			await super.liste_columnsDuzenle(e);
-
-			const {fiyatGorurmu} = this.parentPart;
-			const {listeColumns} = e;
-			$.merge(listeColumns, [
-				{ text: 'Barkod', align: 'left', dataField: 'barkod', cellClassName: 'barkod', width: 120 },
+		async liste_columnsDuzenle({ listeColumns }) {
+			await super.liste_columnsDuzenle(...arguments);
+			let {fiyatGorurmu} = this.parentPart;
+			listeColumns.push(...[
 				{ text: 'Kod', align: 'left', dataField: 'shKod', cellClassName: 'shKod', width: 100 },
 				{ text: 'Ürün adı', align: 'left', dataField: 'shAdi', cellClassName: 'shAdi' },
-				{ text: 'Ek Özellikler', align: 'left', dataField: 'sadeceOzellikAnahtarStr', cellClassName: 'ekOzellikler', width: 90 },
 				{ text: 'Miktar', align: 'right', cellsAlign: 'right', dataField: 'miktar', cellClassName: 'miktar', cellsFormat: 'd', width: 90 }
 			]);
-			if (fiyatGorurmu)
-				listeColumns.push({ text: 'Bedel', align: 'right', cellsAlign: 'right', dataField: 'netBedel', cellClassName: 'netBedel', cellsFormat: 'd2', width: 120 });
-			
+			if (fiyatGorurmu) { listeColumns.push({ text: 'Bedel', align: 'right', cellsAlign: 'right', dataField: 'netBedel', cellClassName: 'netBedel', cellsFormat: 'd2', width: 120 }) }
+			listeColumns.push(...[
+				{ text: 'Barkod', align: 'left', dataField: 'barkod', cellClassName: 'barkod', width: 120 },
+				{ text: 'Ek Özellikler', align: 'left', dataField: 'sadeceOzellikAnahtarStr', cellClassName: 'ekOzellikler', width: 90 },
+			])
 		}
-		
-		async loadServerData(e) {
-			const {parentPart} = this;
-			const recs = parentPart.fis.detaylar;
-			e.callback({ totalrecords: recs.length, records: recs });
+		async loadServerData({ callback }) {
+			let {parentPart} = this, {detaylar: records} = parentPart.fis, {length: totalrecords} = records;
+			callback({ totalrecords, records });
 		}
-
 		async tazele(e) {
 			const {parentPart, toplamParent, txtToplamMiktarText, txtToplamBrutBedelText, txtToplamKDVText, txtToplamNetBedelText} = this;
 			const {fis, fiyatGorurmu} = parentPart;
