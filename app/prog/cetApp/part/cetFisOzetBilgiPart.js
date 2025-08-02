@@ -113,7 +113,12 @@
 			])
 		}
 		async loadServerData({ callback }) {
-			let {parentPart} = this, {detaylar: records} = parentPart.fis, {length: totalrecords} = records;
+			let {parentPart} = this, {detaylar: records} = parentPart.fis;
+			let {length: totalrecords} = records, {brm2Fra} = sky.app;
+			for (let rec of records) {
+				let {miktar, brm} = rec; brm ||= 'AD';
+				if (miktar) { miktar = rec.miktar = roundToFra(miktar, brm2Fra[brm]) }
+			}
 			callback({ totalrecords, records });
 		}
 		async tazele(e) {
@@ -122,7 +127,7 @@
 			
 			const toplamBrm2Miktar = this.toplamBrm2Miktar = {};
 			let toplamBrutBedel = this.toplamBrutBedel = 0;
-			const {detaylar} = fis;
+			const {app} = sky, {brm2Fra} = app, {detaylar} = fis;
 			for (const i in detaylar) {
 				const det = detaylar[i];
 				if (!det)
@@ -131,9 +136,9 @@
 				const brm = det.brm || 'AD';
 				const {miktar, netBedel} = det;
 				if (miktar != null)
-					toplamBrm2Miktar[brm] = (toplamBrm2Miktar[brm] || 0) + miktar;
+					toplamBrm2Miktar[brm] = roundToFra((toplamBrm2Miktar[brm] || 0) + miktar, brm2Fra[brm]);
 				if (netBedel)
-					toplamBrutBedel += netBedel;
+					toplamBrutBedel += bedel(netBedel);
 			}
 			this.toplamBrutBedel = toplamBrutBedel;
 
@@ -145,7 +150,7 @@
 			for (const brm in toplamBrm2Miktar) {
 				if (toplamMiktarText)
 					toplamMiktarText += ', ';
-				const miktarStr = numberToString(toplamBrm2Miktar[brm]);
+				const miktarStr = numberToString(toplamBrm2Miktar[brm], roundToFra(brm2Fra[brm]));
 				toplamMiktarText += `${miktarStr} ${brm}`;
 			}
 			if (toplamMiktarText) {
