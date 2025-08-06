@@ -178,6 +178,8 @@ body.skyConfigApp .jqx-menu-wrapper ul > li.selected,
 .part.skyConfigApp #conf.part .panel #ws.jqx-tabs-content-element #remoteCommandServer_parent .info > ul { line-height: 24px }
 .part.skyConfigApp #conf.part .panel #ws.jqx-tabs-content-element #cvmPanicFlag_parent.checked label { font-weight: bold; color: firebrick }
 .part.skyConfigApp #conf.part .panel #ws.jqx-tabs-content-element #cvmPanicVIOFlag_parent.checked label { font-weight: bold; color: red }
+.part.skyConfigApp #conf.part .panel #ws.jqx-tabs-content-element #chkLocalServices_parent { margin: 13px 0 0 80px }
+.part.skyConfigApp #conf.part .panel #ws.jqx-tabs-content-element #chkLocalServices_parent.checked label { font-weight: bold; color: orangered }
 .part.skyConfigApp #conf.part .panel #genel.jqx-tabs-content-element #resimAnaBolum_parent > #resimAnaBolum { width: 700px; height: 50px }
 .part.skyConfigApp #users.part .islemTuslari button { width: 120px; height: 50px; background-color: white }
 .part.skyConfigApp #users.part .panel .islemTuslari button { width: 180px; height: 60px }
