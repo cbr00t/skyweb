@@ -2740,6 +2740,8 @@
 				let _recs = await dbMgr.executeSqlReturnRowsBasic({ tx: e.tx || tx, query: e.query });
 				for (let i = 0; i < _recs.length; i++) {
 					let table = e.table || rec._table, rec = _recs[i], info = table2Info[table] = table2Info[table] || { count: 0, recs: [] };
+					let {detaykayitsayisi: detayKayitSayisi} = rec;
+					if (detayKayitSayisi != null && !detayKayitSayisi) { continue }
 					result.totalCount++; info.count++; info.recs.push(rec)
 				}
 			};
@@ -4712,8 +4714,10 @@
 				let {query} = e, recs = await dbMgr.executeSqlReturnRowsBasic({ query });
 				for (let i = 0; i < recs.length; i++) {
 					let table = e.table || rec._table, rec = recs[i];
-					let _recs = _table2Recs[table] = _table2Recs[table] || []; _recs.push(rec);
-					totalRecords++; e.toplamSayi = _recs.length
+					let _recs = _table2Recs[table] = _table2Recs[table] || [];
+					let {detaykayitsayisi: detayKayitSayisi} = rec;
+					if (detayKayitSayisi != null && !detayKayitSayisi) { continue }
+					totalRecords++; e.toplamSayi = _recs.length; _recs.push(rec)
 				}
 				if (!silent) { await this.knobProgressStep(3) }
 			};
