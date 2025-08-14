@@ -95,7 +95,7 @@
 							}
 							break;
 						case "K":
-							this.miktar = asFloat(deger) || null;
+							this.miktar = asFloat(deger.replace(',', '.')) || null;
 							miktarAtandimi = true;
 							break;
 						case "Z":

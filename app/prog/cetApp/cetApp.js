@@ -1,7 +1,7 @@
 (function() {
 	window.CETApp = class extends window.Prog {
 		static get dbMgrSinif() {
-			const cls = (
+			let cls = (
 				(qs.sqlJS ?? qs.sqljs ?? qs.dbMgrV2 ?? qs.dbmgrv2) ? DBMgr_SqlJS :
 				(qs.alaSql ?? qs.alaSQL ?? qs.alasql ?? qs.dbMgrV3 ?? qs.dbmgrv3) ? DBMgr_AlaSQL :
 				(qs.webSql ?? qs.webSQL ?? qs.websql) ? DBMgr_WebSQL : null
@@ -13,7 +13,7 @@
 		get appText() { return 'Sky ElTerminali' }
 		static get _defaultLayoutName() { return this.appName }
 		get defaultRootLayoutName() {
-			const rootAppName = this.class.rootAppName;
+			let rootAppName = this.class.rootAppName;
 			return `../${rootAppName}/${rootAppName}`
 		}
 		get loginExtensionClass() { return CETLoginExtension }
@@ -43,10 +43,10 @@
 			let result = this._fisSinifOlanFisTipleri;
 			if (result == null) {
 				result = this._fisSinifOlanFisTipleri = [];
-				const {fisTipleriDuzenlenmis} = this;
-				for (const i in fisTipleriDuzenlenmis) {
-					const rec = fisTipleriDuzenlenmis[i];
-					const {fisSinif} = rec;
+				let {fisTipleriDuzenlenmis} = this;
+				for (let i in fisTipleriDuzenlenmis) {
+					let rec = fisTipleriDuzenlenmis[i];
+					let {fisSinif} = rec;
 					if (fisSinif)
 						result.push(rec);
 				}
@@ -59,8 +59,8 @@
 			if (result == null) {
 				result = this._numaratorOlanFisTipleri = [];
 				this.fisSinifOlanFisTipleri.forEach(rec => {
-					const fisSinif = rec.fisSinif || {};
-					const numaratorTip = fisSinif.numaratorTip;
+					let fisSinif = rec.fisSinif || {};
+					let numaratorTip = fisSinif.numaratorTip;
 					if (numaratorTip) {
 						let _rec = rec;
 						if (!_rec.numaratorTip) {
@@ -78,11 +78,11 @@
 			let result = this._adimTipi2FisSinif;
 			if (result == null) {
 				result = this._adimTipi2FisSinif = {};
-				const {fisSinifOlanFisTipleri} = this;
+				let {fisSinifOlanFisTipleri} = this;
 				for (let i in fisSinifOlanFisTipleri) {
-					const fisTipi = fisSinifOlanFisTipleri[i];
-					const sinif = fisTipi.fisSinif;
-					const adimTipi = (sinif.adimTipi || sinif.numaratorTip);
+					let fisTipi = fisSinifOlanFisTipleri[i];
+					let sinif = fisTipi.fisSinif;
+					let adimTipi = (sinif.adimTipi || sinif.numaratorTip);
 					if (sinif && adimTipi)
 						result[adimTipi] = sinif;
 				}
@@ -138,18 +138,18 @@
 		}
 
 		get tip2EkOzellik() {
-			const {param} = this, kullanimYapi = this.ekOzellikKullanim || {}, tip2EkOzellik = {}; let tip;
+			let {param} = this, kullanimYapi = this.ekOzellikKullanim || {}, tip2EkOzellik = {}; let tip;
 			if (this.isDevMode && this.class.appMagazaVeyaSDMmi) {
 				tip = 'yer';
 				tip2EkOzellik[tip] = new CETEkOzellik_KA({
 					tip, mbTable: `mst_Yer`, tipAdi: `Detay Yer`,
 					widgetEvents: {
 						comboBox_stmDuzenleyici: e => {
-							const subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
+							let subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
 							if (subeKod != null) { e.stm.sentDo(sent => sent.where.degerAta(subeKod, `mst.subeKod`)) }
 						},
 						liste_stmDuzenleyici: e => {
-							const subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
+							let subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
 							if (subeKod != null) { e.stm.sentDo(sent => sent.where.degerAta(subeKod, `mst.subeKod`)) }
 						}
 					}
@@ -165,7 +165,7 @@
 					sadeceKodmu: true, placeHolder: 'Raf kodu',
 					widgetEvents: {
 						comboBox_stmDuzenleyici: e => {
-							const yerKod = e.sender.parentPart.fis.yerKod || this.defaultYerKod; if (!yerKod) return false;
+							let yerKod = e.sender.parentPart.fis.yerKod || this.defaultYerKod; if (!yerKod) return false;
 							e.stm.sentDo(sent => sent.where.degerAta(yerKod, `mst.yerKod`));
 						}
 					}
@@ -178,7 +178,7 @@
 					sadeceKodmu: true, placeHolder: 'Giriş Raf kodu',
 					widgetEvents: {
 						comboBox_stmDuzenleyici: e => {
-							const refYerKod = e.sender.parentPart.fis.refYerKod || this.defaultYerKod; if (!refYerKod) return false;
+							let refYerKod = e.sender.parentPart.fis.refYerKod || this.defaultYerKod; if (!refYerKod) return false;
 							e.stm.sentDo(sent => sent.where.degerAta(refYerKod, `mst.yerKod`));
 						}
 					}
@@ -191,12 +191,12 @@
 			tip = 'beden'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Beden' });
 			tip = 'utsNo'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'UTS No' });
 			tip = 'harDet'; if (kullanimYapi[tip]?.kullanilirmi) tip2EkOzellik[tip] = new CETEkOzellik_Ozellik({ tip, tipAdi: (kullanimYapi[tip]).etiket || 'Har.Det.' });
-			const _tip2EkOzellikYapi = param.tip2EkOzellikYapi;
+			let _tip2EkOzellikYapi = param.tip2EkOzellikYapi;
 			if (!$.isEmptyObject(_tip2EkOzellikYapi)) {
-				for (const _tip in _tip2EkOzellikYapi) {
-					const rec = _tip2EkOzellikYapi[_tip]; if (!rec.kullanilirmi) continue;
-					const sinif = CETEkOzellik.classFor({ ozellikTip: rec.ozellikTip }); if (!sinif) continue;
-					const inst = new sinif({ tip: _tip, mbTable: `mst_${_tip}`, tipAdi: rec.tipAdi }); tip2EkOzellik[_tip] = inst
+				for (let _tip in _tip2EkOzellikYapi) {
+					let rec = _tip2EkOzellikYapi[_tip]; if (!rec.kullanilirmi) continue;
+					let sinif = CETEkOzellik.classFor({ ozellikTip: rec.ozellikTip }); if (!sinif) continue;
+					let inst = new sinif({ tip: _tip, mbTable: `mst_${_tip}`, tipAdi: rec.tipAdi }); tip2EkOzellik[_tip] = inst
 				}
 			}
 			return tip2EkOzellik
@@ -204,11 +204,11 @@
 		get ekOzellikBelirtecSet_stokMstVeDiger() {
 			let result = this._ekOzellikBelirtecSet_stokMstVeDiger;
 			if (result === undefined) {
-				const {tip2EkOzellik} = this, uygunBelirtecSet = asSet(['model', 'renk', 'desen', 'beden']);
+				let {tip2EkOzellik} = this, uygunBelirtecSet = asSet(['model', 'renk', 'desen', 'beden']);
 				result = { stokMst: {}, diger: {} }; if (tip2EkOzellik.lotNo) { result.diger.lotNo = true }					/* 'lotNo' en başa gelir */
-				for (const tip in tip2EkOzellik) {
+				for (let tip in tip2EkOzellik) {
 					if (tip == 'raf' || tip == 'refRaf') { continue }
-					const target = uygunBelirtecSet[tip] ? result.stokMst : result.diger;
+					let target = uygunBelirtecSet[tip] ? result.stokMst : result.diger;
 					if (!target[tip]) { target[tip] = true }
 				}
 				this._ekOzellikBelirtecSet_stokMstVeDiger = result
@@ -295,7 +295,7 @@
 		get defaultYerKod() { return qs.yerKod == null ? (this.param.yerKod == null ? null : (this.param.yerKod || '')) : qs.yerKod }
 		get defaultSubeKod() { return this.param.subeKod == null ? (sky.config.sessionInfo || {}).subeKod : (this.param.subeKod || '') }
 		get defaultPlasiyerKod() {
-			const sessionInfo = sky.config.sessionInfo || {};
+			let sessionInfo = sky.config.sessionInfo || {};
 			return sessionInfo.loginTipi == 'plasiyerLogin' ? sessionInfo.user : null;
 		}
 		static get appSicakmi() { return false }
@@ -310,7 +310,7 @@
 		get programcimi() {
 			let result = this._programcimi;
 			if (result == null) {
-				const {ozelYetkiler, param} = this;
+				let {ozelYetkiler, param} = this;
 				result = qs.programci || ozelYetkiler.programci;
 				if (result == null)
 					result = param.programcimi;
@@ -386,7 +386,7 @@
 			if (result == null)
 				result = this.param.tarihAralik;
 			if (result == null) {
-				const yil = now().getFullYear();
+				let yil = now().getFullYear();
 				result = { basi: `01.01.${yil}`, sonu: `31.12.${yil}` };
 			}
 			return result;
@@ -395,7 +395,7 @@
 			if (!this.class.sonStoktanSecimYapilirmi) { return false }
 			let flag = this.ozelYetkiler?.sonStoktanSecim; if (flag == null) {
 				if (this.rbkKullanilirmi && this.fisGirisiRbkOtomatikAcilsinmi) { return false }
-				const _flag = this.param.sonStoktanSecimYapilirmi; flag = _flag == null || _flag === '' ? true : asBool(_flag);
+				let _flag = this.param.sonStoktanSecimYapilirmi; flag = _flag == null || _flag === '' ? true : asBool(_flag);
 			}
 			return flag;
 		}
@@ -431,7 +431,7 @@
 		get eIslemKullanilirmi() { let flag = this.ozelYetkiler?.eIslem; if (flag == null) { flag = asBool(this.param.eIslemKullanilirmi) } return flag }
 		get eIrsaliyeKullanilirmi() {
 			let flag = this.ozelYetkiler?.eIrsaliye;
-			if (flag == null) { const _flag = this.param.eIrsaliyeKullanilirmi; flag = _flag == null ? this.eIslemKullanilirmi : asBool(this.param.eIrsaliyeKullanilirmi) }
+			if (flag == null) { let _flag = this.param.eIrsaliyeKullanilirmi; flag = _flag == null ? this.eIslemKullanilirmi : asBool(this.param.eIrsaliyeKullanilirmi) }
 			return flag
 		}
 		get eBelgeAltSinir() { let result = this.ozelYetkiler?.eBelgeAltSinir; if (result == null) { result = asFloat(this.param.eBelgeAltSinir) || 0 } return result }
@@ -441,7 +441,7 @@
 		get bakiyeRiskGosterilmezmi() { let flag = this.ozelYetkiler?.bakiyeRiskGosterilmez; if (flag == null) { flag = asBool(this.param.bakiyeRiskGosterilmezmi) ?? false } return flag }
 		get oncekiFislerGosterilmezmi() { let flag = this.ozelYetkiler?.oncekiFislerGosterilmez; if (flag == null) { flag = asBool(this.param.oncekiFislerGosterilmezmi) ?? false } return flag }
 		get musteriDurumuKullanilirmi() {
-			const {menuAdimKisitIDSet} = this;
+			let {menuAdimKisitIDSet} = this;
 			return $.isEmptyObject(menuAdimKisitIDSet) || !!menuAdimKisitIDSet.musteriDurumu;
 		}
 		get karmaPaletBarkodBaslangic() { let value = this.ozelYetkiler?.karmaPaletBarkodBaslangic; if (value == null) { value = this.param.karmaPaletBarkodBaslangic } return value }
@@ -452,26 +452,26 @@
 		get barkodOkutmaSessizmi() { let flag = this.ozelYetkiler?.barkodOkutmaSessiz; if (flag == null) { flag = asBool(this.param.barkodOkutmaSessizmi) ?? false } return flag }
 		get maxIskSayi() { return 6 } get maxKamSayi() { return this.maxIskSayi } get maxKadIskSayi() { return 5 }
 		get iskSayi() {
-			const {maxIskSayi} = this; let result = this.ozelYetkiler?.iskSayi;
+			let {maxIskSayi} = this; let result = this.ozelYetkiler?.iskSayi;
 			if (result == null) { result = asFloat(this.param.iskSayi) || 1 }
 			return Math.min(result, maxIskSayi)
 		}
 		get kamSayi() {
-			const {maxKamSayi} = this; let result = this.ozelYetkiler?.kamSayi;
+			let {maxKamSayi} = this; let result = this.ozelYetkiler?.kamSayi;
 			if (result == null) { result = asFloat(this.param.kamSayi) || this.iskSayi }
 			return Math.min(result, maxKamSayi)
 		}
 		get kadIskSayi() {
-			const {maxKadIskSayi} = this;
+			let {maxKadIskSayi} = this;
 			let result = this.ozelYetkiler?.kadIskSayi;
 			if (result == null)
 				result = asFloat(this.param.kadIskSayi) || 1;
 			return Math.min(result, maxKadIskSayi);
 		}
 		get iskontoArttirilirmi() {
-			const {param} = this;
-			const ozelYetki_iskontoArttirilirmi = this.ozelYetkiler?.iskonto;
-			const {satirIskOranSinir} = this;
+			let {param} = this;
+			let ozelYetki_iskontoArttirilirmi = this.ozelYetkiler?.iskonto;
+			let {satirIskOranSinir} = this;
 			let flag;
 			if (ozelYetki_iskontoArttirilirmi != null)
 				flag = ozelYetki_iskontoArttirilirmi;
@@ -699,7 +699,7 @@
 			return flag;
 		}
 		get fisGirisiRbkOtomatikAcilsinmi() {
-			const _flag = this.param.fisGirisiRbkOtomatikAcilsinmi;
+			let _flag = this.param.fisGirisiRbkOtomatikAcilsinmi;
 			let flag = _flag == null || _flag === '' ? true : asBool(_flag);
 			return flag
 		}
@@ -821,7 +821,7 @@
 		
 
 		constructor(e) {
-			e = e ?? {}; super(e); const {dbMgrSinif} = this.class;
+			e = e ?? {}; super(e); let {dbMgrSinif} = this.class;
 			$.extend(this, {
 				mainPart: this,
 				// wsURLBase: updateWSUrlBaseBasit($.extend({}, sky.config, { path: sky.config.wsPath })),
@@ -890,7 +890,7 @@
 			});
 			this.dbMgr_mf = this.dbMgrs.rom_data;
 
-			const extLogin = this.extensions.login;
+			let extLogin = this.extensions.login;
 			$.extend(extLogin.options, {
 				isLoginRequired: false
 				/*loginTypes: [
@@ -916,7 +916,7 @@
 			if (Utils.consoleRedirect) {
 				Utils.consoleRedirect({
 					block: e => {
-						const {divLine, divResult} = e;
+						let {divLine, divResult} = e;
 						if (divLine && (divResult && divResult.length)) {
 							divLine.appendTo(divResult);
 							setTimeout(() =>
@@ -929,7 +929,7 @@
 
 			let temp = qs.pre || qs.prescript || qs.preScript || qs.prescripts || qs.preScripts;
 			if (temp) {
-				const urls = temp.split('|').map(x => x.trim()).filter(x => !!x);
+				let urls = temp.split('|').map(x => x.trim()).filter(x => !!x);
 				await this.loadInjectScripts($.extend({}, e, { type: 'pre', urls: urls }));
 			}
 
@@ -939,7 +939,7 @@
 			}
 			catch (ex) { console.error(ex) }*/
 
-			for (const dbMgr of Object.values(this.dbMgrs || {})) {
+			for (let dbMgr of Object.values(this.dbMgrs || {})) {
 				if (dbMgr?.open)
 					await dbMgr.open()
 			}
@@ -993,7 +993,7 @@
 			(window.savedProcs?.showProgress || showProgress)
 				(null, null, 100, false);
 			
-			/*const barkodContainer = $(`<div id="barkodContainer" style="width: 100px; height: 100px;"/>`).appendTo(sky.app.content);
+			/*let barkodContainer = $(`<div id="barkodContainer" style="width: 100px; height: 100px;"/>`).appendTo(sky.app.content);
 			let qr = this.barcodeReader = new CETBarkodDevice.tip2Device.camera_qrCode({
 				content: barkodContainer,
 				debug: true,
@@ -1003,18 +1003,18 @@
 			});
 			await qr.start()*/
 
-			const {layout} = this;
-			const spanLoginText = this.spanLoginText = layout.find(`#loginText`);
+			let {layout} = this;
+			let spanLoginText = this.spanLoginText = layout.find(`#loginText`);
 			spanLoginText.html(sky.config.sessionInfo.userBilgiCizgiliOzet({ styled: true }));
 			this.postInitLayout_ara(e);
 
-			const {loadScriptsResultsPromise} = this; if (loadScriptsResultsPromise?.then) {
+			let {loadScriptsResultsPromise} = this; if (loadScriptsResultsPromise?.then) {
 				loadScriptsResultsPromise.then(async result => {
-					const {initCallbacks} = this;
+					let {initCallbacks} = this;
 					if (!$.isEmptyObject(initCallbacks)) {
 						if (!$.isEmptyObject(this.promisesWait)) { try { await Promise.all(this.promisesWait) } finally { delete this.promisesWait } }
 						for (let i in initCallbacks) {
-							const _result = await initCallbacks[i];
+							let _result = await initCallbacks[i];
 							try { if (_result && $.isFunction(_result.run)) { await _result.run(e) } } catch (ex) { defFailBlock(ex) }
 						}
 						this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e)
@@ -1024,13 +1024,13 @@
 
 			let temp = qs.post || qs.postscript || qs.postScript || qs.postscripts || qs.postScripts;
 			if (temp) {
-				const urls = temp.split('|').map(x => x.trim()).filter(x => !!x);
+				let urls = temp.split('|').map(x => x.trim()).filter(x => !!x);
 				await this.loadInjectScripts($.extend({}, e, { type: 'post', urls: urls }));
 			}
 			await this.afterRunVeMerkezdenBilgiYukleSonrasiOrtak(e);
 			
 			/*if (!isDevMode) {
-				const item = menuItems.filter(`#musteriDurumu.item`);
+				let item = menuItems.filter(`#musteriDurumu.item`);
 				if (item.length)
 					item.remove();
 			}*/
@@ -1053,17 +1053,17 @@
 		}
 
 		sonIslemlerSonrasi(e) {
-			const {sonIslemlerSonrasi_ek} = this;
+			let {sonIslemlerSonrasi_ek} = this;
 			if (sonIslemlerSonrasi_ek)
 				sonIslemlerSonrasi_ek.call(this, e)
 		}
 
 		async run(e) {
-			this.ajaxSetup(e);
-			await super.run(e)
-
-			const timeouts = [1000, 2000, 3000];
-			for (const i in timeouts) {
+			this.ajaxSetup(e); await super.run(e);
+			setTimeout(() => this.acquireLock(e), 2000);
+			
+			let timeouts = [1000, 2000, 3000];
+			for (let i in timeouts) {
 				setTimeout(() => {
 					hideProgress();
 					(window.savedProcs?.hideProgress || hideProgress)();
@@ -1104,11 +1104,60 @@
 		async afterRun(e) {
 			await super.afterRun(e)
 		}
+		async acquireLock(e) {
+			// locks desteği yoksa yapacak birşey yok, uygulama 'kontrolsüz modda' devam etmeli Yine
+			if (!navigator.locks?.request) { return }
+			// zaten kilitliyse birşey yapma
+			if (this.promise_release) { return }
+
+			/*let unloadEventNames = ['beforeunload', 'pagehide', 'visibilitychange'];
+			let unloadPrevHandlers = () => {
+				let {_onUnload_lock: unloadHandler} = this;
+				if (unloadHandler) {
+					for (let key of unloadEventNames) {
+						self.removeEventListener(key, unloadHandler) }
+				}
+			};
+			unloadPrevHandlers();*/
+			
+			let {appName} = sky.app, key = `app:${appName}`;
+			let ifAvailable = true, mode = 'exclusive';
+			let promise_ok = new $.Deferred();
+			this.promise_lock = navigator.locks.request(
+			  key, { ifAvailable, mode },
+			  lock => {
+				  if (!lock) { promise_ok.reject({ rc: 'multipleAppInstances' }); return Promise.resolve() }
+				  let promise_release = this.promise_release = new $.Deferred();
+				  promise_release.then(() => {
+					  // unloadPrevHandlers();
+					  this.promise_release = promise_release = promise_ok = null
+				  });
+				  promise_ok.resolve(lock);
+				  return promise_release
+			  }
+			);
+			// setTimeout(() => promise_release.resolve(true), 10000)
+			try {
+				await promise_ok
+				/*let unloadHandler = this._onUnload_lock = evt => this.promise_release?.resolve();
+				for (let key of unloadEventNames) {
+					self.addEventListener(key, unloadHandler) }*/
+			}
+			catch (ex) {
+				if (ex?.rc == 'multipleAppInstances') {
+					let {savedProcs} = self; console.error(ex); this.content.remove();
+					// alert(`UYARI: Bu uygulama başka bir sekmede çalışıyor ve bu sekme kapatılacak`);
+					setTimeout(() => savedProcs.displayMessage(`<h4 class="red">Bu uygulama başka bir sekmede çalışıyor ve bu sekmede kullanılamaz</h4>`, '! UYARI !', false, null, true), 2000);
+					// try { self.close() } catch (ex) { console.error(ex) }
+				}
+				throw ex
+			}
+		}
 		async preInitLayout(e) {
 			e = e || {};
 			await super.preInitLayout(e);
-			const rootLayout = this.rootLayout;
-			const layout = e.layout || this.layout;
+			let rootLayout = this.rootLayout;
+			let layout = e.layout || this.layout;
 			// $('body').css('overflow-y', 'auto');
 			$(document).on('contextmenu', evt => {
 				evt.preventDefault();
@@ -1116,7 +1165,7 @@
 			});
 
 			document.addEventListener("backbutton", evt => {
-				const {activePart} = this;
+				let {activePart} = this;
 				if (activePart && activePart != this)
 					activePart.geriIstendi({ event: evt })
 			}, false);
@@ -1165,34 +1214,34 @@
 				loginUI_content: layout
 			});
 
-			const knobProgressInitArgs = this.knobProgressInitArgs = this.knobProgressInitArgs || {};
+			let knobProgressInitArgs = this.knobProgressInitArgs = this.knobProgressInitArgs || {};
 			knobProgressInitArgs.template = () => this.templates.cetKnobProgress;
-			const indicatorPartInitArgs = this.indicatorPartInitArgs = this.indicatorPartInitArgs || {};
+			let indicatorPartInitArgs = this.indicatorPartInitArgs = this.indicatorPartInitArgs || {};
 			indicatorPartInitArgs.template = () => this.templates.cetAppIndicator;
 
 			await this.knobProgressDestroy();
 			this.aktarimProgressCompleted({ defer: true, delaySecs: 5, text: `İlk İşlemler tamamlandı` });
 
-			const {param} = this;
-			const userSettings = param.userSettings = param.userSettings || {};
-			const islemTuslari = this.islemTuslari = layout.find('.islemTuslari');
+			let {param} = this;
+			let userSettings = param.userSettings = param.userSettings || {};
+			let islemTuslari = this.islemTuslari = layout.find('.islemTuslari');
 			islemTuslari
 				.addClass(`prog ${this.appName} ${this.rootAppName}`)
 				.detach()
 				.appendTo(this.header);
-			const btnLogout = this.btnLogout = islemTuslari.find('#btnLogout');
+			let btnLogout = this.btnLogout = islemTuslari.find('#btnLogout');
 			btnLogout
 				.jqxButton({ theme: theme })
 				// .jqxTooltip({ theme: theme, trigger: `hover`, content: `Oturum kapat` })
 				.on('click', evt => this.logoutIstendi());
-			const btnToggleFullScreen = this.btnToggleFullScreen = islemTuslari.find(`#btnToggleFullScreen`);
+			let btnToggleFullScreen = this.btnToggleFullScreen = islemTuslari.find(`#btnToggleFullScreen`);
 			btnToggleFullScreen.jqxButton({ theme: theme });
 			btnToggleFullScreen.on('click', evt =>
 				this.toggleFullScreen(e));
 
 			// this.otoAktarFlag = userSettings.otoAktar;
 			this.otoAktarFlag = false;
-			const chkOtoAktar = this.chkOtoAktar = islemTuslari.find('#chkOtoAktar');
+			let chkOtoAktar = this.chkOtoAktar = islemTuslari.find('#chkOtoAktar');
 			chkOtoAktar.jqxToggleButton({ theme: theme, toggled: asBool(this.otoAktarFlag) });
 			chkOtoAktar.jqxTooltip({ theme: theme, trigger: `hover`, position: `bottom`, content: `Aktarılmamış Belgeler otomatik olarak arkaplanda kontrol edilir ve Merkeze Aktarılır` });
 			// chkOtoAktar.off('click');
@@ -1201,7 +1250,7 @@
 				this.param.kaydet();
 			});
 
-			const btnGonderimIsaretSifirla = this.btnGonderimIsaretSifirla = islemTuslari.find('#btnGonderimIsaretSifirla');
+			let btnGonderimIsaretSifirla = this.btnGonderimIsaretSifirla = islemTuslari.find('#btnGonderimIsaretSifirla');
 			btnGonderimIsaretSifirla.jqxButton({ theme: theme });
 			btnGonderimIsaretSifirla.on('click', evt =>
 				this.gonderimIsaretSifirlaIstendi(e));
@@ -1209,27 +1258,27 @@
 		async postInitLayout(e) {
 			e = e || {};
 			await super.postInitLayout(e);
-			const {rootLayout} = this;
-			const layout = e.layout || this.layout;
-			const {indicatorPart} = this;
+			let {rootLayout} = this;
+			let layout = e.layout || this.layout;
+			let {indicatorPart} = this;
 			if (indicatorPart)
 				indicatorPart.initCallbacks()
 			
-			const menu = this.divAnaMenu = layout.find(`#anaMenu`);
+			let menu = this.divAnaMenu = layout.find(`#anaMenu`);
 			let items = menu.find(`.item`);
 			if (!this.rotaKullanilirmi) {
-				const li = items.filter(`#rotaListesi`);
+				let li = items.filter(`#rotaListesi`);
 				if (li.length)
 					li.remove();
 			}
 			if (!this.class.appMagazaVeyaSDMmi) {
-				const li = items.filter(`#bekleyenXFislerGuncelle`);
+				let li = items.filter(`#bekleyenXFislerGuncelle`);
 				if (li.length)
 					li.remove();
 			}
-			const cacheKeys = window.caches ? await window.caches.keys() : [];
+			let cacheKeys = window.caches ? await window.caches.keys() : [];
 			if ($.isEmptyObject(cacheKeys)) {
-				const li = items.filter(`#cacheReset`);
+				let li = items.filter(`#cacheReset`);
 				if (li.length)
 					li.addClass('jqx-hidden');
 			}
@@ -1239,7 +1288,7 @@
 			}
 
 			if (true) {
-				const li = items.filter(`#veriYonetimi`);
+				let li = items.filter(`#veriYonetimi`);
 				if (li.length)
 					li.jqxTooltip({ theme: theme, trigger: `hover`, content: `Veri Yönetimi` });
 			}
@@ -1278,7 +1327,7 @@
 			return this
 		}
 		getSubLayoutContainer(e) {
-			const layout = e.layout || this.layout;
+			let layout = e.layout || this.layout;
 			return layout.find('#mainPart')
 		}
 		getSubLayoutContent(e) {
@@ -1286,19 +1335,19 @@
 		}
 
 		mfTip2AciklamaDuzenle(e) {
-			const {fisTipleriDuzenlenmis} = this;
-			for (const i in fisTipleriDuzenlenmis) {
-				const ka = fisTipleriDuzenlenmis[i];
+			let {fisTipleriDuzenlenmis} = this;
+			for (let i in fisTipleriDuzenlenmis) {
+				let ka = fisTipleriDuzenlenmis[i];
 				e.mfTip2Aciklama[ka.kod] = ka.aciklama;
 			}
 		}
 		mfTipIcinAdiFor(e) {
 			e = e || {};
-			const tip = typeof e == 'object' ? e.tip : e;
+			let tip = typeof e == 'object' ? e.tip : e;
 			
 			let parts = tip.split('-');
-			const anaTip = parts[0];
-			const altTip = parts[1];
+			let anaTip = parts[0];
+			let altTip = parts[1];
 			
 			let text = this.mfTip2AciklamaDict[anaTip];
 			if (text && altTip) {
@@ -1310,7 +1359,7 @@
 			return text;
 		}
 		eIslemTip2AciklamaDuzenle(e) {
-			const {target} = e;
+			let {target} = e;
 			$.extend(target, {
 				E: { aciklama: 'e-Fatura', kisaAdi: 'e-Fat' },
 				A: { aciklama: 'e-Arşiv', kisaAdi: 'e-Arşiv' },
@@ -1320,8 +1369,8 @@
 		}
 		eIslemTip2Aciklama(e) {
 			e = e || {};
-			const rec = (typeof e == 'object' ? e.rec : e) || e;
-			const tip = typeof e == 'object' ? rec.tip || rec.eIslemTip || rec.efayrimtipi : rec;
+			let rec = (typeof e == 'object' ? e.rec : e) || e;
+			let tip = typeof e == 'object' ? rec.tip || rec.eIslemTip || rec.efayrimtipi : rec;
 			return this.eIslemTip2AciklamaDict[tip]
 		}
 		eIslemTip2UzunAdi(e) {
@@ -1331,7 +1380,7 @@
 			return (this.eIslemTip2Aciklama(e) || {}).kisaAdi
 		}
 		konsolideTip2AciklamaDuzenle(e) {
-			const {target} = e;
+			let {target} = e;
 			$.extend(target, {
 				M: 'K.Merkez',
 				S: 'K.Şube'
@@ -1339,13 +1388,13 @@
 		}
 		konsolideTip2Aciklama(e) {
 			e = e || {};
-			const rec = (typeof e == 'object' ? e.rec : e) || e;
-			const key = typeof e == 'object' ? rec.konTipKod : rec;
+			let rec = (typeof e == 'object' ? e.rec : e) || e;
+			let key = typeof e == 'object' ? rec.konTipKod : rec;
 			return this.konsolideTip2AciklamaDict[key]
 		}
 		async grupKod2Adi(e) {
 			e = e || {};
-			const kod = typeof e == 'object' ? e.grupKod || e.kod : e;
+			let kod = typeof e == 'object' ? e.grupKod || e.kod : e;
 			let dict = this._grupKod2Adi;
 			if (dict == null)
 				dict = await this.grupKod2AdiOlustur(e);
@@ -1354,7 +1403,7 @@
 		}
 		async grupKod2AdiOlustur(e) {
 			e = e || {};
-			const tx = e.tx;
+			let tx = e.tx;
 
 			let stm = new MQStm({
 				sent: new MQSent({
@@ -1366,7 +1415,7 @@
 			let rs = await this.dbMgrs.rom_data.executeSql({ tx: tx, query: stm });
 			let result = this._grupKod2Adi = {};
 			for (let i = 0; i < rs.rows.length; i++) {
-				const rec = rs.rows[i];
+				let rec = rs.rows[i];
 				result[rec.kod] = rec.aciklama
 			}
 			return result
@@ -1402,8 +1451,8 @@
 			}));
 			let ayrimTipiClause = '', {uygunAyrimTipleri} = this;
 			if (!$.isEmptyObject(uygunAyrimTipleri)) {
-				for (const ka of uygunAyrimTipleri) {
-					const {kod, aciklama} = ka;
+				for (let ka of uygunAyrimTipleri) {
+					let {kod, aciklama} = ka;
 					if (kod) {
 						if (ayrimTipiClause)
 							ayrimTipiClause += ' ';
@@ -1535,8 +1584,8 @@
 				rec.fisSinif.rotaListe_fisIslemleri_stmSentDuzenle(e))
 		}
 		rotaListe_fisIslemleri_stmSentDuzenleDevam(e) {
-			const {ozelIsaretKullanilirmi} = this;
-			const {uni, rowCountOnlyFlag} = e;
+			let {ozelIsaretKullanilirmi} = this;
+			let {uni, rowCountOnlyFlag} = e;
 			uni.add(new MQSent({
 				from: `data_PIFFis fis`,
 				where: [
@@ -1590,8 +1639,8 @@
 			}));
 		}
 		rotaListe_fisIslemleri_stmSentDuzenleDevam_whereBagla(e) {
-			const {ozelIsaretKullanilirmi} = this;
-			const {uni, mustKodListe} = e;
+			let {ozelIsaretKullanilirmi} = this;
+			let {uni, mustKodListe} = e;
 			if (!$.isEmptyObject(mustKodListe)) {
 				uni.sentDo(sent => {
 					sent.where
@@ -1605,9 +1654,9 @@
 				rec.fisSinif.rapor_ilkIrsaliye_stmSentDuzenle(e));
 		}
 		rapor_ilkIrsaliye_stmSentDuzenleDevam(e) {
-			const {uni, stm} = e;
-			const detaylimi = asBool(e.detayli || e.detaylimi);
-			const sent = new MQSent({
+			let {uni, stm} = e;
+			let detaylimi = asBool(e.detayli || e.detaylimi);
+			let sent = new MQSent({
 				from: `mst_Stok stk`,
 				where: [`stk.kod <> ''`],
 				sahalar: [
@@ -1617,10 +1666,10 @@
 				groupBy: [`son.yerKod`, `stk.kod`]
 			});
 			if (detaylimi) {
-				const {idSahalar} = CETEkOzellikler;
+				let {idSahalar} = CETEkOzellikler;
 				if (!$.isEmptyObject(idSahalar)) {
-					for (const idSaha of idSahalar) {
-						const aliasVeSaha = `son.${idSaha}`;
+					for (let idSaha of idSahalar) {
+						let aliasVeSaha = `son.${idSaha}`;
 						sent.sahalar.add(aliasVeSaha);
 						sent.groupBy.add(aliasVeSaha)
 					}
@@ -1628,7 +1677,7 @@
 			}
 			uni.add(sent);
 
-			const {defaultPlasiyerKod, defaultYerKod} = this;
+			let {defaultPlasiyerKod, defaultYerKod} = this;
 			let yerKod = !this.class.appMagazaVeyaSDMmi && defaultYerKod && defaultPlasiyerKod ? defaultYerKod : null;
 			/*uni.sentDo(sent => {
 				if (yerKod)
@@ -1649,9 +1698,9 @@
 				rec.fisSinif.rapor_sonStok_stmSentDuzenle(e))
 		}
 		rapor_sonStok_stmSentDuzenleDevam(e) {
-			const {uni, stm} = e;
-			const detaylimi = asBool(e.detayli || e.detaylimi);
-			const sent = new MQSent({
+			let {uni, stm} = e;
+			let detaylimi = asBool(e.detayli || e.detaylimi);
+			let sent = new MQSent({
 				from: `mst_Stok stk`,
 				where: [`stk.kod <> ''`],
 				sahalar: [
@@ -1661,10 +1710,10 @@
 				groupBy: [`son.yerKod`, `stk.kod`]
 			});
 			if (detaylimi) {
-				const {idSahalar} = CETEkOzellikler;
+				let {idSahalar} = CETEkOzellikler;
 				if (!$.isEmptyObject(idSahalar)) {
-					for (const idSaha of idSahalar) {
-						const aliasVeSaha = `son.${idSaha}`;
+					for (let idSaha of idSahalar) {
+						let aliasVeSaha = `son.${idSaha}`;
 						sent.sahalar.add(aliasVeSaha);
 						sent.groupBy.add(aliasVeSaha)
 					}
@@ -1672,7 +1721,7 @@
 			}
 			uni.add(sent);
 
-			const {defaultPlasiyerKod, defaultYerKod} = this;
+			let {defaultPlasiyerKod, defaultYerKod} = this;
 			let yerKod = !this.class.appMagazaVeyaSDMmi && defaultYerKod && defaultPlasiyerKod ? defaultYerKod : null;
 			/*uni.sentDo(sent => {
 				if (yerKod)
@@ -1695,8 +1744,8 @@
 		}
 		rapor_satislar_stmSentDuzenleDevam(e) {
 			e = e || {};
-			const {rowCountOnly} = e;
-			const sent = new MQSent({
+			let {rowCountOnly} = e;
+			let sent = new MQSent({
 				from: `data_PIFStok har`,
 				fromIliskiler: [
 					{ from: 'data_PIFFis fis', iliski: 'har.fissayac = fis.rowid' },
@@ -1718,11 +1767,11 @@
 								`(case when COALESCE(har.xbrm, '') = '' then 'AD' else har.xbrm end)`
 							  ])
 			});
-			const {idSahalar} = CETEkOzellikler;
+			let {idSahalar} = CETEkOzellikler;
 			if (!$.isEmptyObject(idSahalar)) {
-				for (const i in idSahalar) {
-					const idSaha = idSahalar[i];
-					const aliasVeSaha = `har.${idSaha}`;
+				for (let i in idSahalar) {
+					let idSaha = idSahalar[i];
+					let aliasVeSaha = `har.${idSaha}`;
 					if (!rowCountOnly) {
 						sent.sahalar.add(aliasVeSaha);
 						sent.groupBy.add(aliasVeSaha);
@@ -1783,8 +1832,8 @@
 				rec.fisSinif.rapor_gunSonuRaporu_stmSentDuzenle_miktarHesaplasma_devirVeKalan(e));
 		}
 		rapor_gunSonuRaporu_stmSentDuzenleDevam_miktarHesaplasma_devirVeKalan(e) {
-			const yerKod = e.yerKod || this.defaultYerKod || '';
-			const {uni} = e;
+			let yerKod = e.yerKod || this.defaultYerKod || '';
+			let {uni} = e;
 			uni.add(new MQSent({
 				from: `mst_SonStok son`,
 				fromIliskiler: [
@@ -1822,8 +1871,8 @@
 				rec.fisSinif.rapor_gunSonuRaporu_stmSentDuzenle_miktarHesaplasma_satisHareketler(e))
 		}
 		rapor_gunSonuRaporu_stmSentDuzenleDevam_miktarHesaplasma_satisHareketler(e) {
-			const yerKod = e.yerKod || this.defaultYerKod || '';
-			const {uni} = e;
+			let yerKod = e.yerKod || this.defaultYerKod || '';
+			let {uni} = e;
 			uni.add(new MQSent({
 				from: `data_PIFStok har`,
 				fromIliskiler: [
@@ -1861,8 +1910,8 @@
 				rec.fisSinif.rapor_gunSonuRaporu_stmSentDuzenle_bedelHesaplasma_satisHareketler(e))
 		}
 		rapor_gunSonuRaporu_stmSentDuzenleDevam_bedelHesaplasma_satisHareketler(e) {
-			const yerKod = e.yerKod || this.defaultYerKod || '';
-			const {uni} = e;
+			let yerKod = e.yerKod || this.defaultYerKod || '';
+			let {uni} = e;
 			uni.add(new MQSent({
 				from: `data_PIFStok har`,
 				fromIliskiler: [
@@ -1905,8 +1954,8 @@
 				rec.fisSinif.rapor_gunSonuRaporu_stmSentDuzenle_tahsilatlar(e));
 		}
 		rapor_gunSonuRaporu_stmSentDuzenleDevam_tahsilatlar(e) {
-			const yerKod = e.yerKod || this.defaultYerKod || '';
-			const {uni} = e;
+			let yerKod = e.yerKod || this.defaultYerKod || '';
+			let {uni} = e;
 			uni.add(new MQSent({
 				from: `data_PIFFis fis`,
 				fromIliskiler: [
@@ -1963,7 +2012,7 @@
 				rec.fisSinif.rapor_bekleyenSiparisler_stmSentDuzenle(e));
 		}
 		rapor_bekleyenSiparisler_stmSentDuzenleDevam(e) {
-			const {almSat, uni, stm, rowCountOnly} = e;
+			let {almSat, uni, stm, rowCountOnly} = e;
 			uni.add(new MQSent({
 				from: `data_BekleyenSiparisler har`,
 				fromIliskiler: [
@@ -2009,10 +2058,10 @@
 					hmrlimi = this.depoMalKabulSiparisHMRlimi || this.depoSevkiyatSiparisHMRlimi;
 				}
 				if (hmrlimi) {
-					const {idSahalarSiparis} = CETEkOzellikler;
-					for (const sent of uni.getSentListe()) {
-						for (const idSaha of idSahalarSiparis) {
-							const clause = `har.${idSaha}`;
+					let {idSahalarSiparis} = CETEkOzellikler;
+					for (let sent of uni.getSentListe()) {
+						for (let idSaha of idSahalarSiparis) {
+							let clause = `har.${idSaha}`;
 							sent.sahalar.add(clause);
 							sent.groupBy.add(clause)
 						}
@@ -2024,11 +2073,11 @@
 		}
 		rapor_ozet_stmSentDuzenle(e) {
 			this.rapor_ozet_stmSentDuzenleDevam(e);
-			for (const rec of this.fisSinifOlanFisTipleri)
+			for (let rec of this.fisSinifOlanFisTipleri)
 				rec.fisSinif.rapor_ozet_stmSentDuzenle(e)
 		}
 		rapor_ozet_stmSentDuzenleDevam(e) {
-			const {uni, stm, rowCountOnly} = e;
+			let {uni, stm, rowCountOnly} = e;
 			uni.addAll([
 				new MQSent({
 					distinct: true,
@@ -2060,24 +2109,24 @@
 
 		stmSentDuzenle_sonStokBagla(e) {
 			e = e || {};
-			const {alias, yerKod} = e;
+			let {alias, yerKod} = e;
 			let {shKodClause} = e;
-			const leftJoinFlag = asBool(e.leftJoin);
-			const detaylimi = asBool(e.detayli || e.detaylimi);
-			// const subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
-			for (const sent of e.stm.getSentListe()) {
+			let leftJoinFlag = asBool(e.leftJoin);
+			let detaylimi = asBool(e.detayli || e.detaylimi);
+			// let subeKod = e.subeKod == null ? this.defaultSubeKod : e.subeKod;
+			for (let sent of e.stm.getSentListe()) {
 				if (!sent.from.aliasIcinTable('son')) {
 					if (shKodClause && $.isFunction(shKodClause))
 						shKodClause = shKodClause.call(this, e)
-					const detaySinif = (
+					let detaySinif = (
 						e.detaySinif ? e.detaySinif :
 								((e.fis ? e.fis.class : e.fisSinif ? e.fisSinif : null) || {}).detaySinif
 						) || CETStokTicariDetay;
-					const detaylimiUyarlanmis = detaylimi || !detaySinif;
+					let detaylimiUyarlanmis = detaylimi || !detaySinif;
 					if (!detaylimiUyarlanmis) {
 						if ($.isArray(sent.sahalar)) {
-							for (const saha of sent.sahalar.liste) {
-								const value = saha.deger;
+							for (let saha of sent.sahalar.liste) {
+								let value = saha.deger;
 								if (value == 'son.miktar')
 									saha.deger = `SUM(${value})`
 								else if (value == 'son.olasiMiktar')
@@ -2088,13 +2137,13 @@
 						}
 					}
 					if (leftJoinFlag) {
-						const onListe = [`${shKodClause} = son.stokKod`];
+						let onListe = [`${shKodClause} = son.stokKod`];
 						if (yerKod)
 							onListe.push(`son.yerKod = ${MQSQLOrtak.sqlDegeri(yerKod || '')}`);
 						sent.leftJoin({ alias: alias, leftJoin: 'mst_SonStok son', on: onListe.join(' AND ') })
 					}
 					else {
-						const iliskiListe = [`${shKodClause} = son.stokKod`];
+						let iliskiListe = [`${shKodClause} = son.stokKod`];
 						if (yerKod)
 							iliskiListe.push(`son.yerKod = ${MQSQLOrtak.sqlDegeri(yerKod || '')}`);
 						sent.fromIliski({ from: 'mst_SonStok son', iliski: iliskiListe });
@@ -2104,22 +2153,22 @@
 			}
 		}
 		ortakReset(e) {
-			for (const key of [
+			for (let key of [
 				'_matbuuFormYapilari', '_grupKod2Adi', 'mustKod2KosulProYapilari',
 				'_ekOzellikKullanim', '_isyeri', '_ruloParam', '_ruloEkNotlar',
 				 '_tip2MatbuuFormDuzenleyiciler', '_tip2MatbuuFormDuzenleyiciler_runtime',
 				 '_defaultTip2Renk', '_ekOzellikBelirtecSet_stokMstVeDiger' /*, '_menuAdimKisitIDSet', '_fisAdimKisitIDSet'*/
 			]) { delete this[key] }
-			for (const key of ['baslangicKod2Kural', 'ayrisimKurallari']) { delete CETBarkodParser_Kuralli[key] }
+			for (let key of ['baslangicKod2Kural', 'ayrisimKurallari']) { delete CETBarkodParser_Kuralli[key] }
 			
-			const {caches, isDevMode} = this;
+			let {caches, isDevMode} = this;
 			if (caches) { for (let key in caches) delete caches[key]; delete this.caches }
 			this.initCaches(e);
 			// if (!isDevMode) {
 			/*this.promise_prefetchUI = new $.Deferred(p => {
 				setTimeout(async () => {
 					let result;
-					const {activePart} = this;
+					let {activePart} = this;
 					if (!this.prefetchAbortedFlag && (!activePart || activePart == this)) {
 						try { result = await this.prefetchUIs(e) }
 						finally {
@@ -2132,8 +2181,8 @@
 			}); */
 			let {appTitleText: savedAppTitleText} = this, uiClassList = [CETCariListePart, CETStokListePart];
 			try {
-				for (const i in uiClassList) {
-					const ui = uiClassList[i].current;
+				for (let i in uiClassList) {
+					let ui = uiClassList[i].current;
 					if (ui && !ui.isDestroyed) {
 						ui.destroyPart();
 						ui.class.resetInstance();
@@ -2181,8 +2230,8 @@
 
 		async loadInitialCaches(e) {
 			e = e || {};
-			const {caches} = this;
-			const dbMgr = this.dbMgr_mf;
+			let {caches} = this;
+			let dbMgr = this.dbMgr_mf;
 			let stm, recs, cacheDict;
 			
 			stm = new MQStm({
@@ -2197,7 +2246,7 @@
 			];
 			recs.push(...(await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm })));
 			cacheDict = caches.subeKod2Rec;
-			for (const rec of recs)
+			for (let rec of recs)
 				cacheDict[rec.kod] = rec
 
 			stm = new MQStm({
@@ -2209,7 +2258,7 @@
 			});
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.dvKod2Rec;
-			for (const rec of recs)
+			for (let rec of recs)
 				cacheDict[rec.kod] = rec
 
 			stm = new MQStm({
@@ -2221,7 +2270,7 @@
 			});
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.yerKod2Rec;
-			for (const rec of recs)
+			for (let rec of recs)
 				cacheDict[rec.kod] = rec
 
 			stm = new MQStm({
@@ -2234,7 +2283,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.plasiyerKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2248,7 +2297,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.modelKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2262,7 +2311,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.desenKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2276,7 +2325,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.renkKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2288,12 +2337,12 @@
 				or.add(new MQSubWhereClause([
 					{ degerAta: '', saha: 'tsek.tahsilTipi' },
 					{ inDizi: ['CK', 'SN', 'C', 'S'], saha: 'tsek.tahsilAltTipi' }
-				])); for (const sent of stm.getSentListe()) { sent.where.add(or) }
+				])); for (let sent of stm.getSentListe()) { sent.where.add(or) }
 			}
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.tahsilSekliKodNo2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				rec.kod = rec.kodNo;
 				cacheDict[rec.kodNo] = rec;
 			}
@@ -2308,7 +2357,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.nakliyeSekliKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2322,7 +2371,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.sevkAdresKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2336,7 +2385,7 @@
 			recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 			cacheDict = caches.sablonFisTipiKod2Rec;
 			for (let i in recs) {
-				const rec = recs[i];
+				let rec = recs[i];
 				cacheDict[rec.kod] = rec;
 			}
 
@@ -2351,7 +2400,7 @@
 				recs = await dbMgr.executeSqlReturnRows({ tx: e.tx, query: stm });
 				cacheDict = caches.ozelKampanyaKod2Rec;
 				for (let i in recs) {
-					const rec = recs[i];
+					let rec = recs[i];
 					cacheDict[rec.kod] = rec;
 				}
 			}
@@ -2418,42 +2467,42 @@
 				`images/yukari.png`,
 				`images/asagi.png`
 			];
-			const promises = [];
-			for (const url of urls)
+			let promises = [];
+			for (let url of urls)
 				promises.push(Utils.ajaxDoWithCache({ url: url }))
 			urls = [
 				`../app/prog/cetApp/data/cetDB_param_initSQL.sql`,
 				`../app/prog/cetApp/data/cetDB_rom_data_initSQL.sql`,
 				`./manifest.php`
 			];
-			for (const url of urls) {	
+			for (let url of urls) {	
 				lastAjaxObj = $.ajax({ cache: false, async: true, method: 'POST', url: `${url}?${siteVersion}` });
 				promises.push(lastAjaxObj)
 			}
 			return await Promise.all(promises)
 		}
 		async prefetchUIs(e) {
-			e = e || {}; const {parent, tempLayout} = this;
+			e = e || {}; let {parent, tempLayout} = this;
 			parent.css('opacity', .01);
 			(window.savedProcs?.showProgress || showProgress)(null, null, 1, false);
-			const fis = new CETSatisFaturaFis();
+			let fis = new CETSatisFaturaFis();
 			if (fis.class.numaratorTip)
 				await fis.numaratorOlustur()
-			const fisGirisUIClassList = [CETFisGirisPart];
+			let fisGirisUIClassList = [CETFisGirisPart];
 			if (this.class.appSDMmi)
 				fisGirisUIClassList.push(...[CETForkliftFisGirisPart, CETBekleyenSayimFisGirisPart, CETBekleyenUgramaFisGirisPart]);
 			else
 				fisGirisUIClassList.push(CETFisGirisSonStoktanSecimPart);
 			
-			for (const i in fisGirisUIClassList) {
-				const fisGirisUIClass = fisGirisUIClassList[i];
-				const part = new fisGirisUIClass({ prefetch: true, content: tempLayout, fis });
+			for (let i in fisGirisUIClassList) {
+				let fisGirisUIClass = fisGirisUIClassList[i];
+				let part = new fisGirisUIClass({ prefetch: true, content: tempLayout, fis });
 				try {
 					await new $.Deferred(async p => {
-						const {activePart} = this;
+						let {activePart} = this;
 						if (this.prefetchAbortedFlag || (activePart && activePart != this))
 							p.reject({ isError: true, rc: 'userAbort' });
-						const result = await part.run();
+						let result = await part.run();
 						setTimeout(() => p.resolve(result), 10);
 					})
 				}
@@ -2461,7 +2510,7 @@
 					console.error(`prefetch error`, ex);
 				}
 				finally {
-					const {activePart} = this;
+					let {activePart} = this;
 					if (part && (!activePart || part == activePart) && part.geriIstendi)
 						await part.geriIstendi();
 				}
@@ -2486,7 +2535,7 @@
 			let urls = e.urls || e.url; if (urls && !$.isArray(urls)) urls = [urls]
 			if ($.isEmptyObject(urls)) return undefined
 			let lastResult = null;
-			for (const url of urls) {
+			for (let url of urls) {
 				lastAjaxObj = $.get({ async: true, timeout: 5000, dataType: 'script', url: url });
 				try { lastResult = await lastAjaxObj; console.info('loadInjectScripts', e, { isError: false, result: lastResult }); }
 				catch (ex) { console.error('loadInjectScripts', e, { isError: true, error: ex }); if (ex.rc && ex.rc == 'throw') throw ex }
@@ -2495,10 +2544,10 @@
 		}
 		async loadInitialScripts() {
 			if (!navigator.onLine) { return null }
-			const {param} = this, hostName = param.wsHostNameUyarlanmis; if (!hostName) { return null }
-			const promises = [], ports = [8200, 81, 80, 82];
-			for (const port of ports) {
-				const urls = [], hostNameSet = {};
+			let {param} = this, hostName = param.wsHostNameUyarlanmis; if (!hostName) { return null }
+			let promises = [], ports = [8200, 81, 80, 82];
+			for (let port of ports) {
+				let urls = [], hostNameSet = {};
 				if (location.hostname != 'localhost' && location.hostname != '127.0.0.1') {
 					urls.push(`http://${location.hostname}:${port}/cetapp.override.js`); hostNameSet[location.hostname] = true }
 				if (!(hostNameSet.localhost || hostNameSet['127.0.0.1'])) {
@@ -2506,11 +2555,11 @@
 				if (!hostNameSet[hostName] && (hostName != 'localhost' && hostName != '127.0.0.1')) {
 					urls.push(`http://${hostName}:${port}/cetapp.override.js`); hostNameSet[hostName] = true }
 				let timeout = 2500;
-				for (const url of urls) {
+				for (let url of urls) {
 					lastAjaxObj = $.get({ async: true, timeout: timeout, dataType: 'script', url: `${url}` }); promises.push(lastAjaxObj); timeout += 200 }
 			}
 			if (navigator.onLine) {
-				const results = []; for (const promise in promises) {
+				let results = []; for (let promise in promises) {
 					try { let result = await promise; if (result) results.push(result) }
 					catch (ex) { if (this.showLoadErrorsFlag) console.error(ex) }
 				}
@@ -2519,13 +2568,13 @@
 			return null
 		}
 		async tablolariTemizle(e) {
-			e = e || {}; const temps = e.temps = e.temps || {};
-			const {verilerSilinmesinFlag} = e;
+			e = e || {}; let temps = e.temps = e.temps || {};
+			let {verilerSilinmesinFlag} = e;
 			if (verilerSilinmesinFlag) {
 				await (async () => {
-					const dbMgr = this.dbMgr_mf;
+					let dbMgr = this.dbMgr_mf;
 					if (await dbMgr.hasTables(['mst_Cari'])) {
-						const query = new MQSent({
+						let query = new MQSent({
 							from: 'mst_Cari',
 							where: [`gonderildi = ''`],
 							sahalar: '*'
@@ -2534,8 +2583,8 @@
 					}
 				})()
 			}
-			const dbMgrKeys = e.dbMgrKeys || Object.keys(this.dbMgrs);
-			for (const key of dbMgrKeys) {
+			let dbMgrKeys = e.dbMgrKeys || Object.keys(this.dbMgrs);
+			for (let key of dbMgrKeys) {
 				let dbMgr = this.dbMgrs[key];
 				if (!verilerSilinmesinFlag && !dbMgr.webSQLmi) {
 					if (dbMgr.close)
@@ -2551,33 +2600,33 @@
 				await this.knobProgressSetLabel('Yerel Veritabanı temizleniyor...');
 				let tables = (await dbMgr.tables())?.filter(name => !(name.startsWith('_') || name.startsWith('sqlite_')));
 				if (verilerSilinmesinFlag) {
-					const prefix = this.dbTablePrefixes.master;
+					let prefix = this.dbTablePrefixes.master;
 					tables = tables.filter(name => name.startsWith(prefix))
 				}
 				let tx = await dbMgr.getTx();
-				for (const name of tables)
+				for (let name of tables)
 					await dbMgr.executeSql({ tx: tx, query: `DROP TABLE ${name}` })
 			}
 		}
 		async tablolariOlustur(e) {
 			e = e || {};
 			let {tx} = e;
-			const hasTx = !!tx;
+			let hasTx = !!tx;
 			
-			const dbMgrKeys = e.dbMgrKeys || Object.keys(this.dbMgrs);
-			for (const key of dbMgrKeys) {
-				const dbMgr = this.dbMgrs[key];
+			let dbMgrKeys = e.dbMgrKeys || Object.keys(this.dbMgrs);
+			for (let key of dbMgrKeys) {
+				let dbMgr = this.dbMgrs[key];
 				await this.knobProgressSetLabel(`Tablolar tanımları okunuyor (<span style="color: #555;"><i>${key.toUpperCase()}</i></span>)...`);
 				lastAjaxObj = $.ajax({
 					cache: false, async: true, method: 'POST',
 					url: `../app/prog/cetApp/data/cetDB_${key}_initSQL.sql?${siteVersion}`
 				});
-				const queryText = await lastAjaxObj;
+				let queryText = await lastAjaxObj;
 				// queryText = (queryText || {}).text ? await queryText.text() : await(queryText.response ? queryText.response.responseText : queryText);
-				const queries = [];
-				const _queryTextListe = queryText ? queryText.split(';') : null;
+				let queries = [];
+				let _queryTextListe = queryText ? queryText.split(';') : null;
 				if (_queryTextListe) {
-					for (const _query of _queryTextListe) {
+					for (let _query of _queryTextListe) {
 						let query = _query;
 						query = query ? query.trim() : null;
 						if (query)
@@ -2589,7 +2638,7 @@
 					tx = await dbMgr.getTx()
 				await this.knobProgressSetLabel(`Tablolar oluşturuluyor (<span style="color: #555;"><i>${key.toUpperCase()}</i></span>)...`);
 				if (!$.isEmptyObject(queries)) {
-					for (const query of queries) {
+					for (let query of queries) {
 						try { await dbMgr.executeSql({ tx: tx, query: query }) }
 						catch (ex) { console.error(ex) }
 					}
@@ -2598,14 +2647,14 @@
 					tx = await dbMgr.getTx()
 				await this.knobProgressStep(3)
 			}
-			const temps = e.temps = e.temps || {};
+			let temps = e.temps = e.temps || {};
 			await (async () => {
-				const {gonderilmeyenCariRecs} = temps;
+				let {gonderilmeyenCariRecs} = temps;
 				if (!$.isEmptyObject(gonderilmeyenCariRecs)) {
-					const dbMgr = this.dbMgr_mf;
+					let dbMgr = this.dbMgr_mf;
 					if (await dbMgr.hasTables(['mst_Cari'])) {
 						if (gonderilmeyenCariRecs[0].rowid != null) {
-							for (const rec of gonderilmeyenCariRecs)
+							for (let rec of gonderilmeyenCariRecs)
 								delete rec.rowid
 						}
 						await dbMgr.insertOrReplaceTable({
@@ -2619,25 +2668,25 @@
 		}
 		async tabloEksikleriTamamla(e) {
 			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
+			let dbMgr = e.dbMgr || this.dbMgr_mf;
 			let {tx} = e;
-			const hasTx = !!tx;
+			let hasTx = !!tx;
 			// tx = e.tx = await dbMgr.getTx();
 			await this.knobProgressSetLabel(`Tablo eksikleri araştırılıyor...`);
-			const islemler = this.tabloEksikIslemYapi || [];
-			const {tabloEksikIslemYapi_ek} = this;
+			let islemler = this.tabloEksikIslemYapi || [];
+			let {tabloEksikIslemYapi_ek} = this;
 			if (tabloEksikIslemYapi_ek)
 				islemler.push(...tabloEksikIslemYapi_ek)
 			let lastResult;
-			const temps = {};
+			let temps = {};
 			let degistimi = false, kosulluDegisiklikOldumu = false;
-			for (const islemYapi of islemler) {
-				const _e = $.extend({}, e, { dbMgr: dbMgr, tx: tx, lastResult: lastResult, temps: temps });
+			for (let islemYapi of islemler) {
+				let _e = $.extend({}, e, { dbMgr: dbMgr, tx: tx, lastResult: lastResult, temps: temps });
 				//if (!hasTx)
 				//	tx = e.tx = _e.tx = await dbMgr.getTx()
 				let uygunmu = true;
 				let kosulluDegisiklikmi = false;
-				const {kosul} = islemYapi;
+				let {kosul} = islemYapi;
 				if (kosul != null) {
 					if ($.isFunction(kosul))
 						uygunmu = await kosul.call(this, _e)
@@ -2650,9 +2699,9 @@
 				tx = e.tx = _e.tx;
 				if (!uygunmu)
 					continue
-				const {queries, action} = islemYapi;
+				let {queries, action} = islemYapi;
 				if (!$.isEmptyObject(queries)) {
-					for (const query of queries) {
+					for (let query of queries) {
 						try {
 							await dbMgr.executeSql({ tx: tx, query: query });
 							/*.replaceAll('INDEX IF NOT EXISTS ', 'INDEX ')
@@ -2687,13 +2736,13 @@
 				tx = e.tx = await dbMgr.getTx();
 			
 			if (dbMgr.alaSQLmi && !dbMgr.isIndexedDB) {
-				const promises = [];
-				const {db} = dbMgr;
-				const colName = 'rowid';
-				for (const [table, tableObj] of Object.entries(db.tables)) {
+				let promises = [];
+				let {db} = dbMgr;
+				let colName = 'rowid';
+				for (let [table, tableObj] of Object.entries(db.tables)) {
 					if ($.isEmptyObject(tableObj.xcolumns) && !$.isEmptyObject(tableObj.columns))
 						tableObj.indexColumns()
-					const {xcolumns, pk} = tableObj;
+					let {xcolumns, pk} = tableObj;
 					if (!xcolumns || !xcolumns[colName]) {
 						let pkClause = $.isEmptyObject(pk?.columns) ? ' PRIMARY KEY' : '';
 						promises.push(new $.Deferred(async p => {
@@ -2705,8 +2754,8 @@
 				await Promise.all(promises)
 			}
 			if (degistimi && !asBool(e.noCacheReset) && navigator.onLine) {
-				const cacheKeys = window.caches ? await window.caches.keys() : [];
-				const cacheSize = cacheKeys.length;
+				let cacheKeys = window.caches ? await window.caches.keys() : [];
+				let cacheSize = cacheKeys.length;
 				if (cacheSize)
 					this.onbellekSilIstendi()
 			}
@@ -2722,7 +2771,7 @@
 				if (param.ilkKM) { _param.ilkKM = param.ilkKM }
 				if (param.sonKM) { _param.sonKM = param.sonKM }
 				if (param.mustKod2Bilgi) {
-					for (const [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
+					for (let [mustKod, bilgi] of Object.entries(param.mustKod2Bilgi)) {
 						if ($.isEmptyObject(bilgi)) { continue }
 						let _mustKod2Bilgi = _param.mustKod2Bilgi = _param.mustKod2Bilgi || {}; _mustKod2Bilgi[mustKod] = bilgi
 					}
@@ -2766,7 +2815,7 @@
 					}
 				}*/
 				if (!$.isEmptyObject(tanimTablolar)) {
-					for (const table of tanimTablolar) {
+					for (let table of tanimTablolar) {
 						let sent = new MQSent({
 							from: table, where: [`gonderildi = ''`],
 							sahalar: [`'${table}' _table`, `'tanim' _tip`, ...(alaSQLmi ? [] : ['rowid']), '*']
@@ -2778,7 +2827,7 @@
 			return result
 		}
 		async merkezdenBilgiYukle(e) {
-			e = $.extend({}, e); const {isDevMode} = this, {silent, verilerSilinmesinFlag} = e, {table2TipAdi} = this;
+			e = $.extend({}, e); let {isDevMode} = this, {silent, verilerSilinmesinFlag} = e, {table2TipAdi} = this;
 			if (!silent && !verilerSilinmesinFlag) {
 				let gonderilecekBilgiler = await this.gonderilecekBilgiler(e);
 				if (gonderilecekBilgiler?.totalCount) {
@@ -2820,7 +2869,7 @@
 				}
 			}
 			await this.knobProgressShow(); await this.knobProgressReset();
-			const dbMgrKeys = ['rom_data'];
+			let dbMgrKeys = ['rom_data'];
 			/*if (!e.verilerSilinmesinFlag) { dbMgrKeys.push('data') }*/
 			$.extend(e, { dbMgrKeys, dbMgr: this.dbMgrs.rom_data });
 			let result, {knobProgressPart} = this,  progressMaxValue = 200, savedProgressMaxValue = knobProgressPart.progress.jqxKnob('max');
@@ -2848,14 +2897,14 @@
 
 		async merkezdenBilgiYukleDevam(e) {
 			e = e || {}; this.prefetchAbortedFlag = true;
-			const {appMagazaVeyaSDMmi} = this.class, {isDevMode} = this, {dbMgrKeys, dbMgr, verilerSilinmesinFlag} = e, dbMgr_param = this.dbMgrs.param;
+			let {appMagazaVeyaSDMmi} = this.class, {isDevMode} = this, {dbMgrKeys, dbMgr, verilerSilinmesinFlag} = e, dbMgr_param = this.dbMgrs.param;
 			let wsFetches = e.wsFetches = {}, _param = this.param, islemAdi, _rec, recs, subCount, hvListe;
 			if (this.kmTakibiYapilirmi) {
-				const _e = { otoGondermi: true, bilgiGonderTableYapilari: [] };
+				let _e = { otoGondermi: true, bilgiGonderTableYapilari: [] };
 				try {
 					/*await this.merkezeBilgiGonderOnKontrol(_e);*/ _param = this.param; _param.kapandimi = true; await _param.kaydet();
-					_param.ilkKM = _param.sonKM = null; const _result = await this.merkezeBilgiGonder(_e); if (_result?.isError) { throw _result }
-					const hataliTable2FisIDListe = _result?.hataliTable2FisIDListe || {};
+					_param.ilkKM = _param.sonKM = null; let _result = await this.merkezeBilgiGonder(_e); if (_result?.isError) { throw _result }
+					let hataliTable2FisIDListe = _result?.hataliTable2FisIDListe || {};
 					if (!$.isEmptyObject(hataliTable2FisIDListe)) { throw { isError: true, rc: 'warnings', errorText: 'Bazı belgeler merkeze gönderilemedi' } }
 					await _param.kaydet()
 				}
@@ -2874,15 +2923,15 @@
 			subCount = 5;
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
-			const param = this.param = new this.param.class();
-			for (const key of param.class.sabitAttrListe) { let value = _param[key]; if (value != null) { param[key] = value } }
-			for (const key in _rec) { const value = _rec[key]; if (value != null) { param[key] = value } }
-			param.ilkKM = null; for (const key of ['ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi']) { param[key] = false }
+			let param = this.param = new this.param.class();
+			for (let key of param.class.sabitAttrListe) { let value = _param[key]; if (value != null) { param[key] = value } }
+			for (let key in _rec) { let value = _rec[key]; if (value != null) { param[key] = value } }
+			param.ilkKM = null; for (let key of ['ilkKMGirildimi', 'sonKMGirildimi', 'ilkIrsaliyeRaporuAlindimi']) { param[key] = false }
 			await param.kaydet(); await this.ortakReset(e);
 			/*delete this._fisAdimKisitIDSet; delete this._menuAdimKisitIDSet;*/ delete this._ekOzellikKullanim;
-			let {tx} = e; const _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} }); this._bilgiYukleYapiliyorFlag = true;
+			let {tx} = e; let _e = $.extend({}, e, { tx, dbMgrKeys, verilerSilinmesinFlag, temps: {} }); this._bilgiYukleYapiliyorFlag = true;
 			await this.tablolariTemizle(_e); delete _e.verilerSilinmesinFlag; await this.tablolariOlustur(_e); tx = e.tx = _e.tx;
-			const {sicakTeslimFisimi, tip2EkOzellik, ozelKampanyaKullanilirmi} = this;
+			let {sicakTeslimFisimi, tip2EkOzellik, ozelKampanyaKullanilirmi} = this;
 			islemAdi = 'Numaratör listesi';
 			$.extend(wsFetches, {															// next prefetch
 				ugramaSebep: this.wsUgramaSebepListe(),
@@ -2898,7 +2947,7 @@
 			
 			hvListe = [];
 			Object.values(recs).forEach(rec => {
-				const tipVeOzelIsaret =
+				let tipVeOzelIsaret =
 					rec.tip || rec.Tip
 						? { tip: rec.tip || rec.Tip, ozelIsaret: '', efAyrimTipi: '' }
 						: CETNumarator.wsBelirtec2TipVeOzelIsaret({
@@ -2987,10 +3036,10 @@
 
 			islemAdi = 'Döviz listesi';
 			recs = await this.fetchWSRecs({ source: wsFetches.dovizListe, islemAdi: islemAdi, step: 1 });
-			const dvKod2Rec = {};
+			let dvKod2Rec = {};
 			await (async () => {
-				const _recs = await this.fetchWSRecs({ source: wsFetches.dvKurListe, islemAdi: islemAdi, step: 1 });
-				for (const rec of _recs)
+				let _recs = await this.fetchWSRecs({ source: wsFetches.dvKurListe, islemAdi: islemAdi, step: 1 });
+				for (let rec of _recs)
 					dvKod2Rec[rec.kod] = rec
 			})();
 			// subCount = asInteger(recs.length / 2);
@@ -3000,9 +3049,9 @@
 			hvListe = [
 				{ kod: '', aciklama: '', alimKur: 0, satisKur: 0 }
 			];
-			for (const _rec of recs) {
-				const {kod, aciklama} = _rec;
-				const rec = dvKod2Rec[kod] || {};
+			for (let _rec of recs) {
+				let {kod, aciklama} = _rec;
+				let rec = dvKod2Rec[kod] || {};
 				hvListe.push({
 					kod: kod, aciklama: aciklama || '',
 					alimKur: asFloat(rec.efekalis || rec.dovizalis || rec.alimkur || rec.sonalimkur) || 0,
@@ -3182,7 +3231,7 @@
 			if (ozelKampanyaKullanilirmi) { wsFetches.ozelKampanyaListe = await this.wsOzelKampanyaListe() }
 			recs = await this.fetchWSRecs({ source: wsFetches.stokGrup, islemAdi, step: 1 });
 			subCount = 1; await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
-			hvListe = []; for (const rec of recs) { hvListe.push({ kod: rec.kod, aciklama: rec.aciklama || '' }) }
+			hvListe = []; for (let rec of recs) { hvListe.push({ kod: rec.kod, aciklama: rec.aciklama || '' }) }
 			await dbMgr.insertOrReplaceTable({
 				table: 'mst_StokGrup', mode: 'insertIgnore', hvListe,
 				parcaCallback: e => { if (e.index % subCount == 0) { this.knobProgressStep() } }
@@ -3191,7 +3240,7 @@
 			islemAdi = 'Promosyon Grup Detayları';
 			recs = await this.fetchWSRecs({ source: wsFetches.proGrupDetaylar, islemAdi, step: 1 });
 			subCount = 1; await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
-			hvListe = []; for (const rec of recs) { hvListe.push({ proGrupKod: rec.proGrupKod, stokKod: rec.stokKod }) }
+			hvListe = []; for (let rec of recs) { hvListe.push({ proGrupKod: rec.proGrupKod, stokKod: rec.stokKod }) }
 			await dbMgr.insertOrReplaceTable({
 				table: 'mst_ProGrup2Stok', mode: 'insertIgnore', hvListe,
 				parcaCallback: e => { if (e.index % subCount == 0) { this.knobProgressStep() } }
@@ -3245,7 +3294,7 @@
 				});
 			}
 
-			const {rbkKullanilirmi} = this;
+			let {rbkKullanilirmi} = this;
 			if (rbkKullanilirmi) {
 				$.extend(wsFetches, {
 					rbk2ABListe: this.wsRBK2ABListe(),
@@ -3282,11 +3331,11 @@
 			subCount = 1;
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
-			const mustKod2RiskBakiyeRec = {};
+			let mustKod2RiskBakiyeRec = {};
 			recs.forEach(rec => {
-				const mustKod = rec.kod;
+				let mustKod = rec.kod;
 				if (mustKod) {
-					const _rec = {
+					let _rec = {
 						riskLimiti: asFloat(rec.risklimiti) || 0,
 						bakiye: asFloat(rec.bakiye) || 0,
 						riskli: asFloat(rec.riskli) || 0,
@@ -3310,7 +3359,7 @@
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 				
 				hvListe = [];
-				for (const rec of recs) {
+				for (let rec of recs) {
 					hvListe.push({
 						kod: rec.kod || '', aciklama: rec.aciklama || ''
 					})
@@ -3337,7 +3386,7 @@
 			hvListe = [];
 			let maxSeq = 0;
 			await (async () => {
-				const sent = new MQSent({
+				let sent = new MQSent({
 					from: 'mst_Cari',
 					where: [
 						`(seq IS NOT NULL AND seq > 0)`,
@@ -3347,18 +3396,18 @@
 				});
 				maxSeq = asInteger(await dbMgr.tekilDegerExecuteSelect({ query: sent })) || 0;
 			})();
-			for (const rec of recs) {
-				const {kod} = rec;
+			for (let rec of recs) {
+				let {kod} = rec;
 				let seq = asInteger(rec.seq) || 0;
-				const bakiyeRiskRec = mustKod2RiskBakiyeRec[kod];
+				let bakiyeRiskRec = mustKod2RiskBakiyeRec[kod];
 				if (bakiyeRiskRec) {
-					const keys = [
+					let keys = [
 						'bakiye', 'riskLimiti', 'riskli',
 						'takipBorcLimiti', 'takipBorc'
 					];
-					for (const i in keys) {
-						const key = keys[i];
-						const keyLower = key.toLowerCase();
+					for (let i in keys) {
+						let key = keys[i];
+						let keyLower = key.toLowerCase();
 						let value = asFloat(rec[keyLower]);
 						if (!value)
 							value = rec[keyLower] = bakiyeRiskRec[key];
@@ -3391,13 +3440,13 @@
 					adres: [rec.adres1 || '', rec.adres2 || ''].join(' ')
 				};
 					/* orjBakiye, orjRiskli, orjTakipBorc */
-				const keyDonusum = {
+				let keyDonusum = {
 					bakiye: 'orjBakiye',
 					riskli: 'orjRiskli',
 					takipBorc: 'orjTakipBorc'
 				};
-				for (const asilKey in keyDonusum) {
-					const orjKey = keyDonusum[asilKey];
+				for (let asilKey in keyDonusum) {
+					let orjKey = keyDonusum[asilKey];
 					hv[orjKey] = hv[asilKey];
 				}
 				hvListe.push(hv);
@@ -3412,8 +3461,8 @@
 
 			await this.merkezdenBilgiYukleDevam_ekOzellikler(e);
 
-			const Prefix_EkOz = `ekOz_`;
-			const ekOzellikIDSahalar = CETEkOzellikler.idSahalar;
+			let Prefix_EkOz = `ekOz_`;
+			let ekOzellikIDSahalar = CETEkOzellikler.idSahalar;
 			$.extend(wsFetches, {																// next prefetch
 				urunPaket: this.wsUrunPaketListe(),
 				promosyon: this.wsPromosyonListe(),
@@ -3434,17 +3483,17 @@
 			hvListe = [];
 			let hvListe_sonStok = [];
 			recs.forEach(rec => {
-				const sonStok = (sicakTeslimFisimi ? asFloat(rec.sonmiktar || rec.miktar || rec.sonstok) : null) || 0;
-				const olasiFark = (sicakTeslimFisimi ? asFloat(rec.olasifark) : null) || 0;
-				const iskDegisebilirFlag = asBoolQ(rec.iskdegisebilir);
-				const satirIskOranSinirVarmi = (
+				let sonStok = (sicakTeslimFisimi ? asFloat(rec.sonmiktar || rec.miktar || rec.sonstok) : null) || 0;
+				let olasiFark = (sicakTeslimFisimi ? asFloat(rec.olasifark) : null) || 0;
+				let iskDegisebilirFlag = asBoolQ(rec.iskdegisebilir);
+				let satirIskOranSinirVarmi = (
 					iskDegisebilirFlag == null
 						? false
 						: iskDegisebilirFlag === true
 							? asBool(rec.isksinirlanir)
 							: true
 				);
-				const satirIskOranSinir = (
+				let satirIskOranSinir = (
 					iskDegisebilirFlag === false
 						? 0
 						: (rec.iskmax == null
@@ -3504,18 +3553,18 @@
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 				hvListe = [];
 				recs.forEach(rec => {
-					const miktar = asFloat((rec.sonmiktar || rec.miktar || rec.sonStok) || 0);
-					const olasiFark = asFloat(rec.olasifark) || 0;
+					let miktar = asFloat((rec.sonmiktar || rec.miktar || rec.sonStok) || 0);
+					let olasiFark = asFloat(rec.olasifark) || 0;
 					if (miktar || olasiFark) {
-						const hv = {
+						let hv = {
 							stokKod: rec.stokkod, yerKod: rec.yerkod || '',
 							orjMiktar: miktar, miktar: miktar,
 							olasiFark: olasiFark
 						};
 						if (!$.isEmptyObject(ekOzellikIDSahalar)) {
-							for (const idSaha of ekOzellikIDSahalar) {
-								const recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
-								const value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
+							for (let idSaha of ekOzellikIDSahalar) {
+								let recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
+								let value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
 								hv[idSaha] = value || ''
 							}
 						}
@@ -3551,7 +3600,7 @@
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
 			hvListe = [];
-			for (const rec of recs) {
+			for (let rec of recs) {
 				hvListe.push({
 					stokKod: rec.urunkod || rec.stokkod || '',
 					paketKod: rec.paketkod || '',
@@ -3574,16 +3623,16 @@
 			subCount = asInteger(recs.length / 8);
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 
-			const barkodRef_ekOzellikTipSet = CETBarkodParser_Referans.uygunEkOzellikTipSet;
+			let barkodRef_ekOzellikTipSet = CETBarkodParser_Referans.uygunEkOzellikTipSet;
 			hvListe = [];
 			recs.forEach(rec => {
 				var hv = {
 					refKod: rec.refkod, stokKod: rec.stokkod, varsayilanmi: bool2Int(rec.varsayilan),
 					koliBarkodmu: bool2Int(rec.bkolibarkodmu), paketKod: rec.paketkod || '', koliIci: asFloat(rec.koliici) || 0
 				};
-				for (const tip of Object.keys(barkodRef_ekOzellikTipSet)) {
-					const ekOzellik = tip2EkOzellik[tip] || {}, {idSaha} = ekOzellik;
-					const recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
+				for (let tip of Object.keys(barkodRef_ekOzellikTipSet)) {
+					let ekOzellik = tip2EkOzellik[tip] || {}, {idSaha} = ekOzellik;
+					let recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
 					let value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
 					hv[idSaha] = value || '';
 				}
@@ -3627,8 +3676,8 @@
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
 			hvListe = [];
-			for (const rec of recs) {
-				const hv = {
+			for (let rec of recs) {
+				let hv = {
 					kod: rec.kod || rec.id, aciklama: rec.aciklama || '',
 					formatTipi: rec.formattipi || '', bosFormat: rec.bosformat || '',
 					ayiracSayi: asInteger(rec.ayiracsayi) || 0, ayiracStr: rec.ayiracstr || '',
@@ -3652,8 +3701,8 @@
 					rafBas: rec.rafbas || 0, rafHane: rec.rafhane || 0
 				};
 				for (let i = 1; i <= 9; i++) {
-					const keyPrefix_hv = `ekOz${i}`;
-					const keyPrefix_rec = `ekoz${i}`;
+					let keyPrefix_hv = `ekOz${i}`;
+					let keyPrefix_rec = `ekoz${i}`;
 					hv[`${keyPrefix_hv}Bas`] = rec[`${keyPrefix_rec}bas`] || 0;
 					hv[`${keyPrefix_hv}Hane`] = rec[`${keyPrefix_rec}hane`] || 0;
 				}
@@ -3673,10 +3722,10 @@
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 				hvListe = [];
 				let seq = 0;
-				for (const rec of recs) {
-					const _seq = asInteger(rec.seq) || 0;
+				for (let rec of recs) {
+					let _seq = asInteger(rec.seq) || 0;
 					seq = Math.max(seq, _seq) + 1;
-					const hv = {
+					let hv = {
 						// vioID: rec.vioID, rec.vioid || rec.id,
 						seq: seq, kategoriKod: rec.kategorikod || null,
 						abKod: rec.abkod || rec.beden || null,
@@ -3698,8 +3747,8 @@
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 				
 				hvListe = [];
-				for (const rec of recs) {
-					const hv = {
+				for (let rec of recs) {
+					let hv = {
 						// vioID: rec.vioID, rec.vioid || rec.id,
 						bedenKategoriKod: rec.bkatkod || null,
 						asortiKod: rec.asortikod || null,
@@ -3721,8 +3770,8 @@
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 				
 				hvListe = [];
-				for (const rec of recs) {
-					const hv = {
+				for (let rec of recs) {
+					let hv = {
 						// vioID: rec.vioID, rec.vioid || rec.id,
 						stokKod: rec.stokKod || rec.stokkod || null,
 						desenKod: rec.desenKod || rec.desenkod || '',
@@ -3750,10 +3799,10 @@
 					await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 
 					hvListe = [];
-					const {idSahalarSiparis} = CETEkOzellikler;
-					for (const rec of recs) {
-						const bekleyenMiktar = asFloat(rec.bekleyenmiktar || rec.bekleyenMiktar || rec.miktar) || 0;
-						const hv = {
+					let {idSahalarSiparis} = CETEkOzellikler;
+					for (let rec of recs) {
+						let bekleyenMiktar = asFloat(rec.bekleyenmiktar || rec.bekleyenMiktar || rec.miktar) || 0;
+						let hv = {
 							vioID: asInteger(rec.vioID || rec.vioid || rec.id || rec.kaysayac), tarih: rec.tarih || '',
 							teslimTarih: rec.teslimtarih || rec.teslimtarihi || rec.teslimTarih || rec.teslimTarihi ||'',
 							ayrimTipi: rec.ayrimTipi || rec.ayrimtipi || '', teslimYerKod: rec.xadreskod || '', nakSekliKod: rec.nakseklikod || '',
@@ -3764,9 +3813,9 @@
 							bekleyenMiktar: bekleyenMiktar, kalanMiktar: bekleyenMiktar
 						};
 						if (!$.isEmptyObject(idSahalarSiparis)) {
-							const Prefix_EkOz = `ekOz_`;
-							for (const idSaha of idSahalarSiparis) {
-								const recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
+							let Prefix_EkOz = `ekOz_`;
+							for (let idSaha of idSahalarSiparis) {
+								let recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
 								let value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
 								hv[idSaha] = value || ''
 							}
@@ -3798,7 +3847,7 @@
 				}
 			})()
 
-			const {oncekiFislerGosterilmezmi} = this;
+			let {oncekiFislerGosterilmezmi} = this;
 			if (!oncekiFislerGosterilmezmi) {
 				$.extend(wsFetches, { oncekiFisler: this.wsOncekiFisler() });						// next prefetch
 				(async () => {
@@ -3807,31 +3856,31 @@
 					// subCount = asInteger(recs.length / 3);
 					subCount = 8;
 					await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
-					const removeAttrList = ['_table', '_harTable', 'har_fissayac', 'fissayac', 'fisSayac', 'kaysayac', 'kaySayac'];
+					let removeAttrList = ['_table', '_harTable', 'har_fissayac', 'fissayac', 'fisSayac', 'kaysayac', 'kaySayac'];
 					let table2VioID2RowID = {};
-					const hasTx = !!e.tx;
+					let hasTx = !!e.tx;
 					let tx = await dbMgr.getTx({ tx: e.tx });
-					const deletedTablesSet = {};
-					const PrefixFis = 'fis_';
-					for (const rec of recs) {
-						const table = rec._table;
+					let deletedTablesSet = {};
+					let PrefixFis = 'fis_';
+					for (let rec of recs) {
+						let table = rec._table;
 						if (!table)
 							continue
-						const vioID = rec.fissayac || rec.fisSayac;
-						const vioID2RowID = table2VioID2RowID[table] = table2VioID2RowID[table] || {};
+						let vioID = rec.fissayac || rec.fisSayac;
+						let vioID2RowID = table2VioID2RowID[table] = table2VioID2RowID[table] || {};
 						if (!vioID2RowID[vioID]) {
-							const hv = { rapor: '*', gonderildi: '*', vioID: vioID };
+							let hv = { rapor: '*', gonderildi: '*', vioID: vioID };
 							for (let key in rec) {
-								const value = rec[key];
+								let value = rec[key];
 								if (value != null && key.startsWith(PrefixFis)) {
 									key = key.substr(PrefixFis.length);
 									hv[key] = value
 								}
 							}
-							for (const key of removeAttrList)
+							for (let key of removeAttrList)
 								delete hv[key]
 							if (!deletedTablesSet[table]) {
-								const del = new MQIliskiliDelete({ from: table, where: [`rapor <> ''`] });
+								let del = new MQIliskiliDelete({ from: table, where: [`rapor <> ''`] });
 								await dbMgr.executeSql({ tx: tx, query: del });
 								deletedTablesSet[table] = true
 							}
@@ -3852,54 +3901,54 @@
 						}
 					}
 		
-					const harTable2HVListe = [], harTable2FisTable = {};
-					const table2RowID2SonSeq = {};
-					for (const rec of recs) {
-						const table = rec._table;
-						const harTable = rec._harTable;
+					let harTable2HVListe = [], harTable2FisTable = {};
+					let table2RowID2SonSeq = {};
+					for (let rec of recs) {
+						let table = rec._table;
+						let harTable = rec._harTable;
 						if (!harTable)
 							continue
 						if (table && !harTable2FisTable[harTable])
 							harTable2FisTable[harTable] = table
-						const vioID = rec.fissayac || rec.fisSayac;
-						const hvListe = harTable2HVListe[harTable] = harTable2HVListe[harTable] || [];
-						const vioID2RowID = table ? table2VioID2RowID[table] || {} : null;
-						const rowID = table ? vioID2RowID[vioID] : null;
-						const rowID2SonSeq = table2RowID2SonSeq[harTable] = table2RowID2SonSeq[harTable] || {};
-						const seq = rowID2SonSeq[rowID] = (rowID2SonSeq[rowID] || 0) + 1;
+						let vioID = rec.fissayac || rec.fisSayac;
+						let hvListe = harTable2HVListe[harTable] = harTable2HVListe[harTable] || [];
+						let vioID2RowID = table ? table2VioID2RowID[table] || {} : null;
+						let rowID = table ? vioID2RowID[vioID] : null;
+						let rowID2SonSeq = table2RowID2SonSeq[harTable] = table2RowID2SonSeq[harTable] || {};
+						let seq = rowID2SonSeq[rowID] = (rowID2SonSeq[rowID] || 0) + 1;
 						if (rec.fis_iade) {
-							const keys = ['miktar', 'belgebedel', 'belgebrutbedel'];
-							for (const key in keys) {
+							let keys = ['miktar', 'belgebedel', 'belgebrutbedel'];
+							for (let key in keys) {
 								let value = rec[key];
 								if (typeof value == 'number' && value < 0)
 									hv[key] = value = Math.abs(value)
 							}
 						}
-						const hv = {};
+						let hv = {};
 						for (let key in rec) {
 							let value = rec[key];
 							if (value != null && !key.startsWith(PrefixFis))						
 								hv[key] = value;
 						}
-						for (const key of removeAttrList)
+						for (let key of removeAttrList)
 							delete hv[key]
 						if (rowID)
 							hv.fissayac = rowID
 						hv.seq = seq;
 						hvListe.push(hv)
 					}
-					for (const harTable in harTable2HVListe) {
+					for (let harTable in harTable2HVListe) {
 						if (!deletedTablesSet[harTable]) {
-							const table = harTable2FisTable[harTable];
+							let table = harTable2FisTable[harTable];
 							if (table) {
-								const del = new MQIliskiliDelete({ from: harTable });
+								let del = new MQIliskiliDelete({ from: harTable });
 								if (table)
 									del.where.add(`fissayac IN (SELECT rowid fissayac FROM ${table} WHERE rapor <> '')`)
 								await dbMgr.executeSql({ tx: tx, query: del });
 								deletedTablesSet[harTable] = true
 							}
 						}
-						const hvListe = harTable2HVListe[harTable];
+						let hvListe = harTable2HVListe[harTable];
 						if (!$.isEmptyObject(hvListe)) {
 							try {
 								await dbMgr.insertOrReplaceTable({
@@ -3932,11 +3981,11 @@
 				let hasTx = !!e.tx;
 				let tx = await dbMgr.getTx({ tx: e.tx });
 				for (let i in recs) {
-					const rec = recs[i];
-					const {fisSayac, etAdimTipi, aciklama} = rec;
-					const anahStr = getAnahtarStr(rec);
+					let rec = recs[i];
+					let {fisSayac, etAdimTipi, aciklama} = rec;
+					let anahStr = getAnahtarStr(rec);
 					if (fisSayac && !vioID2RowID[anahStr] && etAdimTipi && aciklama) {
-						const hv = { etAdimTipi: etAdimTipi, aciklama: aciklama };
+						let hv = { etAdimTipi: etAdimTipi, aciklama: aciklama };
 						await dbMgr.insertOrReplaceTable({
 							table: 'mst_SablonFis', mode: 'insertIgnore', hv: hv,
 							parcaCallback: e => {
@@ -3950,25 +3999,25 @@
 					}
 				}
 
-				const ekOzelliklerIDSahalar = CETEkOzellikler.idSahalar;
+				let ekOzelliklerIDSahalar = CETEkOzellikler.idSahalar;
 				hvListe = [];
 				let rowID2SonSeq = {};
 				for (let i in recs) {
-					const rec = recs[i];
-					const vioID = getAnahtarStr(rec);
-					const fisSayac = vioID2RowID[vioID];
+					let rec = recs[i];
+					let vioID = getAnahtarStr(rec);
+					let fisSayac = vioID2RowID[vioID];
 					if (fisSayac) {
-						const seq = rowID2SonSeq[fisSayac] = (rowID2SonSeq[fisSayac] || 0) + 1;
-						const hv = {
+						let seq = rowID2SonSeq[fisSayac] = (rowID2SonSeq[fisSayac] || 0) + 1;
+						let hv = {
 							fissayac: fisSayac, seq: seq, shKod: rec.shKod || '', miktar: asFloat(rec.miktar) || 0, fiyat: asFloat(rec.asilFiyat) || 0,
 							iskOran1: asFloat(rec.iskOran1) || 0, iskOran2: asFloat(rec.iskOran2) || 0, iskOran3: asFloat(rec.iskOran3) || 0,
 							detAciklama: rec.ekAciklama || ''
 						};
 						if (!$.isEmptyObject(ekOzelliklerIDSahalar)) {
-							const Prefix_EkOz = `ekOz_`;
-							for (const i in ekOzelliklerIDSahalar) {
-								const idSaha = ekOzelliklerIDSahalar[i];
-								const recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
+							let Prefix_EkOz = `ekOz_`;
+							for (let i in ekOzelliklerIDSahalar) {
+								let idSaha = ekOzelliklerIDSahalar[i];
+								let recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
 								let value = rec[recAttr];			// !! recAttr lowerCase YAPMA !!
 								hv[idSaha] = value || '';
 							}
@@ -3996,9 +4045,9 @@
 
 		async merkezdenBilgiYukleDevam_ekOzellikler(e) {
 			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
-			const wsFetches = e.wsFetches || {};
-			const {tip2EkOzellik} = this;
+			let dbMgr = e.dbMgr || this.dbMgr_mf;
+			let wsFetches = e.wsFetches || {};
+			let {tip2EkOzellik} = this;
 			let islemAdi, recs, subCount, hvListe;
 
 			$.extend(wsFetches, {
@@ -4009,30 +4058,30 @@
 				desen: this.wsDesenListe()
 			});
 
-			const tip2EkOzellikRecs = e.tip2EkOzellikRecs = {};
+			let tip2EkOzellikRecs = e.tip2EkOzellikRecs = {};
 			islemAdi = 'Ek Özellikler';
 			try { recs = await this.fetchWSRecs({ source: wsFetches._ozellik, islemAdi: islemAdi, step: 1 }) }
 			catch (ex) { recs = null }
-			for (const rec of (recs || [])) {
-				const {tip} = rec;
-				const _recs = tip2EkOzellikRecs[tip] = tip2EkOzellikRecs[tip] || [];
+			for (let rec of (recs || [])) {
+				let {tip} = rec;
+				let _recs = tip2EkOzellikRecs[tip] = tip2EkOzellikRecs[tip] || [];
 				_recs.push(rec);
 			}
 
 			await this.ekOzellikler_tabloDuzenlemeleriYap_ilk(e);
 			
-			for (const tip in tip2EkOzellik) {
-				const ekOzellik = tip2EkOzellik[tip];
-				const {mbTable, mbKodSaha, mbAdiSaha, kodsuzmu, sadeceKodmu} = ekOzellik;
+			for (let tip in tip2EkOzellik) {
+				let ekOzellik = tip2EkOzellik[tip];
+				let {mbTable, mbKodSaha, mbAdiSaha, kodsuzmu, sadeceKodmu} = ekOzellik;
 				
-				const source = wsFetches[tip] || tip2EkOzellikRecs[tip];
+				let source = wsFetches[tip] || tip2EkOzellikRecs[tip];
 				recs = source ? await this.fetchWSRecs({ source: source, islemAdi: islemAdi, step: 1 }) : null;
 				if (!$.isEmptyObject(recs)) {
 					subCount = asInteger(recs.length / 10);
 					await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 					hvListe = [];
-					for (const rec of recs) {
-						const hv = {};
+					for (let rec of recs) {
+						let hv = {};
 						if (!kodsuzmu)
 							hv[mbKodSaha] = (rec[mbKodSaha] == null ? rec[mbKodSaha.toLowerCase()] : rec[mbKodSaha]);
 						if (!sadeceKodmu)
@@ -4075,28 +4124,28 @@
 		}
 		async ekOzellikler_tabloDuzenlemeleriYap_ilk(e) {
 			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
-			const {tip2EkOzellik} = this;
+			let dbMgr = e.dbMgr || this.dbMgr_mf;
+			let {tip2EkOzellik} = this;
 
-			const hmrTables = ['data_PIFStok', 'mst_SonStok', 'mst_SablonHar', 'data_BekleyenSiparisler'];
-			const mevcutSabitTipSet = asSet(['yer']);
+			let hmrTables = ['data_PIFStok', 'mst_SonStok', 'mst_SablonHar', 'data_BekleyenSiparisler'];
+			let mevcutSabitTipSet = asSet(['yer']);
 			
-			const tables = asSet(await dbMgr.tables());
-			const hmrSahaListe = ['stokKod', 'yerKod', 'rafKod'];
-			const hmrSahaSet = asSet(hmrSahaListe);
-			for (const tip in tip2EkOzellik) {
-				const ekOzellik = tip2EkOzellik[tip];
-				const {ozellikTip} = ekOzellik.class;
-				const kami = ozellikTip == 'ka';
-				const {tipAdi, idSaha} = ekOzellik;
-				const {mbTable, mbKodSaha, mbAdiSaha, kodsuzmu, sadeceKodmu} = ekOzellik;
+			let tables = asSet(await dbMgr.tables());
+			let hmrSahaListe = ['stokKod', 'yerKod', 'rafKod'];
+			let hmrSahaSet = asSet(hmrSahaListe);
+			for (let tip in tip2EkOzellik) {
+				let ekOzellik = tip2EkOzellik[tip];
+				let {ozellikTip} = ekOzellik.class;
+				let kami = ozellikTip == 'ka';
+				let {tipAdi, idSaha} = ekOzellik;
+				let {mbTable, mbKodSaha, mbAdiSaha, kodsuzmu, sadeceKodmu} = ekOzellik;
 
 				if (!hmrSahaSet[idSaha]) {
 					hmrSahaSet[idSaha] = true;
 					hmrSahaListe.push(idSaha);
 				}
 				
-				const queries = [];
+				let queries = [];
 				if (kami && mbTable && !tables[mbTable]) {
 					let sahaEklendimi = false;
 					let query = `CREATE TABLE IF NOT EXISTS ${mbTable} (`;
@@ -4115,7 +4164,7 @@
 				}
 
 				if (!mevcutSabitTipSet[tip]) {
-					for (const hmrTable of hmrTables) {
+					for (let hmrTable of hmrTables) {
 						switch (hmrTable) {
 							case 'data_BekleyenSiparisler':
 								if (tip == 'yer' || tip == 'raf' || tip == 'refRaf' || tip == 'lotNo')
@@ -4133,7 +4182,7 @@
 
 				if (!$.isEmptyObject(queries)) {
 					await this.knobProgressSetLabel(`Veritabanı yapısı düzenleniyor...`);
-					for (const query of queries) {
+					for (let query of queries) {
 						try { await dbMgr.executeSql({ query: query }) }
 						catch (ex) { console.info('-ignorable-', 'auto db update', ex, { query: query } ) }
 						this.knobProgressStep(2);
@@ -4143,38 +4192,38 @@
 		}
 		async ekOzellikler_tabloDuzenlemeleriYap_son(e) {
 			e = e || {};
-			const dbMgr = e.dbMgr || this.dbMgr_mf;
-			const {tip2EkOzellik} = this;
+			let dbMgr = e.dbMgr || this.dbMgr_mf;
+			let {tip2EkOzellik} = this;
 
-			const mevcutSabitTipSet = asSet(['yer']);
-			const tables = asSet(await dbMgr.tables());
-			const hmrSahaListe = ['stokKod', 'yerKod', 'rafKod'];
-			const hmrSahaSet = asSet(hmrSahaListe);
-			for (const tip in tip2EkOzellik) {
+			let mevcutSabitTipSet = asSet(['yer']);
+			let tables = asSet(await dbMgr.tables());
+			let hmrSahaListe = ['stokKod', 'yerKod', 'rafKod'];
+			let hmrSahaSet = asSet(hmrSahaListe);
+			for (let tip in tip2EkOzellik) {
 				if (tip == 'refRaf')
 					continue
-				const ekOzellik = tip2EkOzellik[tip];
-				const {ozellikTip} = ekOzellik.class;
-				const kami = ozellikTip == 'ka';
-				const {tipAdi, idSaha} = ekOzellik;
-				const {mbTable, mbKodSaha, mbAdiSaha, kodsuzmu, sadeceKodmu} = ekOzellik;
+				let ekOzellik = tip2EkOzellik[tip];
+				let {ozellikTip} = ekOzellik.class;
+				let kami = ozellikTip == 'ka';
+				let {tipAdi, idSaha} = ekOzellik;
+				let {mbTable, mbKodSaha, mbAdiSaha, kodsuzmu, sadeceKodmu} = ekOzellik;
 				if (!hmrSahaSet[idSaha]) {
 					hmrSahaSet[idSaha] = true;
 					hmrSahaListe.push(idSaha)
 				}
 			}
-			const queries = [];
+			let queries = [];
 			if (!$.isEmptyObject(hmrSahaListe)) {
-				const tables = ['mst_SonStok' /*, 'data_BekleyenSiparisler'*/];
-				for (const table of tables) {
-					const idxName = `idx${table}2Asil`;
+				let tables = ['mst_SonStok' /*, 'data_BekleyenSiparisler'*/];
+				for (let table of tables) {
+					let idxName = `idx${table}2Asil`;
 					queries.push(`DROP INDEX IF EXISTS ${idxName}`);
 					queries.push(`CREATE UNIQUE INDEX IF NOT EXISTS ${idxName} ON ${table} (${hmrSahaListe.join(', ')})`)
 				}
 			}
 			if (!$.isEmptyObject(queries)) {
 				await this.knobProgressSetLabel(`Veritabanı yapısı düzenleniyor...`);
-				for (const query of queries) {
+				for (let query of queries) {
 					try { await dbMgr.executeSql({ query: query }) }
 					catch (ex) { console.warn('-ignorable-', 'auto db update (global)', ex, query) }
 					this.knobProgressStep(2)
@@ -4183,8 +4232,8 @@
 		}
 
 		async merkezdenBilgiYukleDevam_satisKosullari(e) {
-			const {dbMgr, wsFetches} = e;
-			const {tip2EkOzellik, iskSayi, kamSayi, kadIskSayi} = this;
+			let {dbMgr, wsFetches} = e;
+			let {tip2EkOzellik, iskSayi, kamSayi, kadIskSayi} = this;
 			
 			let islemAdi = 'Satış Koşulları';
 			// wsFetches. ...  = this.ws ... Liste();
@@ -4194,17 +4243,17 @@
 			delete kosulYapilari.isError;
 			
 			let subCount = 0;
-			for (const liste of Object.values(kosulYapilari))
+			for (let liste of Object.values(kosulYapilari))
 				subCount += liste.length
 			subCount = subCount / 10;
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
 			let hvListe = [];
-			const mustKod2HVListe = {}, detayTip2Kod2HVListe = {};
-			for (const kosulTip in kosulYapilari) {
-				const kosulListe = kosulYapilari[kosulTip];
-				for (const kosul of kosulListe) {
-					const kapsamSecimler = kosul.kapsamSecimler || {};
+			let mustKod2HVListe = {}, detayTip2Kod2HVListe = {};
+			for (let kosulTip in kosulYapilari) {
+				let kosulListe = kosulYapilari[kosulTip];
+				for (let kosul of kosulListe) {
+					let kapsamSecimler = kosul.kapsamSecimler || {};
 					let kosulKod = kosul.kod || '';
 					let ozelMusteriListesiVarmi = asBool(kosul.ozelMusteriListesiVarmi);
 					
@@ -4217,13 +4266,13 @@
 						promosyonYapilmazmi: bool2Int(kosul.promosyonYapilmazmi)
 					};
 					
-					const convertedValue = e => {
+					let convertedValue = e => {
 						let value = (typeof e == 'object' ? e.value : e);
 						return e.converter
 								? e.converter.call(this, value, e)
 								: value
 					}
-					const bsEkle = e => {
+					let bsEkle = e => {
 						hv[`${e.rowAttr}Basi`] = convertedValue({ converter: e.converter, value: (kapsamSecimler[e.ioAttr] || {}).basi }) || '';
 						hv[`${e.rowAttr}Sonu`] = convertedValue({ converter: e.converter, value: (kapsamSecimler[e.ioAttr] || {}).sonu }) || ''
 					};
@@ -4238,20 +4287,20 @@
 					hvListe.push(hv);
 
 					let key = 'Musteri';
-					for (const rec of (kosul.kapsamMusteriler || [])) {
+					for (let rec of (kosul.kapsamMusteriler || [])) {
 						let kod = rec.must;
 						if (kod) {
-							const _hvListe = mustKod2HVListe[kod] = mustKod2HVListe[kod] || [];
+							let _hvListe = mustKod2HVListe[kod] = mustKod2HVListe[kod] || [];
 							_hvListe.push({ kosulTip: kosulTip, kosulKod: kosulKod, kod: kod })
 						}
 					}
 
 					key = 'Stok';
 					let detayKod2HVListe = detayTip2Kod2HVListe[key] = detayTip2Kod2HVListe[key] || {};
-					for (const rec of (kosul.kapsamStoklar || [])) {
+					for (let rec of (kosul.kapsamStoklar || [])) {
 						let kod = rec.stokkod;
 						if (kod) {
-							const hv = {
+							let hv = {
 								kosulTip: kosulTip, kosulKod: kosulKod, kod: kod, markaKod: rec.smarkakod || '',
 								fiyatMiktarTipi: rec.fiyatmiktartipi || '', kotaMiktar: asFloat(rec.kotamiktar) || 0,
 								rafFiyati: asFloat(rec.raffiyati) || 0, mfPay: asInteger(rec.mfpay) || 0, mfBaz: asInteger(rec.mfbaz),
@@ -4268,17 +4317,17 @@
 								hv[`kadHMiktar${i}`] = asFloat(rec[`miktardanitibaren${i}`]) || 0;
 								hv[`kadIskOran${i}`] = asFloat(rec[`kademeiskoran${i}`]) || 0
 							}
-							const _hvListe = detayKod2HVListe[kod] = detayKod2HVListe[kod] || [];
+							let _hvListe = detayKod2HVListe[kod] = detayKod2HVListe[kod] || [];
 							_hvListe.push(hv)
 						}
 					}
 
 					key = 'StokGrup';
 					detayKod2HVListe = detayTip2Kod2HVListe[key] = detayTip2Kod2HVListe[key] || {};
-					for (const rec of (kosul.kapsamStokGruplar || [])) {
+					for (let rec of (kosul.kapsamStokGruplar || [])) {
 						let kod = rec.grupkod;
 						if (kod) {
-							const hv = {
+							let hv = {
 								kosulTip: kosulTip, kosulKod: kosulKod, kod: kod, markaKod: rec.smarkakod || '', kotaMiktar: asFloat(rec.kotamiktar) || 0,
 								rafFiyati: asFloat(rec.raffiyati) || 0, mfPay: asInteger(rec.mfpay) || 0, mfBaz: asInteger(rec.mfbaz),
 								ozelFiyat: asFloat(rec.ozelfiyat) || 0, ozelDvFiyat: asFloat(rec.ozeldvfiyat) || 0,
@@ -4293,7 +4342,7 @@
 								hv[`kadHMiktar${i}`] = asFloat(rec[`miktardanitibaren${i}`]) || 0;
 								hv[`kadIskOran${i}`] = asFloat(rec[`kademeiskoran${i}`]) || 0
 							}
-							const _hvListe = detayKod2HVListe[kod] = detayKod2HVListe[kod] || [];
+							let _hvListe = detayKod2HVListe[kod] = detayKod2HVListe[kod] || [];
 							_hvListe.push(hv)
 						}
 					}
@@ -4423,10 +4472,10 @@
 		}
 
 		async merkezdenBilgiYukleDevam_promosyon(e) {
-			const {dbMgr, wsFetches} = e;
-			const islemAdi = 'Promosyon Listesi';
+			let {dbMgr, wsFetches} = e;
+			let islemAdi = 'Promosyon Listesi';
 			// wsFetches. ...  = this.ws ... Liste();
-			const recsYapi = await this.fetchWSRecs({ source: await wsFetches.promosyon, islemAdi: islemAdi, step: 10 });
+			let recsYapi = await this.fetchWSRecs({ source: await wsFetches.promosyon, islemAdi: islemAdi, step: 10 });
 			if (!recsYapi)
 				return false;
 			delete recsYapi.isError;
@@ -4437,20 +4486,20 @@
 			subCount = subCount / 10;
 			await this.knobProgressSetLabel(`${islemAdi} kaydediliyor...`);
 			
-			const convertedValue = e => {
+			let convertedValue = e => {
 				let value = (typeof e == 'object' ? e.value : e);
 				return e.converter
 						? e.converter.call(this, value, e)
 						: value
 			}
-			const bsEkle = e => {
+			let bsEkle = e => {
 				e.hv[`${e.rowAttr}Basi`] = convertedValue({ converter: e.converter, value: e.rec[`${e.ioAttr}b`] }) || '';
 				e.hv[`${e.rowAttr}Sonu`] = convertedValue({ converter: e.converter, value: e.rec[`${e.ioAttr}s`] }) || '';
 			};
-			const hvListeYapi = { baslik: [], musteri: [], kademe: [] };
+			let hvListeYapi = { baslik: [], musteri: [], kademe: [] };
 			let recs = recsYapi.Baslik; if (!$.isEmptyObject(recs)) {
-				for (const i in recs) {
-					const rec = recs[i]; let hv = ({
+				for (let i in recs) {
+					let rec = recs[i]; let hv = ({
 						proTip: rec.tipkod, kod: rec.kod, vioID: asInteger(rec.kaysayac) || null, aciklama: rec.aciklama || '', oncelik: rec.oncelik || 0,
 						veriTipi: rec.veritipi || '', vGrupKod: rec.vgrupkod || '', vStokKod: rec.vstokkod || '', vMiktar: asFloat(rec.vmiktar) || 0,
 						vBrm: rec.vbrm || '', vCiro: asFloat(rec.vciro) || 0, vCiroKdvlimi: bool2Int(rec.vcirokdvlimi),
@@ -4458,7 +4507,7 @@
 						hBrm: rec.hbrm || '', hDipIsk: asFloat(rec.hdipisk) || 0, hMFVarsaSatirIskKapat: bool2Int(rec.hmfvarsasatiriskkapat),
 						detayliMusterimi: bool2Int(rec.detaylimust), kademelimi: bool2Int(rec.kademelimi), hIskOran: rec.hproiskoran || 0
 					});
-					const {maxSayi} = CETPromosyon_OGRP1; for (let j = 1; j <= maxSayi; j++) {
+					let {maxSayi} = CETPromosyon_OGRP1; for (let j = 1; j <= maxSayi; j++) {
 						hv[`voGrup${j}Kod`] = rec[`vogrup${j}kod`] || ''; hv[`voGrup${j}Miktar`] = rec[`vogrup${j}miktar`] || 0;
 						if (j > 1) { hv[`voGrup${j}Varmi`] = bool2Int(rec[`vogrup${j}varmi`] ?? rec[`bvogrup${j}varmi`]) }
 					}
@@ -4500,7 +4549,7 @@
 			if (!$.isEmptyObject(recs)) {
 				await this.knobProgressSetLabel(`${islemAdi} kaydediliyor (Müşteriler)...`);
 				let seq = 0;
-				for (const rec of recs) {
+				for (let rec of recs) {
 					seq++;
 					let eKadar = asFloat(rec.ekadar) || 0;
 					if (eKadar) {
@@ -4523,7 +4572,7 @@
 		async merkezdenBilgiYukleDevam_bekleyenSayimFisler(e) { return null }
 		async merkezdenBilgiYukleDevam_bekleyenUgramaFisler(e) { return null }
 		async merkezdenBilgiYukleSonrasi(e) {
-			e = e || {}; const {sessionInfo} = sky.config;
+			e = e || {}; let {sessionInfo} = sky.config;
 			if (!sky.config.test && (sessionInfo?.hasSessionOrUser)) {
 				await this.knobProgressSetLabel('Oturum Bilgileri kaydediliyor...');
 				await this.extensions.login.dbSaveLogin({ clear: true });
@@ -4532,13 +4581,13 @@
 			await this.knobProgressSetLabel('Son işlemler...'); await this.merkezdenBilgiYukleSonrasiDevam(e); await this.knobProgressStep(8);
 			await this.ortakReset(e); this._bilgiYukleYapiliyorFlag = this.ozelKonfYuklendimi = false;
 			await this.onbellekOlustur(e); await this.knobProgressStep(3);
-			const {loadScriptsResultsPromise} = this; if (loadScriptsResultsPromise?.then) {
+			let {loadScriptsResultsPromise} = this; if (loadScriptsResultsPromise?.then) {
 				loadScriptsResultsPromise.then(async result => {
-					const {initCallbacks} = this;
+					let {initCallbacks} = this;
 					if (!$.isEmptyObject(initCallbacks)) {
 						if (!$.isEmptyObject(this.promisesWait)) { try { await Promise.all(this.promisesWait) } finally { delete this.promisesWait } }
 						for (let i in initCallbacks) {
-							const _result = await initCallbacks[i];
+							let _result = await initCallbacks[i];
 							try { if (_result && $.isFunction(_result.run)) { await _result.run(e) } } catch (ex) { defFailBlock(ex) }
 						}
 					}
@@ -4560,8 +4609,8 @@
 			e = e || {}; let {param, kmTakibiYapilirmi} = this;
 			let paramDegistimi = false; if (param.kapandimi) { param.kapandimi = false; paramDegistimi = true }
 			if (kmTakibiYapilirmi) {
-				const sonKM = param.sonKM || 0;
-				const ilkKM = param.ilkKM || 0;
+				let sonKM = param.sonKM || 0;
+				let ilkKM = param.ilkKM || 0;
 				if (sonKM < ilkKM) { param.sonKM = param.ilkKM; paramDegistimi = true }
 				if (ilkKM != sonKM) { param.ilkKM = param.sonKM; paramDegistimi = true }
 			}
@@ -4685,7 +4734,7 @@
 		async merkezeBilgiGonderDevam_internal(e) {
 			e = e || {}; let dbMgr = e.dbMgr || this.dbMgr_mf, {silent, otoGondermi, timer} = e;
 			let {bilgiGonderTableYapilari} = e; if (!bilgiGonderTableYapilari) { bilgiGonderTableYapilari = this.bilgiGonderTableYapilari }
-			let totalRecords = 0, kontroleEsasToplamSayi = 0; const {param} = this; let _param = e.param = e.param = {};
+			let totalRecords = 0, kontroleEsasToplamSayi = 0; let {param} = this; let _param = e.param = e.param = {};
 			if (this.kmTakibiYapilirmi /*param.kapandimi*/) { _param.kapandimi = true }
 			if (param.ilkKM) { _param.ilkKM = param.ilkKM } if (param.sonKM) { _param.sonKM = param.sonKM }
 			if (param.mustKod2Bilgi) {
@@ -4825,18 +4874,18 @@
 			return result
 		}
 		async merkezeBilgiGonderSonrasi(e) {
-			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf, bilgiGonderTableYapilari = e.bilgiGonderTableYapilari || this.bilgiGonderTableYapilari || [];
+			e = e || {}; let dbMgr = e.dbMgr || this.dbMgr_mf, bilgiGonderTableYapilari = e.bilgiGonderTableYapilari || this.bilgiGonderTableYapilari || [];
 			if ($.isEmptyObject(e.param) && $.isEmptyObject(bilgiGonderTableYapilari)) { return }
-			const minProgVersion = '4.14.5.7.1'.split('.').map(x => asInteger(x));
+			let minProgVersion = '4.14.5.7.1'.split('.').map(x => asInteger(x));
 			let {progVersion} = (await this.wsGetSessionInfo() || {}); if (progVersion) { progVersion = progVersion.split('.').map(x => asInteger(x)) }
-			const uygunSurummu = progVersion >= minProgVersion, {silent, otoGondermi, timer} = e, result = e.result || {};
-			const basariliTable2FisIDListe = uygunSurummu ? result.basariliTable2FisIDListe : null;
-			const hataliTable2FisIDListe = uygunSurummu ? null : result.hataliTable2FisIDListe;
-			const {toplamSayi} = e; let basariliSayi;
-			for (const tableYapi of bilgiGonderTableYapilari) {
+			let uygunSurummu = progVersion >= minProgVersion, {silent, otoGondermi, timer} = e, result = e.result || {};
+			let basariliTable2FisIDListe = uygunSurummu ? result.basariliTable2FisIDListe : null;
+			let hataliTable2FisIDListe = uygunSurummu ? null : result.hataliTable2FisIDListe;
+			let {toplamSayi} = e; let basariliSayi;
+			for (let tableYapi of bilgiGonderTableYapilari) {
 				let table = tableYapi.baslik;
 				if (table) {
-					const {fisIDListe} = tableYapi; let basariliFisIDListe = basariliTable2FisIDListe ? asSet(basariliTable2FisIDListe[table]) : null;
+					let {fisIDListe} = tableYapi; let basariliFisIDListe = basariliTable2FisIDListe ? asSet(basariliTable2FisIDListe[table]) : null;
 					basariliFisIDListe = basariliFisIDListe ? Object.keys(basariliFisIDListe).map(x => asInteger(x)) : null;
 					let hataliFisIDListe = hataliTable2FisIDListe ? asSet(hataliTable2FisIDListe[table]) : null;
 					hataliFisIDListe = hataliFisIDListe ? Object.keys(hataliFisIDListe).map(x => asInteger(x)) : null;
@@ -4868,7 +4917,7 @@
 					}
 				}
 			}
-			const {param} = this;
+			let {param} = this;
 			if (!(silent || otoGondermi || timer) && !e.hataSayi && this.kmTakibiYapilirmi && !e.bilgiGonderTableYapilari
 						&& !param.kapandimi && (basariliSayi == null || basariliSayi >= toplamSayi)) {
 				param.kapandimi = true; await param.kaydet();
@@ -4879,7 +4928,7 @@
 			e = e || {}; await this.kisitlamalariUygula();
 			if (this.dogrudanFisListeyeGirilirmi && (!this.activePart || this.activePart == this)) { await this.fisListesiIstendi(e) }
 			if (this.konumTakibiYapilirmi) { this.gpsTimer_start(e) } this.merkezeBilgiGonderTimer_start(e)
-			const {dbMgrs} = this; for (const dbMgr of Object.values(dbMgrs)) { if (dbMgr.dbSave) { await dbMgr.dbSave() } }
+			let {dbMgrs} = this; for (let dbMgr of Object.values(dbMgrs)) { if (dbMgr.dbSave) { await dbMgr.dbSave() } }
 		}
 		async fetchWSRecs(e) {
 			e = e || {}; let recs; await this.knobProgressSetLabel(`Merkezden ${e.islemAdi} alınıyor...`);
@@ -4888,7 +4937,7 @@
 				recs = e.source ? await e.source : null; if ($.isFunction(recs)) { recs = await recs.call(this, e) }
 				recs = e.recs = recs?.rows || recs || []
 			}
-			catch (ex) { const code = ex?.responseJSON?.rc ?? ex?.responseJSON?.code; if (code == 'islemHatali') { recs = e.recs = [] } else { throw ex } }
+			catch (ex) { let code = ex?.responseJSON?.rc ?? ex?.responseJSON?.code; if (code == 'islemHatali') { recs = e.recs = [] } else { throw ex } }
 			await this.knobProgressStep(e.step); return recs
 		}
 		async tablolariOlusturIslemi(e) { await this.tablolariOlustur(e); await this.tabloEksikleriTamamla(e) }
@@ -4907,12 +4956,12 @@
 		paramYukleSonrasi(e) { }
 		async paramKaydet(e) {
 			await this.knobProgressSetLabel(`Parametreler kaydediliyor...`);
-			const eskiParam = this.param || {}; let {param} = e; param.version = param.version || eskiParam.version || param.class.version;
+			let eskiParam = this.param || {}; let {param} = e; param.version = param.version || eskiParam.version || param.class.version;
 			await param.kaydet({ parcaCallback: e => this.knobProgressStep(2) }); this.param = param;
 			let degistimi = eskiParam.wsHostNameUyarlanmis && eskiParam.wsPort && !(eskiParam.wsHostNameUyarlanmis == param.wsHostNameUyarlanmis && eskiParam.wsPort == param.wsPort);
-			const hasQSArgs = qs.hostname || qs.port; $.extend(qs, { hostname: qs.hostname || param.wsHostNameUyarlanmis, port: qs.port || param.wsPort });
+			let hasQSArgs = qs.hostname || qs.port; $.extend(qs, { hostname: qs.hostname || param.wsHostNameUyarlanmis, port: qs.port || param.wsPort });
 			if (degistimi) {
-				const {config} = sky, savedSessionInfo = config.sessionInfo; await config.load(); this.updateWSUrlBase();
+				let {config} = sky, savedSessionInfo = config.sessionInfo; await config.load(); this.updateWSUrlBase();
 				if (!hasQSArgs) { delete qs.hostname; delete qs.port }
 				config.sessionInfo = savedSessionInfo; this.loginIstendiDevam(e)
 			}
@@ -4942,10 +4991,10 @@
 		}
 		async ilkIrsaliyeRaporuKontrol(e) {
 			if (this.ilkIrsaliyeDokumuZorunlumu && !this.param.ilkIrsaliyeRaporuAlindimi) {
-				const result = await new CETRapor_IlkIrsaliye().run(); if (!result || result.isError || !result.part) { return }
+				let result = await new CETRapor_IlkIrsaliye().run(); if (!result || result.isError || !result.part) { return }
 				return new Promise(resolve => {
 					result.part.geriCallback = e => { resolve(e) };
-					const message = `Bu adıma girmeden önce <b>İlk İrsaliye Raporu</b> alınmalıdır!`; displayMessage(message, this.appText)
+					let message = `Bu adıma girmeden önce <b>İlk İrsaliye Raporu</b> alınmalıdır!`; displayMessage(message, this.appText)
 				})
 			}
 		}
@@ -5312,64 +5361,64 @@
 			})
 		}
 		wsCETSaveTables(e) {
-			e = e || {}; const {data} = e; delete e.data;
+			e = e || {}; let {data} = e; delete e.data;
 			return lastAjaxObj = $.post({
 				url: `${this.wsURLBase}cetSaveTables?${$.param(this.buildAjaxArgs($.extend({}, e, { input: defaultInput })))}`,
 				contentType: 'application/json', data: toJSONStr(data) /*, dataType: defaultOutput*/
 			}).fail(e.silent ? defFailBlockBasit : defFailBlock)
 		}
 		wsKonumKaydet(e) {
-			e = e || {}; const {data} = e; delete e.data;
-			const _wsURLBase = updateWSUrlBaseBasit($.extend({}, sky.config, { path: `ws/elterm/`, port: SkyConfigParam.DefaultWSPort }));
+			e = e || {}; let {data} = e; delete e.data;
+			let _wsURLBase = updateWSUrlBaseBasit($.extend({}, sky.config, { path: `ws/elterm/`, port: SkyConfigParam.DefaultWSPort }));
 			return lastAjaxObj = $.post({
 				url: `${_wsURLBase}konumKaydet?${$.param($.extend({}, e))}`, contentType: 'application/json', data: toJSONStr(data) /*, dataType: defaultOutput*/
 			}).fail(e.silent ? defFailBlockBasit : defFailBlock)
 		}
 		wsCallWithSkyWS(e) {
-			const skyWSURL = this.param.skyWSURLUyarlanmis; if (!skyWSURL) { return new $.Deferred(p => p.reject({ isError: true, rc: 'noSkyWSUrl' })) }
-			let {api} = e; if (!api) { const url = new URL(e.url); api = url.pathname.trim('/'); if (api.startsWith('/')) { api = api.substring(1) } }
-			const wsArgs = $.extend({}, { exec: true, port: getArgsForRandomPort().port, api: api }, e.data || {});
+			let skyWSURL = this.param.skyWSURLUyarlanmis; if (!skyWSURL) { return new $.Deferred(p => p.reject({ isError: true, rc: 'noSkyWSUrl' })) }
+			let {api} = e; if (!api) { let url = new URL(e.url); api = url.pathname.trim('/'); if (api.startsWith('/')) { api = api.substring(1) } }
+			let wsArgs = $.extend({}, { exec: true, port: getArgsForRandomPort().port, api: api }, e.data || {});
 			return lastAjaxObj = $.post({ url: `${skyWSURL}ws/skyTablet/vioQueryYapi`, processData: false, contentType: 'application/json', data: toJSONStr(wsArgs) })
 		}
-		konumFarki(e) { const {konum1, konum2} = e; const result = Utils.konumFarki(konum1, konum2); console.info('konumFarki', result, 'mt'); return result }
+		konumFarki(e) { let {konum1, konum2} = e; let result = Utils.konumFarki(konum1, konum2); console.info('konumFarki', result, 'mt'); return result }
 		kisitlamalariUygula(e) {
 			let {kisitlamalariUygulaOncesi} = this; if (kisitlamalariUygulaOncesi) {
-				const _e = { ...e, silent: true };
+				let _e = { ...e, silent: true };
 				if (kisitlamalariUygulaOncesi.run) { kisitlamalariUygulaOncesi.run(_e) } else { getFuncValue.call(this, kisitlamalariUygulaOncesi, _e) }
 			}
 			this._fisTipleri = this._fisAdimKisitIDSet = this._menuAdimKisitIDSet = undefined;
 			setTimeout(() => {
-				const menuItems = this.divAnaMenu.find(`.item`); const {menuAdimKisitIDSet} = this;
+				let menuItems = this.divAnaMenu.find(`.item`); let {menuAdimKisitIDSet} = this;
 				if (!$.isEmptyObject(menuAdimKisitIDSet)) {
 					menuAdimKisitIDSet.bekleyenXFislerGuncelle = true;
-					const removeItems = menuItems.filter((index, item) => !menuAdimKisitIDSet[item.id]);
+					let removeItems = menuItems.filter((index, item) => !menuAdimKisitIDSet[item.id]);
 					if (!$.isEmptyObject(removeItems)) { removeItems.remove() }
 				}
 			}, 100);
-			const {fisAdimKisitIDSet} = this; if (fisAdimKisitIDSet) {
+			let {fisAdimKisitIDSet} = this; if (fisAdimKisitIDSet) {
 				if (fisAdimKisitIDSet.SY && !fisAdimKisitIDSet.BS) { fisAdimKisitIDSet.BS = true }
 				if (!fisAdimKisitIDSet.UG) { fisAdimKisitIDSet.UG = true }
 			}
-			const orjFisTipleri = this.fisTipleriDuzenlenmis; if (!$.isEmptyObject(fisAdimKisitIDSet)) { this._fisTipleri = orjFisTipleri.filter(rec => fisAdimKisitIDSet[rec.kod]) }
+			let orjFisTipleri = this.fisTipleriDuzenlenmis; if (!$.isEmptyObject(fisAdimKisitIDSet)) { this._fisTipleri = orjFisTipleri.filter(rec => fisAdimKisitIDSet[rec.kod]) }
 		}
 		get gpsTimer_key() { return 'gpsTimer' } get merkezeBilgiGonderTimer_key() { return 'merkezeBilgiGonder' }
 		async gpsTimer_start(e) {
 			await this.gpsTimer_stop(); await this.setUniqueTimeout({
 				key: this.gpsTimer_key, isInterval: true, delayMS: (this.programcimi ? 10 : 60) * 1000,
-				block: () => { const result = this.gpsTimer_proc(e); if (result === false) { this.clearUniqueTimeout({ key: this.gpsTimer_key }) } }
+				block: () => { let result = this.gpsTimer_proc(e); if (result === false) { this.clearUniqueTimeout({ key: this.gpsTimer_key }) } }
 			})
 		}
 		async gpsTimer_stop(e) { await this.clearUniqueTimeout({ key: this.gpsTimer_key, isInterval: true }) }
 		async gpsTimer_proc(e) {
-			e = e || {}; const {geolocation} = navigator; if (!geolocation) { return true }
-			const gpsInfo = await new $.Deferred(p => { geolocation.getCurrentPosition(_e => p.resolve(_e)) }); if (!gpsInfo) { return true }
-			const {timestamp} = gpsInfo, coords = $.extend({}, gpsInfo.coords);
+			e = e || {}; let {geolocation} = navigator; if (!geolocation) { return true }
+			let gpsInfo = await new $.Deferred(p => { geolocation.getCurrentPosition(_e => p.resolve(_e)) }); if (!gpsInfo) { return true }
+			let {timestamp} = gpsInfo, coords = $.extend({}, gpsInfo.coords);
 			if (asFloat(coords.latitude) <= 0 || asFloat(coords.longitude) <= 0) { return true }
-			const sonCoords = (this.sonKonumBilgi || {}).coords; if (sonCoords && (sonCoords.latitude == coords.latitude && sonCoords.longitude == coords.longitude)) { return true }
-			const kayitTS = dateTimeToString(timestamp ? new Date(timestamp) : now()),  {sessionInfo} = sky.config;
-			const userTip = (sessionInfo.loginTipi ? sessionInfo.loginTipi.replace('Login', '').replace('login', '') : null) || 'vio';
-			const table = 'data_KonumBilgi', dbMgr = e.dbMgr || this.dbMgr_mf, {tx} = e; let sent, stm, maxRowID, del, hv, upd, recs;
-			const KeepRecsCount = 20; sent = new MQSent({ from: table, where: [`gonderildi = '*'`], sahalar: [`MAX(rowid)`] }); stm = new MQStm({ sent });
+			let sonCoords = (this.sonKonumBilgi || {}).coords; if (sonCoords && (sonCoords.latitude == coords.latitude && sonCoords.longitude == coords.longitude)) { return true }
+			let kayitTS = dateTimeToString(timestamp ? new Date(timestamp) : now()),  {sessionInfo} = sky.config;
+			let userTip = (sessionInfo.loginTipi ? sessionInfo.loginTipi.replace('Login', '').replace('login', '') : null) || 'vio';
+			let table = 'data_KonumBilgi', dbMgr = e.dbMgr || this.dbMgr_mf, {tx} = e; let sent, stm, maxRowID, del, hv, upd, recs;
+			let KeepRecsCount = 20; sent = new MQSent({ from: table, where: [`gonderildi = '*'`], sahalar: [`MAX(rowid)`] }); stm = new MQStm({ sent });
 			maxRowID = asInteger(await dbMgr.tekilDegerExecuteSelect({ tx, query: stm }));
 			if (maxRowID && maxRowID > KeepRecsCount) {
 				del = new MQIliskiliDelete({ from: table, where: [`gonderildi = '*'`, `rowid < ${MQSQLOrtak.sqlParamValue(maxRowID - KeepRecsCount)}`] });
@@ -5377,7 +5426,7 @@
 			}
 			hv = { kayitTS: kayitTS, userTip: userTip, userKod: sessionInfo.user, gonderildi: '', latitude: coords.latitude, longitude: coords.longitude, speed: coords.speed || 0 };
 			await dbMgr.insertOrReplaceTable({ mode: 'insertIgnore', tx, table, hv });
-			const data = {}, tables = data.tables = {}, tblKonumBilgi = tables[table] = [];
+			let data = {}, tables = data.tables = {}, tblKonumBilgi = tables[table] = [];
 			sent = new MQSent({ from: table, where: [`gonderildi = ''`], sahalar: [`*`] });
 			stm = new MQStm({ sent }); recs = await dbMgr.executeSqlReturnRowsBasic({ tx, query: stm });
 			for (let i = 0; i < recs.length; i++) { tblKonumBilgi.push(recs[i]); } await this.wsKonumKaydet({ silent: true, data });
@@ -5390,7 +5439,7 @@
 			await this.setUniqueTimeout({
 				key: this.merkezeBilgiGonderTimer_key, isInterval: true, delayMS: (this.programcimi ? 5 : 15) * 1000,
 				block: async () => {
-					const result = await this.merkezeBilgiGonderTimer_proc(e);
+					let result = await this.merkezeBilgiGonderTimer_proc(e);
 					if (result === false) { this.clearUniqueTimeout({ key: this.merkezeBilgiGonderTimer_key }) }
 				}
 			})
@@ -5398,8 +5447,8 @@
 		async merkezeBilgiGonderTimer_stop(e) { await this.clearUniqueTimeout({ key: this.merkezeBilgiGonderTimer_key, isInterval: true }) }
 		async merkezeBilgiGonderTimer_proc(e) {
 			e = e || {}; if (!navigator.onLine || !this.otoAktarFlag || this.kmTakibiYapilirmi) { return true }
-			const {activePart} = sky.app; if (activePart && activePart.fisGirisEkranimi) { return true }
-			const _e = { silent: true, timer: true }; let result = await this.merkezeBilgiGonderDevam(_e);
+			let {activePart} = sky.app; if (activePart && activePart.fisGirisEkranimi) { return true }
+			let _e = { silent: true, timer: true }; let result = await this.merkezeBilgiGonderDevam(_e);
 			if (result && !$.isEmptyObject(result.basariliTable2FisIDListe)) { if (activePart?.tazele && !activePart.fisGirisEkranimi) { activePart.tazele() } }
 			return true
 		}
@@ -5446,7 +5495,7 @@
 		}
 		async merkezeBilgiGonderOnKontrol(e) { await this.gerekirseKMGirisYap({ sonmu: true }) }
 		async veriYonetimi_cloud_import(e) {
-			const {param, dbTablePrefixes} = this, dbMgr = this.dbMgr_mf, {sender, cloudURL} = e, {alinacaklar} = sender; let {tx} = e; const hasTx = !!tx;
+			let {param, dbTablePrefixes} = this, dbMgr = this.dbMgr_mf, {sender, cloudURL} = e, {alinacaklar} = sender; let {tx} = e; let hasTx = !!tx;
 			lastAjaxObj = $.ajax({ cache: false, async: true, method: 'GET', url: `${cloudURL}?${$.param(this.buildAjaxArgs({ input: defaultInput }))}` });
 			let data = null, result = await lastAjaxObj; if (result && typeof result != 'object') { result = { isError: true, rc: 'invalidResponse', errorText: 'Yükleme Verisi hatalıdır' } }
 			if (result && result.isError) { throw result } if (!result) { throw { isError: true, rc: 'emptyResponse', errorText: `Yüklenecek veri bulunamadı` } }
@@ -5455,19 +5504,19 @@
 				delete this._ekOzellikKullanim; this.ortakReset(); await this.ekOzellikler_tabloDuzenlemeleriYap();
 			}
 			let tables = asSet((await dbMgr.tables()).filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))));
-			const tableNames = {}; for (const table in tables) {
+			let tableNames = {}; for (let table in tables) {
 				let uygunmu =
 					( alinacaklar.belgeler && !(table.startsWith(dbTablePrefixes.master) || table.startsWith(dbTablePrefixes.const)) ) ||
 					( alinacaklar.sabitTanimlar && table.startsWith(dbTablePrefixes.master) );
 				if (uygunmu) { tableNames[table] = true }
 			}
-			const ignoreColSet = asSet(['_parentTable', '_table', '_tip', 'olasiMiktar']), {table2Recs} = data;
+			let ignoreColSet = asSet(['_parentTable', '_table', '_tip', 'olasiMiktar']), {table2Recs} = data;
 			if (!$.isEmptyObject(table2Recs)) {
-				for (const table in table2Recs) {
+				for (let table in table2Recs) {
 					if (!tableNames[table]) { continue }
-					const recs = table2Recs[table]; if ($.isEmptyObject(recs)) { continue }
-					const del = new MQIliskiliDelete({ from: table }), hvListe = [];
-					for (const rec of recs) { for (const key in ignoreColSet) { delete rec[key] } hvListe.push(rec) }
+					let recs = table2Recs[table]; if ($.isEmptyObject(recs)) { continue }
+					let del = new MQIliskiliDelete({ from: table }), hvListe = [];
+					for (let rec of recs) { for (let key in ignoreColSet) { delete rec[key] } hvListe.push(rec) }
 					if (!hasTx) { tx = e.tx = await dbMgr.getTx() }
 					await dbMgr.executeSql({ tx, query: del });
 					await dbMgr.insertOrReplaceTable({ tx, table, mode: 'insertIgnore', hvListe })
@@ -5477,27 +5526,27 @@
 			this.onbellekOlustur(e); return true
 		}
 		async veriYonetimi_cloud_export(e) {
-			const {param, dbTablePrefixes} = this, dbMgr = this.dbMgr_mf, {sender, cloudURL} = e, {alinacaklar} = sender; let {tx} = e;
-			let tables = (await dbMgr.tables()).filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))); const tableNames = [];
-			for (const table of tables) {
+			let {param, dbTablePrefixes} = this, dbMgr = this.dbMgr_mf, {sender, cloudURL} = e, {alinacaklar} = sender; let {tx} = e;
+			let tables = (await dbMgr.tables()).filter(name => !(name.startsWith('_') || name.startsWith('sqlite_'))); let tableNames = [];
+			for (let table of tables) {
 				let uygunmu = (
 					( alinacaklar.belgeler && !(table.startsWith(dbTablePrefixes.master) || table.startsWith(dbTablePrefixes.const)) ) ||
 					( alinacaklar.sabitTanimlar && table.startsWith(dbTablePrefixes.master) )
 				);
 				if (uygunmu) { tableNames.push(table) }
 			}
-			const table2Recs = {}, data = { param: null, table2Recs };
-			for (const table of tableNames) {
-				const recs = table2Recs[table] = table2Recs[table] || [];
+			let table2Recs = {}, data = { param: null, table2Recs };
+			for (let table of tableNames) {
+				let recs = table2Recs[table] = table2Recs[table] || [];
 				let sent = new MQSent({ from: table, sahalar: ['rowid', '*'] }), stm = new MQStm({ sent });
-				let rs = await dbMgr.executeSql({ tx, query: stm }); for (let j = 0; j < rs.rows.length; j++) { const rec = rs.rows[j]; recs.push(rec) }
+				let rs = await dbMgr.executeSql({ tx, query: stm }); for (let j = 0; j < rs.rows.length; j++) { let rec = rs.rows[j]; recs.push(rec) }
 			}
 			if (alinacaklar.param) { data.param = param.reduce() }
 			lastAjaxObj = $.ajax({
 				cache: false, async: true, method: 'POST', contentType: 'application/json',
 				url: `${cloudURL}?${$.param(this.buildAjaxArgs({ input: defaultInput }))}`, data: toJSONStr(data)
 			});
-			const result = await lastAjaxObj; if (result && result.isError) { throw result } return result || true
+			let result = await lastAjaxObj; if (result && result.isError) { throw result } return result || true
 		}
 		veriYonetimiIstendi(e) {
 			this.prefetchAbortedFlag = true;
@@ -5562,8 +5611,8 @@
 						await this.knobProgressShow();
 						await this.knobProgressSetLabel(`Son Stoklar merkezden güncelleniyor...`);
 						try {
-							const result = await this.sonStokGuncelle(e);
-							const updateSayi = typeof result == 'object' ? Object.keys(result).length : null;
+							let result = await this.sonStokGuncelle(e);
+							let updateSayi = typeof result == 'object' ? Object.keys(result).length : null;
 							await this.knobProgressHideWithReset({
 								update: {
 									labelTemplate: 'success',
@@ -5597,40 +5646,40 @@
 		async ayarlarIstendi(e) { this.prefetchAbortedFlag = true; return new CETParamPart({ parentPart: this }).run() }
 
 		async sonStokGuncelle(e) {
-			e = e || {}; this.prefetchAbortedFlag = true; const {sicakTeslimFisimi, defaultYerKod} = this;
-			const promise_sonStokListe = sicakTeslimFisimi ? this.wsStokListe() : this.wsSonStokListe();
-			const dbMgr = this.dbMgr_mf; let {tx} = e; const hasTx = !!tx;
+			e = e || {}; this.prefetchAbortedFlag = true; let {sicakTeslimFisimi, defaultYerKod} = this;
+			let promise_sonStokListe = sicakTeslimFisimi ? this.wsStokListe() : this.wsSonStokListe();
+			let dbMgr = this.dbMgr_mf; let {tx} = e; let hasTx = !!tx;
 			if (!hasTx) tx = await dbMgr.getTx();
-			const Prefix_EkOz = `ekOz_`, {anahtarDelim} = CETEkOzellikler, ekOzelliklerIDSahalar = CETEkOzellikler.idSahalar;
-			const ignoreSet = asSet(['stokKod', 'yerKod', 'refRafKod']);
+			let Prefix_EkOz = `ekOz_`, {anahtarDelim} = CETEkOzellikler, ekOzelliklerIDSahalar = CETEkOzellikler.idSahalar;
+			let ignoreSet = asSet(['stokKod', 'yerKod', 'refRafKod']);
 			let sent = new MQSent({
 				from: `mst_SonStok son`, where: [`son.orjMiktar <> 0`],
 				sahalar: [`son.yerKod`, `son.stokKod`, `SUM(son.orjMiktar) devir`, `SUM(son.miktar) kalan`, `SUM(son.olasiFark) olasiFark`],
 				groupBy: [`son.yerKod`, `son.stokKod`]
 			});
-			for (const idSaha of ekOzelliklerIDSahalar) {
+			for (let idSaha of ekOzelliklerIDSahalar) {
 				if (!ignoreSet[idSaha]) {
 					sent.sahalar.add(`son.${idSaha}`);
 					sent.groupBy.add(`son.${idSaha}`)
 				}
 			}
 			let stm = new MQStm({ sent: sent });
-			const dbRecs = await dbMgr.executeSqlReturnRowsBasic({ tx, query: stm });
+			let dbRecs = await dbMgr.executeSqlReturnRowsBasic({ tx, query: stm });
 			let wsRecs = await promise_sonStokListe;
 			if (wsRecs && wsRecs.rows) wsRecs = wsRecs.rows
 			if (wsRecs == null) throw { isError: true, rc: 'noWSRecord', errorText: `Merkezden Son Stok bilgisi alınamadı` };
 			if ($.isEmptyObject(wsRecs)) throw { isError: false, rc: 'emptyWSRecord', errorText: `Merkezden Gelen Son Stok bilgisi yok` };
 			if ($.isEmptyObject(dbRecs)) throw { isError: true, rc: 'noDBRecord', errorText: `Tablette güncellenecek Son Stok bilgisi bulunamadı` };
-			const getAnahStr = e => {
+			let getAnahStr = e => {
 				let {values} = e;
 				if (!values) {
-					const _ignoreSet = e.ignoreSet || ignoreSet, _with = e.with, {rec} = e; values = [];
+					let _ignoreSet = e.ignoreSet || ignoreSet, _with = e.with, {rec} = e; values = [];
 					if (!$.isEmptyObject(_with)) values.push(..._with);
-					for (const key of ekOzelliklerIDSahalar) {
+					for (let key of ekOzelliklerIDSahalar) {
 						if (!_ignoreSet[key]) {
 							let value = rec[key];
 							if (value == null) {
-								const recAttr = key.startsWith(Prefix_EkOz) ? key.replace(Prefix_EkOz, 'ekoz') : key;
+								let recAttr = key.startsWith(Prefix_EkOz) ? key.replace(Prefix_EkOz, 'ekoz') : key;
 								value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
 							}
 							values.push(value)
@@ -5639,32 +5688,32 @@
 				}
 				return values.join(anahtarDelim)
 			};
-			const anah2SonStokBilgi = {}, degisenAnahStr2SonStokBilgi = {};
+			let anah2SonStokBilgi = {}, degisenAnahStr2SonStokBilgi = {};
 			for (let i = 0; i < dbRecs.length; i++) {
-				const rec = dbRecs[i], {stokKod, yerKod} = rec;
-				const anahStr = getAnahStr({ with: [stokKod, yerKod], rec });
+				let rec = dbRecs[i], {stokKod, yerKod} = rec;
+				let anahStr = getAnahStr({ with: [stokKod, yerKod], rec });
 				anah2SonStokBilgi[anahStr] = { stokKod, yerKod, orjMiktar: rec.devir, miktar: rec.kalan, olasiFark: rec.olasiFark }
 			}
 			for (let i = 0; i < wsRecs.length; i++) {
-				const rec = wsRecs[i], wsMiktar = asFloat((rec.sonmiktar || rec.miktar || rec.sonStok || rec.sonstok) || 0);
-				const wsOlasiFark = asFloat(rec.olasifark) || 0;
+				let rec = wsRecs[i], wsMiktar = asFloat((rec.sonmiktar || rec.miktar || rec.sonStok || rec.sonstok) || 0);
+				let wsOlasiFark = asFloat(rec.olasifark) || 0;
 				if (!(wsMiktar || wsOlasiFark)) continue
-				const stokKod = rec.stokkod || rec.kod, yerKod = rec.yerkod || defaultYerKod || '';
+				let stokKod = rec.stokkod || rec.kod, yerKod = rec.yerkod || defaultYerKod || '';
 				if (!$.isEmptyObject(ekOzelliklerIDSahalar)) {
-					const values = [];
-					for (const idSaha of ekOzelliklerIDSahalar) {
-						const recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
-						const value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
+					let values = [];
+					for (let idSaha of ekOzelliklerIDSahalar) {
+						let recAttr = idSaha.startsWith(Prefix_EkOz) ? idSaha.replace(Prefix_EkOz, 'ekoz') : idSaha;
+						let value = rec[recAttr.toLowerCase()];			// !! idSaha lowercase olacak !!
 						values.push(value || '')
 					}
 				}
-				const anahStr = getAnahStr({ with: [stokKod, yerKod], rec: rec });
-				const sonStokBilgi = anah2SonStokBilgi[anahStr] = anah2SonStokBilgi[anahStr] || {
+				let anahStr = getAnahStr({ with: [stokKod, yerKod], rec: rec });
+				let sonStokBilgi = anah2SonStokBilgi[anahStr] = anah2SonStokBilgi[anahStr] || {
 					stokKod: stokKod, yerKod: yerKod,
 					orjMiktar: 0, miktar: 0, olasiFark: 0
 				};
 				
-				const {orjMiktar, miktar, olasiFark} = sonStokBilgi;
+				let {orjMiktar, miktar, olasiFark} = sonStokBilgi;
 				if (wsMiktar != orjMiktar || wsOlasiFark != wsOlasiFark) {
 					if (wsMiktar != orjMiktar) {
 						sonStokBilgi.orjMiktar = wsMiktar;
@@ -5676,12 +5725,12 @@
 				}
 			}
 			if (!$.isEmptyObject(degisenAnahStr2SonStokBilgi)) {
-				const hvListe = [];
-				for (const anahStr in degisenAnahStr2SonStokBilgi) {
-					const sonStokBilgi = degisenAnahStr2SonStokBilgi[anahStr], values = anahStr.split(anahtarDelim);
-					let index = 0; const hv = {};
+				let hvListe = [];
+				for (let anahStr in degisenAnahStr2SonStokBilgi) {
+					let sonStokBilgi = degisenAnahStr2SonStokBilgi[anahStr], values = anahStr.split(anahtarDelim);
+					let index = 0; let hv = {};
 					hv.stokKod = values[index++]; hv.yerKod = values[index++];
-					for (const idSaha of ekOzelliklerIDSahalar) {
+					for (let idSaha of ekOzelliklerIDSahalar) {
 						if (!ignoreSet[idSaha])
 							hv[idSaha] = values[index++]
 					}
@@ -5697,19 +5746,19 @@
 		}
 		async bekleyenXFislerGuncelleIstendi(e) { }
 		async gonderimIsaretSifirlaIstendi(e) {
-			const urlPostfix = 'debug/cetIsaretSifirla.php', urls = [
+			let urlPostfix = 'debug/cetIsaretSifirla.php', urls = [
 				`http://${sky.config.hostName}:81/${urlPostfix}`,
 				`http://${sky.config.hostName}:8200/${urlPostfix}`,
 				`/${urlPostfix}`
 			], promises = [];
-			for (const url of urls) {
+			for (let url of urls) {
 				lastAjaxObj = $.post({ url: url, dataType: defaultOutput, timeout: 10000 });
 				promises.push(lastAjaxObj)
 			}
 			await this.hideNotifications(); await showProgress('Merkezden yetki sorgusu yapılıyor...'); let result;
 			try {
-				const results = [];
-				for (const promise of promises) {
+				let results = [];
+				for (let promise of promises) {
 					try { results.push(await promise) }
 					catch (ex) {
 						console.error(ex);
@@ -5721,7 +5770,7 @@
 				}
 				if (results) {
 					let lastResult;
-					for (const _result of results) {
+					for (let _result of results) {
 						if (!_result) { continue } lastResult = _result;
 						if (!_result.isError) { result = _result; break }
 					}
@@ -5729,16 +5778,16 @@
 				}
 			}
 			catch (ex) {
-				const savedWSUrlBase = wsURLBase; wsURLBase = '<ul>' + urls.map(x => `<li>${x}</li>`).join('') + '</ul>';
+				let savedWSUrlBase = wsURLBase; wsURLBase = '<ul>' + urls.map(x => `<li>${x}</li>`).join('') + '</ul>';
 				try { defFailBlock(ex) } finally { wsURLBase = savedWSUrlBase } throw ex
 			}
 			finally { await hideProgress() }
 
 			if (!result || (result.isError && !result.errorText)) result = { isError: true, rc: 'wsError', errorText: 'İşleme izin verilmedi' };
 			if (result.isError) { displayMessage(result.errorText, `@ Gönderildi İşareti Sıfırla @`); return false }
-			const mesaj = result.mesaj || result.uyari || result.message || result.errorText;
+			let mesaj = result.mesaj || result.uyari || result.message || result.errorText;
 			if (mesaj) displayMessage(mesaj, `Gönderim İşareti Sıfırla`);
-			const promise_confirm = new $.Deferred(), wnd = createJQXWindow(
+			let promise_confirm = new $.Deferred(), wnd = createJQXWindow(
 				`<b class="darkred">Belgelerin <u class="red">Gönderildi İşareti</u> kaldırılacak!</b><p/>Devam edilsin mi?`,
 				`Gönderildi İşareti Sıfırla`,
 				{
@@ -5756,10 +5805,10 @@
 					}
 				}
 			)
-			const btnEvet = wnd.find('.ui-dialog-button input[type=button][value=EVET]'); btnEvet.jqxButton({ template: 'danger' });
+			let btnEvet = wnd.find('.ui-dialog-button input[type=button][value=EVET]'); btnEvet.jqxButton({ template: 'danger' });
 			await promise_confirm; result = await this.gonderimIsaretSifirla(e);
 			if (result == null || result === false) return false
-			const {totalRowsAffected, totalRowsAffected_data, totalRowsAffected_master} = result;
+			let {totalRowsAffected, totalRowsAffected_data, totalRowsAffected_master} = result;
 			displayMessage(
 				(
 					totalRowsAffected == 0
@@ -5780,20 +5829,20 @@
 			return true
 		}
 		async gonderimIsaretSifirla(e) {
-			e = e || {}; const dbMgr = e.dbMgr || this.dbMgr_mf;
+			e = e || {}; let dbMgr = e.dbMgr || this.dbMgr_mf;
 			let totalRowsAffected = 0, totalRowsAffected_data = 0;
 			let tables = ['data_PIFFis', 'data_TahsilatFis', 'data_UgramaFis'];
-			for (const table of tables) {
-				const rowCount = await dbMgr.tekilDegerExecuteSelect(`SELECT COUNT(*) FROM ${table} WHERE gecici = '' AND rapor = '' AND gonderildi <> ''`);
-				const rs = await dbMgr.executeSql(`UPDATE ${table} SET gonderildi = '' WHERE gecici = '' AND rapor = '' AND gonderildi <> ''`);
+			for (let table of tables) {
+				let rowCount = await dbMgr.tekilDegerExecuteSelect(`SELECT COUNT(*) FROM ${table} WHERE gecici = '' AND rapor = '' AND gonderildi <> ''`);
+				let rs = await dbMgr.executeSql(`UPDATE ${table} SET gonderildi = '' WHERE gecici = '' AND rapor = '' AND gonderildi <> ''`);
 				if (rowCount) { totalRowsAffected_data += rowCount; totalRowsAffected += rowCount }
 				// if (rs?.rowsAffected) { totalRowsAffected_data += rs.rowsAffected; totalRowsAffected += rs.rowsAffected }
 			}
 			let totalRowsAffected_master = 0;
 			/*tables = ['mst_Cari'];
-			for (const table of tables) {
-				const query = `UPDATE ${table} SET gonderildi = '' WHERE gonderildi <> ''`;
-				const rs = await dbMgr.executeSql({ query: query });
+			for (let table of tables) {
+				let query = `UPDATE ${table} SET gonderildi = '' WHERE gonderildi <> ''`;
+				let rs = await dbMgr.executeSql({ query: query });
 				if (rs && rs.rowsAffected) {
 					totalRowsAffected_master += rs.rowsAffected;
 					totalRowsAffected += rs.rowsAffected;
@@ -5816,10 +5865,10 @@
 		}
 		async onResize(e) {
 			e = e || {}; await super.onResize(e);
-			const {activePart} = this;
+			let {activePart} = this;
 			if (activePart && activePart != this) return;
-			const layout = this.rootLayout;
-			const divItems = layout && layout.length ? layout.find(`#anaMenu .items`) : null;
+			let layout = this.rootLayout;
+			let divItems = layout && layout.length ? layout.find(`#anaMenu .items`) : null;
 			if (divItems && divItems.length) divItems.height($(window).height() - divItems.offset().top - 30)
 		}
 	}
@@ -5851,19 +5900,19 @@ else {
 
 
 /*if (true) {
-	const content = sky.app.content;
-	const elmId = `barcodePreview`;
+	let content = sky.app.content;
+	let elmId = `barcodePreview`;
 	let container = content.find(`#${elmId}`);
 	if (!container.length) {
 		(container = $(`<div id="${elmId}" style="width: 100%" />`)).appendTo(content);
 		$(`<video id="video"></video>`).appendTo(container);
 		$(`<canvas id="canvas" hidden></canvas>`).appendTo(container);
 	}
-	const video = container.find(`#video`)[0];
-	const canvasElm = container.find(`#canvas`)[0];
-	const canvas = canvasElm.getContext('2d');
+	let video = container.find(`#video`)[0];
+	let canvasElm = container.find(`#canvas`)[0];
+	let canvas = canvasElm.getContext('2d');
 
-	const srm = await navigator.mediaDevices.getUserMedia({
+	let srm = await navigator.mediaDevices.getUserMedia({
 		video: {
 			// exact: { id: (await navigator.mediaDevices.enumerateDevices())[2].id },
 			// facingMode: 'user'
@@ -5873,7 +5922,7 @@ else {
 	video.srcObject = srm;
 	video.setAttribute('playsinline', true);
 
-	const drawLine = (begin, end, color) => {
+	let drawLine = (begin, end, color) => {
 	  canvas.beginPath();
 	  canvas.moveTo(begin.x, begin.y);
 	  canvas.lineTo(end.x, end.y);
@@ -5881,7 +5930,7 @@ else {
 	  canvas.strokeStyle = color;
 	  canvas.stroke();
 	};
-	const animate = video => {
+	let animate = video => {
 		let barcode;
 		if (this.barcodeCallbackState == 'pause') {
 			if (!video.paused)
@@ -5896,7 +5945,7 @@ else {
 				canvasElm.width = video.videoWidth;
 				canvas.drawImage(video, 0, 0, canvasElm.width, canvasElm.height);
 
-				const imageData = canvas.getImageData(0, 0, canvasElm.width, canvasElm.height);
+				let imageData = canvas.getImageData(0, 0, canvasElm.width, canvasElm.height);
 				barcode = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
 				if (barcode && barcode.data) {
 					drawLine(barcode.location.topLeftCorner, barcode.location.topRightCorner, "#FF3B58");
@@ -5943,7 +5992,7 @@ else {
 	db = new alasql.Database(dbName);
 	recs = await dbMgr.executeSqlReturnRows(`SELECT name FROM sqlite_master WHERE type = 'table'`)
 	tables = [];
-	for (const rec of recs) {
+	for (let rec of recs) {
 		table = rec.name;
 		if (table.startsWith('__'))
 			continue
@@ -5953,8 +6002,8 @@ else {
 		db.exec(`SELECT * INTO ${table} FROM ?`, [_recs])
 	}
 	data = {};
-	for (const table in db.tables) {
-		const tableObj = db.tables[table];
+	for (let table in db.tables) {
+		let tableObj = db.tables[table];
 		data[table] = tableObj.data
 	}
 	localData = new CETLocalData({ dbName: dbName, data: null });
@@ -5967,8 +6016,8 @@ else {
 	data = localData.data;
 	data = data ? Base64.decode(Base64.fromUint8Array(data)) : data;
 	data = data ? JSON.parse(data) : null;
-	for (const table in data) {
-		const recs = data[table];
+	for (let table in data) {
+		let recs = data[table];
 		db.exec(`DROP TABLE IF EXISTS ${table}; CREATE TABLE ${table}`);
 		db.exec(`SELECT * INTO ${table} FROM ?`, [recs])
 		console.info({ table: table, recs: recs, queryResult: db.exec(`SELECT * FROM ${table}`) })
@@ -6042,11 +6091,11 @@ else {
 	// db save
 	fs = (await Utils.getFS()).fs;
 	rootDir = await Utils.getFSDirHandle(`sky/${appName}/db/${dbName}`, true, { fs });
-	for (const table in db.tables) {
+	for (let table in db.tables) {
 		tableObj = db.tables[table];
 		dh = await rootDir.getDirectoryHandle(table, { create: true });
-		for (const key in tableObj) {
-			const value = tableObj[key];
+		for (let key in tableObj) {
+			let value = tableObj[key];
 			if ((value === undefined || typeof value == 'function'))
 				continue
 			data = value === undefined ? value : toJSONStr(value);
@@ -6108,12 +6157,12 @@ else {
 	tables = ['mst_SonStok', 'data_PIFFis'];
 	fs = (await Utils.getFS()).fs;
 	rootDir = await Utils.getFSDirHandle(`sky/${appName}/db/${dbName}`, true, { fs });
-	for (const table of tables) {
+	for (let table of tables) {
 		tableObj = db.tables[table];
 		dh = await rootDir.getDirectoryHandle(table, { create: true });
 		keys = ['data'];
-		for (const key in tableObj) {
-			const value = tableObj[key];
+		for (let key in tableObj) {
+			let value = tableObj[key];
 			if ((value === undefined || typeof value == 'function'))
 				continue
 			data = value === undefined ? value : toJSONStr(value);
