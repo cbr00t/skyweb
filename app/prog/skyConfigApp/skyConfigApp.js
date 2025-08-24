@@ -31,7 +31,8 @@
 					$.extend(result, {
 						appStart: 'Uygulama Çalıştır', shell: 'Shell Komutu Çalıştır', cvmCall: 'CVM Komut Çalıştır', sqlExec: 'SQL Komutu Çalıştır',
 						webRequest: 'Web İsteği Gönder', hamachi: 'Hamachi VPN', skyWS: 'Sky WebServis (Alt İşlem)', hfs: 'HFS (Http File Server)', frps: 'FRP Server',
-						vioPortal: 'VIO Portal', skyTurmob: 'Sky Turmob Sorgusu'
+						vioPortal: 'VIO Portal', cariEFatListeSorgula_portal: `Cari e-Fat Sorgula <i class=royalblue>(Sky Portal)</i>`,
+						skyTurmob: 'Sky Turmob Sorgusu'
 					})
 				}
 			}
@@ -44,7 +45,8 @@
 				const grup_vioServer = { id: 'vioServer', aciklama: 'VIO Sunucu' };
 				result = this._servisTip2Grup = {
 					appStart: grup_system, shell: grup_system, cvmCall: grup_system, sqlExec: grup_system, webRequest: grup_system,
-					skyWS: grup_system, hfs: grup_system, frp: grup_system, frps: grup_system, hamachi: grup_system, vioPortal: grup_vioServer, skyTurmob: grup_vioServer
+					skyWS: grup_system, hfs: grup_system, frp: grup_system, frps: grup_system, hamachi: grup_system,
+					vioPortal: grup_vioServer, cariEFatListeSorgula_portal: grup_vioServer, skyTurmob: grup_vioServer
 				}
 			}
 			return result
@@ -680,7 +682,7 @@
 				'pdks', 'skyBulutYedekleme', 'b2b', 'b2b/fuhrer', 'b2b/atomedya', 'skyCafe/rest', 'skyCafe/pratik', /*'elterm',*/
 				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk', 'skyERP', 'skyTablet',
 				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest',
-				'hamachi', 'skyWS', 'hfs', 'frp', 'frps', 'vioPortal', 'skyTurmob', 'webBrowserIPC'
+				'hamachi', 'skyWS', 'hfs', 'frp', 'frps', 'vioPortal', 'cariEFatListeSorgula_portal', 'skyTurmob', 'webBrowserIPC'
 			];
 			const servisTipListe = Object.keys(this.servisTip2Aciklama);
 			return {
@@ -1032,7 +1034,13 @@
 									config: { type: 'object', title: 'Modül Ayarları', properties: { resimAnaBolum: item_resimAnaBolum, resimExt: item_resimExt } },
 									disabled: item_disabled }
 							},
-							vioPortal: { type: 'object', title: `VIO Portal`, properties: { sql: item_sql, disabled: item_disabled } }
+							vioPortal: { type: 'object', title: `VIO Portal`, properties: { sql: item_sql, disabled: item_disabled } },
+							cariEFatListeSorgula_portal: {
+								type: 'object', title: `Cari e-Fat. Güncelle: Sky Portal`, properties: {
+									...properties_sqlVeEkSql,
+									disabled: item_disabled
+								}
+							}
 						}
 					},
 					map: {

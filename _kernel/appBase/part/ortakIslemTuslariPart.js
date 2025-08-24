@@ -40,7 +40,7 @@
 			islemTuslari.find('#btnGeri')
 				// .jqxTooltip({ theme: theme, trigger: `hover`, content: `Önceki ekrana dön` })
 				.off('click')
-				.on('click', evt => this.geriIstendi(e));
+				.on('click', evt => this.geriIstendi({ ...e, event: evt }));
 			
 			const parentOrtakIslemTuslariLayout = ((this.parentPart || {}).ortakIslemTuslariPart || {}).layout;
 			if (parentOrtakIslemTuslariLayout && parentOrtakIslemTuslariLayout.length)
@@ -53,35 +53,39 @@
 
 
 		async geriIstendi(e) {
-			e = $.extend({}, e);
-			['content', 'layout', 'id', 'template', 'ilkmi'].forEach(key =>
-				delete e[key]);
-			
-			let result = await this.geriYapilabilirmi(e);
-			if (!result)
-				return false;
-			
-			const {currentPart} = this;
-			const {canDestroy} = currentPart.class;
-			await currentPart.deactivatePart({ parentPart: this.parentPart, destroy: canDestroy });
-
-			let layout = e.layout || this.layout;
-			if (layout && layout.length) {
-				layout
-					.removeClass(`part ${this.partName}`)
-					.detach()
-					.appendTo(layout);
+			let {currentTarget: target} = e.event ?? {};
+			if (target) { setButonEnabled($(target), false) }
+			try {
+				['content', 'layout', 'id', 'template', 'ilkmi'].forEach(key => delete e[key]);
+				let result = await this.geriYapilabilirmi(e);
+				if (!result) { return false }
+				const {currentPart} = this, {canDestroy} = currentPart.class;
+				await currentPart.deactivatePart({ parentPart: this.parentPart, destroy: canDestroy });
+	
+				let layout = e.layout || this.layout;
+				if (layout && layout.length) {
+					layout
+						.removeClass(`part ${this.partName}`)
+						.detach()
+						.appendTo(layout);
+				}
+	
+				const parentOrtakIslemTuslariLayout = ((this.parentPart || {}).ortakIslemTuslariPart || {}).layout;
+				if (parentOrtakIslemTuslariLayout && parentOrtakIslemTuslariLayout.length)
+					parentOrtakIslemTuslariLayout.removeClass('jqx-hidden');
+				
+				await this.destroyPart(e);
+	
+				let callback = this.geriCallback;
+				if (callback && !e.noGeriCallback)
+					await callback.call(this, e)
 			}
-
-			const parentOrtakIslemTuslariLayout = ((this.parentPart || {}).ortakIslemTuslariPart || {}).layout;
-			if (parentOrtakIslemTuslariLayout && parentOrtakIslemTuslariLayout.length)
-				parentOrtakIslemTuslariLayout.removeClass('jqx-hidden');
-			
-			await this.destroyPart(e);
-
-			let callback = this.geriCallback;
-			if (callback && !e.noGeriCallback)
-				await callback.call(this, e);
+			finally {
+				if (target) {
+					try { setButonEnabled($(target), true) }
+					catch (ex) { }
+				}
+			}
 		}
 
 		geriIstendiNoCallback(e) {

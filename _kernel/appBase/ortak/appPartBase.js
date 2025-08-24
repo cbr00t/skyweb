@@ -389,13 +389,16 @@
 
 		logoutIstendi(e) {
 			this.prefetchAbortedFlag = true;
-			if (sky.config.logoutClosesWindow)
-				return this.loginIstendiDevam(e);
+			if (sky.config.logoutClosesWindow) {
+				qs.noInstanceCheck = true;
+				this.loginIstendiDevam(e)
+			}
 			
 			return new $.Deferred(p => {
 				displayMessage('Oturum kapatılacak, devam edilsin mi?', this.appText, true, {
 					'EVET': async (dlgUI, btnUI) => {
 						dlgUI.jqxWindow('destroy');
+						qs.noInstanceCheck = true;
 						await this.loginIstendiDevam(e);
 						p.resolve({ dlgResult: true });
 					},

@@ -1060,7 +1060,7 @@
 
 		async run(e) {
 			this.ajaxSetup(e); await super.run(e);
-			setTimeout(() => this.acquireLock(e), 2000);
+			if (!asBool(qs.noInstanceCheck)) { setTimeout(() => this.acquireLock(e), 2000) }
 			
 			let timeouts = [1000, 2000, 3000];
 			for (let i in timeouts) {
