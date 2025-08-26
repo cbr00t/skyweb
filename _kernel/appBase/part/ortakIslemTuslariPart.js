@@ -53,12 +53,11 @@
 
 
 		async geriIstendi(e) {
-			let {currentTarget: target} = e.event ?? {};
+			e = e ?? {}; let {currentTarget: target} = e.event ?? {};
 			if (target) { setButonEnabled($(target), false) }
 			try {
-				['content', 'layout', 'id', 'template', 'ilkmi'].forEach(key => delete e[key]);
-				let result = await this.geriYapilabilirmi(e);
-				if (!result) { return false }
+				for (let key of ['content', 'layout', 'id', 'template', 'ilkmi']) { delete e[key] }
+				let result = await this.geriYapilabilirmi(e); if (!result) { return false }
 				const {currentPart} = this, {canDestroy} = currentPart.class;
 				await currentPart.deactivatePart({ parentPart: this.parentPart, destroy: canDestroy });
 	
@@ -66,19 +65,15 @@
 				if (layout && layout.length) {
 					layout
 						.removeClass(`part ${this.partName}`)
-						.detach()
-						.appendTo(layout);
+						.detach().appendTo(layout);
 				}
 	
-				const parentOrtakIslemTuslariLayout = ((this.parentPart || {}).ortakIslemTuslariPart || {}).layout;
-				if (parentOrtakIslemTuslariLayout && parentOrtakIslemTuslariLayout.length)
-					parentOrtakIslemTuslariLayout.removeClass('jqx-hidden');
+				let parentOrtakIslemTuslariLayout = this.parentPart?.ortakIslemTuslariPart?.layout;
+				if (parentOrtakIslemTuslariLayout?.length) { parentOrtakIslemTuslariLayout.removeClass('jqx-hidden') }
 				
 				await this.destroyPart(e);
-	
-				let callback = this.geriCallback;
-				if (callback && !e.noGeriCallback)
-					await callback.call(this, e)
+				let {geriCallback: callback} = this;
+				if (callback && !e.noGeriCallback) { await callback.call(this, e) }
 			}
 			finally {
 				if (target) {
@@ -87,9 +82,6 @@
 				}
 			}
 		}
-
-		geriIstendiNoCallback(e) {
-			return this.geriIstendi($.extend({}, e, { noGeriCallback: true }));
-		}
+		geriIstendiNoCallback(e) { return this.geriIstendi({ ...e, noGeriCallback: true }) }
 	}
 })()

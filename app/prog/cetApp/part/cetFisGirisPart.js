@@ -502,8 +502,23 @@
 				})();
 			}
 
-			const detContent = content.find(`.baslik .content`);
-			const ci = Date.CultureInfo;
+			let detContent = content.find(`.baslik .content`);
+			let ci = Date.CultureInfo ??= {
+				name: 'tr-TR', nativeName: 'Türkçe (Türkiye)', englishName: 'Turkish (Turkey)', firstDayOfWeek: 1,
+				firstLetterDayNames: ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'],
+				dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
+				abbreviatedDayNames: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+				shortestDayNames: ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'],
+				monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+				abbreviatedMonthNames: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+				dateElementOrder: 'dmy', amDesignator: '', pmDesignator: '', twoDigitYearMax: 2029,
+				formatPatterns: {
+					shortDate: 'dd.MM.yyyy', longDate: 'dd MMMM yyyy dddd',
+					shortTime: 'HH:mm', longTime: 'HH:mm:ss', fullDateTime: 'dd MMMM yyyy dddd HH:mm:ss',
+					sortableDateTime: 'yyyy-MM-ddTHH:mm:ss', universalSortableDateTime: 'yyyy-MM-dd HH:mm:ssZ',
+					rfc1123: 'ddd, dd MMM yyyy HH:mm:ss GMT'
+				}
+			};
 			let txtTarih = this.txtTarih = detContent.find('#tarih');
 			txtTarih.datepicker({
 				changeMonth: true, changeYear: true, theme: theme,
@@ -2921,8 +2936,19 @@
 			await this.tazele()
 		}
 		async kaydetIstendi(e) {
-			const {app} = this; if (app.fisOzetBilgiGosterilirmi) { await this.aboutToDeactivate(e); return await this.fisOzetBilgiIstendi(e) }
-			let result = await this.kaydet(e); if (result && !result.isError) { this.geriIstendi() } return result
+			e ??= {}; let {event: evt = {}} = e, {currentTarget: target} = evt, {app} = this;
+			if (target) { setButonEnabled($(target), false) }
+			try {
+				if (app.fisOzetBilgiGosterilirmi) { await this.aboutToDeactivate(e); return await this.fisOzetBilgiIstendi(e) }
+				let result = await this.kaydet(e); if (result && !result.isError) { this.geriIstendi(e) }
+				return result
+			}
+			finally {
+				if (target) {
+					try { setButonEnabled($(target), true) }
+					catch (ex) { }
+				}
+			}
 		}
 		async aboutToActivate(e) {
 			const {barcodeReader} = this;

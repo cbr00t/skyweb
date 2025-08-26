@@ -311,9 +311,14 @@ body.skyConfigApp .jqx-menu-wrapper ul > li.selected,
 .part.skyConfigApp.servisDuzenle .jqx-window-content #chkTemp_parent { color: #aaa }
 .part.skyConfigApp.servisDuzenle .jqx-window-content #chkFork_parent { color: green }
 .part.skyConfigApp.servisDuzenle .jqx-window-content #chkRemote_parent { color: firebrick }
+.part.skyConfigApp.servisDuzenle .jqx-window-content #chkPortal_parent { margin-top: 20px }
+.part.skyConfigApp.servisDuzenle .jqx-window-content #chkPortal_parent,
+	.part.skyConfigApp.servisDuzenle .jqx-window-content #chkPortal_parent + div { padding: 0 20px }
+.part.skyConfigApp.servisDuzenle .jqx-window-content #chkPortal_parent #chkPortal:checked + label { font-weight: bold; color: royalblue }
+.part.skyConfigApp.servisDuzenle .jqx-window-content #chkPortal_parent + div.uyari { color: firebrick !important }
 .part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element .uyari { font-size: 95%; color: #aaa }
 .part.skyConfigApp.servisDuzenle .jqx-window-content #tipParent #tip,
-.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #islem { height: 35px !important; margin-left: 8px }
+	.part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #islem { height: 35px !important; margin-left: 8px }
 .part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #port { width: 100px; text-align: center }
 .part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #serverVeTekilVTSec,
 .part.skyConfigApp.servisDuzenle .jqx-window-content .panel #servis.jqx-tabs-content-element #serverVeVTSec { width: 100px; text-align: center }

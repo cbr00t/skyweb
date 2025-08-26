@@ -85,6 +85,15 @@
 				chkTemp.parent()[args.temp ? 'addClass' : 'removeClass']('checked')
 			});
 
+			let chkPortal = wndContent.find('#chkPortal_parent #chkPortal');
+			chkPortal.prop('checked', asBool(args.fromPortal));
+			chkPortal.parent()[chkPortal.is(':checked') ? 'addClass' : 'removeClass']('checked');
+			chkPortal.on('change', ({ currentTarget: target }) => {
+				let elm = $(target), flag = elm.is(':checked');
+				elm.parent()[flag ? 'addClass' : 'removeClass']('checked');
+				args.fromPortal = flag
+			});
+			
 			const ddIslem = this.ddIslem = tabPage.find(`#islem`).jqxDropDownList({
 				theme: theme, valueMember: 'kod', displayMember: 'aciklama',
 				width: 120, height: false,
