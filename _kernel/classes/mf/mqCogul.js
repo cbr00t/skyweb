@@ -851,12 +851,12 @@
 		}
 		getDokumcu(e) { const cls = this.dokumcuSinif; return cls ? new cls(e) : null; }
 		async getMatbuuForm(e) {
-			let {matbuuForm} = this;
+			let fis = this, {matbuuForm} = this;
 			if (matbuuForm == null) {
-				const matbuuFormYapilari = await sky.app.getMatbuuFormYapilari({ fis: this });		// !! matbuuFormYapilari, matbuuFormTip okunmadan once cekilmelidir !!
-				const {matbuuFormTip} = this;
-				if (matbuuFormTip)
-					matbuuForm = await CETMatbuuForm.fromTip({ matbuuFormTip: matbuuFormTip, fis: this, matbuuFormYapilari: matbuuFormYapilari });
+				// !! matbuuFormYapilari, matbuuFormTip okunmadan once cekilmelidir !!
+				let matbuuFormYapilari = await sky.app.getMatbuuFormYapilari({ fis });
+				let {matbuuFormTip} = this; if (matbuuFormTip) {
+					matbuuForm = await CETMatbuuForm.fromTip({ matbuuFormTip, fis, matbuuFormYapilari }) }
 			}
 			return matbuuForm
 		}

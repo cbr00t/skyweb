@@ -342,16 +342,24 @@
 		static get aciklama() { return 'Şube Transfer' } static get adimTipi() { return 'TRS' }
 		static get noYilDesteklermi() { return true } static get eIslemKullanilirmi() { return true }
 		static get numaratorTip() { return CETIrsaliyeFis.numaratorTip }
-		get matbuuFormTip() { return 'Irsaliye' }
-		async eIslemTipDegeriFor(e) {
-			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
-			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
+		get matbuuFormTip() {
+			let {app} = sky; if (app.eIslemKullanilirmi && this.eIslemTip) {
+				if (app.eIrsaliyeKullanilirmi) {
+					let key = 'e-Irsaliye', tip2MatbuuForm = app._matbuuFormYapilari?.tip2MatbuuForm || {};
+					if (!tip2MatbuuForm || tip2MatbuuForm[key]) { return key }
+				}
+				return (app.eIslemOzelDokummu ? 'e-Islem-Ozel' : 'e-Islem')
+			}
+			return 'Irsaliye'
 		}
 		constructor(e) {
 			e = e || {}; super(e);
 			$.extend(this, { refSubeKod: e.refSubeKod || '' });
 		}
-		async eIslemTipDegeriFor(e) { const {app} = sky; return app.eIslemKullanilirmi && app.eIrsaliyeKullanilirmi ? 'IR' : '' }
+		async eIslemTipDegeriFor(e) {
+			let {app} = sky, {eIslemKullanilirmi, eIrsaliyeKullanilirmi} = app;
+			return eIslemKullanilirmi && eIrsaliyeKullanilirmi ? 'IR' : ''
+		}
 		hostVars(e) {
 			e = e || {}; let hv = super.hostVars();
 			$.extend(hv, { refsubekod: this.refSubeKod || '' });

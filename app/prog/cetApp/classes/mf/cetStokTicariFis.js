@@ -869,8 +869,8 @@
 					sokMustListe ??= {}; let sokmu = sokMustListe.includes(mustKod);
 					if (sokmu) {
 						let barkod2Okutma = {};
-						for (let {barkod} of detaylar) {
-							if (barkod) { barkod2Okutma[barkod] = (barkod2Okutma[barkod] ?? 0) + 1 } }
+						for (let {barkod, okutmaSayisi = 1} of detaylar) {
+							if (barkod) { barkod2Okutma[barkod] = (barkod2Okutma[barkod] ?? 0) + okutmaSayisi } }
 						let barkodBilgiler = Object.entries(barkod2Okutma).map(x => `${x[0]}-${x[1]}`);
 						qrData = { irsaliyeno: no, barkod: barkodBilgiler, sayfa: '1-1' }
 					}
