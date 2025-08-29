@@ -36,10 +36,10 @@
 			if (!await this.class.matbuuFormDuzenleRuntime({ tip, fis, matbuuForm: this, dokumcu })) { return false }
 			let {formBilgi} = this; e.gecerliSahaYapilari = this.getGecerliSahaYapilari(e); let bedelSaha = e.bedelSaha = (formBilgi.bedelSaha || this.bedelSahaBul(e));
 			$.extend(e, { bedelEtiketUzunluk: formBilgi.bedelEtiketUzunluk || 21, bedelVeriUzunluk: formBilgi.bedelVeriUzunluk || bedelSaha?.genislik || 13});
-			await this.yeniSayfaOlustur(e); await this.yazdir_otomatikSahalar(e)
+			e.sonTextList = []; await this.yeniSayfaOlustur(e); await this.yazdir_otomatikSahalar(e)
 		}
 		async yeniSayfaOlustur(e) {
-			let {app} = sky, {dokumcu} = e, needWait = false;
+			let {app} = sky, {dokumcu, sonTextList} = e, needWait = false;
 			let  sayfa = dokumcu.sayfaEkle({ matbuuForm: this });
 			let {fis, gecerliSahaYapilari} = e, sahalar = gecerliSahaYapilari.normal;
 			for (let [attr, saha] of Object.entries(sahalar)) {
@@ -81,13 +81,14 @@
 				value = await fis.dokumSahaDegeri({ ...e, attr: value }) || value;
 				value = await saha.getConvertedValue({ ...e, value, fis });
 				value = await this.getConvertedValue({ tip: 'aciklama', attr: value, value });
-				await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value })
+				if (saha.pos.y ?? 0 > 0) { await sayfa.yazdir({ pos: saha.pos, genislik: saha.genislik, value }) }
+				else { sonTextList.push(value) }
 			}
 			if (needWait) { await Utils.delay(1000) }
 			return e.sayfa = sayfa
 		}
 		async yazdir_otomatikSahalar(e) {
-			let {fis, gecerliSahaYapilari} = e, {formBilgi} = this; let {sayfa} = e, {dokumZPLmi: zplmi} = sky.app;
+			let {fis, gecerliSahaYapilari, sonTextList} = e, {formBilgi} = this; let {sayfa} = e, {dokumZPLmi: zplmi} = sky.app;
 			let {sayfaBoyutlari, otoYBasiSonu, tekDetaySatirSayisi, nakilYapilirmi, kolonBaslikGosterilirmi} = formBilgi;
 			let sahalar = gecerliSahaYapilari.detay, detRelY2Sahalar = {};
 			for (let [attr, saha] of Object.entries(sahalar)) {
@@ -143,8 +144,10 @@
 			}
 			if (otoSatirSayisi0 && (otoInd > otoSatirSayisi0 && !nakilYapilirmi)) { return }
 			otoInd = (otoYBasiSonu.sonu && otoYBasiSonu.sonu > 0) ? otoYBasiSonu.sonu : (otoYBasiSonu.basi || 0) + otoInd;
-			sahalar = gecerliSahaYapilari.otomatik; for (let [attr, saha] of Object.entries(sahalar)) {
-				attr = saha.attr || attr; let value = await fis.dokumSahaDegeri($.extend({}, e, { attr, saha, digerSahami: true }));
+			let x, y; sahalar = gecerliSahaYapilari.otomatik;
+			for (let [attr, saha] of Object.entries(sahalar)) {
+				attr = saha.attr || attr;
+				let value = await fis.dokumSahaDegeri($.extend({}, e, { attr, saha, digerSahami: true }));
 				if (!saha.class.aciklamami && (value == null || value == '' || value == ' ')) { continue }
 				value = await saha.getConvertedValue($.extend({}, e, { value, fis, digerSahami: true }));
 				value = await this.getConvertedValue({ tip: 'detay', attr, saha, value, digerSahami: true });
@@ -158,13 +161,22 @@
 						if (!nakilYapilirmi) { break }
 						/* buraya gelmemeli */ this.sayfaBitti({ sayfa }); sayfa = await this.yeniSayfaOlustur(e); otoInd = 0
 					}
-					let x = saha.pos.x, y = otoInd, {genislik} = saha; if (attr == 'Dip') {
+					x = saha.pos.x, y = otoInd;
+					let {genislik} = saha; if (attr == 'Dip') {
 						let ozelDipPos = this.dipPos || CPoint.empty, {bedelSaha} = e;
 						x = ozelDipPos.x || (bedelSaha ? Math.max(bedelSaha.pos.x - e.bedelEtiketUzunluk - (bedelSaha.genislik || 15) + 8, 1) : 1) || 1;
 						/*if (zplmi) { x += 12 }*/
 						y = ozelDipPos.y || y; genislik = text.length
 					}
 					await sayfa.yazdir({ pos: { x, y }, genislik, value: text })
+				}
+			}
+			if (sonTextList?.length) {
+				y += 3;
+				x ||= 1; for (let value of sonTextList) {
+					let genislik = sayfaBoyutlari.x - x;
+					await sayfa.yazdir({ pos: { x, y }, genislik, value });
+					y++
 				}
 			}
 			this.sayfaBitti({ sayfa })

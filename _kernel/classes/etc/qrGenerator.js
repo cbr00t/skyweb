@@ -2,13 +2,15 @@ class QRGenerator extends CObject {
     static get defaultFormat() { return 'bmp' } static get defaultWaitMS() { return 1000 }
 	makeQR(data) {
 		data = data ?? ''; if (typeof data == 'object') { data = toJSONStr(data) }
-		let qr = new QRCode($('<div/>')[0], { width: 256, height: 256, correctLevel: QRCode.CorrectLevel.H });
+		let qr = new QRCode($('<div/>')[0], { width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M });
 		qr.makeCode(data); let {_elCanvas: canvas, _oContext: ctx} = qr._oDrawing;
 		return ctx.getImageData(0, 0, canvas.width, canvas.height)
 	}
 	createBMP(img) {
-		let {width: w, height: h, data: px} = img, rs = Math.ceil(w / 8), pad = (rs + 3) & ~3, dataSize = pad * h;
-		let buf = new ArrayBuffer(14 + 40 + 8 + dataSize), v = new DataView(buf), o = 0;
+		let {width: w, height: h, data: px} = img;
+		let rs = Math.ceil(w / 8), pad = (rs + 3) & ~3, dataSize = pad * h;
+		let buf = new ArrayBuffer(14 + 40 + 8 + dataSize);
+		let v = new DataView(buf), o = 0;
 			/* Bitmap file header */
 		v.setUint16(o, 0x4D42, true); o += 2;
 		v.setUint32(o, buf.byteLength, true); o += 4;
@@ -16,8 +18,8 @@ class QRGenerator extends CObject {
 		v.setUint32(o, 62, true); o += 4;							/* dataOffset = 14 + 40 + 8 */
 			/* DIB header */
 		v.setUint32(o, 40, true); o += 4;
-		v.setInt32(o, w, true); o += 4;
-		v.setInt32(o, h, true); o += 4;
+		v.setInt32(o, w, true); o += 4;                             /* w: width(px) */
+		v.setInt32(o, h, true); o += 4;                             /* h: width(px) */
 		v.setUint16(o, 1, true); o += 2;
 		v.setUint16(o, 1, true); o += 2;							/* 1-bit */
 		v.setUint32(o, 0, true); o += 4;
@@ -51,17 +53,6 @@ class QRGenerator extends CObject {
 		let now = new Date(), ts = now.toISOString().replace(/[-T:.Z]/g, '').slice(0, 14)
 		return `${prefix ?? 'qr'}-${ts}.${ext}`
 	}
-    qrDraw(data, format, prefix) {
-		format = format || this.class.defaultFormat; let img = this.makeQR(data); if (!img) { return null }
-        let selector = format == 'png' ? 'createPNG' : 'createBMP', blob = this[selector](img);
-		let base64URL = URL.createObjectURL(blob); return { data, img, base64URL, blob }
-    }
-	qrSave(blob, format, prefix) {
-        format = format || this.class.defaultFormat; let fileName = this.getFileName(format, prefix);
-        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName; a.click();
-		let url = `file:///storage/emulated/0/Download/${fileName}`, prnCmd = `<IMAGE>${url}<BR>`;
-		return { blob, prefix, fileName, url, prnCmd }
-	}
     qrDrawAndSave(data, format, prefix) {
 		let result_draw = this.qrDraw(data, format, prefix); if (!result_draw?.blob) { return null }
         let {blob} = result_draw, result_save = this.qrSave(blob, format, prefix); if (!result_save) { return null }
@@ -69,10 +60,21 @@ class QRGenerator extends CObject {
 	}
 	async qrDrawAndSaveAsync(data, format, prefix) {
 		let result = this.qrDrawAndSave(data, format, prefix); if (result) {
-			let {defaultWaitMS} = this.class;
-			if (defaultWaitMS > 0) { await Utils.delay(defaultWaitMS) }
+			let {defaultWaitMS: delayMS} = this.class;
+			if (delayMS > 0) { await Utils.delay(delayMS) }
 		}
 		return result
+	}
+	qrDraw(data, format, prefix) {
+		format ??= this.class.defaultFormat; let img = this.makeQR(data); if (!img) { return null }
+        let selector = format == 'png' ? 'createPNG' : 'createBMP', blob = this[selector](img);
+		let base64URL = URL.createObjectURL(blob); return { data, img, base64URL, blob }
+    }
+	qrSave(blob, format, prefix) {
+        format ??= this.class.defaultFormat; let fileName = this.getFileName(format, prefix);
+        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName; a.click();
+		let url = `file:///storage/emulated/0/Download/${fileName}`, prnCmd = `<IMAGE>${url}<BR>`;
+		return { blob, prefix, fileName, url, prnCmd }
 	}
 	debug(text) {
 		let {prnCmd} = this.qrDrawAndSave(text, 'bmp');

@@ -449,7 +449,11 @@
 		get barkodReferansAlinmazmi() { let flag = this.ozelYetkiler?.barkodReferansAlinmaz; if (flag == null) { flag = asBool(this.param.barkodReferansAlinmazmi) ?? false } return flag }
 		get detaylarTersSiradami() { let flag = this.ozelYetkiler?.detaylarTersSirada; if (flag == null) { flag = asBool(this.param.detaylarTersSiradami) ?? false } return flag }
 		get hataliBarkodlarIcinMesajGosterilirmi() { let flag = this.ozelYetkiler?.hataliBarkodlarIcinMesaj; if (flag == null) { flag = asBool(this.param.hataliBarkodlarIcinMesajGosterilirmi) ?? false } return flag }
-		get barkodOkutmaSessizmi() { let flag = this.ozelYetkiler?.barkodOkutmaSessiz; if (flag == null) { flag = asBool(this.param.barkodOkutmaSessizmi) ?? false } return flag }
+		get barkodOkutmaSessizmi() {
+			let flag = this.ozelYetkiler?.barkodOkutmaSessiz;
+			if (flag == null) { flag = asBool(this.param.barkodOkutmaSessizmi) ?? false }
+			return flag
+		}
 		get maxIskSayi() { return 6 } get maxKamSayi() { return this.maxIskSayi } get maxKadIskSayi() { return 5 }
 		get iskSayi() {
 			let {maxIskSayi} = this; let result = this.ozelYetkiler?.iskSayi;
@@ -751,10 +755,14 @@
 			return result == null ? false : result
 		}
 		get eIslemOzelDokummu() {
-			let flag = this.ozelYetkiler?.eIslemOzelDokum;
-			if (flag == null)
-				flag = this.param.dokumRuloDuzmu;
-			return flag;
+			let {eIslemOzelDokum: flag} = this.ozelYetkiler ?? {};
+			flag ??= this.param.dokumRuloDuzmu;
+			return flag
+		}
+		get ozelConf_sokMustKodListe() {
+			let {ozelConf_sokMustKodListe: flag} = this.ozelYetkiler ?? {};
+			flag ??= this.param.ozelConf_sokMustKodListe ?? [];
+			return flag
 		}
 		get ruloParam() {
 			let result = this._ruloParam;
@@ -807,7 +815,6 @@
 			}
 			return result;
 		}
-
 		get tip2MatbuuFormDuzenleyiciler_runtime() {
 			let result = this._tip2MatbuuFormDuzenleyiciler_runtime;
 			if (result === undefined) {
@@ -878,7 +885,10 @@
 					rbk: asBoolQ(qs.rbk) == null ? null : asBool(qs.rbk),
 					doviz: asBoolQ(qs.doviz) == null ? null : asBool(qs.doviz),
 					resimBaseURL: qs.resimBaseURL, barkodReferansAlinmaz: qs.barkodReferansAlinmaz,
-					detaylarTersSirada: qs.detaylarTersSirada, hataliBarkodlarIcinMesaj: qs.hataliBarkodlarIcinMesaj, barkodOkutmaSessiz: qs.barkodOkutmaSessiz
+					detaylarTersSirada: qs.detaylarTersSirada,
+					hataliBarkodlarIcinMesaj: qs.hataliBarkodlarIcinMesaj,
+					barkodOkutmaSessiz: qs.barkodOkutmaSessiz,
+					ozelConf_sokMustKodListe: qs.ozelConf_sokMustKodListe ? qs.ozelConf_sokMustKodListe.split('|') : null
 				},
 				initCallbacks: [],
 				table2TipAdi: {

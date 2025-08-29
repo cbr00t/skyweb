@@ -19,7 +19,7 @@
 				'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi', 'depoSiparisKarsilamaZorunluHMRListe', 'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', 'dovizKullanilirmi',
 				'resimBaseURL', 'karmaPaletBarkodBaslangic', 'barkodReferansAlinmazmi', 'tip2MatbuuFormDuzenleyiciler', 'tip2MatbuuFormDuzenleyiciler_runtime', 'ekOzellikKullanim', 'tip2EkOzellikYapi',
 				'isyeri', 'ruloParam', 'ruloEkNotlar', 'mustKod2Bilgi', 'kapandimi', 'userSettings', 'detaylarTersSiradami',
-				'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi', 'hizliBarkodmu'
+				'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi', 'hizliBarkodmu', 'ozelConf_sokMustKodListe'
 			]
 		}
 		static get version() { return 2 }
@@ -101,7 +101,8 @@
 				ruloParam: this.ruloParam || {},
 				ruloEkNotlar: this.ruloEkNotlar || {},
 				tip2MatbuuFormDuzenleyiciler: this.tip2MatbuuFormDuzenleyiciler || {},
-				tip2MatbuuFormDuzenleyiciler_runtime: this.tip2MatbuuFormDuzenleyiciler_runtime || {}
+				tip2MatbuuFormDuzenleyiciler_runtime: this.tip2MatbuuFormDuzenleyiciler_runtime || {},
+				ozelConf_sokMustKodListe: this.ozelConf_sokMustKodListe || []
 			})
 		}
 		hostVars() {
@@ -123,7 +124,8 @@
 				'iskontoArttirilirmi', 'detaylardaFiyatDegistirilirmi', 'fisTarihDegistirilirmi', 'sicakTeslimFisimi', 'ertesiGunTeslimFisiIslenirmi', 'eIslemKullanilirmi', 'depoSiparisRefKontrolEdilirmi',
 				'depoMalKabulSiparisKontrolEdilirmi', 'depoMalKabulSiparisMiktariKontrolEdilirmi', 'depoMalKabulSiparisHMRlimi', 'depoSevkiyatSiparisKontrolEdilirmi', 'depoSevkiyatSiparisMiktariKontrolEdilirmi', 'depoSevkiyatSiparisHMRlimi', 'depoSevkiyatSiparisKarsilamaOdemeGunTekmi',
 				'alimFiyatGorurmu', 'satisFiyatGorurmu', 'ozelKampanyaKullanilirmi', 'konumTakibiYapilirmi', 'konumsuzIslemYapilirmi', 'otoSonStokGuncellenirmi', 'rbkKullanilirmi', 'fisGirisiRbkOtomatikAcilsinmi',
-				'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', /*'dovizKullanilirmi',*/ 'barkodReferansAlinmazmi', 'dokumRuloDuzmu', 'kapandimi'
+				'nakliyeSekliKullanilmazmi', 'sevkYeriKullanilmazmi', /*'dovizKullanilirmi',*/ 'barkodReferansAlinmazmi', 'dokumRuloDuzmu', 'kapandimi',
+				'hataliBarkodlarIcinMesajGosterilirmi', 'barkodOkutmaSessizmi', 'hizliBarkodmu'
 			].forEach(key => { let value = this[key]; this[key] = asBool(value) });
 		}
 		reduce() {

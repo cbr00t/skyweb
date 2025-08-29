@@ -854,7 +854,8 @@
 				Yalniz: e => { const {sonucBedel} = this; return sonucBedel ? `#${Utils.yalnizYazisi(this.sonucBedel)}#` : '' },
 				'QR-EISLEM': async e => {
 					let _bedelStr = value => toFileStringWithFra(value, 2);
-					let {app} = sky, {mustKod, class: fisSinif} = this, {isyeri} = app.param;
+					let {app} = sky, {mustKod, class: fisSinif, sevkAdresKod, detaylar} = this, qrData;
+					let {isyeri, ozelConf_sokMustKodListe: sokMustListe} = app;
 					let {sahisfirmasi: sahismi, tckimlikno: tckn, vergino: vkn} = isyeri;
 					let cariRec = await this.dokum_getMustRec(e) ?? {}, cariEFatmi = await this.getCariEFatmi(e);
 					let vkntckn = sahismi ? tckn : vkn, {vkn: avkntckn} = cariRec;
@@ -865,14 +866,24 @@
 					let icmal = this.icmal ?? {}, oran2MatrahVeKdv = icmal.oran2MatrahVeKdv ?? {};
 					let brut = icmal.brut ?? 0, topDipIskonto = icmal.topDipIskonto ?? 0, topKdv = icmal.topKdv ?? 0, sonuc = icmal.sonuc ?? 0;
 					let malhizmettoplam = _bedelStr(brut), vergidahil = _bedelStr(brut - topDipIskonto + topKdv), odenecek = _bedelStr(sonuc);
-					let qrData = {
-						vkntckn, avkntckn, senaryo, tip, tarih, no, ettn, parabirimi,
-						malhizmettoplam, vergidahil, odenecek
-					};
-					for (let [oran, {matrah, kdv}] of Object.entries(oran2MatrahVeKdv)) {
-						if (!oran) { continue }
-						qrData[`kdvmatrah(${oran})`] = _bedelStr(matrah ?? 0);
-						qrData[`hesaplanankdv(${oran})`] = _bedelStr(kdv ?? 0);
+					sokMustListe ??= {}; let sokmu = sokMustListe.includes(mustKod);
+					if (sokmu) {
+						let barkod2Okutma = {};
+						for (let {barkod} of detaylar) {
+							if (barkod) { barkod2Okutma[barkod] = (barkod2Okutma[barkod] ?? 0) + 1 } }
+						let barkodBilgiler = Object.entries(barkod2Okutma).map(x => `${x[0]}-${x[1]}`);
+						qrData = { irsaliyeno: no, barkod: barkodBilgiler, sayfa: '1-1' }
+					}
+					else {
+						qrData = {
+							vkntckn, avkntckn, senaryo, tip, tarih, no, ettn, parabirimi,
+							malhizmettoplam, vergidahil, odenecek
+						};
+						for (let [oran, {matrah, kdv}] of Object.entries(oran2MatrahVeKdv)) {
+							if (!oran) { continue }
+							qrData[`kdvmatrah(${oran})`] = _bedelStr(matrah ?? 0);
+							qrData[`hesaplanankdv(${oran})`] = _bedelStr(kdv ?? 0);
+						}
 					}
 					return toJSONStr(qrData)
 				}
