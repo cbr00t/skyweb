@@ -25,7 +25,7 @@
 					pdks: `PDKS Veri Alımı (<i>Web Arayüzü üzerinden</i>)`, skyBulutYedekleme: `Sky Bulut Yedekleme`, vioProg: `VIO Program Servisi`, frp: 'FRP', 
 					eIslemGonder: `e-İşlem Gönder`, eIslemAkibetSorgula: `e-İşlem Akıbet Sorgula`, gelenEIslemSorgula: `Gelen e-İşlem Sorgula`, eIslemArsivle: `e-İşlem Arşivle`,
 					vioGuncelle: `Vio Sürüm Güncelleme İşlemi`, vioMenuGorev: `VIO Menü Görevi`, /*eMail: `e-Mail Gönderimi`,*/ eMailQueue: `e-Mail Kuyruğu İşlet`,
-					cvmRestart: `CVM Yeniden Başlat` /*, wsRestart: `SkyWS Yeniden Başlat`*/ , webBrowserIPC: 'WebBrowser IPC'
+					cvmRestart: `CVM Yeniden Başlat` /*, wsRestart: `SkyWS Yeniden Başlat`*/, webBrowserIPC: 'WebBrowser IPC'
 				};
 				if (gelismisModmu && !gelismisModDisabledFlag && SkyConfigYetki.yetkilimi({ yetki: 'subServiceManager' })) {
 					$.extend(result, {
@@ -680,7 +680,8 @@
 			const handlerList = [
 				'genel', 'waitSignal', 'yonetim', 'cariEFatSorgu', 'skyMES/hatIzleme', 'skyMES/makineDurum',
 				'pdks', 'skyBulutYedekleme', 'b2b', 'b2b/fuhrer', 'b2b/atomedya', 'skyCafe/rest', 'skyCafe/pratik', /*'elterm',*/
-				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk', 'skyERP', 'skyTablet',
+				'vioProg', 'eIslemGonder', 'eIslemAkibetSorgula', 'gelenEIslemSorgula', 'eIslemArsivle', 'eMutabakat', 'sgk',
+				'skyERP', 'offlineAktarim', 'skyTablet',
 				'vioGuncelle', 'vioMenuGorev', 'eMail', 'eMailQueue', 'appStart', 'shell', 'sqlExec', 'webRequest',
 				'hamachi', 'skyWS', 'hfs', 'frp', 'frps', 'vioPortal', 'cariEFatListeSorgula_portal', 'skyTurmob', 'webBrowserIPC'
 			];
@@ -1026,7 +1027,8 @@
 									disabled: item_disabled
 								}
 							},
-							skyERP: { type: 'object', title: `Sky ERP`, properties: { sql: item_sql, disabled: item_disabled } },
+							skyERP: { type: 'object', title: 'Sky ERP', properties: { sql: item_sql, disabled: item_disabled } },
+							offlineAktarim: { type: 'object', title: 'Offline Aktarım', properties: { sql: item_sql, disabled: item_disabled } },
 							skyTablet: {
 								type: 'object', title: `Sky Tablet`,
 								properties: {

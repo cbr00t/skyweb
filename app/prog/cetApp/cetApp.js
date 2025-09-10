@@ -754,6 +754,10 @@
 			let result = this.ozelYetkiler?.sevkYeriKullanilmaz ?? this.param.sevkYeriKullanilmazmi;
 			return result == null ? false : result
 		}
+		get sevkYeriZorunlumu() {
+			let result = this.ozelYetkiler?.sevkYeriZorunlu ?? this.param.sevkYeriZorunlumu;
+			return result == null ? false : result
+		}
 		get eIslemOzelDokummu() {
 			let {eIslemOzelDokum: flag} = this.ozelYetkiler ?? {};
 			flag ??= this.param.dokumRuloDuzmu;
@@ -888,7 +892,9 @@
 					detaylarTersSirada: qs.detaylarTersSirada,
 					hataliBarkodlarIcinMesaj: qs.hataliBarkodlarIcinMesaj,
 					barkodOkutmaSessiz: qs.barkodOkutmaSessiz,
-					ozelConf_sokMustKodListe: qs.ozelConf_sokMustKodListe ? qs.ozelConf_sokMustKodListe.split('|') : null
+					ozelConf_sokMustKodListe: qs.ozelConf_sokMustKodListe ? qs.ozelConf_sokMustKodListe.split('|') : null,
+					sevkYeriKullanilmaz: asBoolQ(qs.sevkYeriKullanilmaz),
+					sevkYeriZorunlu: asBoolQ(qs.sevkYeriZorunlu)
 				},
 				initCallbacks: [],
 				table2TipAdi: {

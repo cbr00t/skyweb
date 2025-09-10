@@ -390,18 +390,38 @@
 		async onKontrol(e) {
 			e = e || {}; let result = await this.onKontrol_detaylar(e);
 			if (!result || result.isError) { return result }
-			let {musteriKullanilirmi} = this.class, {dbMgr} = this, {tx} = e;
-			let kontrolIslemi = e.kontrolIslemi = async (kod, cacheSource, table, kodSaha, etiket) => {
-				if (!kod) { return }
-				kodSaha = kodSaha || 'kod';
-				let query = `SELECT COUNT(*) sayi FROM ${table} WHERE ${kodSaha} = ?`, params = [kod];
-				let varmi = cacheSource?.[kod] || asInteger(await dbMgr.tekilDegerExecuteSelect({ tx, query, params }));
-				if (!varmi) {
-					throw this.error_onKontrol((
-						`<p/>[ <b class=red>${kod}</b> ] kodlu <u class=bold>${etiket} Kodu</u> hatalıdır.<p/><p/>` +
-					    `<p class="gray">** Ekranda <u>${etiket} Kodu</u> kutusu <b>boş gözüküyor ise</b><br/>` + 
-						` <b class=royalblue>Kutunun üzerine tıklayıp, ENTER tuşuna basarak</b> değeri silebilirsiniz</p>`
-					), 'invalidValue')
+			let {app} = sky, {class: { musteriKullanilirmi }, dbMgr} = this, {tx} = e;
+			let {caches, sevkYeriKullanilmazmi, sevkYeriZorunlumu} = app;
+			if (!this.class.sevkYeriKullanilirmi) { sevkYeriKullanilmazmi = true }
+			let kontrolIslemi = e.kontrolIslemi = async (kod, cacheSource, table, kodSaha, etiket, force, forceEkWh) => {
+				if (!kod) {
+					if (force) {
+						let ekWh = getFuncValue.call(this, forceEkWh);
+						let varmi = ekWh ? null : !!cacheSource?.length;
+						if (!varmi) {
+							let query = `SELECT COUNT(*) sayi FROM ${table}`;
+							if (ekWh) { query += ` WHERE ${ekWh}` }
+							varmi = await dbMgr.tekilDegerExecuteSelect({ tx, query })
+						}
+						if (varmi) {
+							throw this.error_onKontrol((
+								`<p/><u class=bold>${etiket} Kodu</u> belirtilmelidir.<p/><p/>` 
+							), 'invalidValue')
+						}
+					}
+					return
+				}
+				{
+					kodSaha = kodSaha || 'kod';
+					let query = `SELECT COUNT(*) sayi FROM ${table} WHERE ${kodSaha} = ?`, params = [kod];
+					let varmi = cacheSource?.[kod] || asInteger(await dbMgr.tekilDegerExecuteSelect({ tx, query, params }));
+					if (!varmi) {
+						throw this.error_onKontrol((
+							`<p/>[ <b class=red>${kod}</b> ] kodlu <u class=bold>${etiket} Kodu</u> hatalıdır.<p/><p/>` +
+						    `<p class="gray">** Ekranda <u>${etiket} Kodu</u> kutusu <b>boş gözüküyor ise</b><br/>` + 
+							` <b class=royalblue>Kutunun üzerine tıklayıp, ENTER tuşuna basarak</b> değeri silebilirsiniz</p>`
+						), 'invalidValue')
+					}
 				}
 			};
 			let {mustKod, sevkAdresKod, plasiyerKod, yerKod, nakSekliKod, tahSekliKodNo} = this;
@@ -411,18 +431,21 @@
 			}
 			await kontrolIslemi(plasiyerKod, caches.plasiyerKod2Rec, 'mst_Plasiyer', 'kod', 'Plasiyer');
 			await kontrolIslemi(yerKod, caches.yerKod2Rec, 'mst_Yer', 'kod', 'Yer');
-			await kontrolIslemi(sevkAdresKod, caches.sevkAdresKod2Rec, 'mst_SevkAdres', 'kod', 'Sevk Adres');
+			if (sevkYeriKullanilmazmi) { this.sevkAdresKod = '' }
+			else {
+				await kontrolIslemi(
+					sevkAdresKod, caches.sevkAdresKod2Rec, 'mst_SevkAdres', 'kod', 'Sevk Yeri', sevkYeriZorunlumu,
+					(musteriKullanilirmi && mustKod ? () => `kod > '' AND mustKod = ${MQSQLOrtak.sqlDegeri(mustKod)}` : null)
+				)
+			}
 			await kontrolIslemi(nakSekliKod, caches.nakliyeSekliKod2Rec, 'mst_NakliyeSekli', 'kod', 'Nakliye Şekli');
 			await kontrolIslemi(tahSekliKodNo, caches.tahsilSekliKodNo2Rec, 'mst_TahsilSekli', 'kodNo', 'Tahsil Şekli');
 			return await super.onKontrol(e)
 		}
 		async onKontrol_detaylar(e) {
-			e = e || {};
-			const detaylar = this.sonStokIcinAltDetaylar;
-			if ($.isEmptyObject(detaylar))
-				throw { isError: true, rc: 'bosFis', errorText: 'Belge içeriği girilmelidir' }
-			
-			const tip2KontrolYapi = {
+			e ??= {}; let {sonStokIcinAltDetaylar: detaylar} = this;
+			if ($.isEmptyObject(detaylar)) { throw { isError: true, rc: 'bosFis', errorText: 'Belge içeriği girilmelidir' } }
+			let tip2KontrolYapi = {
 				stok: {
 					aciklama: 'Stok', table: 'mst_Stok', idSaha: 'kod',
 					receiver: e => e.detay, getter: e => e.receiver.shKod
@@ -430,10 +453,9 @@
 			};
 			await detaylar[0].ekOzelliklerDo({
 				callback: _e => {
-					const ekOzellik = _e.item;
-					const table = ekOzellik.mbTable;
+					let {item: ekOzellik} = _e, {mbTable: table} = ekOzellik;
 					if (table) {
-						const tip = ekOzellik.tip || _e.tip;
+						let tip = ekOzellik.tip || _e.tip;
 						tip2KontrolYapi[tip] = tip2KontrolYapi[tip] || {
 							aciklama: ekOzellik.tipAdi,detAttr: ekOzellik.idSaha,
 							table: table, idSaha: ekOzellik.mbKodSaha,
@@ -444,34 +466,25 @@
 				}
 			});
 			
-			const {dbMgr} = this;
-			let uni = new MQUnionAll();
-			let stm = new MQStm({ sent: uni });
-			const tip2Values = {};
-			for (const det of detaylar) {
-				for (const tip in tip2KontrolYapi) {
-					const kontrolYapi = tip2KontrolYapi[tip];
+			let {dbMgr} = this, uni = new MQUnionAll(), stm = new MQStm({ sent: uni });
+			let tip2Values = {}; for (let det of detaylar) {
+				for (let tip in tip2KontrolYapi) {
+					let kontrolYapi = tip2KontrolYapi[tip];
 					let _e = { tip: tip, kontrolYapi: kontrolYapi, detay: det, tip2EkOzellik: det.ekOzelliklerYapi.tip2EkOzellik };
 					let receiver = kontrolYapi.receiver || det;
-					if ($.isFunction(receiver))
-						receiver = _e.receiver = receiver.call(this, _e)
+					if ($.isFunction(receiver)) { receiver = _e.receiver = receiver.call(this, _e) }
 					let value = kontrolYapi.getter ? kontrolYapi.getter.call(this, _e) : (kontrolYapi.detAttr ? receiver[kontrolYapi.detAttr] : null)
-					if ($.isFunction(value))
-						value = value.call(this, _e)
-					
+					if ($.isFunction(value)) { value = value.call(this, _e) }
 					if (value) {
-						const values = tip2Values[tip] = (tip2Values[tip] || {});				// set olarak dursun
+						let values = tip2Values[tip] = (tip2Values[tip] || {});				// set olarak dursun
 						values[value] = true
 					}
 				}
 			}
-
-			for (const tip in tip2KontrolYapi) {
-				const kontrolYapi = tip2KontrolYapi[tip];
-				const {idSaha} = kontrolYapi;
-				const values = tip2Values[tip];
+			for (let [tip, kontrolYapi] of Object.entries(tip2KontrolYapi)) {
+				let {idSaha} = kontrolYapi, values = tip2Values[tip];
 				if (!$.isEmptyObject(values)) {
-					const sent = new MQSent({
+					let sent = new MQSent({
 						from: kontrolYapi.table,
 						where: [{ inDizi: values, saha: idSaha }],
 						sahalar: [`'${tip}' tip`, `${idSaha} value`]
@@ -479,36 +492,27 @@
 					uni.add(sent)
 				}
 			}
-			
 			if (!$.isEmptyObject(uni.liste)) {
 				let recs = await dbMgr.executeSqlReturnRowsBasic({ tx: e.tx, query: stm });
 				for (let i = 0; i < recs.length; i++) {
-					const rec = recs[i];
-					const {tip, value} = rec;
-					const mevcutDegerler = tip2Values[tip] || {};
+					let rec = recs[i], {tip, value} = rec;
+					let mevcutDegerler = tip2Values[tip] || {};
 					delete mevcutDegerler[value]
 				}
-
 				let errorList = [];
-				for (const tip in tip2Values) {
-					const eksikDegerlerSet = tip2Values[tip];
+				for (let tip in tip2Values) {
+					let eksikDegerlerSet = tip2Values[tip];
 					if (!$.isEmptyObject(eksikDegerlerSet)) {
-						const kontrolYapi = tip2KontrolYapi[tip];
-						const birlesikKodStr = Object.keys(eksikDegerlerSet).join(' | ');
+						let kontrolYapi = tip2KontrolYapi[tip], birlesikKodStr = Object.keys(eksikDegerlerSet).join(' | ');
 						errorList.push(`- Bazı <b>${kontrolYapi.aciklama}</b> kodları hatalıdır: [<b>${birlesikKodStr}</b>]`)
 					}
 				}
-
-				if (!$.isEmptyObject(errorList))
-					return { isError: true, rc: 'invalidId', errorText: errorList.join(`<br/>${CrLf}`) }
+				if (!$.isEmptyObject(errorList)) { return { isError: true, rc: 'invalidId', errorText: errorList.join(`<br/>${CrLf}`) } }
 			}
-			
-			return { isError: false };
+			return { isError: false }
 		}
-
 		async kaydetOncesiKontrol_ara(e) {
 			await super.kaydetOncesiKontrol_ara(e);
-
 			let promise = this.getYerIcinSubeKod(e);
 			await this.miktarKontrol(e);
 
