@@ -1,19 +1,5 @@
 (function() {
 	window.CETUgramaFis = class extends window.MQCogul {
-		constructor(e) {
-			e = e || {};
-			super(e);
-			
-			$.extend(this, {
-				id: e.id || e.rowid,
-				tarih: e.tarih || today(),
-				aciklama: e.aciklama,
-				mustKod: e.mustKod || '',
-				nedenKod: e.nedenKod || '',
-				nedenAdi: e.nedenAdi
-			});
-		}
-
 		static get table() { return 'data_UgramaFis' }
 		static get tableAlias() { return 'fis' }
 		static get fisGirisUISinif() { return CETUgramaGirisPart }
@@ -26,61 +12,62 @@
 		static get degismediDesteklenirmi() { return true }
 		static get ugramami() { return true }
 		static get tarihKontrolYapilirmi() { return true }
-
+	
+		constructor(e) {
+			e = e || {}; super(e)
+			$.extend(this, {
+				id: e.id || e.rowid,
+				uniqueId: e.uniqueId || e.uniqueid,
+				tarih: e.tarih || today(),
+				aciklama: e.aciklama,
+				mustKod: e.mustKod || '',
+				nedenKod: e.nedenKod || '',
+				nedenAdi: e.nedenAdi
+			})
+		}
 		static queryStm(e) {
 			return this.queryStmOrtak($.extend({
 				sahalarEkClause: `ned.aciklama nedenAdi`,
 				fromWhereArasiEkClause: `LEFT JOIN mst_UgramaNeden ned ON fis.nedenKod = ned.kod`
 			}, e))
 		}
-
 		static async fromRec(e) {
-			e = e || {};
-			const rec = e.rec || e;
-
-			let fis = new this({ id: e.id || rec.rowid });
+			e = e || {}; let rec = e.rec || e
+			let fis = new this({ id: e.id || rec.rowid })
 			if (!await fis.yukle())
-				return null;
-
-			return fis;
+				return null
+			return fis
 		}
-
 		hostVars(e) {
-			e = e || {};
-
-			let _now = now();
-			this.erisimZamani = _now;
-			
-			let hv = super.hostVars();
+			e = e || {}; let _now = now()
+			this.erisimZamani = _now
+			let hv = super.hostVars()
 			$.extend(hv, {
+				uniqueid: this.uniqueId || newGUID(),
 				kayitzamani: Utils.asReverseDateTimeString(this.kayitZamani || _now),
 				erisimzamani: Utils.asReverseDateTimeString(this.erisimZamani || _now),
 				tarih: Utils.asReverseDateString(this.tarih) || '',
 				mustkod: this.mustKod,
 				nedenKod: this.nedenKod || '',
 				fisaciklama: this.aciklama || ''
-			});
-
-			return hv;
+			})
+			return hv
 		}
-
 		async setValues(e) {
-			e = e || {};
-			const rec = e.rec;
-
-			await super.setValues(e);
+			e = e || {}; let {rec} = e
+			await super.setValues(e)
 			if (rec.tarih)
-				this.tarih = asDate(rec.tarih);
+				this.tarih = asDate(rec.tarih)
 			$.extend(this, {
+				uniqueId: rec.uniqueid || null,
 				kayitZamani: asDate(rec.kayitzamani) || null,
 				erisimZamani: asDate(rec.erisimzamani) || null,
 				mustKod: rec.mustkod || rec.mustKod || '',
 				nedenKod: rec.nedenKod || '',
 				nedenAdi: rec.nedenAdi,
 				aciklama: rec.fisaciklama || ''
-			});
+			})
 		}
-
 		async onKontrol(e) {
 			e = e || {};
 			if (!this.mustKod)

@@ -218,9 +218,29 @@
 		get tabloEksikIslemYapi() {
 			return [
 				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'uniqueid')),
+					queries: [`ALTER TABLE data_PIFFis ADD uniqueid TEXT`]
+				},
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFStok', 'uniqueid')),
+					queries: [`ALTER TABLE data_PIFStok ADD uniqueid TEXT`]
+				},
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_TahsilatFis', 'uniqueid')),
+					queries: [`ALTER TABLE data_TahsilatFis ADD uniqueid TEXT`]
+				},
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_TahsilatDetay', 'uniqueid')),
+					queries: [`ALTER TABLE data_TahsilatDetay ADD uniqueid TEXT`]
+				},
+				{
+					kosul: async e => !(await e.dbMgr.hasColumns('data_UgramaFis', 'uniqueid')),
+					queries: [`ALTER TABLE data_UgramaFis ADD uniqueid TEXT`]
+				}
+				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('data_PIFFis', 'tumBarkodlar')),
 					queries: [`ALTER TABLE data_PIFFis ADD tumBarkodlar TEXT NOT NULL DEFAULT ''`]
-				}
+				}*/
 				/*{
 					kosul: async e => !(await e.dbMgr.hasColumns('mst_Stok', 'tartiReferans2')),
 					queries: [
@@ -1455,7 +1475,7 @@
 				],
 				sahalar: (rowCountOnly
 					? `COUNT(*) sayi`
-					: [	`fis.rowid`,
+					: [	'fis.rowid', 'fis.uniqueid',
 						`'Uğrama' fisTipText`,
 						`0 topKdv`, `0 fisSonuc`, `0 detaySayisi`,
 						`fis.kayitzamani`, `fis.gonderildi`, `fis.silindi`, `fis.yazdirildi`, `fis.gecici`, `fis.rapor`, `'*' tamamlandi`, `fis.degismedi`,
@@ -1501,7 +1521,7 @@
 				],
 				sahalar: (rowCountOnly
 					? `COUNT(*) sayi`
-					: [	`fis.rowid`,
+					: [	`fis.rowid`, 'fis.uniqueid',
 						/*`(
 							(case
 								when fis.almsat = 'A' then 'Alım '
@@ -1563,7 +1583,7 @@
 				],
 				sahalar: (e.rowCountOnly
 					? `COUNT(*) sayi`
-					: [	`fis.rowid rowid`,
+					: [	'fis.rowid rowid', 'fis.uniqueid',
 						`'Tahsilat' fisTipText`,
 						`0 topKdv`, `fis.toplambedel fisSonuc`, `fis.detaykayitsayisi detaySayisi`,
 						`fis.kayitzamani`, `fis.gonderildi`, `fis.silindi`, `fis.yazdirildi`, `fis.gecici`, `fis.rapor`, `'*' tamamlandi`, `fis.degismedi`,
@@ -1575,7 +1595,7 @@
 			}));
 			if (musteriDurumumu) {
 				e.uni.add(new MQSent({
-					from: `data_DigerHareket fis`,
+					from: 'data_DigerHareket fis',
 					fromIliskiler: [
 						// { from: 'mst_Cari car', iliski: 'fis.mustkod = car.kod' }
 						{ alias: `fis`, leftJoin: `mst_Cari car`, on: `fis.mustkod = car.kod` }

@@ -1,18 +1,21 @@
 (function() {
 	window.MQCogul = class extends window.MFYapi {
 		constructor(e) {
-			e = e || {}; super(e);
-			$.extend(this, { dbMgr: e.dbMgr || this.class.dbMgr, id: e.id, eIslemTip: e.eIslemTip, uuid: e.uuid });
-			if (this.class.raporDesteklenirmi) this.rapormu = asBool(e.rapormu || e.rapor);
+			e ??= {}; let {islem} = e; super(e)
+			$.extend(this, { dbMgr: e.dbMgr || this.class.dbMgr, id: e.id, eIslemTip: e.eIslemTip, uuid: e.uuid })
+			if (this.class.raporDesteklenirmi) this.rapormu = asBool(e.rapormu || e.rapor)
 			if (this.class.silindiGonderildiDesteklermi) {
 				$.extend(this, {
 					devreDisimi: asBool(e.devreDisimi || e.silindi),
 					gonderildimi: asBool(e.gonderildimi || e.gonderildi),
 					yazdirildimi: asBool(e.yazdirildimi || e.yazdirildi),
 					gecicimi: asBool(e.gecicimi || e.gecici)
-				});
+				})
 			}
-			if (this.class.degismediDesteklenirmi) this.degismedimi = asBool(e.degismedimi || e.degismedi);
+			if (this.class.degismediDesteklenirmi)
+				this.degismedimi = asBool(e.degismedimi || e.degismedi)
+			if (islem == 'kopya' && this.uniqueid)
+				this.uniqueid = null
 		}
 		static get deepCopyAlinmayacaklar() { return $.merge(super.deepCopyAlinmayacaklar || [], ['dbMgr']) }
 		reduce() {
@@ -275,24 +278,33 @@
 		static rapor_ozet_stmSentDuzenle(e) { }
 		
 		async yukle(e) {
-			e = e || {};
-			let {rec} = e;
+			e ??= {}; let {rec, islem} = e
 			if (!rec) {
-				const {dbMgr} = this;
+				let {dbMgr} = this
 				if (!dbMgr)
-					return false;
-				
-				let queryYapi = this.class.queryStm($.extend({ id: this.id }, e));
+					return false
+				let queryYapi = this.class.queryStm($.extend({ id: this.id }, e))
 				if (!queryYapi)
-					return false;
-				
+					return false
 				rec = e.rec = await dbMgr.tekilExecuteSelect($.extend(queryYapi, e || {}));
 			}
 			if (!rec)
-				return false;
+				return false
+			await this.setValues(e)
 			
-			await this.setValues(e);
-			return true;
+			if (islem == 'kopya') {
+				let {detaylar} = this
+				if (this.uniqueId)
+					this.uniqueId = null
+				if (detaylar) {
+					for (let det of detaylar) {
+						if (det.uniqueId)
+							det.uniqueId = null
+					}
+				}
+			}
+			
+			return true
 		}
 
 		async kaydet(e) {

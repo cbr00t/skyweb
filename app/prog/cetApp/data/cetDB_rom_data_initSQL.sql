@@ -677,6 +677,7 @@ CREATE INDEX IF NOT EXISTS idx_mstSablonFisTipi2Aciklama ON mst_SablonFisTipi (a
 
 CREATE TABLE IF NOT EXISTS data_PIFFis (
 	rowid						INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	uniqueid					TEXT,
 	vioID						INTEGER,
 
 	piftipi						TEXT NOT NULL DEFAULT '',
@@ -765,6 +766,7 @@ CREATE TABLE IF NOT EXISTS data_PIFFis (
 
 CREATE TABLE IF NOT EXISTS data_PIFStok (
 	rowid						INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	uniqueid					TEXT,
 	fissayac					INTEGER NOT NULL,
 	seq							INTEGER NOT NULL,
 	vioID						INTEGER,
@@ -887,6 +889,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_dataPIFStok2Asil ON data_PIFStok (fissayac
 
 CREATE TABLE IF NOT EXISTS data_TahsilatFis (
 	rowid						INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	uniqueid					TEXT,
 	vioID						INTEGER,
 	fistipi						TEXT NOT NULL DEFAULT 'BT',
 	tarih						TEXT NOT NULL DEFAULT ( date('now', 'localtime') ),
@@ -913,6 +916,7 @@ CREATE TABLE IF NOT EXISTS data_TahsilatFis (
 
 CREATE TABLE IF NOT EXISTS data_TahsilatDetay (
 	rowid						INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	uniqueid					TEXT,
 	vioID						INTEGER,
 	fissayac					INTEGER NOT NULL,
 	seq							INTEGER NOT NULL,
@@ -924,6 +928,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_dataTahsilatDetay2Asil ON data_TahsilatDet
 
 CREATE TABLE IF NOT EXISTS data_UgramaFis (
 	rowid						INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	uniqueid					TEXT,
 	vioID						INTEGER,
 	fistipi						TEXT NOT NULL DEFAULT 'U',
 	tarih						TEXT NOT NULL DEFAULT ( date('now', 'localtime') ),

@@ -5,6 +5,7 @@
 		constructor(e) {
 			e = e || {}; super(e); const orjMiktar = e.miktar;
 			$.extend(this, {
+				uniqueId: e.uniqueId || e.uniqueid || null,
 				vioID: e.vioID || null,
 				barkod: e.barkod || null,
 				okunanTumBarkodlar: e.okunanTumBarkodlar || {},
@@ -63,7 +64,7 @@
 			let sent = new MQSent({
 				from: `mst_Stok ${alias}`,
 				fromIliskiler: [
-					{ alias: alias, from: `mst_StokGrup grp`, on: `${alias}.grupKod = grp.kod` },
+					{ alias, from: `mst_StokGrup grp`, on: `${alias}.grupKod = grp.kod` },
 					(searchText ? { alias: alias, leftJoin: `mst_BarkodReferans bref`, on: `${alias}.kod = bref.stokKod AND bref.varsayilanmi <> 0` } : null)
 				].filter(x => !!x),
 				sahalar: (e.rowCountOnly
@@ -473,6 +474,7 @@
 			for (const key in Object.keys(okunanTumBarkodlar)) { if (key == null || key == 'undefined') { delete okunanTumBarkodlar[key] } }
 			const {fis} = e; let hv = super.hostVars(e);
 			$.extend(hv, {
+				uniqueid: this.uniqueId || newGUID(),
 				vioID: this.vioID || null,
 				dettipi: this.class.detTipi,
 				okunanbarkod: this.barkod || '',
@@ -514,6 +516,7 @@
 			if ($.isArray(okunanTumBarkodlar)) { okunanTumBarkodlar = this.okunanTumBarkodlar = asSet(okunanTumBarkodlar) }
 			for (const key in Object.keys(okunanTumBarkodlar)) { if (key == null || key == 'undefined') { delete okunanTumBarkodlar[key] } }
 			$.extend(this, {
+				uniqueId: rec.uniqueid || null,
 				vioID: rec.vioID || null,
 				barkod: rec.okunanbarkod,
 				okunanTumBarkodlar,

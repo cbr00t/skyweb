@@ -155,6 +155,18 @@
 		}
 
 		yukleSonrasi(e) {
+			e ??= {}; let {islem} = e
+			if (islem == 'kopya') {
+				let {detaylar} = this
+				if (this.uniqueId)
+					this.uniqueId = null
+				if (detaylar) {
+					for (let det of detaylar) {
+						if (det.uniqueId)
+							det.uniqueId = null
+					}
+				}
+			}
 		}
 
 		async kaydetDevam(e) {

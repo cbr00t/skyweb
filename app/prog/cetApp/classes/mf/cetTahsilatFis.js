@@ -10,7 +10,13 @@
 		get hesaplanmisBakiyeArtisi() { return -this.sonucBedel }
 		get hesaplanmisRiskArtisi() { return -this.sonucBedel }
 		get hesaplanmisTakipBorcArtisi() { return this.hesaplanmisRiskArtisi }
-		constructor(e) { e = e || {}; super(e); $.extend(this, { mustKod: e.mustKod || '' }) }
+		constructor(e) {
+			e = e || {}; super(e)
+			$.extend(this, {
+				uniqueId: e.uniqueId || e.uniqueid || null,
+				mustKod: e.mustKod || e.mustkod || ''
+			})
+		}
 		static detaylarQueryStm(e) {
 			e = e || {}; const detayTable = e.detayTable || this.detayTable, fisIDSaha = e.fisIDSaha || (e.detaySinif || this.detaySinif).fisIDSaha, id = e.id || this.id;
 			let stm = new MQStm({
@@ -24,13 +30,21 @@
 			stm.sentDo(sent => sent.where.degerAta(id, `har.${fisIDSaha}`)); return stm
 		}
 		hostVars(e) {
-			e = e || {}; let hv = super.hostVars();
-			$.extend(hv, { mustkod: this.mustKod, toplambedel: bedel(this.toplamBedel) || 0 });
+			e = e || {}; let hv = super.hostVars()
+			$.extend(hv, {
+				uniqueid: this.uniqueId || newGUID(),
+				mustkod: this.mustKod,
+				toplambedel: bedel(this.toplamBedel) || 0
+			})
 			return hv
 		}
 		async setValues(e) {
-			e = e || {}; await super.setValues(e); const {rec} = e;
-			$.extend(this, { mustKod: rec.mustkod || '', toplamBedel: bedel(rec.toplambedel) || null })
+			e = e || {}; await super.setValues(e); let {rec} = e
+			$.extend(this, {
+				uniqueId: rec.uniqueid || null,
+				mustKod: rec.mustkod || '',
+				toplamBedel: bedel(rec.toplambedel) || null
+			})
 		}
 		async onKontrol(e) {
 			e = e || {}; if (!this.mustKod) { return this.error_onKontrol(`(Müşteri) belirtilmelidir`, 'bos_mustKod') }

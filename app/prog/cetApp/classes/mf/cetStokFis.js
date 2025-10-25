@@ -2,7 +2,7 @@
 	window.CETStokFis = class extends window.CETStokTicariFis {
 		static get detaySinif() { return CETStokDetay } static get stokmu() { return true } static get fiiliCikismi() { return (this.alimmi == this.iademi) }
 		static get musteriKullanilirmi() { return false } static get rafKullanilirmi() { return true } static get bedelKullanilirmi() { return false }
-		get matbuuFormTip() { return `Sevkiyat` }
+		get matbuuFormTip() { return 'Sevkiyat' }
 		get sonucBedel() { this.gerekirseDipHesapla(); return bedel(this.toplamBedel) }
 		constructor(e) { e = e || {}; super(e) }
 		static varsayilanKeyHostVars(e) { return $.extend(super.varsayilanKeyHostVars(), { fistipi: this.adimTipi || '' }); }

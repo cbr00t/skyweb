@@ -93,8 +93,10 @@
 		static async fromRec(e) {
 			e = e || {}; const rec = e.rec || e; let fisSinif = e.fisSinif || this.fisSinifFor(e); if (!fisSinif) { return null }
 			const idSaha = e.idSaha || this.idSaha, _rec = e.rec || {}, id = e.id || _rec.id || (idSaha ? _rec[idSaha] : null) || _rec.kaysayac || _rec.sayac;
-			let _e = $.extend({}, e, { id }); delete _e.rec;
-			let fis = new fisSinif(_e); if (!await fis.yukle({ islem: _e.islem })) { return null } 
+			let _e = $.extend({}, e, { id }); delete _e.rec
+			let fis = new fisSinif(_e)
+			if (!await fis.yukle({ islem: _e.islem }))
+				return null 
 			return fis
 		}
 		getTumAltDetaylar(e) { return this.detaylar }
@@ -110,9 +112,8 @@
 				seri: this.seri || null,
 				ozelIsaret: this.ozelIsaret == null ? null : (this.ozelIsaret || '')
 			});
-			await num.yukle();
-
-			return num;
+			await num.yukle()
+			return num
 		}
 		
 		gerekirseDipHesapla(e) {

@@ -67,8 +67,11 @@
 			return result
 		}
 		async getYerIcinSubeKod(e) {
-			let result = this.subeKod;
-			if (result == null) { result = await this.class.getYerIcinSubeKod({ yerKod: this.yerKod }); this.subeKod = result }
+			let {subeKod: result} = this
+			if (result == null) {
+				result = await this.class.getYerIcinSubeKod({ yerKod: this.yerKod })
+				this.subeKod = result
+			}
 			return result
 		}
 		static get sonStokKatSayi() { return this.fiiliCikismi ? -1 : 1 }
@@ -132,8 +135,9 @@
 		}
 
 		constructor(e) {
-			e = e || {}; super(e);
+			e = e || {}; super(e)
 			$.extend(this, {
+				uniqueId: e.uniqueId || e.uniqueid || null,
 				vioID: e.vioID || e.vioid || null,
 				ayrimTipi: e.ayrimTipi || e.ayrimtipi || '',
 				mustKod: (e.mustKod || e.mustkod || '').trimEnd(),
@@ -155,7 +159,7 @@
 					from: `${detayTable} har`,
 					fromIliskiler: [{ alias: 'har', leftJoin: 'mst_Stok stk', on: 'har.shkod = stk.kod' }],
 					sahalar: [
-						`har.rowid`, `har.promokod`, `COALESCE(stk.grupkod, '') grupkod`, `har.yerKod`,
+						'har.rowid', 'har.uniqueid', `har.promokod`, `COALESCE(stk.grupkod, '') grupkod`, `har.yerKod`,
 						`har.shkod`, `stk.aciklama shadi`,
 						`(case when har.xbrm == '' then stk.brm else har.xbrm end) brm`,
 						`har.orjfiyat`, `har.belgefiyat`,
@@ -178,6 +182,7 @@
 		hostVars(e) {
 			e = e || {}; let hv = super.hostVars();
 			$.extend(hv, {
+				uniqueid: this.uniqueId || newGUID(),
 				vioID: this.vioID || null,
 				ayrimtipi: this.ayrimTipi || '',
 				noYil: this.noYil || 0,
@@ -199,6 +204,7 @@
 		async setValues(e) {
 			e = e || {}; await super.setValues(e); const {rec} = e;
 			$.extend(this, {
+				uniqueId: rec.uniqueid || null,
 				vioID: rec.vioID || null,
 				ayrimTipi: rec.ayrimtipi || '',
 				mustKod: rec.mustkod || '',
