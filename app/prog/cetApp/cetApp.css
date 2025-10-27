@@ -1615,15 +1615,11 @@ body.cetApp {
 	/*background-image: url(../../../_kernel/images/rbkDuzenle.svg);*/
 }
 .part.cetApp .cetExpandableIslemTuslari #kilitle.item .icon {
-	background-image: url(../../../_kernel/images/kilitle.svg);
+	background-image: url(../../../_kernel/images/kilitle.svg)
 }
 @media (max-width: 400px) {
-	.part.cetApp .cetExpandableIslemTuslari #musteriDurumu.item .icon {
-		left: -2px;
-		top: 3px;
-	}
-	.part.cetApp.cetExpandableIslemTuslari.right.bottom {
-	}
+	.part.cetApp .cetExpandableIslemTuslari #musteriDurumu.item .icon { left: -2px; top: 3px }
+	.part.cetApp.cetExpandableIslemTuslari.right.bottom { }
 }
 #loginForm.part.cetApp.loginUI #param { position: absolute; margin-top: -47px; right: 15px }
 .cetApp #loginForm.part #loginTipi { width: 296px !important }
@@ -1631,10 +1627,15 @@ body.cetApp {
 
 .part.cetApp.cetDokumOnizleme { }
 .part.cetApp.cetDokumOnizleme .islemTuslari { }
-.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent, .part.cetApp.cetDokumOnizleme .islemTuslari #kopya { position: relative; font-weight: bold; color: whitesmoke }
+.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent,
+	.part.cetApp.cetDokumOnizleme .islemTuslari #kopya { position: relative; font-weight: bold; color: whitesmoke }
 .part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent { right: 130px }
-.part.cetApp.cetDokumOnizleme .islemTuslari #nushaSayi { font-weight: bold !important; text-align: center !important; width: 50px; color: lightgreen; background-color: #333; padding-left: 20px }
-.part.cetApp.cetDokumOnizleme .islemTuslari #nushaSayi::placeholder { font-weight: bold !important; font-size: 80% !important; color: #aaa !important }
+@media (max-width: 1000px) {
+	.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent { right: 0 }
+}
+.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent #nushaSayi { font-weight: bold !important; text-align: center !important; width: 50px; color: lightgreen; background-color: #333; padding-left: 10px }
+.part.cetApp.cetDokumOnizleme .islemTuslari .nusha-parent button { width: 35px !important }
+.part.cetApp.cetDokumOnizleme .islemTuslari #nushaSayi::placeholder { font-weight: bold !important; font-size: 75% !important; color: #aaa !important }
 .part.cetApp.cetDokumOnizleme .islemTuslari #kopya { right: -13px !important; background-image: url(../../../_kernel/images/kopyala.png) }
 .part.cetApp.cetDokumOnizleme .islemTuslari #kopya.jqx-fill-state-normal { background-color: #2a51bb }
 .part.cetApp.cetDokumOnizleme #outputParent, .part.cetApp.cetDokumOnizleme #output { width: 100%; height: 100% }
