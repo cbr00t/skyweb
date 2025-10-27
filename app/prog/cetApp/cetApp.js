@@ -1583,8 +1583,7 @@
 				],
 				sahalar: (e.rowCountOnly
 					? `COUNT(*) sayi`
-					: [	'fis.rowid rowid', 'fis.uniqueid',
-						`'Tahsilat' fisTipText`,
+					: [	'fis.rowid rowid', 'fis.uniqueid', `'Tahsilat' fisTipText`,
 						`0 topKdv`, `fis.toplambedel fisSonuc`, `fis.detaykayitsayisi detaySayisi`,
 						`fis.kayitzamani`, `fis.gonderildi`, `fis.silindi`, `fis.yazdirildi`, `fis.gecici`, `fis.rapor`, `'*' tamamlandi`, `fis.degismedi`,
 						`'BT' fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimtipi`, `fis.ozelisaret ozelIsaret`, `fis.tarih`, `NULL vade`, `fis.seri`, `fis.fisno`,
@@ -1602,7 +1601,7 @@
 					],
 					sahalar: (rowCountOnly
 						? `COUNT(*) sayi`
-						: [	`fis.rowid`, `fis.islAdi fisTipText`,
+						: [	`fis.rowid`, 'NULL uniqueid', `fis.islAdi fisTipText`,
 							`0 topKdv`, `fis.bedel fisSonuc`, `0 detaySayisi`,
 							`NULL kayitzamani`, `'*' gonderildi`, `fis.silindi`, `'' yazdirildi`, `fis.gecici`, `fis.rapor`, `'*' tamamlandi`, `'' degismedi`,
 							`fis.fistipi`, `'' piftipi`, `'' almsat`, `'' iade`, `'' ayrimTipi`, `fis.ozelisaret ozelIsaret`, `fis.tarih`, `fis.vade`, `fis.seri`, `fis.fisno`,
