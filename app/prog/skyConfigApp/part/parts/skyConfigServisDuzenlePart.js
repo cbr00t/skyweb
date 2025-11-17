@@ -85,7 +85,15 @@
 				chkTemp.parent()[args.temp ? 'addClass' : 'removeClass']('checked')
 			});
 
-			let chkPortal = wndContent.find('#chkPortal_parent #chkPortal');
+			let chkPortal_parent = wndContent.find('#chkPortal_parent')
+			let chkPortal = chkPortal_parent.find('#chkPortal')
+			if (true) {
+				chkPortal_parent.addClass('jqx-hidden')
+				chkPortal_parent.next('.uyari').addClass('jqx-hidden')
+				if (args.fromPortal) {
+					args.fromPortal = false
+				}
+			}
 			chkPortal.prop('checked', asBool(args.fromPortal));
 			chkPortal.parent()[chkPortal.is(':checked') ? 'addClass' : 'removeClass']('checked');
 			chkPortal.on('change', ({ currentTarget: target }) => {
@@ -94,7 +102,7 @@
 				args.fromPortal = flag
 			});
 			
-			const ddIslem = this.ddIslem = tabPage.find(`#islem`).jqxDropDownList({
+			let ddIslem = this.ddIslem = tabPage.find(`#islem`).jqxDropDownList({
 				theme: theme, valueMember: 'kod', displayMember: 'aciklama',
 				width: 120, height: false,
 				autoDropDownHeight: false, dropDownHeight: 120,
